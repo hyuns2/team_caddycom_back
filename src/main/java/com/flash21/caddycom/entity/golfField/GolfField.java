@@ -1,15 +1,13 @@
 package com.flash21.caddycom.entity.golfField;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@Getter
 public class GolfField {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

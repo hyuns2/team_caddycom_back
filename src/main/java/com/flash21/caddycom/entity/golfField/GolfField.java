@@ -28,7 +28,7 @@ public class GolfField {
     private String password;
 
     public void approve(){
-        this.status = ApprovalStatus.COMPLETE;
+        this.status = ApprovalStatus.APPROVED;
     }
     public void reject(){
         this.status = ApprovalStatus.REJECT;

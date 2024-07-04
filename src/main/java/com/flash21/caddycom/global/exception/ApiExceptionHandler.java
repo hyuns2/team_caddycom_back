@@ -20,7 +20,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ExceptionDto> userNotFoundException(NoSuchElementException e) {
+    public ResponseEntity<ExceptionDto> noSuchElementException(NoSuchElementException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ExceptionDto.fail(HttpStatus.NOT_FOUND,ErrorCode.USER_NOT_FOUND));
     }

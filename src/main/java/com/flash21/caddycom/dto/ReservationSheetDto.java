@@ -1,0 +1,66 @@
+package com.flash21.caddycom.dto;
+
+import com.flash21.caddycom.entity.ReservationSheet;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ReservationSheetDto {
+
+    @Data
+    @AllArgsConstructor
+    public static class CreateRequestDto {
+        @Schema(description = "코스 리스트")
+        @NotNull
+        private List<String> courseList;
+
+        @Schema(description = "시작 날짜 (yyyy-mm-dd)")
+        @NotNull
+        private LocalDate startDate;
+
+        @Schema(description = "종료 날짜 (yyyy-mm-dd)")
+        @NotNull
+        private LocalDate endDate;
+
+        @Schema(description = "시작시간 (hh:mm) 리스트")
+        @NotNull
+        private List<String> startTimeList;
+
+        @Schema(description = "종료시간 (hh:mm) 리스트")
+        @NotNull
+        private List<String> endTimeList;
+
+        @Schema(description = "티오프 리스트")
+        @NotNull
+        private List<Integer> teeOffList;
+
+        public static List<ReservationSheet> toEntities(CreateRequestDto dto/*, List<Course> courses)*/) {
+            List<ReservationSheet> sheets = new ArrayList<>();
+            int part = 1;
+
+            for (int i = 0; i < dto.teeOffList.size(); i++) {
+//                for (Course course: courses) {
+
+                LocalDateTime startDateTime = LocalDateTime.of(dto.startDate, LocalTime.parse(dto.startTimeList.get(i)));
+                LocalDateTime endDateTime = LocalDateTime.of(dto.endDate, LocalTime.parse(dto.endTimeList.get(i)));
+
+                ReservationSheet sheet = ReservationSheet.builder().
+//                      course(course).
+                        startAt(startDateTime).
+                        endAt(endDateTime).
+                        teeOff(dto.teeOffList.get(i)).
+                        part(part++).build();
+                sheets.add(sheet);
+            }
+            return sheets;
+        }
+    }
+}

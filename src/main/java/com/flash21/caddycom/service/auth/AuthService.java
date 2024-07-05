@@ -9,6 +9,7 @@ import com.flash21.caddycom.repository.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,10 @@ public class AuthService {
     private final GolfFieldRepository golfFieldRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * 관리자 계정은 우선 id: 1L, name: 관리자, password: '123456'으로 한다.
+     */
+    @Transactional(readOnly = true)
     public JwtResponse login(SigninRequest request){
         if (request.getKey().equals("관리자")){
             return adminLogin(request.getPassword());
@@ -30,13 +35,15 @@ public class AuthService {
     private JwtResponse adminLogin(String password){
         if (!passwordEncoder.matches(password, passwordEncoder.encode("123456")))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        return jwtProvider.issueTokens(Role.ROLE_ADMIN,"관리자",1L);
+
+        return jwtProvider.issueTokens(Role.ROLE_ADMIN, "관리자", 1L);
     }
 
     private JwtResponse managerLogin(String password, GolfField golfField){
         if (!passwordEncoder.matches(password, golfField.getPassword()))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        return jwtProvider.issueTokens(Role.ROLE_MANAGER,golfField.getName(),golfField.getId());
+
+        return jwtProvider.issueTokens(Role.ROLE_MANAGER, golfField.getName(), golfField.getId());
     }
 
 }

@@ -7,6 +7,7 @@ import com.flash21.caddycom.service.S3FileUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -16,7 +17,7 @@ public class GolfFieldService {
     private final GolfFieldRepository golfFieldRepository;
     private final PasswordEncoder passwordEncoder;
 
-
+    @Transactional
     public void registerGolfField(GolfFieldRequest request){
         String imageUrl = s3FileUploader.upload(request.getImage());
         String businessLicense = s3FileUploader.upload(request.getBusinessLicense());

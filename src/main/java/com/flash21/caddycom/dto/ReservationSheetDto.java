@@ -4,6 +4,7 @@ import com.flash21.caddycom.entity.ReservationSheet;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -62,5 +63,22 @@ public class ReservationSheetDto {
             }
             return sheets;
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class MetaDataResponseDto {
+        @Schema(description = "결과 날짜 (yyyy-mm-dd)")
+        private LocalDate targetDate;
+
+        @Schema(description = "총 개수")
+        private int totalCntSum;
+
+        @Schema(description = "블락된 개수")
+        private int blockedCntSum;
+
+        @Schema(description = "배정가능 개수")
+        private int availableCntSum;
     }
 }

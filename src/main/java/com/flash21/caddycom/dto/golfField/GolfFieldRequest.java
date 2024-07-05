@@ -26,8 +26,11 @@ public class GolfFieldRequest {
     @NotBlank(message = "password은 필수값입니다.")
     private String password;
 
+    @NotBlank(message = "image은 필수값입니다.")
     private MultipartFile image;
+    @NotBlank(message = "businessLicense은 필수값입니다.")
     private MultipartFile businessLicense;
+    @NotBlank(message = "employmentLicense은 필수값입니다.")
     private MultipartFile employmentLicense;
 
     public GolfField toEntity(String imageUrl, String businessLicenseUrl, String employmentLicenseUrl){
@@ -41,7 +44,6 @@ public class GolfFieldRequest {
                 .imageUrl(imageUrl)
                 .caddyType(caddyType)
                 .status(ApprovalStatus.WAITING)
-                //TODO: password 인코딩 필요
                 .password(password)
                 .role(Role.ROLE_MANAGER)
                 .build();

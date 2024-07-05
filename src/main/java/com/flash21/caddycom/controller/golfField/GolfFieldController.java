@@ -23,7 +23,7 @@ public class GolfFieldController {
                 produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary="골프장 등록")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerGolfField(@ModelAttribute @Valid GolfFieldRequest request){
+    public void registerGolfField(@Valid @ModelAttribute GolfFieldRequest request){
         golfFieldService.registerGolfField(request);
     }
 }

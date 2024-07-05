@@ -1,6 +1,6 @@
 package com.flash21.caddycom.global.exception;
 
-import com.flash21.caddycom.global.exception.cException.CInvalidCourseException;
+import com.flash21.caddycom.global.exception.cException.CCourseNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidDateOrderException;
 import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
 import com.flash21.caddycom.global.exception.cException.CInvalidTimeOrderException;
@@ -54,8 +54,8 @@ public class ApiExceptionHandler {
                 .body(ExceptionDto.fail(errorCode));
     }
 
-    @ExceptionHandler(CInvalidCourseException.class)
-    protected ResponseEntity<ExceptionDto> handle(CInvalidCourseException e) {
+    @ExceptionHandler(CCourseNotFoundException.class)
+    protected ResponseEntity<ExceptionDto> handle(CCourseNotFoundException e) {
         ErrorCode errorCode = e.getErrorCode();
         e.printStackTrace();
         return ResponseEntity.status(errorCode.getHttpStatus())

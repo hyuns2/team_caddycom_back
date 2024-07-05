@@ -1,5 +1,6 @@
 package com.flash21.caddycom.dto.golfField;
 
+import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.golfField.ApprovalStatus;
 import com.flash21.caddycom.entity.golfField.CaddyType;
 import com.flash21.caddycom.entity.golfField.GolfField;
@@ -18,7 +19,7 @@ public class GolfFieldRequest {
     @NotBlank(message = "address은 필수값입니다.")
     private String address;
     @NotBlank(message = "registerationNumber은 필수값입니다.")
-    private String registerationNumber;
+    private String registrationNumber;
     @NotBlank(message = "caddyType은 필수값입니다.")
     private CaddyType caddyType;
     @NotBlank(message = "password은 필수값입니다.")
@@ -33,13 +34,15 @@ public class GolfFieldRequest {
                 .name(name)
                 .contact(contact)
                 .address(address)
-                .registerationNumber(registerationNumber)
+                .registrationNumber(registrationNumber)
                 .businessLicense(businessLicenseUrl)
                 .employmentLicense(employmentLicenseUrl)
                 .imageUrl(imageUrl)
                 .caddyType(caddyType)
                 .status(ApprovalStatus.WAITING)
+                //TODO: password 인코딩 필요
                 .password(password)
+                .role(Role.ROLE_MANAGER)
                 .build();
     }
 

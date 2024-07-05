@@ -22,4 +22,14 @@ public class ManagementService {
         }
         golfField.approve();
     }
+
+    @Transactional
+    public void rejectRegistration(Long id){
+        GolfField golfField = golfFieldRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
+        if (golfField.getStatus()!= ApprovalStatus.WAITING){
+            throw new IllegalStateException("이미 처리된 골프장입니다.");
+        }
+        golfField.reject();
+    }
 }

@@ -1,6 +1,5 @@
 package com.flash21.caddycom.controller;
 
-import com.flash21.caddycom.dto.formation.FormationAdd;
 import com.flash21.caddycom.service.management.ManagementService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,10 +14,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin")
 public class ManagementController {
     private final ManagementService managementService;
-    @PostMapping("/permission")
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/approve")
     @Operation(summary = "골프장 등록 승인 API")
     public ResponseEntity<Void> approve(@RequestParam Long golfFieldId) {
         managementService.approveRegistration(golfFieldId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/reject")
+    @Operation(summary = "골프장 등록 거절 API")
+    public ResponseEntity<Void> reject(@RequestParam Long golfFieldId) {
+        managementService.rejectRegistration(golfFieldId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

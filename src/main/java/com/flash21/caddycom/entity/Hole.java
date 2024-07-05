@@ -46,4 +46,8 @@ public class Hole {
     public void updateHandicap(int handicap) {
         this.handicap = handicap;
     }
+
+    public void updatePar(int par) {
+        this.par = par;
+    }
 }

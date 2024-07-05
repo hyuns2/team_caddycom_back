@@ -1,6 +1,7 @@
 package com.flash21.caddycom.controller;
 
 import com.flash21.caddycom.dto.hole.HandicapUpdate;
+import com.flash21.caddycom.dto.hole.ParUpdate;
 import com.flash21.caddycom.service.HoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,5 +20,11 @@ public class HoleController {
     @Operation(summary = "홀의 핸디 수 변경 API")
     public void updateHandicap(@RequestBody HandicapUpdate request) {
         holeService.updateHandicap(request);
+    }
+
+    @PatchMapping("/api/hole/par")
+    @Operation(summary = "홀의 파 변경 API")
+    public void updatePar(@RequestBody ParUpdate request) {
+        holeService.updatePar(request);
     }
 }

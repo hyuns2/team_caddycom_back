@@ -1,6 +1,7 @@
 package com.flash21.caddycom.service;
 
 import com.flash21.caddycom.dto.hole.HandicapUpdate;
+import com.flash21.caddycom.dto.hole.ParUpdate;
 import com.flash21.caddycom.entity.Hole;
 import com.flash21.caddycom.repository.HoleRepository;
 import jakarta.transaction.Transactional;
@@ -18,5 +19,13 @@ public class HoleService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 홀이 존재하지 않습니다."));
 
         hole.updateHandicap(request.getHandicap());
+    }
+
+    @Transactional
+    public void updatePar(ParUpdate request) {
+        Hole hole = holeRepository.findById(request.getHoleId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 홀이 존재하지 않습니다"));
+
+        hole.updatePar(request.getPar());
     }
 }

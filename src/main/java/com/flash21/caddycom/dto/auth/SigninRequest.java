@@ -8,6 +8,6 @@ public class SigninRequest {
     @NotBlank(message = "key는 필수값입니다.")
     private String key;
 
-    @NotBlank(message = "key는 필수값입니다.")
+    @NotBlank(message = "password는 필수값입니다.")
     private String password;
 }

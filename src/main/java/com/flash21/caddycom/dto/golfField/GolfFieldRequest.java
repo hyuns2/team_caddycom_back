@@ -5,6 +5,7 @@ import com.flash21.caddycom.entity.golfField.ApprovalStatus;
 import com.flash21.caddycom.entity.golfField.CaddyType;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,16 +22,16 @@ public class GolfFieldRequest {
     @NotBlank(message = "registerationNumber은 필수값입니다.")
     private String registrationNumber;
 
-    @NotBlank(message = "caddyType은 필수값입니다.")
+    @NotNull(message = "caddyType은 필수값입니다.")
     private CaddyType caddyType;
     @NotBlank(message = "password은 필수값입니다.")
     private String password;
 
-    @NotBlank(message = "image은 필수값입니다.")
+    @NotNull(message = "image은 필수값입니다.")
     private MultipartFile image;
-    @NotBlank(message = "businessLicense은 필수값입니다.")
+    @NotNull(message = "businessLicense은 필수값입니다.")
     private MultipartFile businessLicense;
-    @NotBlank(message = "employmentLicense은 필수값입니다.")
+    @NotNull(message = "employmentLicense은 필수값입니다.")
     private MultipartFile employmentLicense;
 
     public GolfField toEntity(String imageUrl, String businessLicenseUrl, String employmentLicenseUrl){

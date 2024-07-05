@@ -20,6 +20,7 @@ public class GolfFieldRequest {
     private String address;
     @NotBlank(message = "registerationNumber은 필수값입니다.")
     private String registrationNumber;
+
     @NotBlank(message = "caddyType은 필수값입니다.")
     private CaddyType caddyType;
     @NotBlank(message = "password은 필수값입니다.")

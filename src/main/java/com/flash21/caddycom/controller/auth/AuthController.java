@@ -21,7 +21,7 @@ public class AuthController {
     @Operation(summary="웹 로그인(전체 시스템 관리자/골프장 관리자)")
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in")
-    public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest request){
+    public ResponseEntity<JwtResponse> signin(@Valid @RequestBody SigninRequest request){
         JwtResponse response = authService.login(request);
         return ResponseEntity.ok().body(response);
     }

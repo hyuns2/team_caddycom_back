@@ -25,7 +25,7 @@ public class CourseController {
 
     @Operation(summary = "코스 전체조회", description = "모든 코스정보를 조회합니다.")
     @GetMapping
-    public ResponseEntity<?> retrieveCourseInfo() {
+    public ResponseEntity<List<CourseInfoResponseDto>> retrieveCourseInfo() {
         List<CourseInfoResponseDto> responseDtoList = courseService.retrieveCourseInfo();
 
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);

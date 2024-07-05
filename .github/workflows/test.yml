@@ -31,8 +31,9 @@ jobs:
       - name: Create application.yml
         run: |
           mkdir -p ./src/main/resources
-          cd ./src/main/resources
-          echo "${{ secrets.APPLICATION_TEST }}" > application.properties
+          echo "spring.profiles.active=test" > application.properties
+          echo "${{ secrets.APPLICATION_PROD }}" > application-prod.properties
+          echo "${{ secrets.APPLICATION_TEST }}" > application-test.properties
 
       # caching
       - name: Gradle Caching

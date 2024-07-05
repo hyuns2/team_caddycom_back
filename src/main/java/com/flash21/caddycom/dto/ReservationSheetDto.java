@@ -1,11 +1,13 @@
 package com.flash21.caddycom.dto;
 
+import com.flash21.caddycom.entity.Course;
 import com.flash21.caddycom.entity.ReservationSheet;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +22,7 @@ public class ReservationSheetDto {
     public static class CreateRequestDto {
         @Schema(description = "코스 리스트")
         @NotNull
-        private List<String> courseList;
+        private List<Long> courseList;
 
         @Schema(description = "시작 날짜 (yyyy-mm-dd)")
         @NotNull
@@ -31,36 +33,53 @@ public class ReservationSheetDto {
         private LocalDate endDate;
 
         @Schema(description = "시작시간 (hh:mm) 리스트")
-        @NotNull
+        @NotEmpty
         private List<String> startTimeList;
 
         @Schema(description = "종료시간 (hh:mm) 리스트")
-        @NotNull
+        @NotEmpty
         private List<String> endTimeList;
 
         @Schema(description = "티오프 리스트")
-        @NotNull
+        @NotEmpty
         private List<Integer> teeOffList;
 
-        public static List<ReservationSheet> toEntities(CreateRequestDto dto/*, List<Course> courses)*/) {
+        public static List<ReservationSheet> toEntities(CreateRequestDto dto, List<Course> courseList) {
             List<ReservationSheet> sheets = new ArrayList<>();
             int part = 1;
 
             for (int i = 0; i < dto.teeOffList.size(); i++) {
-//                for (Course course: courses) {
+                for (Course course: courseList) {
+                    LocalDateTime startDateTime = LocalDateTime.of(dto.startDate, LocalTime.parse(dto.startTimeList.get(i)));
+                    LocalDateTime endDateTime = LocalDateTime.of(dto.endDate, LocalTime.parse(dto.endTimeList.get(i)));
 
-                LocalDateTime startDateTime = LocalDateTime.of(dto.startDate, LocalTime.parse(dto.startTimeList.get(i)));
-                LocalDateTime endDateTime = LocalDateTime.of(dto.endDate, LocalTime.parse(dto.endTimeList.get(i)));
-
-                ReservationSheet sheet = ReservationSheet.builder().
-//                      course(course).
-                        startAt(startDateTime).
-                        endAt(endDateTime).
-                        teeOff(dto.teeOffList.get(i)).
-                        part(part++).build();
-                sheets.add(sheet);
+                    ReservationSheet sheet = ReservationSheet.builder().
+                            course(course).
+                            startAt(startDateTime).
+                            endAt(endDateTime).
+                            teeOff(dto.teeOffList.get(i)).
+                            part(part++).build();
+                    sheets.add(sheet);
+                }
             }
             return sheets;
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class MetaDataResponseDto {
+        @Schema(description = "결과 날짜 (yyyy-mm-dd)")
+        private LocalDate targetDate;
+
+        @Schema(description = "총 개수")
+        private int totalCntSum;
+
+        @Schema(description = "블락된 개수")
+        private int blockedCntSum;
+
+        @Schema(description = "배정가능 개수")
+        private int availableCntSum;
     }
 }

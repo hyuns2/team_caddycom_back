@@ -23,7 +23,7 @@ public class ReservationDate {
     private ReservationSheet reservationSheet;
 
     @Column(nullable = false)
-    private LocalDate reservationDate;
+    private LocalDate reservationAt;
 
     @Column(nullable = false)
     private Boolean status;

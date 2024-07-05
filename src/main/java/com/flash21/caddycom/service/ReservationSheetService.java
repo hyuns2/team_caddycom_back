@@ -3,11 +3,13 @@ package com.flash21.caddycom.service;
 import com.flash21.caddycom.dto.ReservationSheetDto;
 import com.flash21.caddycom.entity.ReservationDate;
 import com.flash21.caddycom.entity.ReservationSheet;
+import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
 import com.flash21.caddycom.repository.MetaDataReport;
 import com.flash21.caddycom.repository.ReservationDateRepository;
 import com.flash21.caddycom.repository.ReservationSheetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,14 +17,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReservationSheetService {
     final ReservationSheetRepository rsRepository;
     final ReservationDateRepository rdRepository;
 
     public List<Long> createReservationSheet(ReservationSheetDto.CreateRequestDto dto) {
         // Course 연결
-        // 시간리스트 티오프리스트 사이즈 같은지 검증
-        // 유효한 날짜와 시간인지 검증
         List<ReservationSheet> sheets = ReservationSheetDto.CreateRequestDto.toEntities(dto);
         List<Long> returnSheetIdList = new ArrayList<>();
 
@@ -33,6 +34,12 @@ public class ReservationSheetService {
         }
 
         return returnSheetIdList;
+    }
+
+    private void validToCreateReservationSheet(ReservationSheetDto.CreateRequestDto dto) {
+        // 시간리스트 티오프리스트 사이즈 같은지 검증
+
+        // 유효한 날짜와 시간인지 검증
     }
 
     private void createReservationDate(ReservationSheet sheet, LocalDate startDate, LocalDate endDate) {

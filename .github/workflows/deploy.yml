@@ -32,7 +32,7 @@ jobs:
         run: |
           mkdir -p ./src/main/resources
           cd ./src/main/resources
-#          echo "${{ secrets.APPLICATION }}" > application.properties
+          echo "${{ secrets.APPLICATION_PROD }}" > application.properties
 
       # caching
       - name: Gradle Caching
@@ -49,7 +49,7 @@ jobs:
       - name: Setup Gradle
         run: |
           chmod +x ./gradlew
-          ./gradlew clean build -x test
+          ./gradlew clean build -x test -Pprofile=prod
 
       # login dockerhub
       - name: docker login

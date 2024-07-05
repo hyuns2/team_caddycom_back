@@ -4,16 +4,13 @@ import com.flash21.caddycom.dto.ReservationSheetDto;
 import com.flash21.caddycom.entity.Course;
 import com.flash21.caddycom.entity.ReservationDate;
 import com.flash21.caddycom.entity.ReservationSheet;
-import com.flash21.caddycom.global.exception.cException.CInvalidCourseException;
-import com.flash21.caddycom.global.exception.cException.CInvalidDateOrderException;
+import com.flash21.caddycom.global.exception.cException.CCourseNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
-import com.flash21.caddycom.global.exception.cException.CInvalidTimeOrderException;
 import com.flash21.caddycom.repository.CourseRepository;
 import com.flash21.caddycom.repository.MetaDataReport;
 import com.flash21.caddycom.repository.ReservationDateRepository;
 import com.flash21.caddycom.repository.ReservationSheetRepository;
 import lombok.RequiredArgsConstructor;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,10 +28,11 @@ public class ReservationSheetService {
 
     // 데이터 검증 - 날짜시간(입력, 순서)
     public List<Long> createReservationSheet(ReservationSheetDto.CreateRequestDto dto) {
+        validToCreateReservationSheet(dto);
 
         List<Course> courseList = courseRepository.findAllById(dto.getCourseList());
         if (courseList.isEmpty())
-            throw new CInvalidCourseException();
+            throw new CCourseNotFoundException();
         List<ReservationSheet> sheets = ReservationSheetDto.CreateRequestDto.toEntities(dto, courseList);
         List<Long> returnSheetIdList = new ArrayList<>();
 
@@ -45,6 +43,12 @@ public class ReservationSheetService {
         }
 
         return returnSheetIdList;
+    }
+
+    private void validToCreateReservationSheet(ReservationSheetDto.CreateRequestDto dto) {
+        if (dto.getTeeOffList().size() != dto.getStartTimeList().size() ||
+                dto.getStartTimeList().size() != dto.getEndTimeList().size())
+            throw new CInvalidPartInfoException();
     }
 
     private void createReservationDate(ReservationSheet sheet, LocalDate startDate, LocalDate endDate) {

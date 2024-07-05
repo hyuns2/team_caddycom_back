@@ -36,4 +36,7 @@ public class GolfField {
     public void reject(){
         this.status = ApprovalStatus.REJECT;
     }
+    public void encodePassword(String password){
+        this.password = password;
+    }
 }

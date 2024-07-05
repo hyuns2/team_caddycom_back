@@ -13,17 +13,17 @@ public class ExceptionDto {
     private int code;
     private String message;
 
-    public static ExceptionDto fail(HttpStatus code, ErrorCode errorCode){
+    public static ExceptionDto fail(HttpStatus status, ErrorCode errorCode){
         return ExceptionDto.builder()
-                .httpStatus(code)
+                .httpStatus(status)
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .build();
     }
-    public static ExceptionDto fail(HttpStatus code, String message){
+    public static ExceptionDto fail(HttpStatus status, String message){
         return ExceptionDto.builder()
-                .httpStatus(code)
-                .code(code.value())
+                .httpStatus(status)
+                .code(status.value())
                 .message(message)
                 .build();
     }

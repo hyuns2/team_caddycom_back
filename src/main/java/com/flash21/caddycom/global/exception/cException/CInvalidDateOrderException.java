@@ -1,8 +1,10 @@
 package com.flash21.caddycom.global.exception.cException;
 
 import com.flash21.caddycom.global.exception.ErrorCode;
+import lombok.Getter;
 
-public class CInvalidDateOrderException {
+@Getter
+public class CInvalidDateOrderException extends RuntimeException {
     ErrorCode errorCode;
 
     public CInvalidDateOrderException() {

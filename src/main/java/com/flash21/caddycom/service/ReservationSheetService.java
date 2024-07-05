@@ -1,13 +1,19 @@
 package com.flash21.caddycom.service;
 
 import com.flash21.caddycom.dto.ReservationSheetDto;
+import com.flash21.caddycom.entity.Course;
 import com.flash21.caddycom.entity.ReservationDate;
 import com.flash21.caddycom.entity.ReservationSheet;
+import com.flash21.caddycom.global.exception.cException.CInvalidCourseException;
+import com.flash21.caddycom.global.exception.cException.CInvalidDateOrderException;
 import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
+import com.flash21.caddycom.global.exception.cException.CInvalidTimeOrderException;
+import com.flash21.caddycom.repository.CourseRepository;
 import com.flash21.caddycom.repository.MetaDataReport;
 import com.flash21.caddycom.repository.ReservationDateRepository;
 import com.flash21.caddycom.repository.ReservationSheetRepository;
 import lombok.RequiredArgsConstructor;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,10 +27,15 @@ import java.util.List;
 public class ReservationSheetService {
     final ReservationSheetRepository rsRepository;
     final ReservationDateRepository rdRepository;
+    final CourseRepository courseRepository;
 
+    // 데이터 검증 - 날짜시간(입력, 순서)
     public List<Long> createReservationSheet(ReservationSheetDto.CreateRequestDto dto) {
-        // Course 연결
-        List<ReservationSheet> sheets = ReservationSheetDto.CreateRequestDto.toEntities(dto);
+
+        List<Course> courseList = courseRepository.findAllById(dto.getCourseList());
+        if (courseList.isEmpty())
+            throw new CInvalidCourseException();
+        List<ReservationSheet> sheets = ReservationSheetDto.CreateRequestDto.toEntities(dto, courseList);
         List<Long> returnSheetIdList = new ArrayList<>();
 
         for (ReservationSheet sheet: sheets) {
@@ -34,12 +45,6 @@ public class ReservationSheetService {
         }
 
         return returnSheetIdList;
-    }
-
-    private void validToCreateReservationSheet(ReservationSheetDto.CreateRequestDto dto) {
-        // 시간리스트 티오프리스트 사이즈 같은지 검증
-
-        // 유효한 날짜와 시간인지 검증
     }
 
     private void createReservationDate(ReservationSheet sheet, LocalDate startDate, LocalDate endDate) {

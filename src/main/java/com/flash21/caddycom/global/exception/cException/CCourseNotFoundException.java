@@ -4,11 +4,11 @@ import com.flash21.caddycom.global.exception.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public class CInvalidTimeOrderException extends RuntimeException {
+public class CCourseNotFoundException extends RuntimeException {
     ErrorCode errorCode;
 
-    public CInvalidTimeOrderException() {
+    public CCourseNotFoundException() {
         super();
-        this.errorCode = ErrorCode.INVALID_TIME_ORDER;
+        this.errorCode = ErrorCode.COURSE_NOT_FOUND;
     }
 }

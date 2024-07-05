@@ -42,4 +42,12 @@ public class Hole {
                 new Tee("그린", 230, this)
                 ));
     }
+
+    public void updateHandicap(int handicap) {
+        this.handicap = handicap;
+    }
+
+    public void updatePar(int par) {
+        this.par = par;
+    }
 }

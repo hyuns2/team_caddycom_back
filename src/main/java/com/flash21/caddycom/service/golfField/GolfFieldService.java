@@ -1,6 +1,7 @@
 package com.flash21.caddycom.service.golfField;
 
 import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
+import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.repository.GolfFieldRepository;
 import com.flash21.caddycom.service.S3FileUploader;
@@ -8,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -26,5 +30,12 @@ public class GolfFieldService {
         GolfField golfField = request.toEntity(imageUrl,businessLicense,employmentLicense);
         golfField.encodePassword(passwordEncoder.encode(request.getPassword()));
         golfFieldRepository.save(golfField);
+    }
+
+    @Transactional(readOnly = true)
+    public List<GolfFieldResponse.Overview> getAll(){
+        return golfFieldRepository.findAll().stream()
+                .map(golfField -> new GolfFieldResponse.Overview(golfField.getName(),golfField.getContact()))
+                .collect(Collectors.toList());
     }
 }

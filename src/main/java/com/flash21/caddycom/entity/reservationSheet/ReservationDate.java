@@ -38,6 +38,9 @@ public class ReservationDate {
         this.totalCnt = totalCnt;
     }
 
+    public void setStatus() {
+        this.status = true;
+    }
     public void setBlockedCnt(int blockedCnt) {
         this.blockedCnt = blockedCnt;
     }

@@ -58,12 +58,10 @@ public class ReservationSheetDto {
                             startAt(startDateTime).
                             endAt(endDateTime).
                             teeOff(dto.teeOffList.get(i)).
-                            part(part++).build();
+                            part(part).build();
                     sheets.add(sheet);
-
-                    if (part >= dto.teeOffList.size())
-                        part = 1;
                 }
+                part++;
             }
             return sheets;
         }

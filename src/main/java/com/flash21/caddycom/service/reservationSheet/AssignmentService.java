@@ -77,6 +77,7 @@ public class AssignmentService {
                 currentTeeOffIndex = 0;
         }
 
+        reservationDate.setStatus();
         reservationDate.setTotalCnt(responseDtoList.size());
         rdRepository.save(reservationDate);
         return responseDtoList;

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 
@@ -37,5 +38,19 @@ public class GolfFieldService {
         return golfFieldRepository.findAll().stream()
                 .map(golfField -> new GolfFieldResponse.Overview(golfField.getName(),golfField.getContact()))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteGolfField(Long id){
+        GolfField golfField = golfFieldRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+        golfFieldRepository.delete(golfField);
+    }
+
+    @Transactional
+    public void updateGolfField(Long id){
+        GolfField golfField = golfFieldRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+        golfFieldRepository.delete(golfField);
     }
 }

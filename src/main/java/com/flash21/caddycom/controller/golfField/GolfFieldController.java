@@ -26,4 +26,12 @@ public class GolfFieldController {
     public void registerGolfField(@Valid @ModelAttribute GolfFieldRequest request){
         golfFieldService.registerGolfField(request);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping
+    @Operation(summary = "골프장 삭제 API", description="관리자만 접근 가능하다.")
+    public ResponseEntity<Void> reject(@RequestParam Long golfFieldId) {
+        golfFieldService.deleteGolfField(golfFieldId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

@@ -20,21 +20,21 @@ public class Assignment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    ReservationDate reservationDate;
+    private ReservationDate reservationDate;
 
     @Column(nullable = false)
-    LocalTime startTime;
+    private LocalTime startTime;
 
     @Column(nullable = false)
-    AssignmentStatus status;
+    private AssignmentStatus status;
 
 //    @OneToOne(fetch = FetchType.LAZY)
 //    @JoinColumn
 //    Caddy caddy;
 
     @Column
-    String caddyName;
+    private String caddyName;
 
     @Column
-    String reason;
+    private String reason;
 }

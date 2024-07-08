@@ -1,6 +1,6 @@
 package com.flash21.caddycom.controller;
 
-import com.flash21.caddycom.dto.AllTeeSetRequest;
+import com.flash21.caddycom.dto.tee.AllTeeSetRequest;
 import com.flash21.caddycom.service.TeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,7 +1,7 @@
-package com.flash21.caddycom.controller;
+package com.flash21.caddycom.controller.reservationSheet;
 
-import com.flash21.caddycom.dto.ReservationSheetDto;
-import com.flash21.caddycom.service.ReservationSheetService;
+import com.flash21.caddycom.dto.reservationSheet.ReservationSheetDto;
+import com.flash21.caddycom.service.reservationSheet.ReservationSheetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "3. Reservation Sheet", description = "예약시트 API")
+@Tag(name = "3-1. Reservation Sheet", description = "예약시트 API")
 @RequestMapping("/api/reservation-sheet")
 public class ReservationSheetController {
     final ReservationSheetService rsService;

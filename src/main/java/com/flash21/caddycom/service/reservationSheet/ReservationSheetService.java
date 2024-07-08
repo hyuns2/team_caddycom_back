@@ -1,9 +1,9 @@
-package com.flash21.caddycom.service;
+package com.flash21.caddycom.service.reservationSheet;
 
-import com.flash21.caddycom.dto.ReservationSheetDto;
+import com.flash21.caddycom.dto.reservationSheet.ReservationSheetDto;
 import com.flash21.caddycom.entity.Course;
-import com.flash21.caddycom.entity.ReservationDate;
-import com.flash21.caddycom.entity.ReservationSheet;
+import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
+import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
 import com.flash21.caddycom.global.exception.cException.CCourseNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
 import com.flash21.caddycom.repository.CourseRepository;

@@ -5,7 +5,7 @@ import com.flash21.caddycom.dto.auth.SigninRequest;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.global.jwt.JwtProvider;
-import com.flash21.caddycom.repository.GolfFieldRepository;
+import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

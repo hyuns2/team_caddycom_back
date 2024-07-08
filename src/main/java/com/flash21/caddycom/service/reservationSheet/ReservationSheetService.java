@@ -26,7 +26,6 @@ public class ReservationSheetService {
     final ReservationDateRepository rdRepository;
     final CourseRepository courseRepository;
 
-    // 데이터 검증 - 날짜시간(입력, 순서)
     public List<Long> createReservationSheet(ReservationSheetDto.CreateRequestDto dto) {
         validToCreateReservationSheet(dto);
 
@@ -66,7 +65,8 @@ public class ReservationSheetService {
         rdRepository.saveAll(reservationDates);
     }
 
-    public List<ReservationSheetDto.MetaDataResponseDto> retrieveMetaData(LocalDate targetDate, List<Long> reservationSheetIdList) {
+    public List<ReservationSheetDto.MetaDataResponseDto> retrieveMetaData(int year, int month, List<Long> reservationSheetIdList) {
+        LocalDate targetDate = LocalDate.of(year, month, 1);
         List<ReservationSheetDto.MetaDataResponseDto> responseDtoList = new ArrayList<>();
         List<MetaDataReport> reports = rdRepository.countAllMetaDataByDate(targetDate, targetDate.plusMonths(1), reservationSheetIdList);
 

@@ -1,4 +1,4 @@
-package com.flash21.caddycom.repository;
+package com.flash21.caddycom.repository.golfField;
 
 import com.flash21.caddycom.entity.golfField.GolfField;
 import org.springframework.data.jpa.repository.JpaRepository;

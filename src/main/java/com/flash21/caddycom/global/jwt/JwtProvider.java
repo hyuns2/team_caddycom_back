@@ -3,7 +3,7 @@ package com.flash21.caddycom.global.jwt;
 import com.flash21.caddycom.dto.auth.JwtResponse;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.golfField.GolfField;
-import com.flash21.caddycom.repository.GolfFieldRepository;
+import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.xml.bind.DatatypeConverter;

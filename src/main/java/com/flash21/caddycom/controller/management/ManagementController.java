@@ -1,7 +1,6 @@
 package com.flash21.caddycom.controller.management;
 
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
-import com.flash21.caddycom.repository.GolfFieldRepository;
 import com.flash21.caddycom.service.golfField.GolfFieldService;
 import com.flash21.caddycom.service.management.ManagementService;
 import io.swagger.v3.oas.annotations.Operation;

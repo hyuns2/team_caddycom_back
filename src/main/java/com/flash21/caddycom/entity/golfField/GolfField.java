@@ -3,8 +3,6 @@ package com.flash21.caddycom.entity.golfField;
 import com.flash21.caddycom.entity.account.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -36,6 +34,7 @@ public class GolfField {
     private String cartInfo;
     private String publicTransportGuide;
     private String carGuide;
+    private String amenities;
 
     @OneToMany(mappedBy = "golfField", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Facility> facilities;
@@ -46,6 +45,9 @@ public class GolfField {
     private String password;
     private Role role;
 
+
+
+
     public void approve(){
         this.status = ApprovalStatus.APPROVED;
     }
@@ -54,6 +56,14 @@ public class GolfField {
     }
     public void encodePassword(String password){
         this.password = password;
+    }
+
+    public void addInfo(String fax, String area, LocalDate openingDate, String cartInfo, String amenities){
+        this.fax = fax;
+        this.area = area;
+        this.openingDate = openingDate;
+        this.cartInfo = cartInfo;
+        this.amenities = amenities;
     }
 
 }

@@ -23,15 +23,36 @@ public class GolfFieldController {
                 produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary="골프장 등록")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerGolfField(@Valid @ModelAttribute GolfFieldRequest request){
+    public ResponseEntity<Void> registerGolfField(@Valid @ModelAttribute GolfFieldRequest.Create request){
         golfFieldService.registerGolfField(request);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping
     @Operation(summary = "골프장 삭제 API", description="관리자만 접근 가능하다.")
-    public ResponseEntity<Void> reject(@RequestParam Long golfFieldId) {
+    public ResponseEntity<Void> delete(@RequestParam Long golfFieldId) {
         golfFieldService.deleteGolfField(golfFieldId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping
+    @Operation(summary = "골프장 수정 API", description="구현 전, 뼈대만 있음")
+    public ResponseEntity<Void> update(@RequestParam Long golfFieldId,
+                                       @Valid @ModelAttribute GolfFieldRequest.AdditionalInfo request) {
+        golfFieldService.updateGolfField(golfFieldId, request);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("additional-info")
+    @Operation(summary = "골프장 추가정보 입력 API", description="관리자만 접근 가능하다.")
+    public ResponseEntity<Void> addInfo(@RequestParam Long golfFieldId,
+                                       @Valid @RequestBody GolfFieldRequest.AdditionalInfo request) {
+        golfFieldService.addMoreInfo(golfFieldId, request);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 }

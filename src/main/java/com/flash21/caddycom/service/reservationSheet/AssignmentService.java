@@ -16,9 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +57,11 @@ public class AssignmentService {
         LocalTime startAtLocalTime = reservationSheet.getStartAt().toLocalTime();
         LocalTime endAtLocalTIme = reservationSheet.getEndAt().toLocalTime();
 
+        List<Integer> teeOffList = Arrays.stream(reservationSheet.getTeeOff().split("~")).
+                map(Integer::new).toList();
+        int teeOffListSize = teeOffList.size();
+        int currentTeeOffIndex = 0;
+
         while (startAtLocalTime.isBefore(endAtLocalTIme)) {
             Assignment assignment = assignmentRepository.save(Assignment.builder().
                     reservationDate(reservationDate).
@@ -67,9 +70,11 @@ public class AssignmentService {
                     // caddyId().
                     caddyName(null).
                     reason(null).build());
-
             responseDtoList.add(toDto(assignment));
-            startAtLocalTime = startAtLocalTime.plusMinutes(reservationSheet.getTeeOff());
+
+            startAtLocalTime = startAtLocalTime.plusMinutes(teeOffList.get(currentTeeOffIndex++));
+            if (currentTeeOffIndex >= teeOffListSize)
+                currentTeeOffIndex = 0;
         }
         return responseDtoList;
     }

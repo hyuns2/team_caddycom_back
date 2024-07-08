@@ -42,7 +42,7 @@ public class ReservationSheetDto {
 
         @Schema(description = "티오프 리스트")
         @NotEmpty
-        private List<Integer> teeOffList;
+        private List<String> teeOffList;
 
         public static List<ReservationSheet> toEntities(CreateRequestDto dto, List<Course> courseList) {
             List<ReservationSheet> sheets = new ArrayList<>();

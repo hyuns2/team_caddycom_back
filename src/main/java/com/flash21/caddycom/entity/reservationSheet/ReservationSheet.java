@@ -30,7 +30,7 @@ public class ReservationSheet {
     private LocalDateTime endAt;
 
     @Column(nullable = false)
-    private Integer teeOff;
+    private String teeOff;
 
     @Column(nullable = false)
     private Integer part;

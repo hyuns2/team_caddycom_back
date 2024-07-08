@@ -63,5 +63,13 @@ public class GolfFieldController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
+    @PostMapping(value = "facility-info",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "골프장 시설 안내 입력 API", description="관리자만 접근 가능하다.")
+    public ResponseEntity<Void> addDirectionInfo(@RequestParam Long golfFieldId,
+                                                 @Valid @ModelAttribute GolfFieldRequest.FacilityInfo request) {
+        golfFieldService.addFacilityInfo(golfFieldId, request);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

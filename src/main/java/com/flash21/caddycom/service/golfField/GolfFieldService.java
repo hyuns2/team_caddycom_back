@@ -2,7 +2,6 @@ package com.flash21.caddycom.service.golfField;
 
 import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
-import com.flash21.caddycom.entity.golfField.Facility;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.repository.GolfFieldRepository;
 import com.flash21.caddycom.service.S3FileUploader;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -23,6 +21,7 @@ import java.util.stream.Collectors;
 public class GolfFieldService {
     private final S3FileUploader s3FileUploader;
     private final GolfFieldRepository golfFieldRepository;
+    private final FacilityService facilityService;
     private final PasswordEncoder passwordEncoder;
 
     /** 골프장 생성 */
@@ -84,6 +83,19 @@ public class GolfFieldService {
 
         golfFieldRepository.save(golfField);
     }
+
+
+    public void addFacilityInfo(Long id, GolfFieldRequest.FacilityInfo request){
+        GolfField golfField = golfFieldRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+
+        List<String> facilityImages = uploadFiles(request.getFacilityImages());
+
+        facilityService.saveFacilityAndImageUrls(golfField, facilityImages,
+                                                request.getName(),
+                                                request.getContent());
+    }
+
 
 
     @Transactional

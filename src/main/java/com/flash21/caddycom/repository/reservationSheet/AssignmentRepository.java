@@ -1,4 +1,4 @@
-package com.flash21.caddycom.repository;
+package com.flash21.caddycom.repository.reservationSheet;
 
 import com.flash21.caddycom.entity.reservationSheet.Assignment;
 import org.springframework.data.jpa.repository.JpaRepository;

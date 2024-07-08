@@ -33,4 +33,12 @@ public class ReservationDate {
 
     @Column(nullable = false)
     private Integer blockedCnt;
+
+    public void setTotalCnt(int totalCnt) {
+        this.totalCnt = totalCnt;
+    }
+
+    public void setBlockedCnt(int blockedCnt) {
+        this.blockedCnt = blockedCnt;
+    }
 }

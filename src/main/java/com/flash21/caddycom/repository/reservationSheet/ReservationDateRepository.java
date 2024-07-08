@@ -1,6 +1,7 @@
-package com.flash21.caddycom.repository;
+package com.flash21.caddycom.repository.reservationSheet;
 
 import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
+import com.flash21.caddycom.repository.reservationSheet.MetaDataReport;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

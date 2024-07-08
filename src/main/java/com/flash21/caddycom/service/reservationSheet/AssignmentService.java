@@ -7,9 +7,9 @@ import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
 import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
 import com.flash21.caddycom.global.exception.cException.CReservationDateNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CReservationSheetNotFoundException;
-import com.flash21.caddycom.repository.AssignmentRepository;
-import com.flash21.caddycom.repository.ReservationDateRepository;
-import com.flash21.caddycom.repository.ReservationSheetRepository;
+import com.flash21.caddycom.repository.reservationSheet.AssignmentRepository;
+import com.flash21.caddycom.repository.reservationSheet.ReservationDateRepository;
+import com.flash21.caddycom.repository.reservationSheet.ReservationSheetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,6 +76,9 @@ public class AssignmentService {
             if (currentTeeOffIndex >= teeOffListSize)
                 currentTeeOffIndex = 0;
         }
+
+        reservationDate.setTotalCnt(responseDtoList.size());
+        rdRepository.save(reservationDate);
         return responseDtoList;
     }
 

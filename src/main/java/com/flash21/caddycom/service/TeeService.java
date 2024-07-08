@@ -1,7 +1,8 @@
 package com.flash21.caddycom.service;
 
-import com.flash21.caddycom.dto.AllTeeSetRequest;
-import com.flash21.caddycom.dto.TeeUpdateRequest;
+import com.flash21.caddycom.dto.tee.AllTeeSetRequest;
+import com.flash21.caddycom.dto.tee.TeeData;
+import com.flash21.caddycom.dto.tee.TeeUpdateRequest;
 import com.flash21.caddycom.entity.Hole;
 import com.flash21.caddycom.entity.Tee;
 import com.flash21.caddycom.repository.HoleRepository;
@@ -39,5 +40,33 @@ public class TeeService {
 
         //3. 새로운 티 정보 저장
         teeJdbcRepository.saveAll(newTees);
+    }
+
+    @Transactional
+    public void saveTees(Long holeId, List<TeeData> requestTees) {
+        Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new IllegalArgumentException("hole not found"));
+
+        List<Tee> savedTees = hole.getTees();
+        List<Tee> newTees = new ArrayList<>();
+        for(TeeData teeData : requestTees) {
+            if(teeData.getId() == null) {
+                newTees.add(new Tee(teeData.getName(), teeData.getDistance(), hole));
+                break;
+            }
+
+            for(Tee savedTee : savedTees) {
+                if(teeData.getId().equals(savedTee.getId())) {
+                    savedTee.teeUpdate(teeData.getName(), teeData.getDistance());
+                    break;
+                }
+            }
+        }
+
+        savedTees.addAll(newTees);
+    }
+
+    @Transactional
+    public void deleteTees(List<Long> teeIds) {
+        teeRepository.deleteAllByIdInBatch(teeIds);
     }
 }

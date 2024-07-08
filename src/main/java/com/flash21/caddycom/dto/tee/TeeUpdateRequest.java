@@ -1,4 +1,4 @@
-package com.flash21.caddycom.dto;
+package com.flash21.caddycom.dto.tee;
 
 import lombok.Getter;
 

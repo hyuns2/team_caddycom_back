@@ -60,6 +60,9 @@ public class ReservationSheetDto {
                             teeOff(dto.teeOffList.get(i)).
                             part(part++).build();
                     sheets.add(sheet);
+
+                    if (part >= dto.teeOffList.size())
+                        part = 1;
                 }
             }
             return sheets;

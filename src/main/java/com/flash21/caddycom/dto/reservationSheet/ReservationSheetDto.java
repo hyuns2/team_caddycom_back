@@ -1,7 +1,7 @@
-package com.flash21.caddycom.dto;
+package com.flash21.caddycom.dto.reservationSheet;
 
 import com.flash21.caddycom.entity.Course;
-import com.flash21.caddycom.entity.ReservationSheet;
+import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -42,7 +42,7 @@ public class ReservationSheetDto {
 
         @Schema(description = "티오프 리스트")
         @NotEmpty
-        private List<Integer> teeOffList;
+        private List<String> teeOffList;
 
         public static List<ReservationSheet> toEntities(CreateRequestDto dto, List<Course> courseList) {
             List<ReservationSheet> sheets = new ArrayList<>();
@@ -60,6 +60,9 @@ public class ReservationSheetDto {
                             teeOff(dto.teeOffList.get(i)).
                             part(part++).build();
                     sheets.add(sheet);
+
+                    if (part >= dto.teeOffList.size())
+                        part = 1;
                 }
             }
             return sheets;

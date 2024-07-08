@@ -1,15 +1,15 @@
-package com.flash21.caddycom.service;
+package com.flash21.caddycom.service.reservationSheet;
 
-import com.flash21.caddycom.dto.ReservationSheetDto;
+import com.flash21.caddycom.dto.reservationSheet.ReservationSheetDto;
 import com.flash21.caddycom.entity.Course;
-import com.flash21.caddycom.entity.ReservationDate;
-import com.flash21.caddycom.entity.ReservationSheet;
+import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
+import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
 import com.flash21.caddycom.global.exception.cException.CCourseNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
 import com.flash21.caddycom.repository.CourseRepository;
-import com.flash21.caddycom.repository.MetaDataReport;
-import com.flash21.caddycom.repository.ReservationDateRepository;
-import com.flash21.caddycom.repository.ReservationSheetRepository;
+import com.flash21.caddycom.repository.reservationSheet.MetaDataReport;
+import com.flash21.caddycom.repository.reservationSheet.ReservationDateRepository;
+import com.flash21.caddycom.repository.reservationSheet.ReservationSheetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,6 @@ public class ReservationSheetService {
     final ReservationDateRepository rdRepository;
     final CourseRepository courseRepository;
 
-    // 데이터 검증 - 날짜시간(입력, 순서)
     public List<Long> createReservationSheet(ReservationSheetDto.CreateRequestDto dto) {
         validToCreateReservationSheet(dto);
 
@@ -66,7 +65,8 @@ public class ReservationSheetService {
         rdRepository.saveAll(reservationDates);
     }
 
-    public List<ReservationSheetDto.MetaDataResponseDto> retrieveMetaData(LocalDate targetDate, List<Long> reservationSheetIdList) {
+    public List<ReservationSheetDto.MetaDataResponseDto> retrieveMetaData(int year, int month, List<Long> reservationSheetIdList) {
+        LocalDate targetDate = LocalDate.of(year, month, 1);
         List<ReservationSheetDto.MetaDataResponseDto> responseDtoList = new ArrayList<>();
         List<MetaDataReport> reports = rdRepository.countAllMetaDataByDate(targetDate, targetDate.plusMonths(1), reservationSheetIdList);
 

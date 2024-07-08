@@ -1,9 +1,6 @@
 package com.flash21.caddycom.global.exception;
 
-import com.flash21.caddycom.global.exception.cException.CCourseNotFoundException;
-import com.flash21.caddycom.global.exception.cException.CInvalidDateOrderException;
-import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
-import com.flash21.caddycom.global.exception.cException.CInvalidTimeOrderException;
+import com.flash21.caddycom.global.exception.cException.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,6 +72,22 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(CCourseNotFoundException.class)
     protected ResponseEntity<ExceptionDto> handle(CCourseNotFoundException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        e.printStackTrace();
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(ExceptionDto.fail(errorCode));
+    }
+
+    @ExceptionHandler(CReservationSheetNotFoundException.class)
+    protected ResponseEntity<ExceptionDto> handle(CReservationSheetNotFoundException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        e.printStackTrace();
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(ExceptionDto.fail(errorCode));
+    }
+
+    @ExceptionHandler(CReservationDateNotFoundException.class)
+    protected ResponseEntity<ExceptionDto> handle(CReservationDateNotFoundException e) {
         ErrorCode errorCode = e.getErrorCode();
         e.printStackTrace();
         return ResponseEntity.status(errorCode.getHttpStatus())

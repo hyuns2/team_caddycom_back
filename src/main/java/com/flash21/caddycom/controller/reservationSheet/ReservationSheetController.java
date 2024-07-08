@@ -1,7 +1,7 @@
-package com.flash21.caddycom.controller;
+package com.flash21.caddycom.controller.reservationSheet;
 
-import com.flash21.caddycom.dto.ReservationSheetDto;
-import com.flash21.caddycom.service.ReservationSheetService;
+import com.flash21.caddycom.dto.reservationSheet.ReservationSheetDto;
+import com.flash21.caddycom.service.reservationSheet.ReservationSheetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "3. Reservation Sheet", description = "예약시트 API")
+@Tag(name = "3-1. Reservation Sheet", description = "예약시트 API")
 @RequestMapping("/api/reservation-sheet")
 public class ReservationSheetController {
     final ReservationSheetService rsService;
@@ -30,11 +30,9 @@ public class ReservationSheetController {
     }
 
     @Operation(summary = "캘린더 메타정보 조회", description = "캘린더에 표기되는 메타정보를 조회합니다.")
-    @GetMapping("/calendar")
-    public ResponseEntity<List<ReservationSheetDto.MetaDataResponseDto>> retrieveMetaData(
-            @RequestParam LocalDate targetDate,
-            @RequestParam List<Long> reservationSheetIdList) {
-        List<ReservationSheetDto.MetaDataResponseDto> responseDtoList = rsService.retrieveMetaData(targetDate, reservationSheetIdList);
+    @GetMapping("/calendar/{year}/{month}")
+    public ResponseEntity<?> retrieveMetaData(@PathVariable int year, @PathVariable int month, @RequestParam List<Long> reservationSheetIdList) {
+        List<ReservationSheetDto.MetaDataResponseDto> responseDtoList = rsService.retrieveMetaData(year, month, reservationSheetIdList);
 
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }

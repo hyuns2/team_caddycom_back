@@ -1,6 +1,6 @@
-package com.flash21.caddycom.repository;
+package com.flash21.caddycom.repository.reservationSheet;
 
-import com.flash21.caddycom.entity.ReservationSheet;
+import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

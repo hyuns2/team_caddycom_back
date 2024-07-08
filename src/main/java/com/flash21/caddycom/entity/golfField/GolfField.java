@@ -66,4 +66,9 @@ public class GolfField {
         this.amenities = amenities;
     }
 
+    public void addDirectionInfo(String publicTransportGuide, String carGuide){
+        this.carGuide = carGuide;
+        this.publicTransportGuide = publicTransportGuide;
+    }
+
 }

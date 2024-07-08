@@ -38,7 +38,7 @@ public class GolfFieldController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping
-    @Operation(summary = "골프장 수정 API", description="구현 전, 뼈대만 있음")
+    @Operation(summary = "골프장 수정 API (구현 전, 뼈대만 있음)", description="")
     public ResponseEntity<Void> update(@RequestParam Long golfFieldId,
                                        @Valid @ModelAttribute GolfFieldRequest.AdditionalInfo request) {
         golfFieldService.updateGolfField(golfFieldId, request);
@@ -51,6 +51,15 @@ public class GolfFieldController {
     public ResponseEntity<Void> addInfo(@RequestParam Long golfFieldId,
                                        @Valid @RequestBody GolfFieldRequest.AdditionalInfo request) {
         golfFieldService.addMoreInfo(golfFieldId, request);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("direction-info")
+    @Operation(summary = "골프장 오는 길 안내 입력 API", description="관리자만 접근 가능하다.")
+    public ResponseEntity<Void> addDirectionInfo(@RequestParam Long golfFieldId,
+                                        @Valid @RequestBody GolfFieldRequest.DirectionsInfo request) {
+        golfFieldService.addDirectionInfo(golfFieldId, request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

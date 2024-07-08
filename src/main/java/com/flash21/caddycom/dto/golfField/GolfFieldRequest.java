@@ -72,6 +72,14 @@ public class GolfFieldRequest {
 
     @Getter
     @AllArgsConstructor
+    public static class DirectionsInfo {
+        private String publicTransportGuide;
+        private String carGuide;
+    }
+
+
+    @Getter
+    @AllArgsConstructor
     public static class FacilityInfo {
         @NotBlank(message = "name은 필수값입니다.")
         private String name;

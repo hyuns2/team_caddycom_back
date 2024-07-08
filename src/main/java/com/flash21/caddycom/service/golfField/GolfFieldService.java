@@ -76,6 +76,15 @@ public class GolfFieldService {
         golfFieldRepository.save(golfField);
     }
 
+    @Transactional
+    public void addDirectionInfo(Long id, GolfFieldRequest.DirectionsInfo request){
+        GolfField golfField = golfFieldRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+        golfField.addDirectionInfo(request.getPublicTransportGuide(), request.getCarGuide());
+
+        golfFieldRepository.save(golfField);
+    }
+
 
     @Transactional
     public void updateGolfField(Long id, GolfFieldRequest.AdditionalInfo request){

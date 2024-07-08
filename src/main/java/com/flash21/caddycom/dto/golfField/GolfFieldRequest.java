@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -64,18 +65,17 @@ public class GolfFieldRequest {
     public static class AdditionalInfo {
         private String fax;
         private String area;
-        private String openingDate;
+        private LocalDate openingDate;
         private String cartInfo;
-        private List<FacilityInfo> facilities;
-
-
+        private String amenities;
     }
-    private static class FacilityInfo {
+
+    @Getter
+    @AllArgsConstructor
+    public static class FacilityInfo {
         @NotBlank(message = "name은 필수값입니다.")
         private String name;
-        @NotBlank(message = "content은 필수값입니다.")
         private String content;
-        @NotNull(message = "facilityImages는 필수값입니다.")
         private List<MultipartFile> facilityImages;
     }
 

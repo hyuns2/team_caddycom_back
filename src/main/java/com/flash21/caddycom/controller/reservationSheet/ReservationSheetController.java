@@ -22,7 +22,8 @@ public class ReservationSheetController {
 
     @Operation(summary = "예약시트 등록", description = "골프장이 예약시트를 등록합니다.")
     @PostMapping
-    public ResponseEntity<?> createReservationSheet(@Valid @RequestBody ReservationSheetDto.CreateRequestDto dto) {
+    public ResponseEntity<List<Long>> createReservationSheet
+            (@Valid @RequestBody ReservationSheetDto.CreateRequestDto dto) {
         List<Long> reservationSheetIdList = rsService.createReservationSheet(dto);
 
         return new ResponseEntity<>(reservationSheetIdList, HttpStatus.CREATED);

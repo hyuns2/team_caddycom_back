@@ -16,20 +16,22 @@ public class ManagementService {
     @Transactional
     public void approveRegistration(Long id){
         GolfField golfField = golfFieldRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
         if (golfField.getStatus()!= ApprovalStatus.WAITING){
             throw new IllegalStateException("이미 처리된 골프장입니다.");
         }
+
         golfField.approve();
     }
 
     @Transactional
     public void rejectRegistration(Long id){
         GolfField golfField = golfFieldRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
         if (golfField.getStatus()!= ApprovalStatus.WAITING){
             throw new IllegalStateException("이미 처리된 골프장입니다.");
         }
+
         golfField.reject();
     }
 }

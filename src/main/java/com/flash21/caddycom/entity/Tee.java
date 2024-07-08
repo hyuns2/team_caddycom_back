@@ -1,10 +1,12 @@
 package com.flash21.caddycom.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class Tee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,5 +24,10 @@ public class Tee {
         this.name = name;
         this.distance = distance;
         this.hole = hole;
+    }
+
+    public void teeUpdate(String name, int distance) {
+        this.name = name;
+        this.distance = distance;
     }
 }

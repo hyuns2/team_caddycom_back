@@ -35,7 +35,10 @@ public class GolfFieldService {
         golfFieldRepository.save(golfField);
     }
 
-
+    /**
+     * s3 파일 업로드 공통 메소드 추출
+     * 트랜젝션 시작 전 수행
+     */
     private List<String> uploadFiles (List<MultipartFile> files){
         return files.stream()
                 .map(s3FileUploader::upload)
@@ -66,6 +69,7 @@ public class GolfFieldService {
     public void addMoreInfo(Long id, GolfFieldRequest.AdditionalInfo request){
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+
         golfField.addInfo(request.getFax(),
                         request.getArea(),
                         request.getOpeningDate(),
@@ -75,16 +79,19 @@ public class GolfFieldService {
         golfFieldRepository.save(golfField);
     }
 
+    /** 골프장 오는길 정보 입력 */
     @Transactional
     public void addDirectionInfo(Long id, GolfFieldRequest.DirectionsInfo request){
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+
         golfField.addDirectionInfo(request.getPublicTransportGuide(), request.getCarGuide());
 
         golfFieldRepository.save(golfField);
     }
 
 
+    /** 골프장 시설 정보 입력 */
     public void addFacilityInfo(Long id, GolfFieldRequest.FacilityInfo request){
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
@@ -97,10 +104,11 @@ public class GolfFieldService {
     }
 
 
-
+    /** 골프장 정보 수정 */
     @Transactional
     public void updateGolfField(Long id, GolfFieldRequest.AdditionalInfo request){
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+        //TODO: 수정 로직 구현
     }
 }

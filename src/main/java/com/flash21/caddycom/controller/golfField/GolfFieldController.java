@@ -28,6 +28,7 @@ public class GolfFieldController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping
     @Operation(summary = "골프장 삭제 API", description="관리자만 접근 가능하다.")
@@ -35,6 +36,7 @@ public class GolfFieldController {
         golfFieldService.deleteGolfField(golfFieldId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping
@@ -45,6 +47,7 @@ public class GolfFieldController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("additional-info")
     @Operation(summary = "골프장 추가정보 입력 API", description="관리자만 접근 가능하다.")
@@ -54,6 +57,7 @@ public class GolfFieldController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("direction-info")
     @Operation(summary = "골프장 오는 길 안내 입력 API", description="관리자만 접근 가능하다.")
@@ -62,6 +66,7 @@ public class GolfFieldController {
         golfFieldService.addDirectionInfo(golfFieldId, request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
     @PostMapping(value = "facility-info",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)

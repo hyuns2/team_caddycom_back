@@ -1,4 +1,4 @@
-package com.flash21.caddycom.service;
+package com.flash21.caddycom.global.common;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;

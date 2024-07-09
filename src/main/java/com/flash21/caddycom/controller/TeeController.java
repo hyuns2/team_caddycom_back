@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "tee", description = "티 정보 관련 API")
+@Tag(name = "2-4. Tee", description = "티 정보 관련 API")
 @RestController
 @RequiredArgsConstructor
 public class TeeController {

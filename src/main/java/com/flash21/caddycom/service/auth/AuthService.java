@@ -1,6 +1,6 @@
 package com.flash21.caddycom.service.auth;
 
-import com.flash21.caddycom.dto.auth.JwtResponse;
+import com.flash21.caddycom.dto.auth.SigninResponse;
 import com.flash21.caddycom.dto.auth.SigninRequest;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.golfField.GolfField;
@@ -23,7 +23,7 @@ public class AuthService {
      * 관리자 계정은 우선 id: 1L, name: 관리자, password: '123456'으로 한다.
      */
     @Transactional(readOnly = true)
-    public JwtResponse login(SigninRequest request){
+    public SigninResponse login(SigninRequest request){
         if (request.getKey().equals("관리자")){
             return adminLogin(request.getPassword());
         }
@@ -32,14 +32,14 @@ public class AuthService {
         return managerLogin(request.getPassword(), golfField);
     }
 
-    private JwtResponse adminLogin(String password){
+    private SigninResponse adminLogin(String password){
         if (!passwordEncoder.matches(password, passwordEncoder.encode("123456")))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 
         return jwtProvider.issueTokens(Role.ROLE_ADMIN, "관리자", 1L);
     }
 
-    private JwtResponse managerLogin(String password, GolfField golfField){
+    private SigninResponse managerLogin(String password, GolfField golfField){
         if (!passwordEncoder.matches(password, golfField.getPassword()))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 

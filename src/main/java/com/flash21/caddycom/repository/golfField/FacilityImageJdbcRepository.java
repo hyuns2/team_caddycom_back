@@ -1,6 +1,5 @@
 package com.flash21.caddycom.repository.golfField;
 
-import com.flash21.caddycom.entity.Tee;
 import com.flash21.caddycom.entity.golfField.FacilityImage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,18 +21,18 @@ public class FacilityImageJdbcRepository {
         String sql = "INSERT INTO facility_image (image_url, facility_id) " + "VALUES (?, ?)";
 
         jdbcTemplate.batchUpdate(sql,
-                new BatchPreparedStatementSetter() {
-                    @Override
-                    public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        FacilityImage facilityImage = facilityImages.get(i);
-                        ps.setString(1, facilityImage.getImageUrl());
-                        ps.setLong(2, facilityImage.getFacility().getId());
-                    }
+            new BatchPreparedStatementSetter() {
+                @Override
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    FacilityImage facilityImage = facilityImages.get(i);
+                    ps.setString(1, facilityImage.getImageUrl());
+                    ps.setLong(2, facilityImage.getFacility().getId());
+                }
 
-                    @Override
-                    public int getBatchSize() {
-                        return facilityImages.size();
-                    }
-                });
+                @Override
+                public int getBatchSize() {
+                    return facilityImages.size();
+                }
+            });
     }
 }

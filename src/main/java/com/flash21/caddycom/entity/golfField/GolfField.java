@@ -23,9 +23,7 @@ public class GolfField {
     private String businessLicense;
     private String employmentLicense;
     private String imageUrl;
-    @Enumerated(EnumType.STRING)
     private CaddyType caddyType;
-    @Enumerated(EnumType.STRING)
     private ApprovalStatus status;
 
     private String fax;

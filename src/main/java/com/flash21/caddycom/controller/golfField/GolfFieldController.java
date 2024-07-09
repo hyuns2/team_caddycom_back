@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "GolfField", description = "골프장 API")
+@Tag(name = "1. GolfField", description = "골프장 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/golf-field")

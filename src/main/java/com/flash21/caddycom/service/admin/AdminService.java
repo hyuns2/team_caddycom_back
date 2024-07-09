@@ -1,4 +1,4 @@
-package com.flash21.caddycom.service.management;
+package com.flash21.caddycom.service.admin;
 
 import com.flash21.caddycom.entity.golfField.ApprovalStatus;
 import com.flash21.caddycom.entity.golfField.GolfField;
@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
-public class ManagementService {
+public class AdminService {
     private final GolfFieldRepository golfFieldRepository;
     @Transactional
     public void approveRegistration(Long id){

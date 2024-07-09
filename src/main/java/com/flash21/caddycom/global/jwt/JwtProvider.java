@@ -1,6 +1,6 @@
 package com.flash21.caddycom.global.jwt;
 
-import com.flash21.caddycom.dto.auth.JwtResponse;
+import com.flash21.caddycom.dto.auth.SigninResponse;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
@@ -28,7 +28,7 @@ public class JwtProvider {
     private final long REFRESH_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7일
     private final GolfFieldRepository golfFieldRepository;
 
-    public JwtResponse issueTokens(Role role, String name, Long id) {
+    public SigninResponse issueTokens(Role role, String name, Long id) {
         long current = System.currentTimeMillis();
         Date accessTokenExpireTime = new Date(current + ACCESS_EXPIRAION);
         Date refreshTokenExpireTime = new Date(current + REFRESH_EXPIRATION);
@@ -58,7 +58,7 @@ public class JwtProvider {
 
         String accessToken = generateToken(accessTokenExpireTime, claims);
 
-        return JwtResponse.builder()
+        return SigninResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(accessToken)
                 .build();

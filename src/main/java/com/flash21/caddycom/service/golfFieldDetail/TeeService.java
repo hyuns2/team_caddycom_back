@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class TeeService {
 
         //2. request 이용해서 새로운 티 정보 생성
         List<TeeUpdateRequest> newTeeInfos = request.getTeeInfos();
-        List<Hole> holes = holeRepository.findAllByCourseId(courseId).orElseThrow(() -> new RuntimeException("hole not found"));
+        List<Hole> holes = holeRepository.findAllByCourseId(courseId).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
         List<Tee> newTees = new ArrayList<>();
 
         for(Hole hole : holes) {
@@ -44,7 +45,7 @@ public class TeeService {
 
     @Transactional
     public void createAndUpdateTees(Long holeId, List<TeeData> requestTees) {
-        Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new IllegalArgumentException("hole not found"));
+        Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
         List<Tee> savedTees = hole.getTees();
         List<Tee> newTees = new ArrayList<>();

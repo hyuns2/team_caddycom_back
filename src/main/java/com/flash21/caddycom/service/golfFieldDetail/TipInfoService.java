@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class TipInfoService {
 
     @Transactional
     public void createAndUpdateTipInfos(Long holeId, List<TipInfoData> tipInfoDatas) {
-        Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new IllegalArgumentException("hole not found"));
+        Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
         List<TipInfo> savedTipInfos = hole.getTipInfos();
         List<TipInfo> newTipInfos = new ArrayList<>();

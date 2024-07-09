@@ -35,13 +35,7 @@ public class Hole {
         this.num = num;
         this.course = course;
         this.par = 4;
-        this.tees.addAll(List.of(
-                new Tee("블랙", 320, this),
-                new Tee("블루", 290, this),
-                new Tee("화이트", 270, this),
-                new Tee("레드", 250, this),
-                new Tee("그린", 230, this)
-                ));
+        this.handicap = 0;
     }
 
     public void updateHandicap(int handicap) {

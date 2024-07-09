@@ -2,9 +2,11 @@ package com.flash21.caddycom.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class TipInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

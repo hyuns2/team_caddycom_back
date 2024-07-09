@@ -1,12 +1,14 @@
 package com.flash21.caddycom.entity.golfFieldDetail;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class TipInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,12 +21,6 @@ public class TipInfo {
     @ManyToOne
     @JoinColumn(name="HoleId")
     private Hole hole;
-
-    public TipInfo(String title, String content, Hole hole) {
-        this.title = title;
-        this.content = content;
-        this.hole = hole;
-    }
 
     public void update(String title, String content) {
         this.title = title;

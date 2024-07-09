@@ -26,7 +26,7 @@ public class TipInfoService {
         List<TipInfo> newTipInfos = new ArrayList<>();
         for(TipInfoData data : tipInfoDatas) {
             if(data.getId() == null) {
-                newTipInfos.add(new TipInfo(data.getTitle(), data.getContent(), hole));
+                newTipInfos.add(new TipInfo(null, data.getTitle(), data.getContent(), hole));
                 break;
             }
 

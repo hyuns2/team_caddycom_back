@@ -1,11 +1,13 @@
 package com.flash21.caddycom.entity.golfFieldDetail;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class Tee {
     @Id
@@ -20,13 +22,7 @@ public class Tee {
     @JoinColumn(name="HoleId")
     private Hole hole;
 
-    public Tee(String name, int distance, Hole hole) {
-        this.name = name;
-        this.distance = distance;
-        this.hole = hole;
-    }
-
-    public void teeUpdate(String name, int distance) {
+    public void update(String name, int distance) {
         this.name = name;
         this.distance = distance;
     }

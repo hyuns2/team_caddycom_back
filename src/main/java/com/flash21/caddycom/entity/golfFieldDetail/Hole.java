@@ -17,9 +17,9 @@ public class Hole {
 
     private int num;
 
-    private int par;
+    private int par = 4;
 
-    private int handicap;
+    private int handicap = 0;
 
     @OneToMany(mappedBy = "hole", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Tee> tees = new ArrayList<>();
@@ -34,8 +34,6 @@ public class Hole {
     public Hole(int num, Course course) {
         this.num = num;
         this.course = course;
-        this.par = 4;
-        this.handicap = 0;
     }
 
     public void updateHandicap(int handicap) {

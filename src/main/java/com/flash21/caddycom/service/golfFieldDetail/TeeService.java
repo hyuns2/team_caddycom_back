@@ -34,7 +34,7 @@ public class TeeService {
 
         for(Hole hole : holes) {
             for(TeeUpdateRequest teeInfo : newTeeInfos) {
-                newTees.add(new Tee(teeInfo.getTeeName(), teeInfo.getDistance(), hole));
+                newTees.add(new Tee(null, teeInfo.getTeeName(), teeInfo.getDistance(), hole));
             }
         }
 
@@ -50,13 +50,13 @@ public class TeeService {
         List<Tee> newTees = new ArrayList<>();
         for(TeeData teeData : requestTees) {
             if(teeData.getId() == null) {
-                newTees.add(new Tee(teeData.getName(), teeData.getDistance(), hole));
+                newTees.add(new Tee(null, teeData.getName(), teeData.getDistance(), hole));
                 break;
             }
 
             for(Tee savedTee : savedTees) {
                 if(teeData.getId().equals(savedTee.getId())) {
-                    savedTee.teeUpdate(teeData.getName(), teeData.getDistance());
+                    savedTee.update(teeData.getName(), teeData.getDistance());
                     break;
                 }
             }

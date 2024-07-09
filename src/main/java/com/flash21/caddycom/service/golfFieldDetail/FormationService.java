@@ -25,9 +25,7 @@ public class FormationService {
     private final TeeJdbcRepository teeJdbcRepository;
 
     public void createFormation(FormationAdd request) {
-        Formation formation = Formation.builder()
-                .name(request.getName())
-                .build();
+        Formation formation = new Formation(null, request.getName(), null);
         formationRepository.save(formation);
 
         List<Course> courses = new ArrayList<>();
@@ -56,11 +54,11 @@ public class FormationService {
 
         for(Hole savedHole : savedHoles) {
             tees.addAll(List.of(
-                    new Tee("BLACK", 320, savedHole),
-                    new Tee("BLUE", 290, savedHole),
-                    new Tee("WHITE", 270, savedHole),
-                    new Tee("RED", 250, savedHole),
-                    new Tee("GREEN", 230, savedHole)
+                    new Tee(null, "BLACK", 320, savedHole),
+                    new Tee(null, "BLUE", 290, savedHole),
+                    new Tee(null, "WHITE", 270, savedHole),
+                    new Tee(null, "RED", 250, savedHole),
+                    new Tee(null, "GREEN", 230, savedHole)
             ));
         }
         teeJdbcRepository.saveAll(tees);

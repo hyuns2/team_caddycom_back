@@ -23,8 +23,4 @@ public class Formation {
     @OneToMany(mappedBy = "formation", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Course> courses = new ArrayList<>();
 
-    @Builder
-    public Formation(String name) {
-        this.name = name;
-    }
 }

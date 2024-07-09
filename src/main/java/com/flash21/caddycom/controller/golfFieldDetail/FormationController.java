@@ -19,8 +19,8 @@ public class FormationController {
 
     @PostMapping("/api/formations")
     @Operation(summary = "골프장 구성 정보 생성 API")
-    public ResponseEntity<Void> addFormation(@RequestBody FormationAdd request) {
-        formationService.addFormation(request);
+    public ResponseEntity<Void> createFormation(@RequestBody FormationAdd request) {
+        formationService.createFormation(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

@@ -23,7 +23,7 @@ public class TeeService {
     private final HoleRepository holeRepository;
 
     @Transactional
-    public void setAllTee(Long courseId, AllTeeSetRequest request) {
+    public void deleteAndCreateAllTee(Long courseId, AllTeeSetRequest request) {
         //1. 기존에 존재하는 모든 티 정보 삭제
         teeRepository.deleteAllByCourseId(courseId);
 
@@ -43,7 +43,7 @@ public class TeeService {
     }
 
     @Transactional
-    public void saveTees(Long holeId, List<TeeData> requestTees) {
+    public void createAndUpdateTees(Long holeId, List<TeeData> requestTees) {
         Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new IllegalArgumentException("hole not found"));
 
         List<Tee> savedTees = hole.getTees();

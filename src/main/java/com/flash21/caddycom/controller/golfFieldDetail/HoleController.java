@@ -32,7 +32,7 @@ public class HoleController {
 
     @PostMapping("/api/hole/detail")
     @Operation(summary = "홀의 상세 정보 설정 API")
-    public void processDetailInfo(@RequestBody SaveHoleDetail request) {
-        holeService.processDetailInfo(request);
+    public void createDetailInfo(@RequestBody SaveHoleDetail request) {
+        holeService.createDetailInfo(request);
     }
 }

@@ -19,7 +19,7 @@ public class TipInfoService {
     private final HoleRepository holeRepository;
 
     @Transactional
-    public void saveTipInfos(Long holeId, List<TipInfoData> tipInfoDatas) {
+    public void createAndUpdateTipInfos(Long holeId, List<TipInfoData> tipInfoDatas) {
         Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new IllegalArgumentException("hole not found"));
 
         List<TipInfo> savedTipInfos = hole.getTipInfos();

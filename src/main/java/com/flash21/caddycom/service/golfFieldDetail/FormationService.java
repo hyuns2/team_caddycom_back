@@ -24,7 +24,7 @@ public class FormationService {
     private final TeeRepository teeRepository;
     private final TeeJdbcRepository teeJdbcRepository;
 
-    public void addFormation(FormationAdd request) {
+    public void createFormation(FormationAdd request) {
         Formation formation = Formation.builder()
                 .name(request.getName())
                 .build();

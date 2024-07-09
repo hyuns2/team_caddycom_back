@@ -34,7 +34,7 @@ public class HoleService {
     }
 
     @Transactional
-    public void processDetailInfo(SaveHoleDetail request) {
+    public void createDetailInfo(SaveHoleDetail request) {
         Hole savedHole = holeRepository.findById(request.getHoleId()).orElseThrow(() -> new IllegalArgumentException("hole not found"));
 
         if(request.getPar() != savedHole.getPar())
@@ -42,11 +42,11 @@ public class HoleService {
         if(request.getHandicap() != savedHole.getHandicap())
             savedHole.updateHandicap(request.getHandicap());
 
-        teeService.saveTees(request.getHoleId(), request.getTeeData());
+        teeService.createAndUpdateTees(request.getHoleId(), request.getTeeData());
         if(!request.getDeleteTeeIds().isEmpty())
             teeService.deleteTees(request.getDeleteTeeIds());
 
-        tipInfoService.saveTipInfos(request.getHoleId(), request.getTipInfoData());
+        tipInfoService.createAndUpdateTipInfos(request.getHoleId(), request.getTipInfoData());
         if(!request.getDeleteTipInfoIds().isEmpty())
             tipInfoService.deleteTipInfos(request.getDeleteTipInfoIds());
     }

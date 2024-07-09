@@ -1,9 +1,8 @@
-package com.flash21.caddycom.controller.management;
+package com.flash21.caddycom.controller.admin;
 
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
-import com.flash21.caddycom.repository.GolfFieldRepository;
 import com.flash21.caddycom.service.golfField.GolfFieldService;
-import com.flash21.caddycom.service.management.ManagementService;
+import com.flash21.caddycom.service.admin.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +16,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Management", description = "전체 시스템 관리 API")
 @RequestMapping("/api/admin")
-public class ManagementController {
-    private final ManagementService managementService;
+public class AdminController {
+    private final AdminService adminService;
     private final GolfFieldService golfFieldService;
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/approve")
     @Operation(summary = "골프장 등록 승인 API", description="시스템 총 관리자만 접근 가능하다.")
     public ResponseEntity<Void> approve(@RequestParam Long golfFieldId) {
-        managementService.approveRegistration(golfFieldId);
+        adminService.approveRegistration(golfFieldId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -33,7 +32,7 @@ public class ManagementController {
     @PostMapping("/reject")
     @Operation(summary = "골프장 등록 거절 API", description="시스템 총 관리자만 접근 가능하다.")
     public ResponseEntity<Void> reject(@RequestParam Long golfFieldId) {
-        managementService.rejectRegistration(golfFieldId);
+        adminService.rejectRegistration(golfFieldId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

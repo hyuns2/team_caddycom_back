@@ -1,7 +1,11 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
 import com.flash21.caddycom.dto.CourseInfoResponseDto;
+<<<<<<< HEAD:src/main/java/com/flash21/caddycom/controller/golfFieldDetail/CourseController.java
 import com.flash21.caddycom.service.golfFieldDetail.CourseService;
+=======
+import com.flash21.caddycom.service.CourseService;
+>>>>>>> develop:src/main/java/com/flash21/caddycom/controller/CourseController.java
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "2. Course", description = "코스 API")
+@Tag(name = "2-2. Course", description = "코스 API")
 @RequestMapping("/api/course")
 public class CourseController {
     final CourseService courseService;

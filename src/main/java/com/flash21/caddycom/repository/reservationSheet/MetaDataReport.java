@@ -1,4 +1,4 @@
-package com.flash21.caddycom.repository;
+package com.flash21.caddycom.repository.reservationSheet;
 
 import java.time.LocalDate;
 

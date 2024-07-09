@@ -1,4 +1,4 @@
-package com.flash21.caddycom.entity;
+package com.flash21.caddycom.entity.reservationSheet;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,4 +33,15 @@ public class ReservationDate {
 
     @Column(nullable = false)
     private Integer blockedCnt;
+
+    public void setTotalCnt(int totalCnt) {
+        this.totalCnt = totalCnt;
+    }
+
+    public void setStatus() {
+        this.status = true;
+    }
+    public void setBlockedCnt(int blockedCnt) {
+        this.blockedCnt = blockedCnt;
+    }
 }

@@ -1,37 +1,40 @@
-package com.flash21.caddycom.entity;
+package com.flash21.caddycom.entity.reservationSheet;
 
-import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReservationSheet {
+public class Assignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private Course course;
+    private ReservationDate reservationDate;
 
     @Column(nullable = false)
-    private LocalDateTime startAt;
+    private LocalTime startTime;
 
     @Column(nullable = false)
-    private LocalDateTime endAt;
+    private AssignmentStatus status;
 
-    @Column(nullable = false)
-    private Integer teeOff;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn
+//    Caddy caddy;
 
-    @Column(nullable = false)
-    private Integer part;
+    @Column
+    private String caddyName;
+
+    @Column
+    private String reason;
 }

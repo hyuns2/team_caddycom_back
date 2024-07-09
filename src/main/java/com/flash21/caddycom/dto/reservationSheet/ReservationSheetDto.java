@@ -1,7 +1,12 @@
-package com.flash21.caddycom.dto;
+package com.flash21.caddycom.dto.reservationSheet;
 
+<<<<<<< HEAD:src/main/java/com/flash21/caddycom/dto/ReservationSheetDto.java
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.ReservationSheet;
+=======
+import com.flash21.caddycom.entity.Course;
+import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
+>>>>>>> develop:src/main/java/com/flash21/caddycom/dto/reservationSheet/ReservationSheetDto.java
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -42,7 +47,7 @@ public class ReservationSheetDto {
 
         @Schema(description = "티오프 리스트")
         @NotEmpty
-        private List<Integer> teeOffList;
+        private List<String> teeOffList;
 
         public static List<ReservationSheet> toEntities(CreateRequestDto dto, List<Course> courseList) {
             List<ReservationSheet> sheets = new ArrayList<>();
@@ -58,9 +63,10 @@ public class ReservationSheetDto {
                             startAt(startDateTime).
                             endAt(endDateTime).
                             teeOff(dto.teeOffList.get(i)).
-                            part(part++).build();
+                            part(part).build();
                     sheets.add(sheet);
                 }
+                part++;
             }
             return sheets;
         }

@@ -1,6 +1,6 @@
 package com.flash21.caddycom.repository;
 
-import com.flash21.caddycom.entity.Tee;
+import com.flash21.caddycom.entity.golfFieldDetail.Tee;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

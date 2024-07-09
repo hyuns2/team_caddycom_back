@@ -1,4 +1,4 @@
-package com.flash21.caddycom.entity;
+package com.flash21.caddycom.entity.golfFieldDetail;
 
 import jakarta.persistence.*;
 import lombok.Getter;

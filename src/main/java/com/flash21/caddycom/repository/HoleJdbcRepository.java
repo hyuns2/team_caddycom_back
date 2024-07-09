@@ -1,6 +1,6 @@
 package com.flash21.caddycom.repository;
 
-import com.flash21.caddycom.entity.Hole;
+import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;

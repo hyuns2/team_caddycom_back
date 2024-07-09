@@ -1,13 +1,12 @@
-package com.flash21.caddycom.controller;
+package com.flash21.caddycom.controller.golfFieldDetail;
 
 import com.flash21.caddycom.dto.hole.HandicapUpdate;
 import com.flash21.caddycom.dto.hole.ParUpdate;
 import com.flash21.caddycom.dto.hole.SaveHoleDetail;
-import com.flash21.caddycom.service.HoleService;
+import com.flash21.caddycom.service.golfFieldDetail.HoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

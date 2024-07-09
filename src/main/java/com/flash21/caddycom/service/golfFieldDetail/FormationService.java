@@ -1,18 +1,17 @@
-package com.flash21.caddycom.service;
+package com.flash21.caddycom.service.golfFieldDetail;
 
 import com.flash21.caddycom.dto.formation.CourseInfo;
 import com.flash21.caddycom.dto.formation.FormationAdd;
-import com.flash21.caddycom.entity.Course;
-import com.flash21.caddycom.entity.Formation;
-import com.flash21.caddycom.entity.Hole;
-import com.flash21.caddycom.entity.Tee;
+import com.flash21.caddycom.entity.golfFieldDetail.Course;
+import com.flash21.caddycom.entity.golfFieldDetail.Formation;
+import com.flash21.caddycom.entity.golfFieldDetail.Hole;
+import com.flash21.caddycom.entity.golfFieldDetail.Tee;
 import com.flash21.caddycom.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor

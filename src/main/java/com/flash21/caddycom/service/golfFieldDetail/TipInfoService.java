@@ -1,8 +1,8 @@
-package com.flash21.caddycom.service;
+package com.flash21.caddycom.service.golfFieldDetail;
 
 import com.flash21.caddycom.dto.tipInfo.TipInfoData;
-import com.flash21.caddycom.entity.Hole;
-import com.flash21.caddycom.entity.TipInfo;
+import com.flash21.caddycom.entity.golfFieldDetail.Hole;
+import com.flash21.caddycom.entity.golfFieldDetail.TipInfo;
 import com.flash21.caddycom.repository.HoleRepository;
 import com.flash21.caddycom.repository.TipInfoRepository;
 import jakarta.transaction.Transactional;

@@ -1,7 +1,7 @@
 package com.flash21.caddycom.service;
 
 import com.flash21.caddycom.dto.ReservationSheetDto;
-import com.flash21.caddycom.entity.Course;
+import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.ReservationDate;
 import com.flash21.caddycom.entity.ReservationSheet;
 import com.flash21.caddycom.global.exception.cException.CCourseNotFoundException;

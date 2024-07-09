@@ -1,7 +1,6 @@
-package com.flash21.caddycom.entity;
+package com.flash21.caddycom.entity.golfFieldDetail;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,6 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 public class Course {
     @Id
@@ -34,13 +32,5 @@ public class Course {
         this.name = name;
         this.totalHoles = totalHoles;
         this.formation = formation;
-        setDefaultHoleInfos();
-        formation.getCourses().add(this);
-    }
-
-    private void setDefaultHoleInfos() {
-        for(int num = 1; num <= this.totalHoles; num++) {
-            this.holes.add(new Hole(num, this));
-        }
     }
 }

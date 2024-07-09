@@ -1,10 +1,12 @@
-package com.flash21.caddycom.entity;
+package com.flash21.caddycom.entity.golfFieldDetail;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class TipInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

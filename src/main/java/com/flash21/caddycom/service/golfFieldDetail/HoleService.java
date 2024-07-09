@@ -1,9 +1,9 @@
-package com.flash21.caddycom.service;
+package com.flash21.caddycom.service.golfFieldDetail;
 
 import com.flash21.caddycom.dto.hole.HandicapUpdate;
 import com.flash21.caddycom.dto.hole.ParUpdate;
 import com.flash21.caddycom.dto.hole.SaveHoleDetail;
-import com.flash21.caddycom.entity.Hole;
+import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.repository.HoleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

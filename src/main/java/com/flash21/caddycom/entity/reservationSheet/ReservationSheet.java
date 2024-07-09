@@ -1,6 +1,6 @@
 package com.flash21.caddycom.entity.reservationSheet;
 
-import com.flash21.caddycom.entity.Course;
+import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

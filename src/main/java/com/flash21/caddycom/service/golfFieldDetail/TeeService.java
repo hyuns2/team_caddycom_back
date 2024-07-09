@@ -1,10 +1,10 @@
-package com.flash21.caddycom.service;
+package com.flash21.caddycom.service.golfFieldDetail;
 
 import com.flash21.caddycom.dto.tee.AllTeeSetRequest;
 import com.flash21.caddycom.dto.tee.TeeData;
 import com.flash21.caddycom.dto.tee.TeeUpdateRequest;
-import com.flash21.caddycom.entity.Hole;
-import com.flash21.caddycom.entity.Tee;
+import com.flash21.caddycom.entity.golfFieldDetail.Hole;
+import com.flash21.caddycom.entity.golfFieldDetail.Tee;
 import com.flash21.caddycom.repository.HoleRepository;
 import com.flash21.caddycom.repository.TeeJdbcRepository;
 import com.flash21.caddycom.repository.TeeRepository;

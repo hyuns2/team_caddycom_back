@@ -1,6 +1,6 @@
 package com.flash21.caddycom.repository;
 
-import com.flash21.caddycom.entity.Hole;
+import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

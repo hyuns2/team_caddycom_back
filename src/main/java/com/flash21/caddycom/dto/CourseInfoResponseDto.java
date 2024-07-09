@@ -1,6 +1,5 @@
 package com.flash21.caddycom.dto;
 
-import com.flash21.caddycom.entity.Formation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

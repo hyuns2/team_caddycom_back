@@ -1,10 +1,6 @@
 package com.flash21.caddycom.entity.reservationSheet;
 
-<<<<<<< HEAD:src/main/java/com/flash21/caddycom/entity/ReservationSheet.java
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
-=======
-import com.flash21.caddycom.entity.Course;
->>>>>>> develop:src/main/java/com/flash21/caddycom/entity/reservationSheet/ReservationSheet.java
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

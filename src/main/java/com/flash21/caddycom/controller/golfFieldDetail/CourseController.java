@@ -1,11 +1,7 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
 import com.flash21.caddycom.dto.CourseInfoResponseDto;
-<<<<<<< HEAD:src/main/java/com/flash21/caddycom/controller/golfFieldDetail/CourseController.java
 import com.flash21.caddycom.service.golfFieldDetail.CourseService;
-=======
-import com.flash21.caddycom.service.CourseService;
->>>>>>> develop:src/main/java/com/flash21/caddycom/controller/CourseController.java
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

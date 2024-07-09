@@ -3,8 +3,8 @@ package com.flash21.caddycom.service.golfField;
 import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
+import com.flash21.caddycom.global.common.FileUploader;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
-import com.flash21.caddycom.global.common.S3FileUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class GolfFieldService {
-    private final S3FileUploader s3FileUploader;
+    private final FileUploader fileUploader;
     private final GolfFieldRepository golfFieldRepository;
     private final FacilityService facilityService;
     private final PasswordEncoder passwordEncoder;
@@ -41,7 +41,7 @@ public class GolfFieldService {
      */
     private List<String> uploadFiles (List<MultipartFile> files){
         return files.stream()
-                .map(s3FileUploader::upload)
+                .map(fileUploader::upload)
                 .collect(Collectors.toList());
     }
 

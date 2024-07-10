@@ -22,7 +22,7 @@ public class AdminController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/approve")
-    @Operation(summary = "골프장 등록 승인 API", description="시스템 총 관리자만 접근 가능하다.")
+    @Operation(summary = "골프장 등록 승인 API", description="시스템 총 관리자만 접근 가능하다. 골프장 등록을 승인한다.")
     public ResponseEntity<Void> approve(@RequestParam Long golfFieldId) {
         adminService.approveRegistration(golfFieldId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -30,14 +30,14 @@ public class AdminController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/reject")
-    @Operation(summary = "골프장 등록 거절 API", description="시스템 총 관리자만 접근 가능하다.")
+    @Operation(summary = "골프장 등록 거절 API", description="시스템 총 관리자만 접근 가능하다. 골프장 등록을 거절한다.")
     public ResponseEntity<Void> reject(@RequestParam Long golfFieldId) {
         adminService.rejectRegistration(golfFieldId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("golf-field")
-    @Operation(summary = "모든 골프장 조회", description="시스템 총 관리자만 접근 가능하다. / UI에 맞춰 응답 수정 필요")
+    @Operation(summary = "모든 골프장 조회", description="시스템 총 관리자만 접근 가능하다. 모든 골프장을 조회한다.")
     public ResponseEntity<List<GolfFieldResponse.Overview>> getAll(){
         return ResponseEntity.ok().body(golfFieldService.getAll());
     }

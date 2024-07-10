@@ -21,7 +21,7 @@ public class GolfFieldController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
                 produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary="골프장 등록")
+    @Operation(summary="골프장 등록", description = "골프장 관리자 or 전체 시스템 관리자는 골프장을 등록한다.")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> registerGolfField(@Valid @ModelAttribute GolfFieldRequest.Create request){
         golfFieldService.registerGolfField(request);
@@ -31,7 +31,7 @@ public class GolfFieldController {
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping
-    @Operation(summary = "골프장 삭제 API", description="관리자만 접근 가능하다.")
+    @Operation(summary = "골프장 삭제 API", description="전체 시스템 관리자는 골프장을 삭제한다.")
     public ResponseEntity<Void> delete(@RequestParam Long golfFieldId) {
         golfFieldService.deleteGolfField(golfFieldId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -50,7 +50,7 @@ public class GolfFieldController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("additional-info")
-    @Operation(summary = "골프장 추가정보 입력 API", description="관리자만 접근 가능하다.")
+    @Operation(summary = "골프장 추가정보 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 추가정보를 입력한다.")
     public ResponseEntity<Void> addInfo(@RequestParam Long golfFieldId,
                                        @Valid @RequestBody GolfFieldRequest.AdditionalInfo request) {
         golfFieldService.addMoreInfo(golfFieldId, request);
@@ -60,7 +60,7 @@ public class GolfFieldController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("direction-info")
-    @Operation(summary = "골프장 오는 길 안내 입력 API", description="관리자만 접근 가능하다.")
+    @Operation(summary = "골프장 오는 길 안내 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 오는 길 안내를 입력한다.")
     public ResponseEntity<Void> addDirectionInfo(@RequestParam Long golfFieldId,
                                         @Valid @RequestBody GolfFieldRequest.DirectionsInfo request) {
         golfFieldService.addDirectionInfo(golfFieldId, request);
@@ -71,7 +71,7 @@ public class GolfFieldController {
     @PostMapping(value = "facility-info",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "골프장 시설 안내 입력 API", description="관리자만 접근 가능하다.")
+    @Operation(summary = "골프장 시설 안내 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 시설 안내를 입력한다.")
     public ResponseEntity<Void> addDirectionInfo(@RequestParam Long golfFieldId,
                                                  @Valid @ModelAttribute GolfFieldRequest.FacilityInfo request) {
         golfFieldService.addFacilityInfo(golfFieldId, request);

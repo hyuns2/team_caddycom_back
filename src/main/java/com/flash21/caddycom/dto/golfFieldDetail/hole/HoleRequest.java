@@ -1,7 +1,6 @@
 package com.flash21.caddycom.dto.golfFieldDetail.hole;
 
 import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeDto;
-import com.flash21.caddycom.dto.tee.TeeData;
 import com.flash21.caddycom.dto.golfFieldDetail.tipInfo.TipInfoDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

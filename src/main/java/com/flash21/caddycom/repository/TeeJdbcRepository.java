@@ -13,16 +13,17 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
-public class TeeJdbcRepository {
+public class TeeJdbcRepository implements JdbcRepository<Tee> {
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
-    public void saveAll(List<Tee> tees) {
+    public List<Long> saveAllInBatch(List<Tee> tees) {
         String sql = "INSERT INTO TEE (name, distance, hole_id)" + "VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -48,5 +49,11 @@ public class TeeJdbcRepository {
         }, keyHolder);
 
         List<Map<String, Object>> keyList = keyHolder.getKeyList();
+        List<Long> generatedIds = new ArrayList<>();
+        for(Map<String, Object> key : keyList) {
+            generatedIds.add((Long) key.get("id"));
+        }
+
+        return generatedIds;
     }
 }

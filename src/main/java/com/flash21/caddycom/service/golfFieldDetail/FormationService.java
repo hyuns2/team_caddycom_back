@@ -18,11 +18,8 @@ import java.util.List;
 public class FormationService {
     private final FormationRepository formationRepository;
     private final CourseRepository courseRepository;
-    private final CourseJdbcRepository courseJdbcRepository;
     private final HoleRepository holeRepository;
-    private final HoleJdbcRepository holeJdbcRepository;
     private final TeeRepository teeRepository;
-    private final TeeJdbcRepository teeJdbcRepository;
 
     public void createFormation(FormationRequest.create request) {
         Formation formation = new Formation(null, request.getName(), null);
@@ -40,7 +37,7 @@ public class FormationService {
                     .build();
             courses.add(course);
         }
-        List<Long> courseIds = courseJdbcRepository.saveAll(courses);
+        List<Long> courseIds = courseRepository.saveAllInBatch(courses);
         List<Course> savedCourses = courseRepository.findAllById(courseIds);
 
         for (Course savedCourse : savedCourses) {
@@ -49,7 +46,7 @@ public class FormationService {
                 holes.add(hole);
             }
         }
-        List<Long> holeIds = holeJdbcRepository.saveAll(holes);
+        List<Long> holeIds = holeRepository.saveAllInBatch(holes);
         List<Hole> savedHoles = holeRepository.findAllById(holeIds);
 
         for (Hole savedHole : savedHoles) {
@@ -61,6 +58,6 @@ public class FormationService {
                     new Tee(null, "GREEN", 230, savedHole)
             ));
         }
-        teeJdbcRepository.saveAll(tees);
+        teeRepository.saveAllInBatch(tees);
     }
 }

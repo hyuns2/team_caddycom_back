@@ -1,9 +1,6 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
-import com.flash21.caddycom.dto.hole.HandicapUpdate;
-import com.flash21.caddycom.dto.hole.ParUpdate;
-import com.flash21.caddycom.dto.hole.SaveHoleDetail;
 import com.flash21.caddycom.service.golfFieldDetail.HoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

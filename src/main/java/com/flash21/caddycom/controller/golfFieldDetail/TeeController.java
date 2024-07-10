@@ -1,7 +1,6 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
 import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeRequest;
-import com.flash21.caddycom.dto.tee.AllTeeSetRequest;
 import com.flash21.caddycom.service.golfFieldDetail.TeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

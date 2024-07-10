@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface HoleRepository extends JpaRepository<Hole, Long> {
+public interface HoleRepository extends JpaRepository<Hole, Long>, JdbcRepository<Hole> {
     Optional<List<Hole>> findAllByCourseId(Long courseId);
 }

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-public interface TeeRepository extends JpaRepository<Tee, Long> {
+public interface TeeRepository extends JpaRepository<Tee, Long>, JdbcRepository<Tee> {
     @Modifying
     @Transactional
     @Query(value = "delete from Tee t where t.hole.course.id = :courseId ")

@@ -2,9 +2,6 @@ package com.flash21.caddycom.service.golfFieldDetail;
 
 import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeDto;
 import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeRequest;
-import com.flash21.caddycom.dto.tee.AllTeeSetRequest;
-import com.flash21.caddycom.dto.tee.TeeData;
-import com.flash21.caddycom.dto.tee.TeeUpdateRequest;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.entity.golfFieldDetail.Tee;
 import com.flash21.caddycom.repository.HoleRepository;
@@ -22,7 +19,6 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class TeeService {
     private final TeeRepository teeRepository;
-    private final TeeJdbcRepository teeJdbcRepository;
     private final HoleRepository holeRepository;
 
     @Transactional
@@ -42,7 +38,7 @@ public class TeeService {
         }
 
         //3. 새로운 티 정보 저장
-        teeJdbcRepository.saveAll(newTees);
+        teeRepository.saveAllInBatch(newTees);
     }
 
     @Transactional

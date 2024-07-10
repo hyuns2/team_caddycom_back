@@ -19,11 +19,11 @@ import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
-public class HoleJdbcRepository {
+public class HoleJdbcRepository implements JdbcRepository<Hole> {
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
-    public List<Long> saveAll(List<Hole> holes) {
+    public List<Long> saveAllInBatch(List<Hole> holes) {
         String sql = "INSERT INTO HOLE (num, par, handicap, course_id)" + "VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 

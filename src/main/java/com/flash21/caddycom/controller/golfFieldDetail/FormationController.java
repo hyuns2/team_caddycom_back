@@ -1,6 +1,5 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
-import com.flash21.caddycom.dto.formation.FormationAdd;
 import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationRequest;
 import com.flash21.caddycom.service.golfFieldDetail.FormationService;
 import io.swagger.v3.oas.annotations.Operation;

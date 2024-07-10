@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -16,12 +17,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "3-2. Reservation Sheet", description = "예약시트 API")
+@Tag(name = "3-2. Reservation Sheet Assignment", description = "예약시트 배정정보 API")
 @RequestMapping("/api/assignments")
 public class AssignmentController {
     final AssignmentService assignmentService;
 
-    @Operation(summary = "배정정보 조회", description = "배정정보가 존재하지 않으면 생성한 후, 배정정보를 반환합니다.")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @Operation(summary = "배정정보 조회", description = "골프장 관리자가 배정정보를 조회합니다.")
     @GetMapping("/{reservationSheetId}/{targetDate}")
     public ResponseEntity<List<AssignmentDto.AssignmentsResponseDto>> retrieveAssignments(@PathVariable Long reservationSheetId, @PathVariable LocalDate targetDate) {
         List<AssignmentDto.AssignmentsResponseDto> assignments = assignmentService.retrieveAssignments(reservationSheetId, targetDate);

@@ -1,6 +1,7 @@
 package com.flash21.caddycom.controller.golfField;
 
 import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
+import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.service.golfField.GolfFieldService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,7 +50,7 @@ public class GolfFieldController {
 
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping("additional-info")
+    @PostMapping("detail-info")
     @Operation(summary = "골프장 추가정보 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 추가정보를 입력한다.")
     public ResponseEntity<Void> addInfo(@RequestParam Long golfFieldId,
                                         @Valid @RequestBody GolfFieldRequest.AdditionalInfo request) {
@@ -68,13 +69,21 @@ public class GolfFieldController {
     }
 
 
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping(value = "facility-info",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "골프장 시설 안내 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 시설 안내를 입력한다.")
     public ResponseEntity<Void> addFacilityInfo(@RequestParam Long golfFieldId,
                                                 @Valid @ModelAttribute GolfFieldRequest.FacilityInfo request) {
         golfFieldService.addFacilityInfo(golfFieldId, request);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("detail-info")
+    @Operation(summary = "골프장 상세정보 조회 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 상세정보를 조회한다.")
+    public ResponseEntity<GolfFieldResponse.Info> getInfo(@RequestParam Long golfFieldId) {
+        return ResponseEntity.ok().body(golfFieldService.getDetail(golfFieldId));
     }
 }

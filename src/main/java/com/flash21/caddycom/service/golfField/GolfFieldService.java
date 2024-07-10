@@ -4,9 +4,13 @@ import com.amazonaws.util.CollectionUtils;
 import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
+import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import com.flash21.caddycom.global.common.FileUploader;
+import com.flash21.caddycom.repository.CourseRepository;
+import com.flash21.caddycom.repository.FormationRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +36,8 @@ import java.util.stream.Collectors;
 public class GolfFieldService {
     private final FileUploader fileUploader;
     private final GolfFieldRepository golfFieldRepository;
+    private final FormationRepository formationRepository;
+    private final CourseRepository courseRepository;
     private final FacilityService facilityService;
     private final PasswordEncoder passwordEncoder;
 
@@ -163,5 +169,14 @@ public class GolfFieldService {
                         request.getOpeningDate(),
                         request.getCartInfo(),
                         request.getAmenities());
+    }
+
+
+    @Transactional(readOnly = true)
+    public GolfFieldResponse.Info getDetail(Long id){
+        GolfField golfField = golfFieldRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+
+        return GolfFieldResponse.Info.from(golfField);
     }
 }

@@ -1,7 +1,9 @@
 package com.flash21.caddycom.controller.golfField;
 
+import com.flash21.caddycom.dto.golfField.FacilityResponse;
 import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
+import com.flash21.caddycom.service.golfField.FacilityService;
 import com.flash21.caddycom.service.golfField.GolfFieldService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/golf-field")
 public class GolfFieldController {
     private final GolfFieldService golfFieldService;
+    private final FacilityService facilityService;
 
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -61,7 +64,7 @@ public class GolfFieldController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("direction-info")
-    @Operation(summary = "골프장 오는 길 안내 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 오는 길 안내를 입력한다.")
+    @Operation(summary = "골프장 오는 길 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 오는 길 안내를 입력한다.")
     public ResponseEntity<Void> addDirectionInfo(@RequestParam Long golfFieldId,
                                                  @Valid @RequestBody GolfFieldRequest.DirectionsInfo request) {
         golfFieldService.addDirectionInfo(golfFieldId, request);
@@ -72,7 +75,7 @@ public class GolfFieldController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(value = "facility-info",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "골프장 시설 안내 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 시설 안내를 입력한다.")
+    @Operation(summary = "골프장 시설정보 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 시설 안내를 입력한다.")
     public ResponseEntity<Void> addFacilityInfo(@RequestParam Long golfFieldId,
                                                 @Valid @ModelAttribute GolfFieldRequest.FacilityInfo request) {
         golfFieldService.addFacilityInfo(golfFieldId, request);
@@ -85,5 +88,21 @@ public class GolfFieldController {
     @Operation(summary = "골프장 상세정보 조회 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 상세정보를 조회한다.")
     public ResponseEntity<GolfFieldResponse.Info> getInfo(@RequestParam Long golfFieldId) {
         return ResponseEntity.ok().body(golfFieldService.getDetail(golfFieldId));
+    }
+
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("direction-info")
+    @Operation(summary = "골프장 오는 길 조회 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 오시는 길 정보를 조회한다.")
+    public ResponseEntity<GolfFieldResponse.DirectionInfo> getDirectionInfo(@RequestParam Long golfFieldId) {
+        return ResponseEntity.ok().body(golfFieldService.getDirectionInfo(golfFieldId));
+    }
+
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("facility-info")
+    @Operation(summary = "골프장 시설정보 조회 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 시설을 조회한다.")
+    public ResponseEntity<FacilityResponse> getFacilityInfo(@RequestParam Long golfFieldId) {
+        return ResponseEntity.ok().body(facilityService.getFacility(golfFieldId));
     }
 }

@@ -72,5 +72,15 @@ public class GolfFieldResponse {
         private String contact;
         private String publicTransportGuide;
         private String carGuide;
+
+        public static GolfFieldResponse.DirectionInfo from(GolfField golfField){
+            return DirectionInfo.builder()
+                    .address(golfField.getAddress())
+                    .addressDetail(golfField.getAddressDetail())
+                    .contact(golfField.getContact())
+                    .publicTransportGuide(golfField.getPublicTransportGuide())
+                    .carGuide(golfField.getCarGuide())
+                    .build();
+        }
     }
 }

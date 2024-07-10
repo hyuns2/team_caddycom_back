@@ -1,17 +1,20 @@
 package com.flash21.caddycom.service.golfField;
 
+import com.flash21.caddycom.dto.golfField.FacilityResponse;
 import com.flash21.caddycom.entity.golfField.Facility;
 import com.flash21.caddycom.entity.golfField.FacilityImage;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.repository.golfField.FacilityImageJdbcRepository;
 import com.flash21.caddycom.repository.golfField.FacilityImageRepository;
 import com.flash21.caddycom.repository.golfField.FacilityRepository;
+import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * 골프장 시설 정보와 관련된 CRUD
@@ -23,6 +26,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FacilityService {
+    private final GolfFieldRepository golfFieldRepository;
     private final FacilityRepository facilityRepository;
     private final FacilityImageJdbcRepository facilityImageRepository;
 
@@ -47,5 +51,18 @@ public class FacilityService {
                         .map(imageUrl -> new FacilityImage(imageUrl, facility))
                         .toList();
         facilityImageRepository.saveAll(facilityImages);
+    }
+
+
+    @Transactional(readOnly = true)
+    public FacilityResponse getFacility(Long golfFieldId) {
+        GolfField golfField = golfFieldRepository.findById(golfFieldId)
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+
+        List<Facility> facilities = golfField.getFacilities();
+
+
+
+        return FacilityResponse.from(facilities);
     }
 }

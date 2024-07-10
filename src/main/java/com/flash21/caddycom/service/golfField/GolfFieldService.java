@@ -36,8 +36,6 @@ import java.util.stream.Collectors;
 public class GolfFieldService {
     private final FileUploader fileUploader;
     private final GolfFieldRepository golfFieldRepository;
-    private final FormationRepository formationRepository;
-    private final CourseRepository courseRepository;
     private final FacilityService facilityService;
     private final PasswordEncoder passwordEncoder;
 
@@ -178,5 +176,14 @@ public class GolfFieldService {
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
 
         return GolfFieldResponse.Info.from(golfField);
+    }
+
+
+    @Transactional(readOnly = true)
+    public GolfFieldResponse.DirectionInfo getDirectionInfo(Long id){
+        GolfField golfField = golfFieldRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+
+        return GolfFieldResponse.DirectionInfo.from(golfField);
     }
 }

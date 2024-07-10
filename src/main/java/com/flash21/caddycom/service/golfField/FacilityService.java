@@ -17,7 +17,7 @@ import java.util.List;
  * 골프장 시설 정보와 관련된 CRUD
  *
  * @see FacilityRepository : 골프장 시설 정보 조회, 저장을 위한 repository
- * @see FacilityImageJdbcRepository : 골프장 시설 이미지 조회, 저장을 위한 repository
+ * @see FacilityImageJdbcRepository : 골프장 시설 이미지의 배치 insert를 위한 repository
  * @author kwonssshyeon
  */
 @Service
@@ -35,7 +35,7 @@ public class FacilityService {
      * @param content  시설 설명
      */
     @Transactional
-    public void saveFacilityAndImageUrls(GolfField golfField, List<String> imageUrls, String name, String content){
+    public void createFacilityAndFacilityImages(GolfField golfField, List<String> imageUrls, String name, String content){
         Facility facility = Facility.builder()
                 .golfField(golfField)
                 .name(name)
@@ -44,7 +44,7 @@ public class FacilityService {
         facilityRepository.save(facility);
 
         List<FacilityImage> facilityImages = imageUrls.stream()
-                        .map(url -> new FacilityImage(url, facility))
+                        .map(imageUrl -> new FacilityImage(imageUrl, facility))
                         .toList();
         facilityImageRepository.saveAll(facilityImages);
     }

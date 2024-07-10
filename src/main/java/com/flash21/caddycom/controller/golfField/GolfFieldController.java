@@ -23,8 +23,8 @@ public class GolfFieldController {
                 produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary="골프장 등록", description = "골프장 관리자 or 전체 시스템 관리자는 골프장을 등록한다.")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> registerGolfField(@Valid @ModelAttribute GolfFieldRequest.Create request){
-        golfFieldService.registerGolfField(request);
+    public ResponseEntity<Void> create(@Valid @ModelAttribute GolfFieldRequest.Create request){
+        golfFieldService.createGolfField(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -72,7 +72,7 @@ public class GolfFieldController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "골프장 시설 안내 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 시설 안내를 입력한다.")
-    public ResponseEntity<Void> addDirectionInfo(@RequestParam Long golfFieldId,
+    public ResponseEntity<Void> addFacilityInfo(@RequestParam Long golfFieldId,
                                                  @Valid @ModelAttribute GolfFieldRequest.FacilityInfo request) {
         golfFieldService.addFacilityInfo(golfFieldId, request);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -37,7 +37,7 @@ public class GolfFieldService {
      * 골프장을 생성
      * @param request 골프장 생성 요청 DTO
      */
-    public void registerGolfField(GolfFieldRequest.Create request){
+    public void createGolfField(GolfFieldRequest.Create request){
         List<String> fileUrls = uploadFiles(List.of(request.getImage(),
                                                     request.getBusinessLicense(),
                                                     request.getEmploymentLicense()));
@@ -134,7 +134,7 @@ public class GolfFieldService {
 
         List<String> facilityImages = uploadFiles(request.getFacilityImages());
 
-        facilityService.saveFacilityAndImageUrls(golfField, facilityImages,
+        facilityService.createFacilityAndFacilityImages(golfField, facilityImages,
                                                 request.getName(),
                                                 request.getContent());
     }

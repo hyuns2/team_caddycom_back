@@ -13,6 +13,7 @@ import com.flash21.caddycom.repository.reservationSheet.ReservationDateRepositor
 import com.flash21.caddycom.repository.reservationSheet.ReservationSheetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class ReservationSheetService {
      *
      * @throws CCourseNotFoundException Course 객체가 존재하지 않을 경우
      */
+    @Transactional
     public List<Long> createReservationSheet(ReservationSheetDto.CreateRequest dto) {
         validToCreateReservationSheet(dto);
 

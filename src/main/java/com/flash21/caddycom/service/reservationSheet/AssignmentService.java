@@ -94,7 +94,6 @@ public class AssignmentService {
         reservationDate.setIsAssigned();
         reservationDate.setTotalCnt(startTimeList.size());
         reservationDate.setBlockedCnt(startTimeList.size());
-        rdRepository.save(reservationDate);
     }
 
     /**

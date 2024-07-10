@@ -26,6 +26,14 @@ public class ReservationSheetService {
     final ReservationDateRepository rdRepository;
     final CourseRepository courseRepository;
 
+    /**
+     * 예약시트 생성: 예약시트를 생성합니다.
+     *
+     * @param dto 예약시트 생성요청 dto
+     * @return 생성된 예약시트 Id 리스트
+     *
+     * @throws CCourseNotFoundException Course 객체가 존재하지 않을 경우
+     */
     public List<Long> createReservationSheet(ReservationSheetDto.CreateRequest dto) {
         validToCreateReservationSheet(dto);
 
@@ -44,12 +52,26 @@ public class ReservationSheetService {
         return returnSheetIdList;
     }
 
+    /**
+     * 예약시트 생성 내부함수1: 예약시트 생성요청 dto를 검증합니다.
+     *
+     * @param dto 예약시트 생성요청 dto
+     *
+     * @throws CInvalidPartInfoException 부(파트)에 대한 일부 정보가 빠진 경우
+     */
     private void validToCreateReservationSheet(ReservationSheetDto.CreateRequest dto) {
         if (dto.getTeeOffList().size() != dto.getStartTimeList().size() ||
                 dto.getStartTimeList().size() != dto.getEndTimeList().size())
             throw new CInvalidPartInfoException();
     }
 
+    /**
+     * 예약시트 생성 내부함수2: 예약시트를 생성합니다.
+     *
+     * @param sheet ReservationSheet 객체
+     * @param startDate 시작날짜
+     * @param endDate 종료날짜
+     */
     private void createReservationDate(ReservationSheet sheet, LocalDate startDate, LocalDate endDate) {
         List<ReservationDate> reservationDates = new ArrayList<>();
         List<LocalDate> localDates = startDate.datesUntil(endDate.plusDays(1)).toList();
@@ -65,6 +87,14 @@ public class ReservationSheetService {
         rdRepository.saveAll(reservationDates);
     }
 
+    /**
+     * 메타데이터 조회: 캘린더에 표기되는 메타데이터를 반환합니다.
+     *
+     * @param year 대상 연도
+     * @param month 대상 월
+     * @param reservationSheetIdList 조회할 ReservationSheet Id 리스트
+     * @return 메타데이터 반환 dto 리스트
+     */
     public List<ReservationSheetDto.MetaDataResponse> retrieveMetaData(int year, int month, List<Long> reservationSheetIdList) {
         LocalDate targetDate = LocalDate.of(year, month, 1);
         List<ReservationSheetDto.MetaDataResponse> responseDtoList = new ArrayList<>();

@@ -95,7 +95,7 @@ public class ReservationSheetService {
      * @param reservationSheetIdList 조회할 ReservationSheet Id 리스트
      * @return 메타데이터 반환 dto 리스트
      */
-    public List<ReservationSheetDto.MetaDataResponse> retrieveMetaData(int year, int month, List<Long> reservationSheetIdList) {
+    public List<ReservationSheetDto.MetaDataResponse> getMetaData(int year, int month, List<Long> reservationSheetIdList) {
         LocalDate targetDate = LocalDate.of(year, month, 1);
         List<ReservationSheetDto.MetaDataResponse> responseDtoList = new ArrayList<>();
         List<MetaDataReport> reports = rdRepository.countAllMetaDataByDate(targetDate, targetDate.plusMonths(1), reservationSheetIdList);

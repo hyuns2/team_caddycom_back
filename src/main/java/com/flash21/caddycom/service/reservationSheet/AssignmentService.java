@@ -36,17 +36,17 @@ public class AssignmentService {
      * @throws CReservationDateNotFoundException ReservationDate 객체가 존재하지 않을 경우
      * @throws CReservationSheetNotFoundException ReservationSheet 객체가 존재하지 않을 경우
      */
-    public List<AssignmentDto.AssignmentsResponse> retrieveAssignments(Long reservationSheetId, LocalDate targetDate) {
+    public List<AssignmentDto.AssignmentsResponse> getAssignments(Long reservationSheetId, LocalDate targetDate) {
         ReservationDate reservationDate = rdRepository.findByReservationSheetIdAndReservationAt(reservationSheetId, targetDate)
                 .orElseThrow(CReservationDateNotFoundException::new);
 
         if (reservationDate.getIsAssigned()) {
-            return findAndRetrieveAssignments(reservationDate);
+            return findAndGetAssignments(reservationDate);
         }
 
         ReservationSheet reservationSheet = rsRepository.findById(reservationSheetId)
                 .orElseThrow(CReservationSheetNotFoundException::new);
-        return createAndRetrieveAssignments(reservationSheet, reservationDate);
+        return createAndGetAssignments(reservationSheet, reservationDate);
     }
 
     /**
@@ -55,7 +55,7 @@ public class AssignmentService {
      * @param reservationDate 예약시트 Id와 조회한 날짜에 해당하는 reservationDate 객체
      * @return 배정정보 조회 dto 리스트
      */
-    private List<AssignmentDto.AssignmentsResponse> findAndRetrieveAssignments(ReservationDate reservationDate) {
+    private List<AssignmentDto.AssignmentsResponse> findAndGetAssignments(ReservationDate reservationDate) {
         List<AssignmentDto.AssignmentsResponse> responseDtoList = new ArrayList<>();
         List<Assignment> assignmentList = assignmentRepository.findAllByReservationDateId(reservationDate.getId());
 
@@ -72,7 +72,7 @@ public class AssignmentService {
      * @param reservationDate 대상 reservationDate 객체
      * @return 배정정보 조회 dto 리스트
      */
-    private List<AssignmentDto.AssignmentsResponse> createAndRetrieveAssignments(ReservationSheet reservationSheet, ReservationDate reservationDate) {
+    private List<AssignmentDto.AssignmentsResponse> createAndGetAssignments(ReservationSheet reservationSheet, ReservationDate reservationDate) {
         List<AssignmentDto.AssignmentsResponse> responseDtoList = new ArrayList<>();
         LocalTime startAtLocalTime = reservationSheet.getStartAt().toLocalTime();
         LocalTime endAtLocalTIme = reservationSheet.getEndAt().toLocalTime();

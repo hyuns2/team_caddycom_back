@@ -120,6 +120,38 @@ public class GolfFieldRequest {
     }
 
 
+    @Getter
+    @AllArgsConstructor
+    public static class Update {
+        @NotBlank(message = "name은 필수값입니다.")
+        @Schema(example = "골프장 이름(String)")
+        private String name;
 
+        @NotBlank(message = "address은 필수값입니다.")
+        @Schema(example = "골프장 주소(String)")
+        private String address;
 
+        @NotBlank(message = "addressDetail은 필수값입니다.")
+        @Schema(example = "골프장 상세주소(String)")
+        private String addressDetail;
+
+        @NotBlank(message = "contact은 필수값입니다.")
+        @Schema(example = "골프장 연락처(053-000-0000)")
+        private String contact;
+
+        @Schema(example = "골프장 팩스번호(String)")
+        private String fax;
+
+        @Schema(example = "골프장 면적(String)")
+        private String area;
+
+        @Schema(example = "골프장 개장일(2024-00-00)")
+        private LocalDate openingDate;
+
+        @Schema(example = "골프장 카트 정보(String)")
+        private String cartInfo;
+
+        @Schema(example = "골프장 부대시설(String)")
+        private String amenities;
+    }
 }

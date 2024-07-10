@@ -40,9 +40,9 @@ public class GolfFieldController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping
-    @Operation(summary = "골프장 수정 API (구현 전, 뼈대만 있음)", description="")
+    @Operation(summary = "골프장 수정 API (구현 전, 뼈대만 있음)", description="골프장 관리자 or 전체 시스템 관리자는 골프장 정보를 수정한다.")
     public ResponseEntity<Void> update(@RequestParam Long golfFieldId,
-                                       @Valid @ModelAttribute GolfFieldRequest.AdditionalInfo request) {
+                                       @Valid @ModelAttribute GolfFieldRequest.Update request) {
         golfFieldService.updateGolfField(golfFieldId, request);
         return new ResponseEntity<>(HttpStatus.OK);
     }

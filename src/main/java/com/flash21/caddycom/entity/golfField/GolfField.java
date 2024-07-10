@@ -24,6 +24,8 @@ public class GolfField {
 
     private String address;
 
+    private String addressDetail;
+
     @Column(nullable = false)
     private String registrationNumber;
 
@@ -94,6 +96,26 @@ public class GolfField {
     public void addDirectionInfo(String publicTransportGuide, String carGuide){
         this.carGuide = carGuide;
         this.publicTransportGuide = publicTransportGuide;
+    }
+
+    public void update(String name,
+                       String address,
+                       String addressDetail,
+                       String contact,
+                       String fax,
+                       String area,
+                       LocalDate openingDate,
+                       String cartInfo,
+                       String amenities){
+        this.name = name;
+        this.address = address;
+        this.addressDetail = addressDetail;
+        this.contact = contact;
+        this.fax = fax;
+        this.area = area;
+        this.openingDate = openingDate;
+        this.cartInfo = cartInfo;
+        this.amenities = amenities;
     }
 
 }

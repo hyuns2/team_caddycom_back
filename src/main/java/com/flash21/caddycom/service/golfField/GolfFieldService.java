@@ -150,9 +150,18 @@ public class GolfFieldService {
      * @param request 수정할 골프장 정보 DTO
      */
     @Transactional
-    public void updateGolfField(Long id, GolfFieldRequest.AdditionalInfo request){
+    public void updateGolfField(Long id, GolfFieldRequest.Update request){
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
-        //TODO: 수정 로직 구현
+
+        golfField.update(request.getName(),
+                        request.getAddress(),
+                        request.getAddressDetail(),
+                        request.getContact(),
+                        request.getFax(),
+                        request.getArea(),
+                        request.getOpeningDate(),
+                        request.getCartInfo(),
+                        request.getAmenities());
     }
 }

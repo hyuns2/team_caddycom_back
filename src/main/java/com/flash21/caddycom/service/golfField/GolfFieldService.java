@@ -4,9 +4,13 @@ import com.amazonaws.util.CollectionUtils;
 import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
+import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import com.flash21.caddycom.global.common.FileUploader;
+import com.flash21.caddycom.repository.CourseRepository;
+import com.flash21.caddycom.repository.FormationRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -150,9 +154,47 @@ public class GolfFieldService {
      * @param request 수정할 골프장 정보 DTO
      */
     @Transactional
-    public void updateGolfField(Long id, GolfFieldRequest.AdditionalInfo request){
+    public void updateGolfField(Long id, GolfFieldRequest.Update request){
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
-        //TODO: 수정 로직 구현
+
+        golfField.update(request.getName(),
+                        request.getAddress(),
+                        request.getAddressDetail(),
+                        request.getContact(),
+                        request.getFax(),
+                        request.getArea(),
+                        request.getOpeningDate(),
+                        request.getCartInfo(),
+                        request.getAmenities());
+    }
+
+
+    /**
+     * 골프장 상세 조회
+     * @param id 상세정보를 조회할 골프장 id, null이 들어갈 수 없다.
+     * @return GolfFieldResponse.Info 골프장 상세 조회 응답 DTO
+     * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
+     */
+    @Transactional(readOnly = true)
+    public GolfFieldResponse.Info getDetail(Long id){
+        GolfField golfField = golfFieldRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+
+        return GolfFieldResponse.Info.from(golfField);
+    }
+
+    /**
+     * 골프장 오는길 정보 조회
+     * @param id 오는길 정보를 조회할 골프장 id, null이 들어갈 수 없다.
+     * @return GolfFieldResponse.DirectionInfo 골프장 오는길 정보 조회 응답 DTO
+     * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
+     */
+    @Transactional(readOnly = true)
+    public GolfFieldResponse.DirectionInfo getDirectionInfo(Long id){
+        GolfField golfField = golfFieldRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+
+        return GolfFieldResponse.DirectionInfo.from(golfField);
     }
 }

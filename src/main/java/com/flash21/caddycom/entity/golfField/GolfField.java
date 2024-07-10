@@ -1,6 +1,7 @@
 package com.flash21.caddycom.entity.golfField;
 
 import com.flash21.caddycom.entity.account.Role;
+import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,8 @@ public class GolfField {
     private String contact;
 
     private String address;
+
+    private String addressDetail;
 
     @Column(nullable = false)
     private String registrationNumber;
@@ -61,6 +64,9 @@ public class GolfField {
     @OneToMany(mappedBy = "golfField", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Facility> facilities;
 
+    @OneToMany(mappedBy = "golfField", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Formation> formations;
+
     /**
      * 골프장과 골프장 관리자는 일대일 관계지만, 하나의 테이블에 나타냄
      * 아래 두 필드는 골프장 관리자와 관계됨
@@ -94,6 +100,26 @@ public class GolfField {
     public void addDirectionInfo(String publicTransportGuide, String carGuide){
         this.carGuide = carGuide;
         this.publicTransportGuide = publicTransportGuide;
+    }
+
+    public void update(String name,
+                       String address,
+                       String addressDetail,
+                       String contact,
+                       String fax,
+                       String area,
+                       LocalDate openingDate,
+                       String cartInfo,
+                       String amenities){
+        this.name = name;
+        this.address = address;
+        this.addressDetail = addressDetail;
+        this.contact = contact;
+        this.fax = fax;
+        this.area = area;
+        this.openingDate = openingDate;
+        this.cartInfo = cartInfo;
+        this.amenities = amenities;
     }
 
 }

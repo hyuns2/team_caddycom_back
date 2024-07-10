@@ -2,6 +2,7 @@ package com.flash21.caddycom.global.exception;
 
 import com.flash21.caddycom.global.exception.cException.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -44,6 +45,13 @@ public class ApiExceptionHandler {
                 .getDefaultMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionDto.fail(HttpStatus.BAD_REQUEST, message));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ExceptionDto> invalidDataAccessApiUsageException(InvalidDataAccessApiUsageException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionDto.fail(HttpStatus.BAD_REQUEST, "요청 데이터가 잘못되었습니다. 누락되거나, 올바른 타입인지 확인하세요."));
     }
 
     @ExceptionHandler(CInvalidPartInfoException.class)

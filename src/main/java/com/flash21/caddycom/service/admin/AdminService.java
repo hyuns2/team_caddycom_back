@@ -9,10 +9,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
+/**
+ * 전체 시스템 관리자가 골프장의 등록 요청을 승인, 거절
+ *
+ * @see GolfFieldRepository : 골프장 조회, 상태 변경을 위한 repository
+ * @author kwonssshyeon
+ */
 @Service
 @RequiredArgsConstructor
 public class AdminService {
     private final GolfFieldRepository golfFieldRepository;
+
+    /**
+     * 전체 시스템 관리자가 골프장 등록을 승인
+     * @param id 골프장 id, null이 들어갈 수 없다.
+     */
     @Transactional
     public void approveRegistration(Long id){
         GolfField golfField = golfFieldRepository.findById(id)
@@ -24,6 +35,11 @@ public class AdminService {
         golfField.approve();
     }
 
+
+    /**
+     * 전체 시스템 관리자가 골프장 등록을 거절
+     * @param id 골프장 id, null이 들어갈 수 없다.
+     */
     @Transactional
     public void rejectRegistration(Long id){
         GolfField golfField = golfFieldRepository.findById(id)

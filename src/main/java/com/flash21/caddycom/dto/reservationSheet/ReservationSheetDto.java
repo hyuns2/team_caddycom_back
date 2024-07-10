@@ -19,7 +19,7 @@ public class ReservationSheetDto {
 
     @Data
     @AllArgsConstructor
-    public static class CreateRequestDto {
+    public static class CreateRequest {
         @Schema(description = "코스 리스트")
         @NotNull
         private List<Long> courseList;
@@ -44,7 +44,7 @@ public class ReservationSheetDto {
         @NotEmpty
         private List<String> teeOffList;
 
-        public static List<ReservationSheet> toEntities(CreateRequestDto dto, List<Course> courseList) {
+        public static List<ReservationSheet> toEntities(CreateRequest dto, List<Course> courseList) {
             List<ReservationSheet> sheets = new ArrayList<>();
             int part = 1;
 
@@ -70,7 +70,7 @@ public class ReservationSheetDto {
     @Data
     @AllArgsConstructor
     @Builder
-    public static class MetaDataResponseDto {
+    public static class MetaDataResponse {
         @Schema(description = "결과 날짜 (yyyy-mm-dd)")
         private LocalDate targetDate;
 

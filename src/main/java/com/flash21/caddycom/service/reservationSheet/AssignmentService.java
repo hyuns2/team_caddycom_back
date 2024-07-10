@@ -26,24 +26,37 @@ public class AssignmentService {
     final ReservationDateRepository rdRepository;
     final AssignmentRepository assignmentRepository;
 
-    public List<AssignmentDto.AssignmentsResponseDto> retrieveAssignments(Long reservationSheetId, LocalDate targetDate) {
-        Optional<ReservationDate> result = rdRepository.findByReservationSheetIdAndReservationAt(reservationSheetId, targetDate);
-        if (result.isEmpty())
-            throw new CReservationDateNotFoundException();
+    /**
+     * 배정정보 조회: 배정정보가 존재하는 경우에는 반환하고, 존재하지 않는 경우에는 생성하여 반환합니다.
+     *
+     * @param reservationSheetId 대상 예약시트 Id
+     * @param targetDate 대상 날짜
+     * @return 배정정보 조회 dto 리스트
+     *
+     * @throws CReservationDateNotFoundException ReservationDate 객체가 존재하지 않을 경우
+     * @throws CReservationSheetNotFoundException ReservationSheet 객체가 존재하지 않을 경우
+     */
+    public List<AssignmentDto.AssignmentsResponse> getAssignments(Long reservationSheetId, LocalDate targetDate) {
+        ReservationDate reservationDate = rdRepository.findByReservationSheetIdAndReservationAt(reservationSheetId, targetDate)
+                .orElseThrow(CReservationDateNotFoundException::new);
 
-        ReservationDate reservationDate = result.get();
-        if (reservationDate.getStatus()) {
-            return findAndRetrieveAssignments(reservationDate);
+        if (reservationDate.getIsAssigned()) {
+            return findAndGetAssignments(reservationDate);
         }
 
-        Optional<ReservationSheet> reservationSheet = rsRepository.findById(reservationSheetId);
-        if (reservationSheet.isEmpty())
-            throw new CReservationSheetNotFoundException();
-        return createAndRetrieveAssignments(reservationSheet.get(), reservationDate);
+        ReservationSheet reservationSheet = rsRepository.findById(reservationSheetId)
+                .orElseThrow(CReservationSheetNotFoundException::new);
+        return createAndGetAssignments(reservationSheet, reservationDate);
     }
 
-    private List<AssignmentDto.AssignmentsResponseDto> findAndRetrieveAssignments(ReservationDate reservationDate) {
-        List<AssignmentDto.AssignmentsResponseDto> responseDtoList = new ArrayList<>();
+    /**
+     * 배정정보 조회 내부함수1: 배정정보를 조회하여 반환합니다.
+     *
+     * @param reservationDate 예약시트 Id와 조회한 날짜에 해당하는 reservationDate 객체
+     * @return 배정정보 조회 dto 리스트
+     */
+    private List<AssignmentDto.AssignmentsResponse> findAndGetAssignments(ReservationDate reservationDate) {
+        List<AssignmentDto.AssignmentsResponse> responseDtoList = new ArrayList<>();
         List<Assignment> assignmentList = assignmentRepository.findAllByReservationDateId(reservationDate.getId());
 
         for (Assignment assignment : assignmentList)
@@ -52,8 +65,15 @@ public class AssignmentService {
         return responseDtoList;
     }
 
-    private List<AssignmentDto.AssignmentsResponseDto> createAndRetrieveAssignments(ReservationSheet reservationSheet, ReservationDate reservationDate) {
-        List<AssignmentDto.AssignmentsResponseDto> responseDtoList = new ArrayList<>();
+    /**
+     * 배정정보 조회 내부함수2: 배정정보를 생성하여 반환합니다.
+     *
+     * @param reservationSheet 대상 reservationSheet 객체
+     * @param reservationDate 대상 reservationDate 객체
+     * @return 배정정보 조회 dto 리스트
+     */
+    private List<AssignmentDto.AssignmentsResponse> createAndGetAssignments(ReservationSheet reservationSheet, ReservationDate reservationDate) {
+        List<AssignmentDto.AssignmentsResponse> responseDtoList = new ArrayList<>();
         LocalTime startAtLocalTime = reservationSheet.getStartAt().toLocalTime();
         LocalTime endAtLocalTIme = reservationSheet.getEndAt().toLocalTime();
 
@@ -77,16 +97,21 @@ public class AssignmentService {
                 currentTeeOffIndex = 0;
         }
 
-        reservationDate.setStatus();
+        reservationDate.setIsAssigned();
         reservationDate.setTotalCnt(responseDtoList.size());
         rdRepository.save(reservationDate);
         return responseDtoList;
     }
 
-    private AssignmentDto.AssignmentsResponseDto toDto(Assignment assignment) {
-        return AssignmentDto.AssignmentsResponseDto.builder().
+    /**
+     * Assignment 객체를 배정정보 조회 dto로 변환합니다.
+     *
+     * @param assignment Assignment 객체
+     * @return 배정정보 조회 dto
+     */
+    private AssignmentDto.AssignmentsResponse toDto(Assignment assignment) {
+        return AssignmentDto.AssignmentsResponse.builder().
                 id(assignment.getId()).
-                reservationDate(assignment.getReservationDate().getReservationAt()).
                 startTime(assignment.getStartTime()).
                 status(assignment.getStatus()).
                 // caddyId(assignment.getCaddyId()).

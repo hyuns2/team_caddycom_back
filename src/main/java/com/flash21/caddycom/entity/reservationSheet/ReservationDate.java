@@ -26,7 +26,7 @@ public class ReservationDate {
     private LocalDate reservationAt;
 
     @Column(nullable = false)
-    private Boolean status;
+    private Boolean isAssigned;
 
     @Column(nullable = false)
     private Integer totalCnt;
@@ -38,8 +38,8 @@ public class ReservationDate {
         this.totalCnt = totalCnt;
     }
 
-    public void setStatus() {
-        this.status = true;
+    public void setIsAssigned() {
+        this.isAssigned = true;
     }
     public void setBlockedCnt(int blockedCnt) {
         this.blockedCnt = blockedCnt;

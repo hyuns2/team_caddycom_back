@@ -174,7 +174,7 @@ insert into `caddycom`.`reservation_sheet` (id, course_id, start_at, end_at, tee
                                                                                                 (1, 1, "2024-08-08 13:00:00.000000", "2024-08-15 15:00:00.000000", "7~8", 1),
                                                                                                 (2, 1, "2024-08-08 16:00:00.000000", "2024-08-15 18:00:00.000000", "9", 2);
 
-insert into `caddycom`.`reservation_date` (id, reservation_sheet_id, reservation_at, status, total_cnt, blocked_cnt) values
+insert into `caddycom`.`reservation_date` (id, reservation_sheet_id, reservation_at, is_assigned, total_cnt, blocked_cnt) values
                                                                                                                          (1, 1, "2024-08-08", 0, 0, 0),
                                                                                                                          (2, 1, "2024-08-09", 0, 0, 0),
                                                                                                                          (3, 1, "2024-08-10", 1, 16, 0),

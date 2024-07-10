@@ -6,7 +6,10 @@ import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.entity.golfFieldDetail.Tee;
-import com.flash21.caddycom.repository.*;
+import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.formation.FormationRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +44,7 @@ public class FormationService {
         List<Course> savedCourses = courseRepository.findAllById(courseIds);
 
         for (Course savedCourse : savedCourses) {
-            for (int i = 1; i < savedCourse.getTotalHoles(); i++) {
+            for (int i = 1; i <= savedCourse.getTotalHoles(); i++) {
                 Hole hole = new Hole(i, savedCourse);
                 holes.add(hole);
             }

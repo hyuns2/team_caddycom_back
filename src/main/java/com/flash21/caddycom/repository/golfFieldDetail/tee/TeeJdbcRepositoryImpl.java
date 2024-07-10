@@ -1,9 +1,11 @@
-package com.flash21.caddycom.repository;
+package com.flash21.caddycom.repository.golfFieldDetail.tee;
 
-import com.flash21.caddycom.entity.golfFieldDetail.Course;
+import com.flash21.caddycom.entity.golfFieldDetail.Tee;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -17,12 +19,12 @@ import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
-public class CourseJdbcRepository implements JdbcRepository<Course> {
+public class TeeJdbcRepositoryImpl implements TeeJdbcRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
-    public List<Long> saveAllInBatch(List<Course> courses) {
-        String sql = "INSERT INTO COURSE (name, total_holes, formation_id)" + "VALUES (?, ?, ?)";
+    public List<Long> saveAllInBatch(List<Tee> tees) {
+        String sql = "INSERT INTO TEE (name, distance, hole_id)" + "VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.batchUpdate(new PreparedStatementCreator() {
@@ -31,27 +33,27 @@ public class CourseJdbcRepository implements JdbcRepository<Course> {
                 PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
                 return ps;
             }
-        },
-        new BatchPreparedStatementSetter() {
+        }, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Course course = courses.get(i);
-                ps.setString(1, course.getName());
-                ps.setInt(2, course.getTotalHoles());
-                ps.setLong(3, course.getFormation().getId());
+                Tee tee = tees.get(i);
+                ps.setString(1, tee.getName());
+                ps.setInt(2, tee.getDistance());
+                ps.setLong(3, tee.getHole().getId());
             }
 
             @Override
             public int getBatchSize() {
-                return courses.size();
+                return tees.size();
             }
         }, keyHolder);
 
-        List<Map<String,Object>> keyList = keyHolder.getKeyList();
+        List<Map<String, Object>> keyList = keyHolder.getKeyList();
         List<Long> generatedIds = new ArrayList<>();
         for(Map<String, Object> key : keyList) {
-            generatedIds.add((Long)key.get("id"));
+            generatedIds.add((Long) key.get("id"));
         }
+
         return generatedIds;
     }
 }

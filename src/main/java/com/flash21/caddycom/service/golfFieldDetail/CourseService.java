@@ -2,7 +2,7 @@ package com.flash21.caddycom.service.golfFieldDetail;
 
 import com.flash21.caddycom.dto.CourseInfoResponseDto;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
-import com.flash21.caddycom.repository.CourseRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

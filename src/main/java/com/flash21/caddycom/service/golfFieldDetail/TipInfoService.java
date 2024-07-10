@@ -3,7 +3,7 @@ package com.flash21.caddycom.service.golfFieldDetail;
 import com.flash21.caddycom.dto.golfFieldDetail.tipInfo.TipInfoDto;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.entity.golfFieldDetail.TipInfo;
-import com.flash21.caddycom.repository.HoleRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.TipInfoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

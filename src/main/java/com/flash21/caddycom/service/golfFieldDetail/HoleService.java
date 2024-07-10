@@ -2,7 +2,7 @@ package com.flash21.caddycom.service.golfFieldDetail;
 
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
-import com.flash21.caddycom.repository.HoleRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

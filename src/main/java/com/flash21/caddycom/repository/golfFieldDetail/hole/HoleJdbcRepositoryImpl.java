@@ -1,6 +1,6 @@
-package com.flash21.caddycom.repository;
+package com.flash21.caddycom.repository.golfFieldDetail.hole;
 
-import com.flash21.caddycom.entity.golfFieldDetail.Tee;
+import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -19,12 +19,12 @@ import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
-public class TeeJdbcRepository implements JdbcRepository<Tee> {
+public class HoleJdbcRepositoryImpl implements HoleJdbcRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
-    public List<Long> saveAllInBatch(List<Tee> tees) {
-        String sql = "INSERT INTO TEE (name, distance, hole_id)" + "VALUES (?, ?, ?)";
+    public List<Long> saveAllInBatch(List<Hole> holes) {
+        String sql = "INSERT INTO HOLE (num, par, handicap, course_id)" + "VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.batchUpdate(new PreparedStatementCreator() {
@@ -36,15 +36,16 @@ public class TeeJdbcRepository implements JdbcRepository<Tee> {
         }, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Tee tee = tees.get(i);
-                ps.setString(1, tee.getName());
-                ps.setInt(2, tee.getDistance());
-                ps.setLong(3, tee.getHole().getId());
+                Hole hole = holes.get(i);
+                ps.setInt(1, hole.getNum());
+                ps.setInt(2, hole.getPar());
+                ps.setInt(3, hole.getHandicap());
+                ps.setLong(4, hole.getCourse().getId());
             }
 
             @Override
             public int getBatchSize() {
-                return tees.size();
+                return holes.size();
             }
         }, keyHolder);
 

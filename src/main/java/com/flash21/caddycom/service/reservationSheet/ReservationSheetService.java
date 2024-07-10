@@ -8,6 +8,7 @@ import com.flash21.caddycom.global.exception.cException.CCourseNotFoundException
 import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
 import com.flash21.caddycom.repository.CourseRepository;
 import com.flash21.caddycom.repository.reservationSheet.MetaDataReport;
+import com.flash21.caddycom.repository.reservationSheet.ReservationDateJdbcRepository;
 import com.flash21.caddycom.repository.reservationSheet.ReservationDateRepository;
 import com.flash21.caddycom.repository.reservationSheet.ReservationSheetRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class ReservationSheetService {
     final ReservationSheetRepository rsRepository;
     final ReservationDateRepository rdRepository;
     final CourseRepository courseRepository;
+    final ReservationDateJdbcRepository rsJdbcRepository;
 
     /**
      * 예약시트 생성: 예약시트를 생성합니다.
@@ -84,7 +86,7 @@ public class ReservationSheetService {
                     totalCnt(0).
                     blockedCnt(0).build());
         }
-        rdRepository.saveAll(reservationDates);
+        rsJdbcRepository.saveAll(reservationDates);
     }
 
     /**

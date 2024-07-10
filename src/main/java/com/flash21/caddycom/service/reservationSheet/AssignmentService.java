@@ -7,6 +7,7 @@ import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
 import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
 import com.flash21.caddycom.global.exception.cException.CReservationDateNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CReservationSheetNotFoundException;
+import com.flash21.caddycom.repository.reservationSheet.AssignmentJdbcRepository;
 import com.flash21.caddycom.repository.reservationSheet.AssignmentRepository;
 import com.flash21.caddycom.repository.reservationSheet.ReservationDateRepository;
 import com.flash21.caddycom.repository.reservationSheet.ReservationSheetRepository;
@@ -25,6 +26,7 @@ public class AssignmentService {
     final ReservationSheetRepository rsRepository;
     final ReservationDateRepository rdRepository;
     final AssignmentRepository assignmentRepository;
+    final AssignmentJdbcRepository assignmentJdbcRepository;
 
     /**
      * 배정정보 조회: 배정정보가 존재하는 경우에는 반환하고, 존재하지 않는 경우에는 생성하여 반환합니다.
@@ -73,7 +75,6 @@ public class AssignmentService {
      * @return 배정정보 조회 dto 리스트
      */
     private List<AssignmentDto.AssignmentsResponse> createAndGetAssignments(ReservationSheet reservationSheet, ReservationDate reservationDate) {
-        List<AssignmentDto.AssignmentsResponse> responseDtoList = new ArrayList<>();
         LocalTime startAtLocalTime = reservationSheet.getStartAt().toLocalTime();
         LocalTime endAtLocalTIme = reservationSheet.getEndAt().toLocalTime();
 
@@ -82,15 +83,15 @@ public class AssignmentService {
         int teeOffListSize = teeOffList.size();
         int currentTeeOffIndex = 0;
 
+        List<Assignment> assignmentList = new ArrayList<>();
         while (startAtLocalTime.isBefore(endAtLocalTIme)) {
-            Assignment assignment = assignmentRepository.save(Assignment.builder().
+            assignmentList.add(Assignment.builder().
                     reservationDate(reservationDate).
                     startTime(startAtLocalTime).
                     status(AssignmentStatus.NOTHING).
                     // caddyId().
                     caddyName(null).
                     reason(null).build());
-            responseDtoList.add(toDto(assignment));
 
             startAtLocalTime = startAtLocalTime.plusMinutes(teeOffList.get(currentTeeOffIndex++));
             if (currentTeeOffIndex >= teeOffListSize)
@@ -98,9 +99,8 @@ public class AssignmentService {
         }
 
         reservationDate.setIsAssigned();
-        reservationDate.setTotalCnt(responseDtoList.size());
-        rdRepository.save(reservationDate);
-        return responseDtoList;
+        reservationDate.setTotalCnt(assignmentList.size());
+        return assignmentJdbcRepository.saveAll(assignmentList);
     }
 
     /**

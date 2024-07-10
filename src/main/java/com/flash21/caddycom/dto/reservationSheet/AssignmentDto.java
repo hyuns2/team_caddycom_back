@@ -13,7 +13,7 @@ public class AssignmentDto {
     @Data
     @AllArgsConstructor
     @Builder
-    public static class AssignmentsResponseDto {
+    public static class AssignmentsResponse {
         @Schema(description = "배정정보 id")
         private Long id;
 

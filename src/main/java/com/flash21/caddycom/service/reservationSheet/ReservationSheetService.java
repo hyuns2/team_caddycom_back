@@ -26,13 +26,13 @@ public class ReservationSheetService {
     final ReservationDateRepository rdRepository;
     final CourseRepository courseRepository;
 
-    public List<Long> createReservationSheet(ReservationSheetDto.CreateRequestDto dto) {
+    public List<Long> createReservationSheet(ReservationSheetDto.CreateRequest dto) {
         validToCreateReservationSheet(dto);
 
         List<Course> courseList = courseRepository.findAllById(dto.getCourseList());
         if (courseList.isEmpty())
             throw new CCourseNotFoundException();
-        List<ReservationSheet> sheets = ReservationSheetDto.CreateRequestDto.toEntities(dto, courseList);
+        List<ReservationSheet> sheets = ReservationSheetDto.CreateRequest.toEntities(dto, courseList);
         List<Long> returnSheetIdList = new ArrayList<>();
 
         for (ReservationSheet sheet: sheets) {
@@ -44,7 +44,7 @@ public class ReservationSheetService {
         return returnSheetIdList;
     }
 
-    private void validToCreateReservationSheet(ReservationSheetDto.CreateRequestDto dto) {
+    private void validToCreateReservationSheet(ReservationSheetDto.CreateRequest dto) {
         if (dto.getTeeOffList().size() != dto.getStartTimeList().size() ||
                 dto.getStartTimeList().size() != dto.getEndTimeList().size())
             throw new CInvalidPartInfoException();
@@ -65,9 +65,9 @@ public class ReservationSheetService {
         rdRepository.saveAll(reservationDates);
     }
 
-    public List<ReservationSheetDto.MetaDataResponseDto> retrieveMetaData(int year, int month, List<Long> reservationSheetIdList) {
+    public List<ReservationSheetDto.MetaDataResponse> retrieveMetaData(int year, int month, List<Long> reservationSheetIdList) {
         LocalDate targetDate = LocalDate.of(year, month, 1);
-        List<ReservationSheetDto.MetaDataResponseDto> responseDtoList = new ArrayList<>();
+        List<ReservationSheetDto.MetaDataResponse> responseDtoList = new ArrayList<>();
         List<MetaDataReport> reports = rdRepository.countAllMetaDataByDate(targetDate, targetDate.plusMonths(1), reservationSheetIdList);
 
         for (MetaDataReport report: reports) {
@@ -75,7 +75,7 @@ public class ReservationSheetService {
             int blockedCntResult = report.getBlockedCntSum();
             int availableCntResult = totalCntResult - blockedCntResult;
 
-            responseDtoList.add(ReservationSheetDto.MetaDataResponseDto.builder().
+            responseDtoList.add(ReservationSheetDto.MetaDataResponse.builder().
                     targetDate(report.getReservationAt()).
                     totalCntSum(totalCntResult).
                     blockedCntSum(blockedCntResult).

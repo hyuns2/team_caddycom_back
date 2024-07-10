@@ -26,7 +26,7 @@ public class AssignmentService {
     final ReservationDateRepository rdRepository;
     final AssignmentRepository assignmentRepository;
 
-    public List<AssignmentDto.AssignmentsResponseDto> retrieveAssignments(Long reservationSheetId, LocalDate targetDate) {
+    public List<AssignmentDto.AssignmentsResponse> retrieveAssignments(Long reservationSheetId, LocalDate targetDate) {
         Optional<ReservationDate> result = rdRepository.findByReservationSheetIdAndReservationAt(reservationSheetId, targetDate);
         if (result.isEmpty())
             throw new CReservationDateNotFoundException();
@@ -42,8 +42,8 @@ public class AssignmentService {
         return createAndRetrieveAssignments(reservationSheet.get(), reservationDate);
     }
 
-    private List<AssignmentDto.AssignmentsResponseDto> findAndRetrieveAssignments(ReservationDate reservationDate) {
-        List<AssignmentDto.AssignmentsResponseDto> responseDtoList = new ArrayList<>();
+    private List<AssignmentDto.AssignmentsResponse> findAndRetrieveAssignments(ReservationDate reservationDate) {
+        List<AssignmentDto.AssignmentsResponse> responseDtoList = new ArrayList<>();
         List<Assignment> assignmentList = assignmentRepository.findAllByReservationDateId(reservationDate.getId());
 
         for (Assignment assignment : assignmentList)
@@ -52,8 +52,8 @@ public class AssignmentService {
         return responseDtoList;
     }
 
-    private List<AssignmentDto.AssignmentsResponseDto> createAndRetrieveAssignments(ReservationSheet reservationSheet, ReservationDate reservationDate) {
-        List<AssignmentDto.AssignmentsResponseDto> responseDtoList = new ArrayList<>();
+    private List<AssignmentDto.AssignmentsResponse> createAndRetrieveAssignments(ReservationSheet reservationSheet, ReservationDate reservationDate) {
+        List<AssignmentDto.AssignmentsResponse> responseDtoList = new ArrayList<>();
         LocalTime startAtLocalTime = reservationSheet.getStartAt().toLocalTime();
         LocalTime endAtLocalTIme = reservationSheet.getEndAt().toLocalTime();
 
@@ -83,8 +83,8 @@ public class AssignmentService {
         return responseDtoList;
     }
 
-    private AssignmentDto.AssignmentsResponseDto toDto(Assignment assignment) {
-        return AssignmentDto.AssignmentsResponseDto.builder().
+    private AssignmentDto.AssignmentsResponse toDto(Assignment assignment) {
+        return AssignmentDto.AssignmentsResponse.builder().
                 id(assignment.getId()).
                 reservationDate(assignment.getReservationDate().getReservationAt()).
                 startTime(assignment.getStartTime()).

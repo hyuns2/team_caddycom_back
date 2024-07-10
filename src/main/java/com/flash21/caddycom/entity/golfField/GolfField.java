@@ -40,13 +40,22 @@ public class GolfField {
 
     private ApprovalStatus status;
 
-
     private String fax;
+
     private String area;
+
     private LocalDate openingDate;
+
+    @Column(length = 1000)
     private String cartInfo;
+
+    @Column(length = 1000)
     private String publicTransportGuide;
+
+    @Column(length = 1000)
     private String carGuide;
+
+    @Column(length = 1000)
     private String amenities;
 
     @OneToMany(mappedBy = "golfField", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -54,9 +63,11 @@ public class GolfField {
 
     /**
      * 골프장과 골프장 관리자는 일대일 관계지만, 하나의 테이블에 나타냄
+     * 아래 두 필드는 골프장 관리자와 관계됨
      */
     @Column(nullable = false)
     private String password;
+
     private Role role;
 
 

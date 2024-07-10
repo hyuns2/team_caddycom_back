@@ -20,6 +20,7 @@ public class Facility {
     @Column(nullable = false)
     private String name;
 
+    @Column(length = 1000)
     private String content;
 
     @OneToMany(mappedBy = "facility", cascade = CascadeType.PERSIST, orphanRemoval = true)

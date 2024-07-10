@@ -1,5 +1,6 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
+import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
 import com.flash21.caddycom.dto.hole.HandicapUpdate;
 import com.flash21.caddycom.dto.hole.ParUpdate;
 import com.flash21.caddycom.dto.hole.SaveHoleDetail;
@@ -20,19 +21,19 @@ public class HoleController {
 
     @PatchMapping("/api/hole/handicap")
     @Operation(summary = "홀의 핸디 수 변경 API")
-    public void updateHandicap(@RequestBody HandicapUpdate request) {
+    public void updateHandicap(@RequestBody HoleRequest.updateHandicap request) {
         holeService.updateHandicap(request);
     }
 
     @PatchMapping("/api/hole/par")
     @Operation(summary = "홀의 파 변경 API")
-    public void updatePar(@RequestBody ParUpdate request) {
+    public void updatePar(@RequestBody HoleRequest.updatePar request) {
         holeService.updatePar(request);
     }
 
     @PostMapping("/api/hole/detail")
     @Operation(summary = "홀의 상세 정보 설정 API")
-    public void createDetailInfo(@RequestBody SaveHoleDetail request) {
+    public void createDetailInfo(@RequestBody HoleRequest.createDetailInfo request) {
         holeService.createDetailInfo(request);
     }
 }

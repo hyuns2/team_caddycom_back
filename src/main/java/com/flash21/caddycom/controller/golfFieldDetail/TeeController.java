@@ -1,5 +1,6 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
+import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeRequest;
 import com.flash21.caddycom.dto.tee.AllTeeSetRequest;
 import com.flash21.caddycom.service.golfFieldDetail.TeeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +19,7 @@ public class TeeController {
 
     @PostMapping("/api/course/{courseId}/tees")
     @Operation(summary = "홀 전체 티 설정")
-    public void deleteAndCreateAllTees(@PathVariable Long courseId, @RequestBody AllTeeSetRequest request) {
+    public void deleteAndCreateAllTees(@PathVariable Long courseId, @RequestBody TeeRequest.createAll request) {
         teeService.deleteAndCreateAllTee(courseId, request);
     }
 }

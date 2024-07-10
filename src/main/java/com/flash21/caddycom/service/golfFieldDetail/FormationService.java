@@ -1,7 +1,7 @@
 package com.flash21.caddycom.service.golfFieldDetail;
 
-import com.flash21.caddycom.dto.formation.CourseInfo;
-import com.flash21.caddycom.dto.formation.FormationAdd;
+import com.flash21.caddycom.dto.golfFieldDetail.course.CourseDto;
+import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationRequest;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
@@ -24,7 +24,7 @@ public class FormationService {
     private final TeeRepository teeRepository;
     private final TeeJdbcRepository teeJdbcRepository;
 
-    public void createFormation(FormationAdd request) {
+    public void createFormation(FormationRequest.create request) {
         Formation formation = new Formation(null, request.getName(), null);
         formationRepository.save(formation);
 
@@ -32,7 +32,7 @@ public class FormationService {
         List<Hole> holes = new ArrayList<>();
         List<Tee> tees = new ArrayList<>();
 
-        for(CourseInfo courseInfo : request.getCourseInfos()) {
+        for (CourseDto.info courseInfo : request.getCourseInfos()) {
             Course course = Course.builder()
                     .name(courseInfo.getName())
                     .totalHoles(courseInfo.getTotalHoles())
@@ -43,8 +43,8 @@ public class FormationService {
         List<Long> courseIds = courseJdbcRepository.saveAll(courses);
         List<Course> savedCourses = courseRepository.findAllById(courseIds);
 
-        for(Course savedCourse : savedCourses) {
-            for(int i = 1; i < savedCourse.getTotalHoles(); i++) {
+        for (Course savedCourse : savedCourses) {
+            for (int i = 1; i < savedCourse.getTotalHoles(); i++) {
                 Hole hole = new Hole(i, savedCourse);
                 holes.add(hole);
             }
@@ -52,7 +52,7 @@ public class FormationService {
         List<Long> holeIds = holeJdbcRepository.saveAll(holes);
         List<Hole> savedHoles = holeRepository.findAllById(holeIds);
 
-        for(Hole savedHole : savedHoles) {
+        for (Hole savedHole : savedHoles) {
             tees.addAll(List.of(
                     new Tee(null, "BLACK", 320, savedHole),
                     new Tee(null, "BLUE", 290, savedHole),

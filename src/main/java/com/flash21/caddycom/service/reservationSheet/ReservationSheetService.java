@@ -58,7 +58,7 @@ public class ReservationSheetService {
             reservationDates.add(ReservationDate.builder().
                     reservationSheet(sheet).
                     reservationAt(oneDay).
-                    status(false).
+                    isAssigned(false).
                     totalCnt(0).
                     blockedCnt(0).build());
         }

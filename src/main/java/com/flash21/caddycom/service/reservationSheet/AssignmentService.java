@@ -32,7 +32,7 @@ public class AssignmentService {
             throw new CReservationDateNotFoundException();
 
         ReservationDate reservationDate = result.get();
-        if (reservationDate.getStatus()) {
+        if (reservationDate.getIsAssigned()) {
             return findAndRetrieveAssignments(reservationDate);
         }
 
@@ -77,7 +77,7 @@ public class AssignmentService {
                 currentTeeOffIndex = 0;
         }
 
-        reservationDate.setStatus();
+        reservationDate.setIsAssigned();
         reservationDate.setTotalCnt(responseDtoList.size());
         rdRepository.save(reservationDate);
         return responseDtoList;

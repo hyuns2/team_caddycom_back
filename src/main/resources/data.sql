@@ -1,5 +1,10 @@
-insert into `caddycom`.`formation` (`id`, `name`)
-values ('1', '구성1'), ('2', '구성2');
+
+insert into `caddycom`.`golf_field` (address, address_detail amenities, area, business_license, caddy_type, car_guide, cart_info, contact, employment_license, fax, image_url, name, opening_date, password, public_transport_guide, registration_number, role, status, id) values
+    ('대구시','북구 오른쪽 끝','레스토랑, 주차시설 완비','1000평','image.png',1,'사거리에서 우회전하면 있음','전동 카드 10개','010-0000-0000','file.pdf','13451-342','image-main.png','인터불고 CC','2020-09-09','1234','지하철 1호선 대공원역 2번 출구 하차','123456',1,1,1);
+
+
+insert into `caddycom`.`formation` (`id`, `name`, `golf_field_id`)
+values ('1', '구성1','1'), ('2', '구성2','1');
 
 insert into `caddycom`.`course` (`total_holes`, `formation_id`, `id`, `name`)
 values ('9', '1', '1', 'A'), ('9', '1', '2', 'B'), ('9', '1', '3', 'C');
@@ -209,6 +214,3 @@ insert into `caddycom`.`assignment` (id, reservation_date_id, start_time, status
                                                                                                           (14, 3, "14:37:00.000000", 0, null, null),
                                                                                                           (15, 3, "14:45:00.000000", 0, null, null),
                                                                                                           (16, 3, "14:52:00.000000", 0, null, null);
-
-insert into `caddycom`.`golf_field` (address, amenities, area, business_license, caddy_type, car_guide, cart_info, contact, employment_license, fax, image_url, name, opening_date, password, public_transport_guide, registration_number, role, status, id) values
-                                                                                                                                                                                                                                                                 ('?','?','?','?',1,'?','?','?','?','?','?','?','2020-09-09','?','?','?',1,1,1);

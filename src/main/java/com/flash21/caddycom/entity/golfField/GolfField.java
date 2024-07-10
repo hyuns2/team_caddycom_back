@@ -1,6 +1,7 @@
 package com.flash21.caddycom.entity.golfField;
 
 import com.flash21.caddycom.entity.account.Role;
+import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -62,6 +63,9 @@ public class GolfField {
 
     @OneToMany(mappedBy = "golfField", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Facility> facilities;
+
+    @OneToMany(mappedBy = "golfField", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Formation> formations;
 
     /**
      * 골프장과 골프장 관리자는 일대일 관계지만, 하나의 테이블에 나타냄

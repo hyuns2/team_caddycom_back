@@ -16,13 +16,13 @@ public class Tee {
 
     private String name;
 
-    private int distance;
+    private Integer distance;
 
     @ManyToOne
     @JoinColumn(name="HoleId")
     private Hole hole;
 
-    public void update(String name, int distance) {
+    public void update(String name, Integer distance) {
         this.name = name;
         this.distance = distance;
     }

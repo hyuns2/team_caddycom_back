@@ -15,11 +15,11 @@ public class Hole {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int num;
+    private Integer num;
 
-    private int par = 4;
+    private Integer par = 4;
 
-    private int handicap = 0;
+    private Integer handicap = 0;
 
     @OneToMany(mappedBy = "hole", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Tee> tees = new ArrayList<>();
@@ -31,16 +31,16 @@ public class Hole {
     @JoinColumn(name="courseId")
     private Course course;
 
-    public Hole(int num, Course course) {
+    public Hole(Integer num, Course course) {
         this.num = num;
         this.course = course;
     }
 
-    public void updateHandicap(int handicap) {
+    public void updateHandicap(Integer handicap) {
         this.handicap = handicap;
     }
 
-    public void updatePar(int par) {
+    public void updatePar(Integer par) {
         this.par = par;
     }
 }

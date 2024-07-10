@@ -8,6 +8,6 @@ public class CourseDto {
     @AllArgsConstructor
     public static class info{
         private String name;
-        private int totalHoles;
+        private Integer totalHoles;
     }
 }

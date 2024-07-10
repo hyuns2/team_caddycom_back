@@ -18,7 +18,7 @@ public class Course {
 
     private String name;
 
-    private int totalHoles;
+    private Integer totalHoles;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Hole> holes = new ArrayList<>();

@@ -9,6 +9,6 @@ public class TeeDto {
     public static class info {
         private Long id;
         private String name;
-        private int distance;
+        private Integer distance;
     }
 }

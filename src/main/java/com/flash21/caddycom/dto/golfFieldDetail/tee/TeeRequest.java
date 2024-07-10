@@ -10,7 +10,7 @@ public class TeeRequest {
     @AllArgsConstructor
     public static class create {
         private String name;
-        private int distance;
+        private Integer distance;
     }
 
     @Getter

@@ -170,6 +170,12 @@ public class GolfFieldService {
     }
 
 
+    /**
+     * 골프장 상세 조회
+     * @param id 상세정보를 조회할 골프장 id, null이 들어갈 수 없다.
+     * @return GolfFieldResponse.Info 골프장 상세 조회 응답 DTO
+     * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
+     */
     @Transactional(readOnly = true)
     public GolfFieldResponse.Info getDetail(Long id){
         GolfField golfField = golfFieldRepository.findById(id)
@@ -178,7 +184,12 @@ public class GolfFieldService {
         return GolfFieldResponse.Info.from(golfField);
     }
 
-
+    /**
+     * 골프장 오는길 정보 조회
+     * @param id 오는길 정보를 조회할 골프장 id, null이 들어갈 수 없다.
+     * @return GolfFieldResponse.DirectionInfo 골프장 오는길 정보 조회 응답 DTO
+     * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
+     */
     @Transactional(readOnly = true)
     public GolfFieldResponse.DirectionInfo getDirectionInfo(Long id){
         GolfField golfField = golfFieldRepository.findById(id)

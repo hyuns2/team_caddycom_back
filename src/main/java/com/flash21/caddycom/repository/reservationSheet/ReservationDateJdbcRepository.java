@@ -22,7 +22,7 @@ public class ReservationDateJdbcRepository {
     @Transactional
     public void saveAll(List<ReservationDate> reservationDateList) {
         String sql = "INSERT INTO RESERVATION_DATE"
-                + "(reservation_sheet, reservationAt, isAssigned, totalCnt, blockedCnt)"
+                + "(reservation_sheet_id, reservation_at, is_assigned, total_cnt, blocked_cnt)"
                 + "VALUES (?, ?, ?, ?, ?)";
 
         jdbcTemplate.batchUpdate(new PreparedStatementCreator() {

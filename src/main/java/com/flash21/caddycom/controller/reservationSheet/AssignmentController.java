@@ -20,7 +20,7 @@ import java.util.List;
 public class AssignmentController {
     final AssignmentService assignmentService;
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    // @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Operation(summary = "배정정보 조회", description = "골프장 관리자가 배정정보를 조회합니다.")
     @GetMapping("/{reservationSheetId}/{targetDate}")
     public ResponseEntity<List<AssignmentDto.AssignmentsResponse>> getAssignments(@PathVariable Long reservationSheetId, @PathVariable LocalDate targetDate) {

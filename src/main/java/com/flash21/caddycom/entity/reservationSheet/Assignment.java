@@ -26,7 +26,6 @@ public class Assignment {
     private LocalTime startTime;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
     private AssignmentStatus status;
 
 //    @OneToOne(fetch = FetchType.LAZY)

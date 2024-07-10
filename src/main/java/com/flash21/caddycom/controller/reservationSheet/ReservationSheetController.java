@@ -20,7 +20,7 @@ import java.util.List;
 public class ReservationSheetController {
     final ReservationSheetService rsService;
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    // @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Operation(summary = "예약시트 등록", description = "골프장 관리자가 예약시트를 등록합니다.")
     @PostMapping
     public ResponseEntity<List<Long>> createReservationSheet
@@ -30,7 +30,7 @@ public class ReservationSheetController {
         return new ResponseEntity<>(reservationSheetIdList, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    // @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Operation(summary = "캘린더 메타정보 조회", description = "골프장 관리자가 캘린더에 표기되는 메타정보를 조회합니다.")
     @GetMapping("/calendar/{year}/{month}")
     public ResponseEntity<?> getMetaData(@PathVariable int year, @PathVariable int month, @RequestParam List<Long> reservationSheetIdList) {

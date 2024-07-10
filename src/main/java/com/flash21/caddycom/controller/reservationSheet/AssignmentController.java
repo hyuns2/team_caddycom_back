@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -20,10 +22,9 @@ import java.util.List;
 public class AssignmentController {
     final AssignmentService assignmentService;
 
-    // @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Operation(summary = "배정정보 조회", description = "골프장 관리자가 배정정보를 조회합니다.")
     @GetMapping("/{reservationSheetId}/{targetDate}")
-    public ResponseEntity<List<AssignmentDto.AssignmentsResponse>> getAssignments(@PathVariable Long reservationSheetId, @PathVariable LocalDate targetDate) {
+    public ResponseEntity<List<AssignmentDto.AssignmentsResponse>> getAssignments(@AuthenticationPrincipal User user, @PathVariable Long reservationSheetId, @PathVariable LocalDate targetDate) {
         List<AssignmentDto.AssignmentsResponse> assignments = assignmentService.getAssignments(reservationSheetId, targetDate);
 
         return new ResponseEntity<>(assignments, HttpStatus.OK);

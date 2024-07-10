@@ -47,7 +47,7 @@ public class CourseJdbcRepository {
             }
         }, keyHolder);
 
-        List<Map<String,Object>> keyList = keyHolder.getKeyList();
+List<Map<String,Object>> keyList = keyHolder.getKeyList();
         List<Long> generatedIds = new ArrayList<>();
         for(Map<String, Object> key : keyList) {
             generatedIds.add((Long)key.get("id"));

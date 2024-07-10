@@ -2,11 +2,11 @@ package com.flash21.caddycom.service.reservationSheet;
 
 import com.flash21.caddycom.dto.reservationSheet.AssignmentDto;
 import com.flash21.caddycom.entity.reservationSheet.Assignment;
-import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
 import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
 import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
 import com.flash21.caddycom.global.exception.cException.CReservationDateNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CReservationSheetNotFoundException;
+import com.flash21.caddycom.repository.reservationSheet.AssignmentJdbcRepository;
 import com.flash21.caddycom.repository.reservationSheet.AssignmentRepository;
 import com.flash21.caddycom.repository.reservationSheet.ReservationDateRepository;
 import com.flash21.caddycom.repository.reservationSheet.ReservationSheetRepository;
@@ -20,11 +20,11 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class AssignmentService {
     final ReservationSheetRepository rsRepository;
     final ReservationDateRepository rdRepository;
     final AssignmentRepository assignmentRepository;
+    final AssignmentJdbcRepository assignmentJdbcRepository;
 
     /**
      * 배정정보 조회: 배정정보가 존재하는 경우에는 반환하고, 존재하지 않는 경우에는 생성하여 반환합니다.
@@ -36,17 +36,18 @@ public class AssignmentService {
      * @throws CReservationDateNotFoundException ReservationDate 객체가 존재하지 않을 경우
      * @throws CReservationSheetNotFoundException ReservationSheet 객체가 존재하지 않을 경우
      */
+    @Transactional
     public List<AssignmentDto.AssignmentsResponse> getAssignments(Long reservationSheetId, LocalDate targetDate) {
         ReservationDate reservationDate = rdRepository.findByReservationSheetIdAndReservationAt(reservationSheetId, targetDate)
                 .orElseThrow(CReservationDateNotFoundException::new);
 
-        if (reservationDate.getIsAssigned()) {
-            return findAndGetAssignments(reservationDate);
+        if (!reservationDate.getIsAssigned()) {
+            ReservationSheet reservationSheet = rsRepository.findById(reservationSheetId)
+                    .orElseThrow(CReservationSheetNotFoundException::new);
+            createAndGetAssignments(reservationSheet, reservationDate);
         }
 
-        ReservationSheet reservationSheet = rsRepository.findById(reservationSheetId)
-                .orElseThrow(CReservationSheetNotFoundException::new);
-        return createAndGetAssignments(reservationSheet, reservationDate);
+        return findAndGetAssignments(reservationDate);
     }
 
     /**
@@ -66,14 +67,12 @@ public class AssignmentService {
     }
 
     /**
-     * 배정정보 조회 내부함수2: 배정정보를 생성하여 반환합니다.
+     * 배정정보 조회 내부함수2: 배정정보를 생성합니다.
      *
      * @param reservationSheet 대상 reservationSheet 객체
      * @param reservationDate 대상 reservationDate 객체
-     * @return 배정정보 조회 dto 리스트
      */
-    private List<AssignmentDto.AssignmentsResponse> createAndGetAssignments(ReservationSheet reservationSheet, ReservationDate reservationDate) {
-        List<AssignmentDto.AssignmentsResponse> responseDtoList = new ArrayList<>();
+    private void createAndGetAssignments(ReservationSheet reservationSheet, ReservationDate reservationDate) {
         LocalTime startAtLocalTime = reservationSheet.getStartAt().toLocalTime();
         LocalTime endAtLocalTIme = reservationSheet.getEndAt().toLocalTime();
 
@@ -82,25 +81,20 @@ public class AssignmentService {
         int teeOffListSize = teeOffList.size();
         int currentTeeOffIndex = 0;
 
+        List<LocalTime> startTimeList = new ArrayList<>();
         while (startAtLocalTime.isBefore(endAtLocalTIme)) {
-            Assignment assignment = assignmentRepository.save(Assignment.builder().
-                    reservationDate(reservationDate).
-                    startTime(startAtLocalTime).
-                    status(AssignmentStatus.NOTHING).
-                    // caddyId().
-                    caddyName(null).
-                    reason(null).build());
-            responseDtoList.add(toDto(assignment));
+            startTimeList.add(startAtLocalTime);
 
             startAtLocalTime = startAtLocalTime.plusMinutes(teeOffList.get(currentTeeOffIndex++));
             if (currentTeeOffIndex >= teeOffListSize)
                 currentTeeOffIndex = 0;
         }
+        assignmentJdbcRepository.saveAll(reservationDate.getId(), startTimeList);
 
         reservationDate.setIsAssigned();
-        reservationDate.setTotalCnt(responseDtoList.size());
+        reservationDate.setTotalCnt(startTimeList.size());
+        reservationDate.setBlockedCnt(startTimeList.size());
         rdRepository.save(reservationDate);
-        return responseDtoList;
     }
 
     /**

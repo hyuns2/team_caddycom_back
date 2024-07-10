@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,20 +22,17 @@ import java.util.List;
 public class ReservationSheetController {
     final ReservationSheetService rsService;
 
-    // @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Operation(summary = "예약시트 등록", description = "골프장 관리자가 예약시트를 등록합니다.")
     @PostMapping
-    public ResponseEntity<List<Long>> createReservationSheet
-            (@Valid @RequestBody ReservationSheetDto.CreateRequest dto) {
+    public ResponseEntity<List<Long>> createReservationSheet(@AuthenticationPrincipal User user, @Valid @RequestBody ReservationSheetDto.CreateRequest dto) {
         List<Long> reservationSheetIdList = rsService.createReservationSheet(dto);
 
         return new ResponseEntity<>(reservationSheetIdList, HttpStatus.CREATED);
     }
 
-    // @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Operation(summary = "캘린더 메타정보 조회", description = "골프장 관리자가 캘린더에 표기되는 메타정보를 조회합니다.")
     @GetMapping("/calendar/{year}/{month}")
-    public ResponseEntity<?> getMetaData(@PathVariable int year, @PathVariable int month, @RequestParam List<Long> reservationSheetIdList) {
+    public ResponseEntity<?> getMetaData(@AuthenticationPrincipal User user, @PathVariable int year, @PathVariable int month, @RequestParam List<Long> reservationSheetIdList) {
         List<ReservationSheetDto.MetaDataResponse> responseDtoList = rsService.getMetaData(year, month, reservationSheetIdList);
 
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);

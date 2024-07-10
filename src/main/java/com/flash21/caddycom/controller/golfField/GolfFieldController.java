@@ -21,7 +21,7 @@ public class GolfFieldController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
                 produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary="골프장 등록", description = "골프장 관리자 or 전체 시스템 관리자는 골프장을 등록한다.")
+    @Operation(summary="골프장 등록 API", description = "골프장 관리자 or 전체 시스템 관리자는 골프장을 등록한다.")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> create(@Valid @ModelAttribute GolfFieldRequest.Create request){
         golfFieldService.createGolfField(request);
@@ -52,7 +52,7 @@ public class GolfFieldController {
     @PostMapping("additional-info")
     @Operation(summary = "골프장 추가정보 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 추가정보를 입력한다.")
     public ResponseEntity<Void> addInfo(@RequestParam Long golfFieldId,
-                                       @Valid @RequestBody GolfFieldRequest.AdditionalInfo request) {
+                                        @Valid @RequestBody GolfFieldRequest.AdditionalInfo request) {
         golfFieldService.addMoreInfo(golfFieldId, request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -62,7 +62,7 @@ public class GolfFieldController {
     @PostMapping("direction-info")
     @Operation(summary = "골프장 오는 길 안내 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 오는 길 안내를 입력한다.")
     public ResponseEntity<Void> addDirectionInfo(@RequestParam Long golfFieldId,
-                                        @Valid @RequestBody GolfFieldRequest.DirectionsInfo request) {
+                                                 @Valid @RequestBody GolfFieldRequest.DirectionsInfo request) {
         golfFieldService.addDirectionInfo(golfFieldId, request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -73,7 +73,7 @@ public class GolfFieldController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "골프장 시설 안내 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 시설 안내를 입력한다.")
     public ResponseEntity<Void> addFacilityInfo(@RequestParam Long golfFieldId,
-                                                 @Valid @ModelAttribute GolfFieldRequest.FacilityInfo request) {
+                                                @Valid @ModelAttribute GolfFieldRequest.FacilityInfo request) {
         golfFieldService.addFacilityInfo(golfFieldId, request);
         return new ResponseEntity<>(HttpStatus.OK);
     }

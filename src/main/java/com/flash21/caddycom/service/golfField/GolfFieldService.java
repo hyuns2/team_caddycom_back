@@ -1,5 +1,6 @@
 package com.flash21.caddycom.service.golfField;
 
+import com.amazonaws.util.CollectionUtils;
 import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -132,7 +134,9 @@ public class GolfFieldService {
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
 
-        List<String> facilityImages = uploadFiles(request.getFacilityImages());
+        List<String> facilityImages = (CollectionUtils.isNullOrEmpty(request.getFacilityImages()))
+                ?  Collections.emptyList()
+                : uploadFiles(request.getFacilityImages());
 
         facilityService.createFacilityAndFacilityImages(golfField, facilityImages,
                                                 request.getName(),

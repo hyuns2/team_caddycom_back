@@ -24,7 +24,7 @@ public class GolfFieldRequest {
         private String name;
 
         @NotBlank(message = "contact은 필수값입니다.")
-        @Schema(example = "골프장 연락처(String)")
+        @Schema(example = "골프장 연락처(053-000-0000)")
         private String contact;
 
         @NotBlank(message = "address은 필수값입니다.")
@@ -86,7 +86,7 @@ public class GolfFieldRequest {
         @Schema(example = "골프장 면적(String)")
         private String area;
 
-        @Schema(example = "골프장 개장일('2024-00-00)")
+        @Schema(example = "골프장 개장일(2024-00-00)")
         private LocalDate openingDate;
 
         @Schema(example = "골프장 카트 정보(String)")
@@ -112,13 +112,10 @@ public class GolfFieldRequest {
     @AllArgsConstructor
     public static class FacilityInfo {
         @NotBlank(message = "name은 필수값입니다.")
-        @Schema(example = "시설 이름(String)")
         private String name;
 
-        @Schema(example = "시설 설명(String)")
         private String content;
 
-        @Schema(example = "시설 이미지(List<MultipartFile>)")
         private List<MultipartFile> facilityImages;
     }
 

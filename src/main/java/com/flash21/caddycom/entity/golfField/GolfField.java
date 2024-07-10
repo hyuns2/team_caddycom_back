@@ -16,15 +16,30 @@ public class GolfField {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
     private String contact;
+
     private String address;
+
+    @Column(nullable = false)
     private String registrationNumber;
+
+    @Column(nullable = false)
     private String businessLicense;
+
+    @Column(nullable = false)
     private String employmentLicense;
+
     private String imageUrl;
+
+    @Column(nullable = false)
     private CaddyType caddyType;
+
     private ApprovalStatus status;
+
 
     private String fax;
     private String area;
@@ -40,6 +55,7 @@ public class GolfField {
     /**
      * 골프장과 골프장 관리자는 일대일 관계지만, 하나의 테이블에 나타냄
      */
+    @Column(nullable = false)
     private String password;
     private Role role;
 

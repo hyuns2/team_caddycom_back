@@ -16,7 +16,10 @@ public class Facility {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
     private String content;
 
     @OneToMany(mappedBy = "facility", cascade = CascadeType.PERSIST, orphanRemoval = true)

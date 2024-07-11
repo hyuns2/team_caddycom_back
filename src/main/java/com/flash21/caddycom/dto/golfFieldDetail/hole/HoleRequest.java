@@ -14,6 +14,7 @@ public class HoleRequest {
     public static class updatePar {
         @NotNull
         private Long holeId;
+        @NotNull
         private Integer par;
     }
 
@@ -22,6 +23,7 @@ public class HoleRequest {
     public static class updateHandicap {
         @NotNull
         private Long holeId;
+        @NotNull
         private Integer handicap;
     }
 

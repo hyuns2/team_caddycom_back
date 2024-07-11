@@ -3,7 +3,6 @@ package com.flash21.caddycom.entity.golfFieldDetail;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,8 +27,4 @@ public class Formation {
     @OneToMany(mappedBy = "formation", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Course> courses = new ArrayList<>();
 
-    @Builder
-    public Formation(String name) {
-        this.name = name;
-    }
 }

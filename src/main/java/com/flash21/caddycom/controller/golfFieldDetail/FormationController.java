@@ -1,9 +1,10 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
-import com.flash21.caddycom.dto.formation.FormationAdd;
+import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationRequest;
 import com.flash21.caddycom.service.golfFieldDetail.FormationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,8 @@ public class FormationController {
 
     @PostMapping("/api/formations")
     @Operation(summary = "골프장 구성 정보 생성 API")
-    public ResponseEntity<Void> addFormation(@RequestBody FormationAdd request) {
-        formationService.addFormation(request);
+    public ResponseEntity<Void> createFormation(@Valid @RequestBody FormationRequest.create request) {
+        formationService.createFormation(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

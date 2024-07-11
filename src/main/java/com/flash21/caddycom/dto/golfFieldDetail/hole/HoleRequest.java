@@ -14,13 +14,13 @@ public class HoleRequest {
     public static class updatePar {
         @NotNull
         private Long holeId;
-
         private Integer par;
     }
 
     @Getter
     @AllArgsConstructor
     public static class updateHandicap {
+        @NotNull
         private Long holeId;
         private Integer handicap;
     }
@@ -28,8 +28,11 @@ public class HoleRequest {
     @Getter
     @AllArgsConstructor
     public static class createDetailInfo {
+        @NotNull
         private Long holeId;
+        @NotNull
         private Integer par;
+        @NotNull
         private Integer handicap;
         private List<TeeDto.info> teeData;
         private List<TipInfoDto.info> tipInfoData;

@@ -3,6 +3,7 @@ package com.flash21.caddycom.dto.golfFieldDetail.formation;
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,7 +13,7 @@ public class FormationRequest {
     @Getter
     @AllArgsConstructor
     public static class create {
-        @NotBlank
+        @NotNull
         private String name;
         @NotEmpty
         private List<CourseDto.info> courseInfos;

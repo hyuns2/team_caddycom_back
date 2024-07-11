@@ -13,12 +13,9 @@ public class AssignmentDto {
     @Data
     @AllArgsConstructor
     @Builder
-    public static class AssignmentsResponseDto {
+    public static class AssignmentsResponse {
         @Schema(description = "배정정보 id")
         private Long id;
-
-        @Schema(description = "예약날짜 (yyyy-mm-dd)")
-        private LocalDate reservationDate;
 
         @Schema(description = "시작시간")
         private LocalTime startTime;

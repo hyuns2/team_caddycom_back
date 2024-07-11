@@ -1,5 +1,6 @@
 package com.flash21.caddycom.entity.golfFieldDetail;
 
+import com.flash21.caddycom.entity.golfField.GolfField;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,10 @@ public class Formation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "golf_field_id")
+    private GolfField golfField;
 
     private String name;
 

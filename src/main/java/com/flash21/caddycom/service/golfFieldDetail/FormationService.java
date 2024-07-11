@@ -2,10 +2,12 @@ package com.flash21.caddycom.service.golfFieldDetail;
 
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseDto;
 import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationRequest;
+import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.entity.golfFieldDetail.Tee;
+import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.formation.FormationRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
@@ -15,17 +17,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class FormationService {
+    private final GolfFieldRepository golfFieldRepository;
     private final FormationRepository formationRepository;
     private final CourseRepository courseRepository;
     private final HoleRepository holeRepository;
     private final TeeRepository teeRepository;
 
     public void createFormation(FormationRequest.create request) {
-        Formation formation = new Formation(null, request.getName(), null);
+        GolfField golfField = golfFieldRepository.findById(request.getGolfFieldId())
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+        Formation formation = new Formation(null, golfField, request.getName(), null);
         formationRepository.save(formation);
 
         List<Course> courses = new ArrayList<>();

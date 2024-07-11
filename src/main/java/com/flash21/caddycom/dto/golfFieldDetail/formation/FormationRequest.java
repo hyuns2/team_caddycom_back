@@ -14,6 +14,8 @@ public class FormationRequest {
     @AllArgsConstructor
     public static class create {
         @NotNull
+        private Long golfFieldId;
+        @NotNull
         private String name;
         @NotEmpty
         private List<CourseDto.info> courseInfos;

@@ -24,7 +24,6 @@ public class FormationRequest {
     @Getter
     @AllArgsConstructor
     public static class create {
-        @NotNull
         private String name;
         @NotEmpty
         private List<CourseRequest.create> courseInfos;

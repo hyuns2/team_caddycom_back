@@ -29,8 +29,12 @@ public class FormationService {
     private final CourseService courseService;
 
     public void createFormation(GolfField golfField, FormationRequest.create request) {
+        Formation formation;
+        if(request.getName() != null)
+            formation = new Formation(null, golfField, request.getName(), null);
+        else
+            formation = new Formation(null, golfField, "NONE", null);
 
-        Formation formation = new Formation(null, golfField, request.getName(), null);
         formationRepository.save(formation);
 
         courseService.createCourses(formation, request.getCourseInfos());

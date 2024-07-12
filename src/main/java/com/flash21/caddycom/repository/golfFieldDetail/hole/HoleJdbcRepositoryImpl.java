@@ -24,7 +24,7 @@ public class HoleJdbcRepositoryImpl implements HoleJdbcRepository {
 
     @Transactional
     public List<Long> saveAllInBatch(List<Hole> holes) {
-        String sql = "INSERT INTO HOLE (num, par, handicap, course_id)" + "VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO hole (num, par, handicap, course_id)" + "VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.batchUpdate(new PreparedStatementCreator() {

@@ -21,7 +21,7 @@ public class ReservationDateJdbcRepository {
 
     @Transactional
     public void saveAll(List<ReservationDate> reservationDateList) {
-        String sql = "INSERT INTO RESERVATION_DATE"
+        String sql = "INSERT INTO reservation_date"
                 + "(reservation_sheet_id, reservation_at, is_assigned, total_cnt, blocked_cnt)"
                 + "VALUES (?, ?, ?, ?, ?)";
 

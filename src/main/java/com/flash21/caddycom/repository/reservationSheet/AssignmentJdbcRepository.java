@@ -24,7 +24,7 @@ public class AssignmentJdbcRepository {
 
     @Transactional
     public void saveAll(Long reservationDateId, List<LocalTime> startTimeList) {
-        String sql = "INSERT INTO ASSIGNMENT"
+        String sql = "INSERT INTO assignment"
                 + "(reservation_date_id, start_time, status, caddy_name, reason)"
                 + "VALUES (?, ?, ?, ?, ?)";
 

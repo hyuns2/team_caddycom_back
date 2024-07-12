@@ -22,7 +22,7 @@ public class CourseJdbcRepositoryImpl implements CourseJdbcRepository {
 
     @Transactional
     public List<Long> saveAllInBatch(List<Course> courses) {
-        String sql = "INSERT INTO COURSE (name, total_holes, formation_id)" + "VALUES (?, ?, ?)";
+        String sql = "INSERT INTO course (name, total_holes, formation_id)" + "VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.batchUpdate(new PreparedStatementCreator() {

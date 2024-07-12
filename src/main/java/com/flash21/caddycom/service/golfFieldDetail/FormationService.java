@@ -1,6 +1,7 @@
 package com.flash21.caddycom.service.golfFieldDetail;
 
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseDto;
+import com.flash21.caddycom.dto.golfFieldDetail.course.CourseRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationRequest;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
@@ -12,6 +13,7 @@ import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.formation.FormationRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,52 +23,48 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class FormationService {
-    private final GolfFieldRepository golfFieldRepository;
     private final FormationRepository formationRepository;
-    private final CourseRepository courseRepository;
-    private final HoleRepository holeRepository;
-    private final TeeRepository teeRepository;
+    private final CourseService courseService;
 
-    public void createFormation(FormationRequest.create request) {
-        GolfField golfField = golfFieldRepository.findById(request.getGolfFieldId())
-                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+    public void createFormation(GolfField golfField, FormationRequest.create request) {
+
         Formation formation = new Formation(null, golfField, request.getName(), null);
         formationRepository.save(formation);
 
-        List<Course> courses = new ArrayList<>();
-        List<Hole> holes = new ArrayList<>();
-        List<Tee> tees = new ArrayList<>();
+        courseService.createCourses(formation, request.getCourseInfos());
+    }
 
-        for (CourseDto.info courseInfo : request.getCourseInfos()) {
-            Course course = Course.builder()
-                    .name(courseInfo.getName())
-                    .totalHoles(courseInfo.getTotalHoles())
-                    .formation(formation)
-                    .build();
-            courses.add(course);
+
+    public void updateFormation(FormationRequest.update request) {
+        Formation formation = formationRepository.findById(request.getFormationId())
+                .orElseThrow(() -> new NoSuchElementException("해당 구성은 존재하지 않습니다."));
+
+        String name = request.getFormationName();
+        if (name != null) {
+            if (name.isBlank())
+                throw new IllegalArgumentException("구성의 이름은 공백일 수 없습니다.");
+            formation.updateName(name);
         }
-        List<Long> courseIds = courseRepository.saveAllInBatch(courses);
-        List<Course> savedCourses = courseRepository.findAllById(courseIds);
 
-        for (Course savedCourse : savedCourses) {
-            for (int i = 1; i <= savedCourse.getTotalHoles(); i++) {
-                Hole hole = new Hole(i, savedCourse);
-                holes.add(hole);
+        List<CourseRequest.update> courseUpdateInfos = request.getCourseInfos();
+        List<CourseRequest.create> courseCreateInfos = new ArrayList<>();
+        if(courseUpdateInfos != null) {
+            for(CourseRequest.update courseUpdateInfo : courseUpdateInfos) {
+                if (courseUpdateInfo.getId() == null)
+                    courseCreateInfos.add(
+                            new CourseRequest.create(courseUpdateInfo.getName(), courseUpdateInfo.getTotalHoles())
+                    );
+                else
+                    courseService.updateCourse(courseUpdateInfo);
             }
+            if (!courseCreateInfos.isEmpty())
+                courseService.createCourses(formation, courseCreateInfos);
         }
-        List<Long> holeIds = holeRepository.saveAllInBatch(holes);
-        List<Hole> savedHoles = holeRepository.findAllById(holeIds);
+    }
 
-        for (Hole savedHole : savedHoles) {
-            tees.addAll(List.of(
-                    new Tee(null, "BLACK", 320, savedHole),
-                    new Tee(null, "BLUE", 290, savedHole),
-                    new Tee(null, "WHITE", 270, savedHole),
-                    new Tee(null, "RED", 250, savedHole),
-                    new Tee(null, "GREEN", 230, savedHole)
-            ));
-        }
-        teeRepository.saveAllInBatch(tees);
+    public void deleteFormations(List<Long> ids) {
+        formationRepository.deleteAllByIdInBatch(ids);
     }
 }

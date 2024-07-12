@@ -33,4 +33,12 @@ public class Course {
         this.totalHoles = totalHoles;
         this.formation = formation;
     }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateTotalHoles(Integer newTotalHoles) {
+        this.totalHoles = newTotalHoles;
+    }
 }

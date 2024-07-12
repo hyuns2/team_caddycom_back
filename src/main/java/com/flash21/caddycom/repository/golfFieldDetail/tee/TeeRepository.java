@@ -1,5 +1,6 @@
 package com.flash21.caddycom.repository.golfFieldDetail.tee;
 
+import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.entity.golfFieldDetail.Tee;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,4 +12,9 @@ public interface TeeRepository extends JpaRepository<Tee, Long>, TeeJdbcReposito
     @Transactional
     @Query(value = "delete from Tee t where t.hole.course.id = :courseId ")
     void deleteAllByCourseId(Long courseId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "delete from Tee t where t.hole in :holes")
+    void deleteAllByHoles(Iterable<Hole> holes);
 }

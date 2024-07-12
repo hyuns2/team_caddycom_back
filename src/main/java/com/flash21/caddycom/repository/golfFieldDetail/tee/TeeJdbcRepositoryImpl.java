@@ -24,7 +24,7 @@ public class TeeJdbcRepositoryImpl implements TeeJdbcRepository {
 
     @Transactional
     public List<Long> saveAllInBatch(List<Tee> tees) {
-        String sql = "INSERT INTO TEE (name, distance, hole_id)" + "VALUES (?, ?, ?)";
+        String sql = "INSERT INTO tee (name, distance, hole_id)" + "VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.batchUpdate(new PreparedStatementCreator() {

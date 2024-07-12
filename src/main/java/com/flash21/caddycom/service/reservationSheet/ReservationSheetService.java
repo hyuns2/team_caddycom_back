@@ -6,7 +6,7 @@ import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
 import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
 import com.flash21.caddycom.global.exception.cException.CCourseNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
-import com.flash21.caddycom.repository.CourseRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.reservationSheet.MetaDataReport;
 import com.flash21.caddycom.repository.reservationSheet.ReservationDateJdbcRepository;
 import com.flash21.caddycom.repository.reservationSheet.ReservationDateRepository;

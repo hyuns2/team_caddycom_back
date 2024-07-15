@@ -31,9 +31,9 @@ public class ReservationSheetController {
     }
 
     @Operation(summary = "캘린더 메타정보 조회", description = "골프장 관리자가 캘린더에 표기되는 메타정보를 조회합니다.")
-    @GetMapping("/calendar/{year}/{month}")
-    public ResponseEntity<?> getMetaData(@AuthenticationPrincipal User user, @PathVariable int year, @PathVariable int month, @RequestParam List<Long> reservationSheetIdList) {
-        List<ReservationSheetDto.MetaDataResponse> responseDtoList = rsService.getMetaData(year, month, reservationSheetIdList);
+    @GetMapping("/calendar/{reservationSheetInfoId}/{year}/{month}")
+    public ResponseEntity<?> getMetaData(@AuthenticationPrincipal User user, @PathVariable Long reservationSheetInfoId, @PathVariable int year, @PathVariable int month) {
+        List<ReservationSheetDto.MetaDataResponse> responseDtoList = rsService.getMetaData(reservationSheetInfoId, year, month);
 
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }

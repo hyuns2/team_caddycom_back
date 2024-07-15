@@ -93,16 +93,16 @@ public class ReservationSheetService {
     /**
      * 메타데이터 조회: 캘린더에 표기되는 메타데이터를 반환합니다.
      *
+     * @param reservationSheetInfoId 조회할 예약시트정보 Id
      * @param year 대상 연도
      * @param month 대상 월
-     * @param reservationSheetIdList 조회할 ReservationSheet Id 리스트
      * @return 메타데이터 반환 dto 리스트
      */
-    public List<ReservationSheetDto.MetaDataResponse> getMetaData(int year, int month, List<Long> reservationSheetIdList) {
+    public List<ReservationSheetDto.MetaDataResponse> getMetaData(Long reservationSheetInfoId, int year, int month) {
         LocalDate targetDate = LocalDate.of(year, month, 1);
-        List<ReservationSheetDto.MetaDataResponse> responseDtoList = new ArrayList<>();
-        List<MetaDataReport> reports = rdRepository.countAllMetaDataByDate(targetDate, targetDate.plusMonths(1), reservationSheetIdList);
+        List<MetaDataReport> reports = rdRepository.countAllMetaDataByDate(targetDate, targetDate.plusMonths(1), reservationSheetInfoId);
 
+        List<ReservationSheetDto.MetaDataResponse> responseDtoList = new ArrayList<>();
         for (MetaDataReport report: reports) {
             int totalCntResult = report.getTotalCntSum();
             int blockedCntResult = report.getBlockedCntSum();
@@ -117,5 +117,4 @@ public class ReservationSheetService {
 
         return responseDtoList;
     }
-
 }

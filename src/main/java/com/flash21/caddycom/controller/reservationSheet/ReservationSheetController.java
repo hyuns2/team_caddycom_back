@@ -24,10 +24,10 @@ public class ReservationSheetController {
 
     @Operation(summary = "예약시트 등록", description = "골프장 관리자가 예약시트를 등록합니다.")
     @PostMapping
-    public ResponseEntity<List<Long>> createReservationSheet(@AuthenticationPrincipal User user, @Valid @RequestBody ReservationSheetDto.CreateRequest dto) {
-        List<Long> reservationSheetIdList = rsService.createReservationSheet(dto);
+    public ResponseEntity<Long> createReservationSheet(@AuthenticationPrincipal User user, @Valid @RequestBody ReservationSheetDto.CreateRequest dto) {
+        Long reservationSheetInfoId = rsService.createReservationSheet(dto);
 
-        return new ResponseEntity<>(reservationSheetIdList, HttpStatus.CREATED);
+        return new ResponseEntity<>(reservationSheetInfoId, HttpStatus.CREATED);
     }
 
     @Operation(summary = "캘린더 메타정보 조회", description = "골프장 관리자가 캘린더에 표기되는 메타정보를 조회합니다.")

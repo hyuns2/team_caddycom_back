@@ -4,13 +4,11 @@ import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.dto.reservationSheet.ReservationSheetDto;
 import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
 import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
+import com.flash21.caddycom.entity.reservationSheet.ReservationSheetInfo;
 import com.flash21.caddycom.global.exception.cException.CCourseNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
-import com.flash21.caddycom.repository.reservationSheet.MetaDataReport;
-import com.flash21.caddycom.repository.reservationSheet.ReservationDateJdbcRepository;
-import com.flash21.caddycom.repository.reservationSheet.ReservationDateRepository;
-import com.flash21.caddycom.repository.reservationSheet.ReservationSheetRepository;
+import com.flash21.caddycom.repository.reservationSheet.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +20,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ReservationSheetService {
+    final ReservationSheetInfoRepository rsInfoRepository;
     final ReservationSheetRepository rsRepository;
     final ReservationDateRepository rdRepository;
     final CourseRepository courseRepository;
@@ -31,27 +30,29 @@ public class ReservationSheetService {
      * 예약시트 생성: 예약시트를 생성합니다.
      *
      * @param dto 예약시트 생성요청 dto
-     * @return 생성된 예약시트 Id 리스트
+     * @return 생성된 예약시트정보 Id
      *
      * @throws CCourseNotFoundException Course 객체가 존재하지 않을 경우
      */
     @Transactional
-    public List<Long> createReservationSheet(ReservationSheetDto.CreateRequest dto) {
+    public Long createReservationSheet(ReservationSheetDto.CreateRequest dto) {
         validToCreateReservationSheet(dto);
 
         List<Course> courseList = courseRepository.findAllById(dto.getCourseList());
         if (courseList.isEmpty())
             throw new CCourseNotFoundException();
-        List<ReservationSheet> sheets = ReservationSheetDto.CreateRequest.toEntities(dto, courseList);
-        List<Long> returnSheetIdList = new ArrayList<>();
+
+        ReservationSheetInfo reservationSheetInfo = rsInfoRepository.save(ReservationSheetInfo.builder().
+                startAt(dto.getStartDate()).
+                endAt(dto.getEndDate()).build());
+        List<ReservationSheet> sheets = ReservationSheetDto.CreateRequest.toEntities(dto, reservationSheetInfo, courseList);
 
         for (ReservationSheet sheet: sheets) {
             ReservationSheet returnSheet = rsRepository.save(sheet);
-            returnSheetIdList.add(returnSheet.getId());
             createReservationDate(returnSheet, dto.getStartDate(), dto.getEndDate());
         }
 
-        return returnSheetIdList;
+        return reservationSheetInfo.getId();
     }
 
     /**

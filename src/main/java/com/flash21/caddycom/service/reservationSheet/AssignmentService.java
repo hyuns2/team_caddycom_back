@@ -73,8 +73,8 @@ public class AssignmentService {
      * @param reservationDate 대상 reservationDate 객체
      */
     private void createAndGetAssignments(ReservationSheet reservationSheet, ReservationDate reservationDate) {
-        LocalTime startAtLocalTime = reservationSheet.getStartAt().toLocalTime();
-        LocalTime endAtLocalTIme = reservationSheet.getEndAt().toLocalTime();
+        LocalTime startAtLocalTime = reservationSheet.getStartTime();
+        LocalTime endAtLocalTIme = reservationSheet.getEndTime();
 
         List<Integer> teeOffList = Arrays.stream(reservationSheet.getTeeOff().split("~")).
                 map(Integer::new).toList();

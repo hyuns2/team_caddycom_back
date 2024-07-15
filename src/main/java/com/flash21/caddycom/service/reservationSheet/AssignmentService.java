@@ -53,10 +53,8 @@ public class AssignmentService {
 
             if (!reservationDate.getIsAssigned())
                 createAssignments(reservationSheet, reservationDate);
-
             makeResponse(reservationSheet, reservationDate, result);
         }
-
         return result;
     }
 

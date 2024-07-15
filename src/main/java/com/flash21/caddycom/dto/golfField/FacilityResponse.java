@@ -19,11 +19,13 @@ public class FacilityResponse {
     public static class Item{
         private String name;
         private String mainImage;
+        private String content;
         private List<String> images;
 
         public static FacilityResponse.Item from(Facility facility){
-            return FacilityResponse.Item.builder()
+            return Item.builder()
                     .name(facility.getName())
+                    .content(facility.getContent())
                     .mainImage(facility.getFacilityImages().get(0).getImageUrl())
                     .images(facility.getFacilityImages().stream()
                             .map(FacilityImage::getImageUrl)

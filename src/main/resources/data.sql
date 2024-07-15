@@ -6,12 +6,12 @@ insert into `caddycom`.`facility` (id, name, golf_field_id) values
     ('1', '프로샵', '1'), ('2', '레스토랑', '1'), ('3', '카트', '1'), ('4', '연습장', '1'), ('5', '샤워실', '1'), ('6', '클럽하우스', '1');
 
 insert into `caddycom`.`facility_image` (id, facility_id, image_url) values
-    ('1', '1', 'image1.png'), ('2', '1', 'image2.png'), ('3', '1', 'image3.png'),
-    ('4', '2', 'image1.png'), ('5', '2', 'image2.png'), ('6', '2', 'image3.png'),
-    ('7', '3', 'image1.png'), ('8', '3', 'image2.png'), ('9', '3', 'image3.png'),
-    ('10', '4', 'image1.png'), ('11', '4', 'image2.png'), ('12', '4', 'image3.png'),
-    ('13', '5', 'image1.png'), ('14', '5', 'image2.png'), ('15', '5', 'image3.png'),
-    ('16', '6', 'image1.png'), ('17', '6', 'image2.png'), ('18', '6', 'image3.png');
+    ('1', '1', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+2.jpg'), ('2', '1', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+1.jpeg'), ('3', '1', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+3.jpg'),
+    ('4', '2', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+1.jpg'), ('5', '2', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+2.jpg'), ('6', '2', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+3.jpg'),
+    ('7', '3', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+2.jpg'), ('8', '3', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+1.jpeg'), ('9', '3', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+3.jpg'),
+    ('10', '4', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+1.jpg'), ('11', '4', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+2.jpg'), ('12', '4', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+3.jpg'),
+    ('13', '5', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+2.jpg'), ('14', '5', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+1.jpeg'), ('15', '5', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+3.jpg'),
+    ('16', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+1.jpg'), ('17', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+2.jpg'), ('18', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+3.jpg');
 
 insert into `caddycom`.`formation` (`id`, `name`, `golf_field_id`)
 values ('1', '구성1','1'), ('2', '구성2','1');

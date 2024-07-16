@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,10 +24,10 @@ public class AssignmentController {
     final AssignmentService assignmentService;
 
     @Operation(summary = "배정정보 조회", description = "골프장 관리자가 배정정보를 조회합니다.")
-    @GetMapping("/{reservationSheetId}/{targetDate}")
-    public ResponseEntity<List<AssignmentDto.AssignmentsResponse>> getAssignments(@AuthenticationPrincipal User user, @PathVariable Long reservationSheetId, @PathVariable LocalDate targetDate) {
-        List<AssignmentDto.AssignmentsResponse> assignments = assignmentService.getAssignments(reservationSheetId, targetDate);
+    @GetMapping("/{reservationSheetInfoId}/{targetDate}")
+    public ResponseEntity<Map<String, List<AssignmentDto.AssignmentsResponse>>> getAssignments(@AuthenticationPrincipal User user, @PathVariable Long reservationSheetInfoId, @PathVariable LocalDate targetDate) {
+        Map<String, List<AssignmentDto.AssignmentsResponse>> result = assignmentService.getAssignments(reservationSheetInfoId, targetDate);
 
-        return new ResponseEntity<>(assignments, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

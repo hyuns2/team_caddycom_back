@@ -23,7 +23,7 @@ public class Facility {
     @Column(length = 1000)
     private String content;
 
-    @OneToMany(mappedBy = "facility", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "facility", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FacilityImage> facilityImages;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,6 +40,11 @@ public class Facility {
         this.facilityImages = images.stream()
                 .map(url -> new FacilityImage(url, this))
                 .toList(); */
+    }
+
+    public void update(String name, String content){
+        this.name = name;
+        this.content = content;
     }
 
 }

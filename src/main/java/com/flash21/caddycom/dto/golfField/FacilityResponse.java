@@ -17,18 +17,34 @@ public class FacilityResponse {
     @Getter
     @Builder
     public static class Item{
+        private Long id;
         private String name;
         private String mainImage;
         private String content;
-        private List<String> images;
+        private List<Image> images;
+
+        @Getter
+        @Builder
+        public static class Image{
+            private Long id;
+            private String imageUrl;
+
+            public static Image from(FacilityImage facilityImage){
+                return Image.builder()
+                        .id(facilityImage.getId())
+                        .imageUrl(facilityImage.getImageUrl())
+                        .build();
+            }
+        }
 
         public static FacilityResponse.Item from(Facility facility){
             return Item.builder()
+                    .id(facility.getId())
                     .name(facility.getName())
                     .content(facility.getContent())
                     .mainImage(facility.getFacilityImages().get(0).getImageUrl())
                     .images(facility.getFacilityImages().stream()
-                            .map(FacilityImage::getImageUrl)
+                            .map(Image::from)
                             .toList())
                     .build();
         }

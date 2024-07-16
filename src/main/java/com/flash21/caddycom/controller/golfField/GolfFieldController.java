@@ -1,5 +1,6 @@
 package com.flash21.caddycom.controller.golfField;
 
+import com.flash21.caddycom.dto.golfField.FacilityRequest;
 import com.flash21.caddycom.dto.golfField.FacilityResponse;
 import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
@@ -77,7 +78,7 @@ public class GolfFieldController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "골프장 시설정보 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 시설 안내를 입력한다.")
     public ResponseEntity<Void> addFacilityInfo(@RequestParam Long golfFieldId,
-                                                @Valid @ModelAttribute GolfFieldRequest.FacilityInfo request) {
+                                                @Valid @ModelAttribute FacilityRequest.Create request) {
         golfFieldService.addFacilityInfo(golfFieldId, request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -104,5 +105,15 @@ public class GolfFieldController {
     @Operation(summary = "골프장 시설정보 조회 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 시설을 조회한다.")
     public ResponseEntity<FacilityResponse> getFacilityInfo(@RequestParam Long golfFieldId) {
         return ResponseEntity.ok().body(facilityService.getFacility(golfFieldId));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping(value = "facility-info",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "골프장 시설정보 수정 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 시설 안내를 입력한다.")
+    public ResponseEntity<Void> updateFacilityInfo(@RequestParam Long golfFieldId,
+                                                   @Valid @ModelAttribute FacilityRequest.Update request) {
+        golfFieldService.updateFacilityInfo(golfFieldId, request);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

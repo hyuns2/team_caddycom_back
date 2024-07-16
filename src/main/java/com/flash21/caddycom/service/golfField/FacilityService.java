@@ -1,5 +1,6 @@
 package com.flash21.caddycom.service.golfField;
 
+import com.flash21.caddycom.dto.golfField.FacilityRequest;
 import com.flash21.caddycom.dto.golfField.FacilityResponse;
 import com.flash21.caddycom.entity.golfField.Facility;
 import com.flash21.caddycom.entity.golfField.FacilityImage;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -28,7 +30,8 @@ import java.util.NoSuchElementException;
 public class FacilityService {
     private final GolfFieldRepository golfFieldRepository;
     private final FacilityRepository facilityRepository;
-    private final FacilityImageJdbcRepository facilityImageRepository;
+    private final FacilityImageRepository facilityImageRepository;
+    private final FacilityImageJdbcRepository facilityImageJdbcRepository;
 
 
     /**
@@ -50,7 +53,7 @@ public class FacilityService {
         List<FacilityImage> facilityImages = imageUrls.stream()
                         .map(imageUrl -> new FacilityImage(imageUrl, facility))
                         .toList();
-        facilityImageRepository.saveAll(facilityImages);
+        facilityImageJdbcRepository.saveAll(facilityImages);
     }
 
 
@@ -66,5 +69,30 @@ public class FacilityService {
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
 
         return FacilityResponse.from(golfField.getFacilities());
+    }
+
+    /**
+     * 골프장 시설 정보를 수정한다.
+     * @param id 수정할 시설 id, null이 될 수 없다.
+     * @param name 시설 이름
+     * @param content 시설 설명
+     * @param existingImageUrls 기존 이미지 url 리스트(없어진 이미지를 삭제)
+     * @param newImageUrls 새로 추가할 이미지 url 리스트
+     * @throws NoSuchElementException 해당 시설이 존재하지 않는 경우
+     */
+    @Transactional
+    public void updateFacilityInfo(Long id, String name, String content, List<Long> existingImageUrls, List<String> newImageUrls){
+        Facility facility = facilityRepository.findById(id).
+                orElseThrow(() -> new NoSuchElementException("해당 시설은 존재하지 않습니다."));
+
+        facility.getFacilityImages().removeIf(
+                facilityImage -> !existingImageUrls.contains(facilityImage.getId()));
+
+        List<FacilityImage> facilityImages = newImageUrls.stream()
+                .map(imageUrl -> new FacilityImage(imageUrl, facility))
+                .toList();
+
+        facilityImageJdbcRepository.saveAll(facilityImages);
+        facility.update(name, content);
     }
 }

@@ -38,11 +38,13 @@ public class FacilityResponse {
         }
 
         public static FacilityResponse.Item from(Facility facility){
+            String mainImage = facility.getFacilityImages().isEmpty() ?
+                    null : facility.getFacilityImages().get(0).getImageUrl();
             return Item.builder()
                     .id(facility.getId())
                     .name(facility.getName())
                     .content(facility.getContent())
-                    .mainImage(facility.getFacilityImages().get(0).getImageUrl())
+                    .mainImage(mainImage)
                     .images(facility.getFacilityImages().stream()
                             .map(Image::from)
                             .toList())

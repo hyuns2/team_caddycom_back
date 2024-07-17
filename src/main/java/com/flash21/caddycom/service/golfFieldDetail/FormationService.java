@@ -32,10 +32,10 @@ public class FormationService {
 
     public void createFormation(GolfField golfField, FormationRequest.create request) {
         Formation formation;
-        if(request.getName() != null)
-            formation = new Formation(null, golfField, request.getName(), null);
-        else
+        if(request.getName() == null || request.getName().isBlank())
             formation = new Formation(null, golfField, "NONE", null);
+        else
+            formation = new Formation(null, golfField, request.getName(), null);
 
         formationRepository.save(formation);
 

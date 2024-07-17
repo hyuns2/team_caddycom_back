@@ -14,6 +14,9 @@ import com.flash21.caddycom.repository.reservationSheet.AssignmentRepository;
 import com.flash21.caddycom.repository.reservationSheet.ReservationDateRepository;
 import com.flash21.caddycom.repository.reservationSheet.ReservationSheetRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +33,7 @@ public class AssignmentService {
     final ReservationDateRepository rdRepository;
     final AssignmentRepository assignmentRepository;
     final AssignmentJdbcRepository assignmentJdbcRepository;
+
     final CourseRepository courseRepository;
 
     /**
@@ -37,68 +41,73 @@ public class AssignmentService {
      *
      * @param reservationSheetInfoId 대상 예약시트 Id
      * @param targetDate 대상 날짜
-     * @return 코스별 배정정보 조회 dto 리스트
+     * @param part 부 (0일 경우, 전체 조회)
+     * @param page 페이지 번호 (데이터 10개)
+     * @return 코스리스트, 시간리스트, 부별 id-status 형태의 map 반환
      *
      * @throws CReservationDateNotFoundException ReservationDate 객체가 존재하지 않을 경우
      * @throws CReservationSheetNotFoundException ReservationSheet 객체가 존재하지 않을 경우
      */
     @Transactional
-    public Map<String, List<AssignmentDto.AssignmentsResponse>> getAssignments(Long reservationSheetInfoId, LocalDate targetDate) {
-        List<ReservationSheet> reservationSheetList = rsRepository.findAllByReservationSheetInfoId(reservationSheetInfoId);
-        Map<String, List<AssignmentDto.AssignmentsResponse>> result = new HashMap<>();
+    public Map<String, List<String>> getAssignments(Long reservationSheetInfoId, LocalDate targetDate, int part, int page) {
+        Set<Course> courseList = new HashSet<>();
 
-        for (ReservationSheet reservationSheet: reservationSheetList) {
+        List<ReservationSheet> reservationSheetList = rsRepository.findAllByReservationSheetInfoId(reservationSheetInfoId);
+        if (reservationSheetList.isEmpty())
+            throw new CReservationSheetNotFoundException();
+        for (ReservationSheet reservationSheet : reservationSheetList) {
+            Course course = reservationSheet.getCourse();
             ReservationDate reservationDate = rdRepository.findByReservationSheetIdAndReservationAt(reservationSheet.getId(), targetDate)
                     .orElseThrow(CReservationDateNotFoundException::new);
 
             if (!reservationDate.getIsAssigned())
                 createAssignments(reservationSheet, reservationDate);
-            makeResponse(reservationSheet, reservationDate, result);
+            courseList.add(course);
         }
-        return result;
+
+        return findAndGetAssignmentsByCourse(courseList, targetDate, part, page);
     }
 
     /**
-     * 배정정보 조회 내부함수1: 코스별로 배정정보를 매핑하여 반환합니다.
+     * 배정정보 조회 내부함수1: 코스와 부, 날짜에 따른 배정정보를 조회하여 반환합니다.
      *
-     * @param reservationSheet 대상 reservationSheet 객체
-     * @param reservationDate 대상 reservation 객체
-     * @param result 코스별 배정정보 결과
-     *
-     * @throws CCourseNotFoundException Course 객체가 존재하지 않을 경우
+     * @param courseList 대상 코스리스트
+     * @param date 대상 날짜
+     * @param part 대상 부 (0일 경우, 전체 조회)
+     * @param page page 페이지 번호 (데이터 10개)
+     * @return 코스리스트, 시간리스트, 부별 id-status 형태의 map 반환
      */
-    private void makeResponse(ReservationSheet reservationSheet, ReservationDate reservationDate, Map<String, List<AssignmentDto.AssignmentsResponse>> result) {
-        Course course = courseRepository.findById(reservationSheet.getCourse().getId())
-                .orElseThrow(CCourseNotFoundException::new);
-        String courseName = course.getName();
+    private Map<String, List<String>> findAndGetAssignmentsByCourse(Set<Course> courseList, LocalDate date, int part, int page) {
+        Map<String, List<String>> resultList = new HashMap<>();
+        Set<LocalTime> timeList = new HashSet<>();
 
-        if (!result.containsKey(courseName))
-            result.put(course.getName(), findAndGetAssignments(reservationDate));
-        else {
-            List<AssignmentDto.AssignmentsResponse> mergedList = Stream.of(result.get(courseName), findAndGetAssignments(reservationDate)).
-                    flatMap(Collection::stream).toList();
-            result.put(course.getName(), mergedList);
+        for (Course course: courseList) {
+            List<String> resultListByCourse = new ArrayList<>();
+            int pageSize = 10;
+            Pageable pageable = PageRequest.of(page, pageSize);
+
+            Page<Assignment> assignmentPageList;
+            if (part == 0)
+                assignmentPageList = assignmentRepository.findAllByCourseAndReservationDate(course, date, pageable);
+            else
+                assignmentPageList = assignmentRepository.findAllByCourseAndPartAndReservationDate(course, part, date, pageable);
+            List<Assignment> assignmentList = assignmentPageList.getContent();
+
+            for (Assignment assignment : assignmentList) {
+                timeList.add(assignment.getStartTime());
+                resultListByCourse.add(assignment.getId() + "-" + assignment.getStatus());
+            }
+
+            resultList.put(course.getName(), resultListByCourse);
         }
+
+        resultList.put("courseList", courseList.stream().map(Course::getName).sorted().toList());
+        resultList.put("timeList", timeList.stream().sorted().map(LocalTime::toString).toList());
+        return resultList;
     }
 
     /**
-     * 배정정보 조회 내부함수2: 배정정보를 조회하여 반환합니다.
-     *
-     * @param reservationDate 예약시트 Id와 조회한 날짜에 해당하는 reservationDate 객체
-     * @return 배정정보 조회 dto 리스트
-     */
-    private List<AssignmentDto.AssignmentsResponse> findAndGetAssignments(ReservationDate reservationDate) {
-        List<AssignmentDto.AssignmentsResponse> responseDtoList = new ArrayList<>();
-        List<Assignment> assignmentList = assignmentRepository.findAllByReservationDateId(reservationDate.getId());
-
-        for (Assignment assignment : assignmentList)
-            responseDtoList.add(toDto(assignment));
-
-        return responseDtoList;
-    }
-
-    /**
-     * 배정정보 조회 내부함수3: 배정정보를 생성합니다.
+     * 배정정보 조회 내부함수2: 배정정보를 생성합니다.
      *
      * @param reservationSheet 대상 reservationSheet 객체
      * @param reservationDate 대상 reservationDate 객체

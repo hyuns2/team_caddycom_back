@@ -2,6 +2,7 @@ package com.flash21.caddycom.controller.golfFieldDetail;
 
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationRequest;
+import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.service.golfField.GolfFieldService;
@@ -13,10 +14,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Tag(name = "2-1. Formation", description = "골프장 구성 설정 관련 API")
@@ -45,6 +48,14 @@ public class FormationController {
         courseService.deleteCourses(request.getDeleteCourses());
 
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/api/formations")
+    @Operation(summary = "골프장 구성 정보 반환 API")
+    public ResponseEntity<List<FormationResponse.create>> getFormations(Long golfFieldId) {
+        List<FormationResponse.create> formationInfos = formationService.getAllFormations(golfFieldId);
+
+        return new ResponseEntity<>(formationInfos, HttpStatus.OK);
     }
 
 }

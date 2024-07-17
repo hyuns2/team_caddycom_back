@@ -63,6 +63,21 @@ public class TeeService {
         savedTees.addAll(newTees);
     }
 
+    public List<Long> createTees(List<Hole> holes) {
+        List<Tee> tees = new ArrayList<>();
+        for(Hole hole : holes) {
+            tees.addAll(List.of(
+                    new Tee(null, "BLACK", 320, hole),
+                    new Tee(null, "BLUE", 290, hole),
+                    new Tee(null, "WHITE", 270, hole),
+                    new Tee(null, "RED", 250, hole),
+                    new Tee(null, "GREEN", 230, hole)
+            ));
+        }
+
+        return teeRepository.saveAllInBatch(tees);
+    }
+
     @Transactional
     public void deleteTees(List<Long> teeIds) {
         teeRepository.deleteAllByIdInBatch(teeIds);

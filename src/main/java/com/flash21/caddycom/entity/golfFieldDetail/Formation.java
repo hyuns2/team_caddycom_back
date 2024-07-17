@@ -27,4 +27,7 @@ public class Formation {
     @OneToMany(mappedBy = "formation", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Course> courses = new ArrayList<>();
 
+    public void updateName(String name) {
+        this.name = name;
+    }
 }

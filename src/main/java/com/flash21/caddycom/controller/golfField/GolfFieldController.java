@@ -117,4 +117,12 @@ public class GolfFieldController {
         golfFieldService.updateFacilityInfo(golfFieldId, request);
         return ResponseEntity.ok().body(new Message("골프장 시설정보가 수정되었습니다."));
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("facility-info")
+    @Operation(summary = "골프장 시설정보 삭제 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 시설을 삭제한다.")
+    public ResponseEntity<Message> deleteFacilityInfo(@RequestParam Long facilityId) {
+        facilityService.deleteFacility(facilityId);
+        return ResponseEntity.ok().body(new Message("골프장 시설정보가 삭제되었습니다."));
+    }
 }

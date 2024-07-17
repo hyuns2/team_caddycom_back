@@ -95,4 +95,14 @@ public class FacilityService {
         facilityImageJdbcRepository.saveAll(facilityImages);
         facility.update(name, content);
     }
+
+    /**
+     * 골프장 시설 정보를 삭제한다.
+     * @param id 삭제할 시설 id, null이 될 수 없다.
+     */
+    @Transactional
+    public void deleteFacility(Long id){
+        facilityRepository.delete(facilityRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 시설은 존재하지 않습니다.")));
+    }
 }

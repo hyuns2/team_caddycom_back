@@ -1,5 +1,6 @@
 package com.flash21.caddycom.service.auth;
 
+import com.flash21.caddycom.dto.auth.JwtResponse;
 import com.flash21.caddycom.dto.auth.SigninResponse;
 import com.flash21.caddycom.dto.auth.SigninRequest;
 import com.flash21.caddycom.entity.account.Role;
@@ -42,15 +43,17 @@ public class AuthService {
     @Transactional(readOnly = true)
     public SigninResponse login(SigninRequest request){
         if (request.getKey().equals("관리자")){
-            return adminLogin(request.getPassword());
+            JwtResponse jwtPair = adminLogin(request.getPassword());
+            return new SigninResponse(jwtPair);
         }
         GolfField golfField = golfFieldRepository.findByRegistrationNumber(request.getKey())
                 .orElseThrow(() -> new IllegalArgumentException("해당 사업자 등록번호의 골프장은 존재하지 않습니다."));
-        return managerLogin(request.getPassword(), golfField);
+        JwtResponse jwtPair = managerLogin(request.getPassword(), golfField);
+        return new SigninResponse(jwtPair, golfField.getId());
     }
 
 
-    private SigninResponse adminLogin(String password){
+    private JwtResponse adminLogin(String password){
         if (!passwordEncoder.matches(password, passwordEncoder.encode("123456")))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 
@@ -58,7 +61,7 @@ public class AuthService {
     }
 
 
-    private SigninResponse managerLogin(String password, GolfField golfField){
+    private JwtResponse managerLogin(String password, GolfField golfField){
         if (!passwordEncoder.matches(password, golfField.getPassword()))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 

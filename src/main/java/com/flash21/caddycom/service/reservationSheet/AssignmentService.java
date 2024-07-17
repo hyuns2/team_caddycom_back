@@ -101,7 +101,7 @@ public class AssignmentService {
             resultList.put(course.getName(), resultListByCourse);
         }
 
-        resultList.put("courseList", courseList.stream().map(Course::getName).toList());
+        resultList.put("courseList", courseList.stream().map(Course::getName).sorted().toList());
         resultList.put("timeList", timeList.stream().sorted().map(LocalTime::toString).toList());
         return resultList;
     }

@@ -24,9 +24,9 @@ public class AssignmentController {
     final AssignmentService assignmentService;
 
     @Operation(summary = "배정정보 조회", description = "골프장 관리자가 배정정보를 조회합니다.")
-    @GetMapping("/{reservationSheetInfoId}/{targetDate}")
-    public ResponseEntity<Map<String, List<AssignmentDto.AssignmentsResponse>>> getAssignments(@AuthenticationPrincipal User user, @PathVariable Long reservationSheetInfoId, @PathVariable LocalDate targetDate) {
-        Map<String, List<AssignmentDto.AssignmentsResponse>> result = assignmentService.getAssignments(reservationSheetInfoId, targetDate);
+    @GetMapping("/{reservationSheetInfoId}/{targetDate}/{part}/{page}")
+    public ResponseEntity<Map<String, List<String>>> getAssignments(@AuthenticationPrincipal User user, @PathVariable Long reservationSheetInfoId, @PathVariable LocalDate targetDate, @PathVariable int part, @PathVariable int page) {
+        Map<String, List<String>> result = assignmentService.getAssignments(reservationSheetInfoId, targetDate, part, page);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

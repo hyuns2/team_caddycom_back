@@ -1,6 +1,7 @@
 package com.flash21.caddycom.service.golfField;
 
 import com.amazonaws.util.CollectionUtils;
+import com.flash21.caddycom.dto.golfField.FacilityRequest;
 import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
@@ -130,7 +131,7 @@ public class GolfFieldService {
      * @param request 시설 정보 입력 요청 DTO
      * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
-    public void addFacilityInfo(Long id, GolfFieldRequest.FacilityInfo request){
+    public void addFacilityInfo(Long id, FacilityRequest.Create request){
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
 
@@ -144,11 +145,27 @@ public class GolfFieldService {
     }
 
 
-    /**
-     * 골프장 정보 수정
-     * @param id 수정할 골프장 id, null이 들어갈 수 없다.
-     * @param request 수정할 골프장 정보 DTO
-     */
+    public void updateFacilityInfo(Long id, FacilityRequest.Update request) {
+        GolfField golfField = golfFieldRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+
+        List<String> facilityImages = (CollectionUtils.isNullOrEmpty(request.getFacilityImages()))
+                ?  Collections.emptyList()
+                : uploadFiles(request.getFacilityImages());
+
+        facilityService.updateFacilityInfo(request.getFacilityId(),
+                                        request.getName(),
+                                        request.getContent(),
+                                        request.getExistingImageIds(),
+                                        facilityImages);
+    }
+
+
+        /**
+         * 골프장 정보 수정
+         * @param id 수정할 골프장 id, null이 들어갈 수 없다.
+         * @param request 수정할 골프장 정보 DTO
+         */
     @Transactional
     public void updateGolfField(Long id, GolfFieldRequest.Update request){
         GolfField golfField = golfFieldRepository.findById(id)

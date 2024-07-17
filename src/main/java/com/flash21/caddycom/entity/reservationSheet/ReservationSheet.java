@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Builder
@@ -21,13 +21,17 @@ public class ReservationSheet {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
+    private ReservationSheetInfo reservationSheetInfo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
     private Course course;
 
     @Column(nullable = false)
-    private LocalDateTime startAt;
+    private LocalTime startTime;
 
     @Column(nullable = false)
-    private LocalDateTime endAt;
+    private LocalTime endTime;
 
     @Column(nullable = false)
     private String teeOff;

@@ -2,16 +2,21 @@
 insert into `caddycom`.`golf_field` (address, address_detail, amenities, area, business_license, caddy_type, car_guide, cart_info, contact, employment_license, fax, image_url, name, opening_date, password, public_transport_guide, registration_number, role, status, id) values
     ('대구시','북구 오른쪽 끝','레스토랑, 주차시설 완비','1000평','image.png',1,'사거리에서 우회전하면 있음','전동 카드 10개','010-0000-0000','file.pdf','13451-342','image-main.png','인터불고 CC','2020-09-09','1234','지하철 1호선 대공원역 2번 출구 하차','123456',1,1,1);
 
-insert into `caddycom`.`facility` (id, name, golf_field_id) values
-    ('1', '프로샵', '1'), ('2', '레스토랑', '1'), ('3', '카트', '1'), ('4', '연습장', '1'), ('5', '샤워실', '1'), ('6', '클럽하우스', '1');
+insert into `caddycom`.`facility` (id, name,content, golf_field_id) values
+    ('1', '프로샵','저희 레스토랑은 신선한 재료와 정성을 담은 요리로 고객님의 미각을 만족시킵니다. 아늑한 분위기와 친절한 서비스로 편안한 식사 시간을 제공합니다. 매일 새롭게 준비되는 특별 메뉴로 다양한 맛을 경험하실 수 있습니다. 가족, 친구들과 함께 즐길 수 있는 최고의 장소입니다. 저희 레스토랑에서 특별한 추억을 만들어 보세요.', '1'),
+    ('2', '레스토랑','저희 레스토랑은 신선한 재료와 정성을 담은 요리로 고객님의 미각을 만족시킵니다. 아늑한 분위기와 친절한 서비스로 편안한 식사 시간을 제공합니다. 매일 새롭게 준비되는 특별 메뉴로 다양한 맛을 경험하실 수 있습니다. 가족, 친구들과 함께 즐길 수 있는 최고의 장소입니다. 저희 레스토랑에서 특별한 추억을 만들어 보세요.', '1'),
+    ('3', '카트','저희 레스토랑은 신선한 재료와 정성을 담은 요리로 고객님의 미각을 만족시킵니다. 아늑한 분위기와 친절한 서비스로 편안한 식사 시간을 제공합니다. 매일 새롭게 준비되는 특별 메뉴로 다양한 맛을 경험하실 수 있습니다. 가족, 친구들과 함께 즐길 수 있는 최고의 장소입니다. 저희 레스토랑에서 특별한 추억을 만들어 보세요.', '1'),
+    ('4', '연습장','저희 레스토랑은 신선한 재료와 정성을 담은 요리로 고객님의 미각을 만족시킵니다. 아늑한 분위기와 친절한 서비스로 편안한 식사 시간을 제공합니다. 매일 새롭게 준비되는 특별 메뉴로 다양한 맛을 경험하실 수 있습니다. 가족, 친구들과 함께 즐길 수 있는 최고의 장소입니다. 저희 레스토랑에서 특별한 추억을 만들어 보세요.', '1'),
+    ('5', '샤워실','저희 레스토랑은 신선한 재료와 정성을 담은 요리로 고객님의 미각을 만족시킵니다. 아늑한 분위기와 친절한 서비스로 편안한 식사 시간을 제공합니다. 매일 새롭게 준비되는 특별 메뉴로 다양한 맛을 경험하실 수 있습니다. 가족, 친구들과 함께 즐길 수 있는 최고의 장소입니다. 저희 레스토랑에서 특별한 추억을 만들어 보세요.', '1'),
+    ('6', '클럽하우스','저희 레스토랑은 신선한 재료와 정성을 담은 요리로 고객님의 미각을 만족시킵니다. 아늑한 분위기와 친절한 서비스로 편안한 식사 시간을 제공합니다. 매일 새롭게 준비되는 특별 메뉴로 다양한 맛을 경험하실 수 있습니다. 가족, 친구들과 함께 즐길 수 있는 최고의 장소입니다. 저희 레스토랑에서 특별한 추억을 만들어 보세요.', '1');
 
 insert into `caddycom`.`facility_image` (id, facility_id, image_url) values
-    ('1', '1', 'image1.png'), ('2', '1', 'image2.png'), ('3', '1', 'image3.png'),
-    ('4', '2', 'image1.png'), ('5', '2', 'image2.png'), ('6', '2', 'image3.png'),
-    ('7', '3', 'image1.png'), ('8', '3', 'image2.png'), ('9', '3', 'image3.png'),
-    ('10', '4', 'image1.png'), ('11', '4', 'image2.png'), ('12', '4', 'image3.png'),
-    ('13', '5', 'image1.png'), ('14', '5', 'image2.png'), ('15', '5', 'image3.png'),
-    ('16', '6', 'image1.png'), ('17', '6', 'image2.png'), ('18', '6', 'image3.png');
+    ('1', '1', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+2.jpg'), ('2', '1', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+1.jpeg'), ('3', '1', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+3.jpg'),
+    ('4', '2', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+1.jpg'), ('5', '2', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+2.jpg'), ('6', '2', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+3.jpg'),
+    ('7', '3', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+2.jpg'), ('8', '3', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+1.jpeg'), ('9', '3', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+3.jpg'),
+    ('10', '4', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+1.jpg'), ('11', '4', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+2.jpg'), ('12', '4', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+3.jpg'),
+    ('13', '5', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+2.jpg'), ('14', '5', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+1.jpeg'), ('15', '5', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+3.jpg'),
+    ('16', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+1.jpg'), ('17', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+2.jpg'), ('18', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+3.jpg');
 
 insert into `caddycom`.`formation` (`id`, `name`, `golf_field_id`)
 values ('1', '구성1','1'), ('2', '구성2','1');
@@ -184,43 +189,3 @@ insert into `caddycom`.`tee` (id, hole_id, name, distance) values
                                                                (133, 27, "WHILE", 270),
                                                                (134, 27, "RED", 250),
                                                                (135, 27, "GREEN", 230);
-
-insert into `caddycom`.`reservation_sheet` (id, course_id, start_at, end_at, tee_off, part) values
-                                                                                                (1, 1, "2024-08-08 13:00:00.000000", "2024-08-15 15:00:00.000000", "7~8", 1),
-                                                                                                (2, 1, "2024-08-08 16:00:00.000000", "2024-08-15 18:00:00.000000", "9", 2);
-
-insert into `caddycom`.`reservation_date` (id, reservation_sheet_id, reservation_at, is_assigned, total_cnt, blocked_cnt) values
-                                                                                                                         (1, 1, "2024-08-08", 0, 0, 0),
-                                                                                                                         (2, 1, "2024-08-09", 0, 0, 0),
-                                                                                                                         (3, 1, "2024-08-10", 1, 16, 0),
-                                                                                                                         (4, 1, "2024-08-11", 0, 0, 0),
-                                                                                                                         (5, 1, "2024-08-12", 0, 0, 0),
-                                                                                                                         (6, 1, "2024-08-13", 0, 0, 0),
-                                                                                                                         (7, 1, "2024-08-14", 0, 0, 0),
-                                                                                                                         (8, 1, "2024-08-15", 0, 0, 0),
-                                                                                                                         (9, 2, "2024-08-08", 0, 0, 0),
-                                                                                                                         (10, 2, "2024-08-09", 0, 0, 0),
-                                                                                                                         (11, 2, "2024-08-10", 0, 0, 0),
-                                                                                                                         (12, 2, "2024-08-11", 0, 0, 0),
-                                                                                                                         (13, 2, "2024-08-12", 0, 0, 0),
-                                                                                                                         (14, 2, "2024-08-13", 0, 0, 0),
-                                                                                                                         (15, 2, "2024-08-14", 0, 0, 0),
-                                                                                                                         (16, 2, "2024-08-15", 0, 0, 0);
-
-insert into `caddycom`.`assignment` (id, reservation_date_id, start_time, status, caddy_name, reason) values
-                                                                                                          (1, 3, "13:00:00.000000", 0, null, null),
-                                                                                                          (2, 3, "13:07:00.000000", 0, null, null),
-                                                                                                          (3, 3, "13:15:00.000000", 0, null, null),
-                                                                                                          (4, 3, "13:22:00.000000", 0, null, null),
-                                                                                                          (5, 3, "13:30:00.000000", 0, null, null),
-                                                                                                          (6, 3, "13:37:00.000000", 0, null, null),
-                                                                                                          (7, 3, "13:45:00.000000", 0, null, null),
-                                                                                                          (8, 3, "13:52:00.000000", 0, null, null),
-                                                                                                          (9, 3, "14:00:00.000000", 0, null, null),
-                                                                                                          (10, 3, "14:07:00.000000", 0, null, null),
-                                                                                                          (11, 3, "14:15:00.000000", 0, null, null),
-                                                                                                          (12, 3, "14:22:00.000000", 0, null, null),
-                                                                                                          (13, 3, "14:30:00.000000", 0, null, null),
-                                                                                                          (14, 3, "14:37:00.000000", 0, null, null),
-                                                                                                          (15, 3, "14:45:00.000000", 0, null, null),
-                                                                                                          (16, 3, "14:52:00.000000", 0, null, null);

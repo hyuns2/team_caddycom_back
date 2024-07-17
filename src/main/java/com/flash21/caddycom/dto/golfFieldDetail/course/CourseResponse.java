@@ -7,6 +7,7 @@ public class CourseResponse {
     @Getter
     @AllArgsConstructor
     public static class create {
+        private Long id;
         private String name;
         private Integer totalHoles;
     }

@@ -82,9 +82,9 @@ public class FormationService {
         for(Formation formation : formations) {
             List<CourseResponse.create> courseInfos = new ArrayList<>();
             for (Course course : formation.getCourses()) {
-                courseInfos.add(new CourseResponse.create(course.getName(), course.getTotalHoles()));
+                courseInfos.add(new CourseResponse.create(course.getId(), course.getName(), course.getTotalHoles()));
             }
-            response.add(new FormationResponse.create(formation.getName(), courseInfos));
+            response.add(new FormationResponse.create(formation.getId(), formation.getName(), courseInfos));
         }
         return response;
     }

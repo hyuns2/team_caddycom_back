@@ -62,7 +62,8 @@ public class AuthService {
 
 
     private JwtResponse managerLogin(String password, GolfField golfField){
-        if (!passwordEncoder.matches(password, golfField.getPassword()))
+        // 더미데이터를 위한 비밀번호 encode 비활성화
+        if (!passwordEncoder.matches(password, passwordEncoder.encode(golfField.getPassword())))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 
         return jwtProvider.issueTokens(Role.ROLE_MANAGER, golfField.getName(), golfField.getId());

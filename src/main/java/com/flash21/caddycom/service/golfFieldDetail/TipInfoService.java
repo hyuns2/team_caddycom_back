@@ -5,7 +5,7 @@ import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.entity.golfFieldDetail.TipInfo;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.TipInfoRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -45,5 +45,22 @@ public class TipInfoService {
     @Transactional
     public void deleteTipInfos(List<Long> tipInfoIds) {
         tipInfoRepository.deleteAllByIdInBatch(tipInfoIds);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TipInfoDto.info> getAllTipInfos(Long holeId) {
+        List<TipInfo> tipInfos = tipInfoRepository.findAllByHoleId(holeId)
+                .orElse(null);
+
+        if(tipInfos == null) {
+            return null;
+        }
+
+        List<TipInfoDto.info> infos = new ArrayList<>();
+        tipInfos.forEach(tipInfo ->
+            infos.add(new TipInfoDto.info(tipInfo.getId(), tipInfo.getTitle(), tipInfo.getContent()))
+        );
+
+        return infos;
     }
 }

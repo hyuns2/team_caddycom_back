@@ -2,7 +2,9 @@ package com.flash21.caddycom.service.golfFieldDetail;
 
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseDto;
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseRequest;
+import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
 import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationRequest;
+import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
@@ -30,10 +32,10 @@ public class FormationService {
 
     public void createFormation(GolfField golfField, FormationRequest.create request) {
         Formation formation;
-        if(request.getName() != null)
-            formation = new Formation(null, golfField, request.getName(), null);
-        else
+        if(request.getName() == null || request.getName().isBlank())
             formation = new Formation(null, golfField, "NONE", null);
+        else
+            formation = new Formation(null, golfField, request.getName(), null);
 
         formationRepository.save(formation);
 
@@ -70,5 +72,20 @@ public class FormationService {
 
     public void deleteFormations(List<Long> ids) {
         formationRepository.deleteAllByIdInBatch(ids);
+    }
+
+    public List<FormationResponse.create> getAllFormations(Long golfFieldId) {
+        List<Formation> formations = formationRepository.findAllByGolfFieldId(golfFieldId)
+                .orElseThrow(() -> new NoSuchElementException("골프장에 구성이 존재하지 않습니다."));
+
+        List<FormationResponse.create> response = new ArrayList<>();
+        for(Formation formation : formations) {
+            List<CourseResponse.create> courseInfos = new ArrayList<>();
+            for (Course course : formation.getCourses()) {
+                courseInfos.add(new CourseResponse.create(course.getId(), course.getName(), course.getTotalHoles()));
+            }
+            response.add(new FormationResponse.create(formation.getId(), formation.getName(), courseInfos));
+        }
+        return response;
     }
 }

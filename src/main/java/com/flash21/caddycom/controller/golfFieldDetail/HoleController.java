@@ -1,15 +1,17 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
+import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleResponse;
 import com.flash21.caddycom.service.golfFieldDetail.HoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name="2-3. Hole", description = "홀 정보 관련 API")
 @RestController
@@ -33,5 +35,13 @@ public class HoleController {
     @Operation(summary = "홀의 상세 정보 설정 API")
     public void createDetailInfo(@Valid @RequestBody HoleRequest.createDetailInfo request) {
         holeService.createDetailInfo(request);
+    }
+
+    @GetMapping("/api/{courseId}/holes")
+    @Operation(summary = "코스의 모든 홀 정보 조회 API")
+    public ResponseEntity<List<HoleResponse.info>> getHoles(@PathVariable Long courseId) {
+        List<HoleResponse.info> holeInfos = holeService.getHoles(courseId);
+
+        return new ResponseEntity<>(holeInfos, HttpStatus.OK);
     }
 }

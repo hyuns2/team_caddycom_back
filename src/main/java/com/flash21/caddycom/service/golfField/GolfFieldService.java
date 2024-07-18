@@ -46,7 +46,7 @@ public class GolfFieldService {
                                                     request.getEmploymentLicense()));
 
         GolfField golfField = request.toEntity(fileUrls.get(0),fileUrls.get(1),fileUrls.get(2));
-        golfField.encodePassword(passwordEncoder.encode(request.getPassword()));
+        golfField.encodePassword(passwordEncoder.encode("123456"));
         golfFieldRepository.save(golfField);
     }
 

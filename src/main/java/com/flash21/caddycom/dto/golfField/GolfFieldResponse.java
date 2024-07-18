@@ -34,6 +34,7 @@ public class GolfFieldResponse {
         private List<String> courses;
         private String cartInfo;
         private String amenities;
+        private String image;
 
 
         public static GolfFieldResponse.Info from(GolfField golfField){
@@ -58,6 +59,7 @@ public class GolfFieldResponse {
                     .courses(courses)
                     .cartInfo(golfField.getCartInfo())
                     .amenities(golfField.getAmenities())
+                    .image(golfField.getImageUrl())
                     .build();
         }
     }

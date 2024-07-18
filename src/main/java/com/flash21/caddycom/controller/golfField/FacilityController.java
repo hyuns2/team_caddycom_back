@@ -30,7 +30,7 @@ public class FacilityController {
      */
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("detail-info")
-    @Operation(summary = "골프장 상세정보 입력 및 수정 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 추가정보를 입력, 수정한다.")
+    @Operation(summary = "골프장 상세정보 입력 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 추가정보를 입력, 수정한다.")
     public ResponseEntity<Message> addInfo(@RequestParam Long golfFieldId,
                                            @Valid @RequestBody GolfFieldRequest.AdditionalInfo request) {
         golfFieldService.createDetailInfo(golfFieldId, request);
@@ -48,7 +48,7 @@ public class FacilityController {
     @PutMapping("detail-info")
     @Operation(summary = "골프장 상세정보 수정 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 정보를 수정한다.")
     public ResponseEntity<Message> update(@RequestParam Long golfFieldId,
-                                          @Valid @ModelAttribute GolfFieldRequest.Update request) {
+                                          @Valid @RequestBody GolfFieldRequest.Update request) {
         golfFieldService.updateGolfField(golfFieldId, request);
         return ResponseEntity.ok().body(new Message("골프장이 수정되었습니다."));
     }

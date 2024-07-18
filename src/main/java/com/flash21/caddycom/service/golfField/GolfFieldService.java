@@ -68,8 +68,7 @@ public class GolfFieldService {
      */
     @Transactional
     public void updateGolfField(Long id, GolfFieldRequest.Update request){
-        GolfField golfField = golfFieldRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+        GolfField golfField = golfFieldRepository.getUserById(id);
 
         golfField.update(request.getName(),
                 request.getAddress(),
@@ -89,8 +88,7 @@ public class GolfFieldService {
      */
     @Transactional
     public void deleteGolfField(Long id){
-        GolfField golfField = golfFieldRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+        GolfField golfField = golfFieldRepository.getUserById(id);
         golfFieldRepository.delete(golfField);
     }
 
@@ -105,8 +103,7 @@ public class GolfFieldService {
      */
     @Transactional
     public void createDetailInfo(Long id, GolfFieldRequest.AdditionalInfo request){
-        GolfField golfField = golfFieldRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+        GolfField golfField = golfFieldRepository.getUserById(id);
 
         golfField.addInfo(request.getFax(),
                         request.getArea(),
@@ -125,9 +122,7 @@ public class GolfFieldService {
      */
     @Transactional(readOnly = true)
     public GolfFieldResponse.Info getDetailInfo(Long id){
-        GolfField golfField = golfFieldRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
-
+        GolfField golfField = golfFieldRepository.getUserById(id);
         return GolfFieldResponse.Info.from(golfField);
     }
 
@@ -141,9 +136,7 @@ public class GolfFieldService {
      */
     @Transactional
     public void createDirectionInfo(Long id, GolfFieldRequest.DirectionsInfo request){
-        GolfField golfField = golfFieldRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
-
+        GolfField golfField = golfFieldRepository.getUserById(id);
         golfField.addDirectionInfo(request.getPublicTransportGuide(), request.getCarGuide());
 
         golfFieldRepository.save(golfField);
@@ -157,9 +150,7 @@ public class GolfFieldService {
      */
     @Transactional(readOnly = true)
     public GolfFieldResponse.DirectionInfo getDirectionInfo(Long id){
-        GolfField golfField = golfFieldRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
-
+        GolfField golfField = golfFieldRepository.getUserById(id);
         return GolfFieldResponse.DirectionInfo.from(golfField);
     }
 
@@ -172,8 +163,7 @@ public class GolfFieldService {
      * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
     public void createFacility(Long id, FacilityRequest.Create request){
-        GolfField golfField = golfFieldRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+        GolfField golfField = golfFieldRepository.getUserById(id);
 
         List<String> facilityImages = (CollectionUtils.isNullOrEmpty(request.getFacilityImages()))
                 ?  Collections.emptyList()
@@ -191,8 +181,7 @@ public class GolfFieldService {
      * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
     public void updateFacility(Long id, FacilityRequest.Update request) {
-        GolfField golfField = golfFieldRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+        GolfField golfField = golfFieldRepository.getUserById(id);
 
         List<String> facilityImages = (CollectionUtils.isNullOrEmpty(request.getFacilityImages()))
                 ?  Collections.emptyList()

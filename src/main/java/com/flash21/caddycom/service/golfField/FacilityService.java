@@ -66,9 +66,7 @@ public class FacilityService {
      */
     @Transactional(readOnly = true)
     public FacilityResponse getFacility(Long id) {
-        GolfField golfField = golfFieldRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
-
+        GolfField golfField = golfFieldRepository.getUserById(id);
         return FacilityResponse.from(golfField.getFacilities());
     }
 

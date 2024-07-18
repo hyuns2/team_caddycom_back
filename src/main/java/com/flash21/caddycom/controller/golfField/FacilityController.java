@@ -44,6 +44,15 @@ public class FacilityController {
         return ResponseEntity.ok().body(golfFieldService.getDetailInfo(golfFieldId));
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("detail-info")
+    @Operation(summary = "골프장 상세정보 수정 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 정보를 수정한다.")
+    public ResponseEntity<Message> update(@RequestParam Long golfFieldId,
+                                          @Valid @ModelAttribute GolfFieldRequest.Update request) {
+        golfFieldService.updateGolfField(golfFieldId, request);
+        return ResponseEntity.ok().body(new Message("골프장이 수정되었습니다."));
+    }
+
 
 
     /**

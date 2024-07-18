@@ -42,14 +42,4 @@ public class GolfFieldController {
         return ResponseEntity.ok().body(new Message("골프장이 삭제되었습니다.."));
     }
 
-
-    @ResponseStatus(HttpStatus.OK)
-    @PutMapping
-    @Operation(summary = "골프장 수정 API", description="골프장 관리자 or 전체 시스템 관리자는 골프장 정보를 수정한다.")
-    public ResponseEntity<Message> update(@RequestParam Long golfFieldId,
-                                       @Valid @ModelAttribute GolfFieldRequest.Update request) {
-        golfFieldService.updateGolfField(golfFieldId, request);
-        return ResponseEntity.ok().body(new Message("골프장이 수정되었습니다."));
-    }
-
 }

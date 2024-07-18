@@ -57,6 +57,7 @@ public class FacilityService {
     }
 
 
+
     /**
      * 골프장 시설 정보를 조회한다.
      * @param id 조회할 골프장 id, null이 될 수 없다.

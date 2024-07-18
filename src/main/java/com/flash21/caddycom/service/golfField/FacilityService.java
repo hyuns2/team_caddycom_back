@@ -1,6 +1,5 @@
 package com.flash21.caddycom.service.golfField;
 
-import com.flash21.caddycom.dto.golfField.FacilityRequest;
 import com.flash21.caddycom.dto.golfField.FacilityResponse;
 import com.flash21.caddycom.entity.golfField.Facility;
 import com.flash21.caddycom.entity.golfField.FacilityImage;
@@ -13,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 

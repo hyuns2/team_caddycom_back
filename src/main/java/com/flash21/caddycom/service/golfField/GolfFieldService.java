@@ -70,7 +70,7 @@ public class GolfFieldService {
     @Transactional(readOnly = true)
     public List<GolfFieldResponse.Overview> getAll(){
         return golfFieldRepository.findAll().stream()
-                .map(golfField -> new GolfFieldResponse.Overview(golfField.getName(),golfField.getContact()))
+                .map(GolfFieldResponse.Overview::from)
                 .collect(Collectors.toList());
     }
 

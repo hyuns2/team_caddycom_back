@@ -1,6 +1,5 @@
 package com.flash21.caddycom.service.golfField;
 
-import com.flash21.caddycom.dto.golfField.FacilityRequest;
 import com.flash21.caddycom.dto.golfField.FacilityResponse;
 import com.flash21.caddycom.entity.golfField.Facility;
 import com.flash21.caddycom.entity.golfField.FacilityImage;
@@ -13,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -57,6 +54,7 @@ public class FacilityService {
     }
 
 
+
     /**
      * 골프장 시설 정보를 조회한다.
      * @param id 조회할 골프장 id, null이 될 수 없다.
@@ -65,9 +63,7 @@ public class FacilityService {
      */
     @Transactional(readOnly = true)
     public FacilityResponse getFacility(Long id) {
-        GolfField golfField = golfFieldRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
-
+        GolfField golfField = golfFieldRepository.getUserById(id);
         return FacilityResponse.from(golfField.getFacilities());
     }
 

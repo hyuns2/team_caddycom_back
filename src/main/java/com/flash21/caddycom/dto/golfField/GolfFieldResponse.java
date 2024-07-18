@@ -17,6 +17,12 @@ public class GolfFieldResponse {
         private String name;
         private String contact;
 
+        public static Overview from(GolfField golfField){
+            return Overview.builder()
+                    .name(golfField.getName())
+                    .contact(golfField.getContact())
+                    .build();
+        }
     }
 
     @AllArgsConstructor

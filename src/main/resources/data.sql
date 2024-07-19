@@ -18,6 +18,12 @@ insert into `caddycom`.`facility_image` (id, facility_id, image_url) values
     ('13', '5', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+2.jpg'), ('14', '5', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+1.jpeg'), ('15', '5', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EB%A0%88%EC%8A%A4%ED%86%A0%EB%9E%91+3.jpg'),
     ('16', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+1.jpg'), ('17', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+2.jpg'), ('18', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+3.jpg');
 
+
+insert into `caddycom`.`manager` (id, name, phone_number, password, golf_field_id, role) values
+    (1, '김매니저', '010-0000-0000', '123456', 1, 2),
+    (2, '김매니저', '000-0000-0000', '123456', 1, 3);
+
+
 insert into `caddycom`.`formation` (`id`, `name`, `golf_field_id`)
 values ('1', '구성1','1'), ('2', '구성2','1');
 

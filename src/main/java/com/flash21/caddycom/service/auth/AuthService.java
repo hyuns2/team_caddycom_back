@@ -41,15 +41,15 @@ public class AuthService {
      * @throws IllegalArgumentException 비밀번호가 일치하지 않는 경우, 골프장이 존재하지 않는 경우
      */
     @Transactional(readOnly = true)
-    public SigninResponse login(SigninRequest request){
+    public SigninResponse.Web login(SigninRequest.Web request){
         if (request.getKey().equals("관리자")){
             JwtResponse jwtPair = adminLogin(request.getPassword());
-            return new SigninResponse(jwtPair);
+            return SigninResponse.Web.from(jwtPair);
         }
         GolfField golfField = golfFieldRepository.findByRegistrationNumber(request.getKey())
                 .orElseThrow(() -> new IllegalArgumentException("해당 사업자 등록번호의 골프장은 존재하지 않습니다."));
         JwtResponse jwtPair = managerLogin(request.getPassword(), golfField);
-        return new SigninResponse(jwtPair, golfField.getId());
+        return SigninResponse.Web.from(jwtPair, golfField.getId());
     }
 
 

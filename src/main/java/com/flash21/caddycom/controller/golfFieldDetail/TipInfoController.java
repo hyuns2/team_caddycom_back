@@ -1,7 +1,7 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
 import com.flash21.caddycom.dto.golfFieldDetail.tipInfo.TipInfoDto;
-import com.flash21.caddycom.service.golfFieldDetail.TipInfoService;
+import com.flash21.caddycom.service.golfFieldDetail.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +17,11 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class TipInfoController {
-    private final TipInfoService tipInfoService;
+    private final CommentService commentService;
 
     @GetMapping("/api/hole/{holeId}/tips")
     @Operation(summary = "홀의 전체 팁 정보 조회 API")
     public ResponseEntity<List<TipInfoDto.Info>> getAllTipInfos(@PathVariable Long holeId) {
-        return new ResponseEntity<>(tipInfoService.getAllTipInfos(holeId), HttpStatus.OK);
+        return new ResponseEntity<>(commentService.getAllTipInfos(holeId), HttpStatus.OK);
     }
 }

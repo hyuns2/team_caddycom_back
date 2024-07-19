@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
-public class TipInfoService {
+public class CommentService {
     private final CommentRepository commentRepository;
     private final HoleRepository holeRepository;
 

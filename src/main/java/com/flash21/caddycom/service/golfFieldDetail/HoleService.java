@@ -1,11 +1,10 @@
 package com.flash21.caddycom.service.golfFieldDetail;
 
+import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
-import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleResponse;
-import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeDto;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
-import com.flash21.caddycom.entity.golfFieldDetail.Tee;
+import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +19,8 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class HoleService {
     private final HoleRepository holeRepository;
-
     private final TeeService teeService;
-    private final TipInfoService tipInfoService;
+    private final CommentService commentService;
     private final TeeRepository teeRepository;
 
     @Transactional
@@ -69,9 +67,9 @@ public class HoleService {
         if(!request.getDeleteTeeIds().isEmpty())
             teeService.deleteTees(request.getDeleteTeeIds());
 
-        tipInfoService.createAndUpdateTipInfos(request.getHoleId(), request.getTipInfoData());
+        commentService.createAndUpdateTipInfos(request.getHoleId(), request.getTipInfoData());
         if(!request.getDeleteTipInfoIds().isEmpty())
-            tipInfoService.deleteTipInfos(request.getDeleteTipInfoIds());
+            commentService.deleteTipInfos(request.getDeleteTipInfoIds());
     }
 
     @Transactional
@@ -85,21 +83,5 @@ public class HoleService {
         }
         teeRepository.deleteAllByHoles(deleteHoles);
         holeRepository.deleteAllInBatch(deleteHoles);
-    }
-
-    @Transactional(readOnly = true)
-    public List<HoleResponse.info> getHoles(Long courseId) {
-        List<Hole> holes = holeRepository.findAllByCourseIdFetchJoinTee(courseId)
-                .orElseThrow(() -> new NoSuchElementException("해당 코스에 홀이 존재하지 않습니다."));
-        List<HoleResponse.info> response = new ArrayList<>();
-        for(Hole hole : holes) {
-            List<TeeDto.info> teeInfos = new ArrayList<>();
-            for(Tee tee : hole.getTees()) {
-                teeInfos.add(new TeeDto.info(tee.getId(), tee.getName(), tee.getDistance()));
-            }
-            response.add(new HoleResponse.info(hole.getId(), hole.getNum(), hole.getPar(), hole.getHandicap(), teeInfos));
-        }
-
-        return response;
     }
 }

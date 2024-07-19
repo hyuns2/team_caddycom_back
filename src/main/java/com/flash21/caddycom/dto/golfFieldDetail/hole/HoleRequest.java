@@ -36,8 +36,8 @@ public class HoleRequest {
         private Integer par;
         @NotNull
         private Integer handicap;
-        private List<TeeDto.info> teeData;
-        private List<TipInfoDto.info> tipInfoData;
+        private List<TeeDto.Info> teeData;
+        private List<TipInfoDto.Info> tipInfoData;
         private List<Long> deleteTeeIds;
         private List<Long> deleteTipInfoIds;
     }

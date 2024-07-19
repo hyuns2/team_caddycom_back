@@ -1,6 +1,5 @@
 package com.flash21.caddycom.service.golfFieldDetail;
 
-import com.flash21.caddycom.dto.golfFieldDetail.course.CourseDto;
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
 import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationRequest;
@@ -8,13 +7,7 @@ import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
-import com.flash21.caddycom.entity.golfFieldDetail.Hole;
-import com.flash21.caddycom.entity.golfFieldDetail.Tee;
-import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
-import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.formation.FormationRepository;
-import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
-import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -80,9 +73,9 @@ public class FormationService {
 
         List<FormationResponse.create> response = new ArrayList<>();
         for(Formation formation : formations) {
-            List<CourseResponse.create> courseInfos = new ArrayList<>();
+            List<CourseResponse.Create> courseInfos = new ArrayList<>();
             for (Course course : formation.getCourses()) {
-                courseInfos.add(new CourseResponse.create(course.getId(), course.getName(), course.getTotalHoles()));
+                courseInfos.add(new CourseResponse.Create(course.getId(), course.getName(), course.getTotalHoles()));
             }
             response.add(new FormationResponse.create(formation.getId(), formation.getName(), courseInfos));
         }

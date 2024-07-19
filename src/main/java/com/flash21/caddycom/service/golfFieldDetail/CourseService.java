@@ -2,6 +2,7 @@ package com.flash21.caddycom.service.golfFieldDetail;
 
 import com.flash21.caddycom.dto.CourseInfoResponseDto;
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseRequest;
+import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
@@ -77,5 +78,12 @@ public class CourseService {
 
     public void deleteCourses(List<Long> ids) {
         courseRepository.deleteAllByIdInBatch(ids);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<CourseResponse.Detail> getHoles(Long formationId) {
+        List<Course> courses = courseRepository.findAllByFormationId(formationId);
+        return courses.stream().map(CourseResponse.Detail::from).toList();
     }
 }

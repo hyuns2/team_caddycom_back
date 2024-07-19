@@ -69,6 +69,7 @@ public class FacilityService {
 
     /**
      * 골프장 시설 정보를 수정한다.
+     * existingImageUrls에 없는 이미지는 삭제하고, newImageUrls은 새롭게 추가한다.
      * @param id 수정할 시설 id, null이 될 수 없다.
      * @param name 시설 이름
      * @param content 시설 설명
@@ -87,8 +88,8 @@ public class FacilityService {
         List<FacilityImage> facilityImages = newImageUrls.stream()
                 .map(imageUrl -> new FacilityImage(imageUrl, facility))
                 .toList();
-
         facilityImageJdbcRepository.saveAll(facilityImages);
+
         facility.update(name, content);
     }
 

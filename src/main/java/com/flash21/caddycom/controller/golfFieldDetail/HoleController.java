@@ -36,12 +36,4 @@ public class HoleController {
     public void createDetailInfo(@Valid @RequestBody HoleRequest.createDetailInfo request) {
         holeService.createDetailInfo(request);
     }
-
-    @GetMapping("/api/{courseId}/holes")
-    @Operation(summary = "코스의 모든 홀 정보 조회 API")
-    public ResponseEntity<List<HoleResponse.info>> getHoles(@PathVariable Long courseId) {
-        List<HoleResponse.info> holeInfos = holeService.getHoles(courseId);
-
-        return new ResponseEntity<>(holeInfos, HttpStatus.OK);
-    }
 }

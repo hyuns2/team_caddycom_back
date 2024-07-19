@@ -1,9 +1,9 @@
-package com.flash21.caddycom.dto.golfFieldDetail.tipInfo;
+package com.flash21.caddycom.dto.golfFieldDetail.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-public class TipInfoDto {
+public class CommentDto {
     @Getter
     @AllArgsConstructor
     public static class Info {

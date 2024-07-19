@@ -1,10 +1,10 @@
 package com.flash21.caddycom.service.golfFieldDetail;
 
-import com.flash21.caddycom.dto.golfFieldDetail.tipInfo.TipInfoDto;
+import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentDto;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.entity.golfFieldDetail.Comment;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
-import com.flash21.caddycom.repository.CommentRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.CommentRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,12 +20,12 @@ public class CommentService {
     private final HoleRepository holeRepository;
 
     @Transactional
-    public void createAndUpdateTipInfos(Long holeId, List<TipInfoDto.Info> tipInfos) {
+    public void createAndUpdateTipInfos(Long holeId, List<CommentDto.Info> tipInfos) {
         Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
         List<Comment> savedComments = hole.getComments();
         List<Comment> newComments = new ArrayList<>();
-        for(TipInfoDto.Info info : tipInfos) {
+        for(CommentDto.Info info : tipInfos) {
             if(info.getId() == null) {
                 newComments.add(new Comment(null, info.getTitle(), info.getContent(), hole));
                 break;
@@ -48,7 +48,7 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<TipInfoDto.Info> getAllTipInfos(Long holeId) {
+    public List<CommentDto.Info> getAllTipInfos(Long holeId) {
         List<Comment> comments = commentRepository.findAllByHoleId(holeId)
                 .orElse(null);
 
@@ -56,9 +56,9 @@ public class CommentService {
             return null;
         }
 
-        List<TipInfoDto.Info> Infos = new ArrayList<>();
+        List<CommentDto.Info> Infos = new ArrayList<>();
         comments.forEach(comment ->
-            Infos.add(new TipInfoDto.Info(comment.getId(), comment.getTitle(), comment.getContent()))
+            Infos.add(new CommentDto.Info(comment.getId(), comment.getTitle(), comment.getContent()))
         );
 
         return Infos;

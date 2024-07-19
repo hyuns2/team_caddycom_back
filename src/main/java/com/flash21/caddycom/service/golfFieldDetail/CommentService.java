@@ -2,9 +2,9 @@ package com.flash21.caddycom.service.golfFieldDetail;
 
 import com.flash21.caddycom.dto.golfFieldDetail.tipInfo.TipInfoDto;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
-import com.flash21.caddycom.entity.golfFieldDetail.TipInfo;
+import com.flash21.caddycom.entity.golfFieldDetail.Comment;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
-import com.flash21.caddycom.repository.TipInfoRepository;
+import com.flash21.caddycom.repository.CommentRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,49 +16,49 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class TipInfoService {
-    private final TipInfoRepository tipInfoRepository;
+    private final CommentRepository commentRepository;
     private final HoleRepository holeRepository;
 
     @Transactional
     public void createAndUpdateTipInfos(Long holeId, List<TipInfoDto.Info> tipInfos) {
         Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
-        List<TipInfo> savedTipInfos = hole.getTipInfos();
-        List<TipInfo> newTipInfos = new ArrayList<>();
+        List<Comment> savedComments = hole.getComments();
+        List<Comment> newComments = new ArrayList<>();
         for(TipInfoDto.Info info : tipInfos) {
             if(info.getId() == null) {
-                newTipInfos.add(new TipInfo(null, info.getTitle(), info.getContent(), hole));
+                newComments.add(new Comment(null, info.getTitle(), info.getContent(), hole));
                 break;
             }
 
-            for(TipInfo tipInfo : savedTipInfos) {
-                if(info.getId().equals(tipInfo.getId())) {
-                    tipInfo.update(info.getTitle(), info.getContent());
+            for(Comment comment : savedComments) {
+                if(info.getId().equals(comment.getId())) {
+                    comment.update(info.getTitle(), info.getContent());
                     break;
                 }
             }
         }
 
-        savedTipInfos.addAll(newTipInfos);
+        savedComments.addAll(newComments);
     }
 
     @Transactional
     public void deleteTipInfos(List<Long> tipInfoIds) {
-        tipInfoRepository.deleteAllByIdInBatch(tipInfoIds);
+        commentRepository.deleteAllByIdInBatch(tipInfoIds);
     }
 
     @Transactional(readOnly = true)
     public List<TipInfoDto.Info> getAllTipInfos(Long holeId) {
-        List<TipInfo> tipInfos = tipInfoRepository.findAllByHoleId(holeId)
+        List<Comment> comments = commentRepository.findAllByHoleId(holeId)
                 .orElse(null);
 
-        if(tipInfos == null) {
+        if(comments == null) {
             return null;
         }
 
         List<TipInfoDto.Info> Infos = new ArrayList<>();
-        tipInfos.forEach(tipInfo ->
-            Infos.add(new TipInfoDto.Info(tipInfo.getId(), tipInfo.getTitle(), tipInfo.getContent()))
+        comments.forEach(comment ->
+            Infos.add(new TipInfoDto.Info(comment.getId(), comment.getTitle(), comment.getContent()))
         );
 
         return Infos;

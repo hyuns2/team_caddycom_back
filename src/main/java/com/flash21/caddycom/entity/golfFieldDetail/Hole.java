@@ -25,7 +25,7 @@ public class Hole {
     private List<Tee> tees = new ArrayList<>();
 
     @OneToMany(mappedBy = "hole", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<TipInfo> tipInfos = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name="courseId")

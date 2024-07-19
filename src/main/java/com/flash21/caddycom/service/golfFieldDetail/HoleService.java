@@ -88,16 +88,16 @@ public class HoleService {
     }
 
     @Transactional(readOnly = true)
-    public List<HoleResponse.info> getHoles(Long courseId) {
+    public List<HoleResponse.Info> getHoles(Long courseId) {
         List<Hole> holes = holeRepository.findAllByCourseIdFetchJoinTee(courseId)
                 .orElseThrow(() -> new NoSuchElementException("해당 코스에 홀이 존재하지 않습니다."));
-        List<HoleResponse.info> response = new ArrayList<>();
+        List<HoleResponse.Info> response = new ArrayList<>();
         for(Hole hole : holes) {
-            List<TeeDto.info> teeInfos = new ArrayList<>();
+            List<TeeDto.Info> teeInfos = new ArrayList<>();
             for(Tee tee : hole.getTees()) {
-                teeInfos.add(new TeeDto.info(tee.getId(), tee.getName(), tee.getDistance()));
+                teeInfos.add(new TeeDto.Info(tee.getId(), tee.getName(), tee.getDistance()));
             }
-            response.add(new HoleResponse.info(hole.getId(), hole.getNum(), hole.getPar(), hole.getHandicap(), teeInfos));
+            response.add(new HoleResponse.Info(hole.getId(), hole.getNum(), hole.getPar(), hole.getHandicap(), teeInfos));
         }
 
         return response;

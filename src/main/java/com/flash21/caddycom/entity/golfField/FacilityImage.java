@@ -19,7 +19,7 @@ public class FacilityImage {
     @Column(nullable = false)
     private String imageUrl;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_id")
     private Facility facility;
 

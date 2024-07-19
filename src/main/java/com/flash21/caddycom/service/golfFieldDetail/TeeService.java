@@ -41,12 +41,12 @@ public class TeeService {
     }
 
     @Transactional
-    public void createAndUpdateTees(Long holeId, List<TeeDto.info> requestTees) {
+    public void createAndUpdateTees(Long holeId, List<TeeDto.Info> requestTees) {
         Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
         List<Tee> savedTees = hole.getTees();
         List<Tee> newTees = new ArrayList<>();
-        for(TeeDto.info teeInfo: requestTees) {
+        for(TeeDto.Info teeInfo: requestTees) {
             if(teeInfo.getId() == null) {
                 newTees.add(new Tee(null, teeInfo.getName(), teeInfo.getDistance(), hole));
                 break;

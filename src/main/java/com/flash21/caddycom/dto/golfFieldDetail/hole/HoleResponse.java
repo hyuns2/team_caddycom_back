@@ -9,11 +9,11 @@ import java.util.List;
 public class HoleResponse {
     @Getter
     @AllArgsConstructor
-    public static class info {
+    public static class Info {
         private Long id;
         private Integer num;
         private Integer par;
         private Integer handicap;
-        private List<TeeDto.info> teeInfos;
+        private List<TeeDto.Info> teeInfos;
     }
 }

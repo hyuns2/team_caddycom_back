@@ -20,12 +20,12 @@ public class TipInfoService {
     private final HoleRepository holeRepository;
 
     @Transactional
-    public void createAndUpdateTipInfos(Long holeId, List<TipInfoDto.info> tipInfos) {
+    public void createAndUpdateTipInfos(Long holeId, List<TipInfoDto.Info> tipInfos) {
         Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
         List<TipInfo> savedTipInfos = hole.getTipInfos();
         List<TipInfo> newTipInfos = new ArrayList<>();
-        for(TipInfoDto.info info : tipInfos) {
+        for(TipInfoDto.Info info : tipInfos) {
             if(info.getId() == null) {
                 newTipInfos.add(new TipInfo(null, info.getTitle(), info.getContent(), hole));
                 break;
@@ -48,7 +48,7 @@ public class TipInfoService {
     }
 
     @Transactional(readOnly = true)
-    public List<TipInfoDto.info> getAllTipInfos(Long holeId) {
+    public List<TipInfoDto.Info> getAllTipInfos(Long holeId) {
         List<TipInfo> tipInfos = tipInfoRepository.findAllByHoleId(holeId)
                 .orElse(null);
 
@@ -56,11 +56,11 @@ public class TipInfoService {
             return null;
         }
 
-        List<TipInfoDto.info> infos = new ArrayList<>();
+        List<TipInfoDto.Info> Infos = new ArrayList<>();
         tipInfos.forEach(tipInfo ->
-            infos.add(new TipInfoDto.info(tipInfo.getId(), tipInfo.getTitle(), tipInfo.getContent()))
+            Infos.add(new TipInfoDto.Info(tipInfo.getId(), tipInfo.getTitle(), tipInfo.getContent()))
         );
 
-        return infos;
+        return Infos;
     }
 }

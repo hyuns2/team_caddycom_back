@@ -39,8 +39,8 @@ public class HoleController {
 
     @GetMapping("/api/{courseId}/holes")
     @Operation(summary = "코스의 모든 홀 정보 조회 API")
-    public ResponseEntity<List<HoleResponse.info>> getHoles(@PathVariable Long courseId) {
-        List<HoleResponse.info> holeInfos = holeService.getHoles(courseId);
+    public ResponseEntity<List<HoleResponse.Info>> getHoles(@PathVariable Long courseId) {
+        List<HoleResponse.Info> holeInfos = holeService.getHoles(courseId);
 
         return new ResponseEntity<>(holeInfos, HttpStatus.OK);
     }

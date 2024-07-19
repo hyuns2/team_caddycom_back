@@ -6,7 +6,7 @@ import lombok.Getter;
 public class TipInfoDto {
     @Getter
     @AllArgsConstructor
-    public static class info {
+    public static class Info {
         private Long id;
         private String title;
         private String content;

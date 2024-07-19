@@ -21,7 +21,7 @@ public class TipInfoController {
 
     @GetMapping("/api/hole/{holeId}/tips")
     @Operation(summary = "홀의 전체 팁 정보 조회 API")
-    public ResponseEntity<List<TipInfoDto.info>> getAllTipInfos(@PathVariable Long holeId) {
+    public ResponseEntity<List<TipInfoDto.Info>> getAllTipInfos(@PathVariable Long holeId) {
         return new ResponseEntity<>(tipInfoService.getAllTipInfos(holeId), HttpStatus.OK);
     }
 }

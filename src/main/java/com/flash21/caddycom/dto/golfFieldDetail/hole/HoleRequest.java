@@ -1,7 +1,7 @@
 package com.flash21.caddycom.dto.golfFieldDetail.hole;
 
 import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeDto;
-import com.flash21.caddycom.dto.golfFieldDetail.tipInfo.TipInfoDto;
+import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class HoleRequest {
         @NotNull
         private Integer handicap;
         private List<TeeDto.Info> teeData;
-        private List<TipInfoDto.Info> tipInfoData;
+        private List<CommentDto.Info> tipInfoData;
         private List<Long> deleteTeeIds;
         private List<Long> deleteTipInfoIds;
     }

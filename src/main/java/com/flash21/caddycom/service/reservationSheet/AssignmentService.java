@@ -78,7 +78,7 @@ public class AssignmentService {
      * @return 코스리스트, 시간리스트, 부별 id-status 형태의 map 반환
      */
     private Map<String, List<String>> findAndGetAssignmentsByCourse(Set<Course> courseList, LocalDate date, int part, int page) {
-        Map<String, List<String>> resultList = new HashMap<>();
+        Map<String, List<String>> result = new WeakHashMap<>();
         Set<LocalTime> timeList = new HashSet<>();
 
         for (Course course: courseList) {
@@ -86,11 +86,9 @@ public class AssignmentService {
             int pageSize = 10;
             Pageable pageable = PageRequest.of(page, pageSize);
 
-            Page<Assignment> assignmentPageList;
-            if (part == 0)
-                assignmentPageList = assignmentRepository.findAllByCourseAndReservationDate(course, date, pageable);
-            else
-                assignmentPageList = assignmentRepository.findAllByCourseAndPartAndReservationDate(course, part, date, pageable);
+            Page<Assignment> assignmentPageList = part==0
+              ?  assignmentRepository.findAllByCourseAndReservationDate(course, date, pageable)
+              :  assignmentRepository.findAllByCourseAndPartAndReservationDate(course, part, date, pageable);
             List<Assignment> assignmentList = assignmentPageList.getContent();
 
             for (Assignment assignment : assignmentList) {
@@ -98,12 +96,12 @@ public class AssignmentService {
                 resultListByCourse.add(assignment.getId() + "-" + assignment.getStatus());
             }
 
-            resultList.put(course.getName(), resultListByCourse);
+            result.put(course.getName(), resultListByCourse);
         }
 
-        resultList.put("courseList", courseList.stream().map(Course::getName).sorted().toList());
-        resultList.put("timeList", timeList.stream().sorted().map(LocalTime::toString).toList());
-        return resultList;
+        result.put("courseList", courseList.stream().map(Course::getName).sorted().toList());
+        result.put("timeList", timeList.stream().sorted().map(LocalTime::toString).toList());
+        return result;
     }
 
     /**

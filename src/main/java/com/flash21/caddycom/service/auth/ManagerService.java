@@ -27,7 +27,8 @@ public class ManagerService {
             return SigninResponse.First.from(jwts, manager.get().getGolfField().getId(), manager.get().getGolfField().getName(), manager.get().getGolfField().getImageUrl());
         }
         else if (manager.isPresent() && manager.get().getRole() == Role.ROLE_MANAGER ) {
-            return SigninResponse.First.from(SigninResponse.First.Status.WAITING);
+            JwtResponse jwts = jwtProvider.issueTokens(Role.ROLE_EMPLOYEE, manager.get().getName(), manager.get().getId());
+            return SigninResponse.First.from(SigninResponse.First.Status.WAITING, jwts);
         }
         else {
             return SigninResponse.First.from(SigninResponse.First.Status.YET);

@@ -70,6 +70,15 @@ public class SigninResponse {
                     .build();
         }
 
+        public static SigninResponse.First from(Status status, JwtResponse jwtResponse){
+            return SigninResponse.First.builder()
+                    .role("OWNER")
+                    .accessToken(jwtResponse.getAccessToken())
+                    .refreshToken(jwtResponse.getRefreshToken())
+                    .status(status)
+                    .build();
+        }
+
         public static SigninResponse.First from(Status status){
             return SigninResponse.First.builder()
                     .role("OWNER")

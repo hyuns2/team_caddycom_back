@@ -36,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
         JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
 
 
-        JwtUserDetail jwtUserDetail = new JwtUserDetail(jwtClaims.getName(), jwtClaims.getRole());
+        JwtUserDetail jwtUserDetail = new JwtUserDetail(jwtClaims.getPhoneNumber(), jwtClaims.getRole());
 
         // jwt 서명이 정상이면 Authentication객체를 만듦.
         Authentication authentication =

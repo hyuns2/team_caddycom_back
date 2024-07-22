@@ -27,11 +27,18 @@ public class Account {
     @ManyToOne(fetch = FetchType.LAZY)
     private GolfField golfField;
 
+    /** 임시 토큰 저장소 */
+    private String refreshToken;
+
     public void updatePassword(String password){
         this.password = password;
     }
 
     public void encodePassword(String password){
         this.password = password;
+    }
+
+    public void updateToken(String refreshToken){
+        this.refreshToken = refreshToken;
     }
 }

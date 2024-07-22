@@ -2,8 +2,10 @@ package com.flash21.caddycom.global.jwt;
 
 import com.flash21.caddycom.dto.auth.JwtResponse;
 import com.flash21.caddycom.dto.auth.SigninResponse;
+import com.flash21.caddycom.entity.account.Account;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.golfField.GolfField;
+import com.flash21.caddycom.repository.account.AccountRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,44 +27,41 @@ import java.util.Map;
 public class JwtProvider {
     @Value("${jwt.secret}")
     private String jwtSecret;
-    private final long ACCESS_EXPIRAION = 1000 * 60 * 60 * 3; // 3시간
+    private final long ACCESS_EXPIRAION = 1000 ; // 3시간
     private final long REFRESH_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7일
-    private final GolfFieldRepository golfFieldRepository;
 
-    public JwtResponse issueTokens(Role role, String name, Long id) {
+    private final AccountRepository accountRepository;
+    private final JwtValidator jwtValidator;
+
+    public JwtResponse issueTokens(Role role, String phoneNumber, Long id) {
         long current = System.currentTimeMillis();
         Date accessTokenExpireTime = new Date(current + ACCESS_EXPIRAION);
         Date refreshTokenExpireTime = new Date(current + REFRESH_EXPIRATION);
 
         Map<String, Object> claims = new HashMap<>();
 
-        if (role== Role.ROLE_OWNER) {
-            GolfField golfField = golfFieldRepository.findById(id)
-                    .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 토큰입니다."));
-
-            JwtClaims jwtClaims = JwtClaims.builder()
-                    .id(golfField.getId())
-                    .name(golfField.getName())
-                    .role(Role.ROLE_OWNER)
-                    .build();
-            claims.put("jwtClaims", jwtClaims);
-        }
-        else if (role == Role.ROLE_ADMIN) {
-            JwtClaims jwtClaims = JwtClaims.builder()
-                    .id(1L)
-                    .name("관리자")
-                    .role(Role.ROLE_ADMIN)
-                    .build();
-            claims.put("jwtClaims", jwtClaims);
-        }
+        JwtClaims jwtClaims = JwtClaims.builder()
+                .id(id)
+                .phoneNumber(phoneNumber)
+                .role(role)
+                .build();
+        claims.put("jwtClaims", jwtClaims);
 
 
         String accessToken = generateToken(accessTokenExpireTime, claims);
+        String refreshToken = generateToken(refreshTokenExpireTime, claims);
+
+        saveRefreshToken(id, refreshToken);
 
         return JwtResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
+    }
+
+    private void saveRefreshToken(Long id, String refreshToken) {
+        Account account = accountRepository.findById(id).orElseThrow();
+        account.updateToken(refreshToken);
     }
 
     private String generateToken(Date expiration, Map<String,?> claims) {
@@ -76,8 +75,17 @@ public class JwtProvider {
     }
 
 
-    protected Key createSignature() {
+    private Key createSignature() {
         byte[] secretBytes = DatatypeConverter.parseBase64Binary(jwtSecret);
         return new SecretKeySpec(secretBytes, SignatureAlgorithm.HS256.getJcaName());
     }
+
+
+    public JwtResponse reissueTokens(String token) {
+        JwtClaims jwtClaims = jwtValidator.checkRefreshToken(token);
+        return issueTokens(jwtClaims.getRole(), jwtClaims.getPhoneNumber(), jwtClaims.getId());
+    }
+
+
+
 }

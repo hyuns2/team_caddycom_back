@@ -52,6 +52,12 @@ public class ManagerService {
             return SigninResponse.After.from(jwts, manager.getRole());
         }
 
+    }
 
+    @Transactional
+    public void setPassword(SigninRequest.Password request) {
+        Manager manager = managerRepository.findByPhoneNumber(request.getPhoneNumber())
+                .orElseThrow(() -> new NoSuchElementException("해당 전화번호의 직원은 존재하지 않습니다."));
+        manager.updatePassword(request.getPassword());
     }
 }

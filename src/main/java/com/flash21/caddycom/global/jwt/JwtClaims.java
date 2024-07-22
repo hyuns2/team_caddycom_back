@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JwtClaims {
-    private String name;
+    private String phoneNumber;
     private Role role;
     private Long id;
 }

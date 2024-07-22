@@ -1,5 +1,6 @@
 package com.flash21.caddycom.service.auth;
 
+import com.flash21.caddycom.dto.auth.JwtRequest;
 import com.flash21.caddycom.dto.auth.JwtResponse;
 import com.flash21.caddycom.dto.auth.SigninRequest;
 import com.flash21.caddycom.dto.auth.SigninResponse;
@@ -27,7 +28,7 @@ public class AuthService {
      * 3. 계정이 존재하는 사람에 대해서는 jwt 토큰을 발급해주고, 해당 사람이 속한 골프장 정보를 같이 반환함.
      * 4. 계정이 존재하지 않으면 골프장 등록을 하지 않은 사장님으로 간주함.
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public SigninResponse.Main firstLogin(SigninRequest.First request) {
         Optional<Account> accountOpt = accountRepository.findByPhoneNumber(request.getPhoneNumber());
 
@@ -50,7 +51,7 @@ public class AuthService {
      * 2. 계정이 존재하는 경우 비밀번호가 일치하는지 확인
      * 3. 비밀번호가 일치하는 경우 jwt 토큰을 발급해주고, 해당 사람이 속한 골프장 정보를 같이 반환함.
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public SigninResponse.Main afterLogin(SigninRequest.Login request) {
         Account account = accountRepository.findByPhoneNumber(request.getPhoneNumber()).
                 orElseThrow(() -> new NoSuchElementException("해당 전화번호의 직원/사장은 존재하지 않습니다."));
@@ -83,5 +84,11 @@ public class AuthService {
     private boolean isPasswordValid(String password) {
         return password.length() == 6 &&
                 password.chars().allMatch(Character::isDigit);
+    }
+
+
+    @Transactional
+    public JwtResponse issueTokens(JwtRequest request) {
+        return jwtProvider.reissueTokens(request.getRefreshToken());
     }
 }

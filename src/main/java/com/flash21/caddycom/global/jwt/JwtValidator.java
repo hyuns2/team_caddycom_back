@@ -1,16 +1,26 @@
 package com.flash21.caddycom.global.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flash21.caddycom.entity.account.Account;
+import com.flash21.caddycom.repository.account.AccountRepository;
+import io.jsonwebtoken.*;
+import jakarta.xml.bind.DatatypeConverter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
+
+
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JwtValidator {
-    private JwtProvider jwtProvider;
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+    private final AccountRepository accountRepository;
+
     /**
      * 추후 리프레시 토큰 검증에도 동일한 로직을 수행하기 위해 메서드추출
      */
@@ -26,10 +36,35 @@ public class JwtValidator {
     }
 
     public Claims extractClaims(String token) {
+        Key key = createSignature();
         try {
-            return Jwts.parser().setSigningKey(jwtProvider.createSignature()).parseClaimsJws(token).getBody();
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
         } catch (ExpiredJwtException e) {
-            throw new JwtException("만료된 토큰입니다.");
+            throw new ExpiredJwtException(e.getHeader(), e.getClaims(), "만료된 토큰입니다.");
+        } catch (Exception e) {
+            throw new JwtException("토큰 파싱 중 오류 발생. 유효하지 않은 토큰입니다.", e);
         }
+    }
+
+    private Key createSignature() {
+        byte[] secretBytes = DatatypeConverter.parseBase64Binary(jwtSecret);
+        return new SecretKeySpec(secretBytes, SignatureAlgorithm.HS256.getJcaName());
+    }
+
+    public JwtClaims checkRefreshToken(String refreshToken) {
+        Claims claims = extractClaims(refreshToken);
+        ObjectMapper mapper = new ObjectMapper();
+        JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
+
+        Account account = accountRepository.findById(jwtClaims.getId())
+                .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 토큰입니다."));
+        if (!account.getRefreshToken().equals(refreshToken))
+            throw new JwtException("올바르지 않은 리프레시 토큰입니다.");
+
+        return jwtClaims;
     }
 }

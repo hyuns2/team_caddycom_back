@@ -36,14 +36,14 @@ public class JwtProvider {
 
         Map<String, Object> claims = new HashMap<>();
 
-        if (role== Role.ROLE_MANAGER) {
+        if (role== Role.ROLE_OWNER) {
             GolfField golfField = golfFieldRepository.findById(id)
                     .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 토큰입니다."));
 
             JwtClaims jwtClaims = JwtClaims.builder()
                     .id(golfField.getId())
                     .name(golfField.getName())
-                    .role(Role.ROLE_MANAGER)
+                    .role(Role.ROLE_OWNER)
                     .build();
             claims.put("jwtClaims", jwtClaims);
         }

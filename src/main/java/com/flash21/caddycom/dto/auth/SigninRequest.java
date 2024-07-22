@@ -25,4 +25,22 @@ public class SigninRequest {
         private String phoneNumber;
     }
 
+    @Getter
+    public static class After {
+        @NotBlank(message = "phoneNumber는 필수값입니다.")
+        private String phoneNumber;
+
+        @NotBlank(message = "password는 필수값입니다.")
+        private String password;
+    }
+
+    @Getter
+    public static class Password {
+        @NotBlank(message = "phoneNumber는 필수값입니다.")
+        private String phoneNumber;
+
+        @NotBlank(message = "password는 필수값입니다.")
+        public String password;
+    }
+
 }

@@ -26,4 +26,8 @@ public class Manager {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private GolfField golfField;
+
+    public void updatePassword(String password){
+        this.password = password;
+    }
 }

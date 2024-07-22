@@ -71,7 +71,7 @@ public class GolfFieldRequest {
                     .caddyType(caddyType)
                     .status(ApprovalStatus.WAITING)
 //                    .password(password)
-                    .role(Role.ROLE_MANAGER)
+                    .role(Role.ROLE_OWNER)
                     .build();
         }
     }

@@ -30,4 +30,8 @@ public class Account {
     public void updatePassword(String password){
         this.password = password;
     }
+
+    public void encodePassword(String password){
+        this.password = password;
+    }
 }

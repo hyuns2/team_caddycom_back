@@ -1,6 +1,5 @@
 package com.flash21.caddycom.dto.golfField;
 
-import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.golfField.ApprovalStatus;
 import com.flash21.caddycom.entity.golfField.CaddyType;
 import com.flash21.caddycom.entity.golfField.GolfField;
@@ -43,10 +42,6 @@ public class GolfFieldRequest {
         @Schema(example = "골프장 캐디 타입(String)")
         private CaddyType caddyType;
 
-//        @NotBlank(message = "password은 필수값입니다.")
-//        @Schema(example = "비밀번호 6자리(String)")
-//        private String password;
-
         @NotNull(message = "image은 필수값입니다.")
         @Schema(example = "골프장 대표사진(MultipartFile)")
         private MultipartFile image;
@@ -70,8 +65,6 @@ public class GolfFieldRequest {
                     .imageUrl(imageUrl)
                     .caddyType(caddyType)
                     .status(ApprovalStatus.WAITING)
-//                    .password(password)
-                    .role(Role.ROLE_OWNER)
                     .build();
         }
     }

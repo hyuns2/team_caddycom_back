@@ -5,13 +5,13 @@ import com.flash21.caddycom.entity.account.Account;
 import com.flash21.caddycom.repository.account.AccountRepository;
 import io.jsonwebtoken.*;
 import jakarta.xml.bind.DatatypeConverter;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
+
 
 @Component
 @RequiredArgsConstructor
@@ -36,10 +36,17 @@ public class JwtValidator {
     }
 
     public Claims extractClaims(String token) {
+        Key key = createSignature();
         try {
-            return Jwts.parser().setSigningKey(createSignature()).parseClaimsJws(token).getBody();
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
         } catch (ExpiredJwtException e) {
-            throw new JwtException("만료된 토큰입니다.");
+            throw new ExpiredJwtException(e.getHeader(), e.getClaims(), "만료된 토큰입니다.");
+        } catch (Exception e) {
+            throw new JwtException("토큰 파싱 중 오류 발생. 유효하지 않은 토큰입니다.", e);
         }
     }
 

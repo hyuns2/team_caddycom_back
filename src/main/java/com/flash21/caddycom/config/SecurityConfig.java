@@ -1,6 +1,9 @@
 package com.flash21.caddycom.config;
 
-import com.flash21.caddycom.global.filter.JwtFilter;
+import com.flash21.caddycom.global.authentication.AuthenticationExceptionFilter;
+import com.flash21.caddycom.global.authentication.JwtAccessDeniedHandler;
+import com.flash21.caddycom.global.authentication.JwtAuthenticationEntryPoint;
+import com.flash21.caddycom.global.authentication.JwtFilter;
 import com.flash21.caddycom.global.jwt.JwtValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +25,9 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtValidator jwtValidator;
+    private final AuthenticationExceptionFilter AuthenticationExceptionFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     private static final String[] WHITE_LIST = {
             "/**",
@@ -38,6 +44,11 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new JwtFilter(jwtValidator), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(AuthenticationExceptionFilter, JwtFilter.class)
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedHandler)
+                )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
                         .requestMatchers(ADMIN_AUTHENTICATION_LIST).hasRole("ADMIN")
                         .anyRequest().permitAll()
@@ -45,6 +56,7 @@ public class SecurityConfig {
 
         return httpSecurity.build();
     }
+
 
 
     @Bean

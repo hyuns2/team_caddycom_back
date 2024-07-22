@@ -1,14 +1,11 @@
 package com.flash21.caddycom.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.flash21.caddycom.entity.account.Manager;
+import com.flash21.caddycom.entity.account.Account;
 import com.flash21.caddycom.entity.account.Role;
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 
 @AllArgsConstructor
@@ -111,14 +108,14 @@ public class SigninResponse {
             DONE, WAITING, YET
         }
 
-        public static SigninResponse.After from(JwtResponse jwtResponse, Manager manager) {
+        public static SigninResponse.After from(JwtResponse jwtResponse, Account account) {
             return SigninResponse.After.builder()
-                    .role(manager.getRole().toString().substring(5))
+                    .role(account.getRole().toString().substring(5))
                     .accessToken(jwtResponse.getAccessToken())
                     .refreshToken(jwtResponse.getRefreshToken())
-                    .golfFieldId(manager.getGolfField().getId())
-                    .name(manager.getGolfField().getName())
-                    .imageUrl(manager.getGolfField().getImageUrl())
+                    .golfFieldId(account.getGolfField().getId())
+                    .name(account.getGolfField().getName())
+                    .imageUrl(account.getGolfField().getImageUrl())
                     .status(Status.DONE)
                     .build();
         }

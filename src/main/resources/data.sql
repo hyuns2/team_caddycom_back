@@ -19,7 +19,7 @@ insert into `caddycom`.`facility_image` (id, facility_id, image_url) values
     ('16', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+1.jpg'), ('17', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+2.jpg'), ('18', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+3.jpg');
 
 
-insert into `caddycom`.`manager` (id, name, phone_number, password, golf_field_id, role) values
+insert into `caddycom`.`account` (id, name, phone_number, password, golf_field_id, role) values
     (1, '김매니저', '010-0000-0000', '123456', 1, 2),
     (2, '김매니저', '000-0000-0000', '123456', 1, 3);
 

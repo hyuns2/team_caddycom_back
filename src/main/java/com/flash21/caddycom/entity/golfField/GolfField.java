@@ -74,7 +74,7 @@ public class GolfField {
         this.status = ApprovalStatus.APPROVED;
     }
     public void reject(){
-        this.status = ApprovalStatus.REJECT;
+        this.status = ApprovalStatus.REJECTED;
     }
 
 

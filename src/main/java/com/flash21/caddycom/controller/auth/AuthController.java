@@ -39,7 +39,7 @@ public class AuthController {
     @Operation(summary="골프장 사장/직원 이후 로그인 API", description="골프장 사장/직원의 최초 이후 로그인/회원가입 시 사용")
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in")
-    public ResponseEntity<SigninResponse.Main> signin(@Valid @RequestBody SigninRequest.After request){
+    public ResponseEntity<SigninResponse.Main> signin(@Valid @RequestBody SigninRequest.Login request){
         SigninResponse.Main response = authService.afterLogin(request);
         return ResponseEntity.ok().body(response);
     }

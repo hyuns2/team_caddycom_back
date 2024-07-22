@@ -5,7 +5,6 @@ import com.flash21.caddycom.dto.auth.SigninRequest;
 import com.flash21.caddycom.dto.auth.SigninResponse;
 import com.flash21.caddycom.entity.account.Account;
 import com.flash21.caddycom.entity.account.Role;
-import com.flash21.caddycom.entity.golfField.ApprovalStatus;
 import com.flash21.caddycom.global.jwt.JwtProvider;
 import com.flash21.caddycom.repository.account.AccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,13 +44,14 @@ public class AuthService {
     }
 
 
+
     /**
      * 1. 전화번호와 비밀번호를 입력받아서 해당 전화번호의 직원/사장이 존재하는지 확인
      * 2. 계정이 존재하는 경우 비밀번호가 일치하는지 확인
      * 3. 비밀번호가 일치하는 경우 jwt 토큰을 발급해주고, 해당 사람이 속한 골프장 정보를 같이 반환함.
      */
     @Transactional(readOnly = true)
-    public SigninResponse.Main afterLogin(SigninRequest.After request) {
+    public SigninResponse.Main afterLogin(SigninRequest.Login request) {
         Account account = accountRepository.findByPhoneNumber(request.getPhoneNumber()).
                 orElseThrow(() -> new NoSuchElementException("해당 전화번호의 직원/사장은 존재하지 않습니다."));
         //TODO: 인코딩 된 비밀번호 match 검사하도록 수정 필요
@@ -63,12 +63,25 @@ public class AuthService {
     }
 
 
+
+    /**
+     * 1. 전화번호를 입력받아서 해당 전화번호의 직원이 존재하는지 확인
+     * 2. 계정이 존재하는 경우 비밀번호를 변경 ( 변경 시 유효한 비밀번호인지 확인, 인코딩하여 저장)
+     */
     @Transactional
     public void setPassword(SigninRequest.Password request) {
         Account account = accountRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new NoSuchElementException("해당 전화번호의 직원은 존재하지 않습니다."));
 
         //TODO: 비밀번호 인코딩하여 저장
+        if (!isPasswordValid(request.getPassword()))
+            throw new IllegalArgumentException("비밀번호는 6자리 숫자로 입력해주세요.");
         account.updatePassword(request.getPassword());
+    }
+
+
+    private boolean isPasswordValid(String password) {
+        return password.length() == 6 &&
+                password.chars().allMatch(Character::isDigit);
     }
 }

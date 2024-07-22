@@ -25,7 +25,7 @@ public class SigninRequest {
     }
 
     @Getter
-    public static class After {
+    public static class Login {
         @NotBlank(message = "phoneNumber는 필수값입니다.")
         private String phoneNumber;
 

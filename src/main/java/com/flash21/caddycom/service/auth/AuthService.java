@@ -66,7 +66,7 @@ public class AuthService {
         if (!passwordEncoder.matches(password, passwordEncoder.encode(golfField.getPassword())))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 
-        return jwtProvider.issueTokens(Role.ROLE_MANAGER, golfField.getName(), golfField.getId());
+        return jwtProvider.issueTokens(Role.ROLE_OWNER, golfField.getName(), golfField.getId());
     }
 
 }

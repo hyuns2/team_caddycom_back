@@ -1,6 +1,8 @@
 package com.flash21.caddycom.controller.auth;
 
 import com.flash21.caddycom.dto.Message;
+import com.flash21.caddycom.dto.auth.JwtRequest;
+import com.flash21.caddycom.dto.auth.JwtResponse;
 import com.flash21.caddycom.dto.auth.SigninResponse;
 import com.flash21.caddycom.dto.auth.SigninRequest;
 import com.flash21.caddycom.service.auth.WebAuthService;
@@ -21,7 +23,7 @@ public class AuthController {
     private final WebAuthService webAuthService;
     private final AuthService authService;
 
-    @Operation(summary="웹 로그인(전체 시스템 관리자/골프장 관리자) API", description="전체 시스템 관리자 or 골프장 관리자 로그인")
+    @Operation(summary="웹 로그인(전체 시스템 관리자/골프장 관리자) API - 현재 사용 안함", description="전체 시스템 관리자 or 골프장 관리자 로그인")
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/web/sign-in")
     public ResponseEntity<SigninResponse.Web> WebSignin(@Valid @RequestBody SigninRequest.Web request){
@@ -51,6 +53,14 @@ public class AuthController {
     public ResponseEntity<Message> setPassword(@Valid @RequestBody SigninRequest.Password request){
         authService.setPassword(request);
         return ResponseEntity.ok().body(new Message("비밀번호가 설정되었습니다."));
+    }
+
+
+    @Operation(summary="JWT 재발급 API", description="refresh token을 이용하여 토큰 2개를 재발급한다.")
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/token/refresh")
+    public ResponseEntity<JwtResponse> refresh(@Valid @RequestBody JwtRequest request){
+        return ResponseEntity.ok().body(authService.issueTokens(request));
     }
 
 }

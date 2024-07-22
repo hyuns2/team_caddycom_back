@@ -1,5 +1,6 @@
 package com.flash21.caddycom.service.auth;
 
+import com.flash21.caddycom.dto.auth.JwtRequest;
 import com.flash21.caddycom.dto.auth.JwtResponse;
 import com.flash21.caddycom.dto.auth.SigninRequest;
 import com.flash21.caddycom.dto.auth.SigninResponse;
@@ -83,5 +84,11 @@ public class AuthService {
     private boolean isPasswordValid(String password) {
         return password.length() == 6 &&
                 password.chars().allMatch(Character::isDigit);
+    }
+
+
+    @Transactional
+    public JwtResponse issueTokens(JwtRequest request) {
+        return new JwtResponse("token","token");
     }
 }

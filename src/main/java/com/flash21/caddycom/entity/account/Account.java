@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Manager {
+public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,6 +28,10 @@ public class Manager {
     private GolfField golfField;
 
     public void updatePassword(String password){
+        this.password = password;
+    }
+
+    public void encodePassword(String password){
         this.password = password;
     }
 }

@@ -67,15 +67,6 @@ public class GolfField {
     @OneToMany(mappedBy = "golfField", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Formation> formations;
 
-    /**
-     * 골프장과 골프장 관리자는 일대일 관계지만, 하나의 테이블에 나타냄
-     * 아래 두 필드는 골프장 관리자와 관계됨
-     */
-    @Column(nullable = false)
-    private String password;
-
-    private Role role;
-
 
 
 
@@ -83,11 +74,9 @@ public class GolfField {
         this.status = ApprovalStatus.APPROVED;
     }
     public void reject(){
-        this.status = ApprovalStatus.REJECT;
+        this.status = ApprovalStatus.REJECTED;
     }
-    public void encodePassword(String password){
-        this.password = password;
-    }
+
 
     public void addInfo(String fax, String area, LocalDate openingDate, String cartInfo, String amenities){
         this.fax = fax;

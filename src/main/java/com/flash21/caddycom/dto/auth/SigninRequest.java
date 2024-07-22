@@ -1,7 +1,6 @@
 package com.flash21.caddycom.dto.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
@@ -26,7 +25,7 @@ public class SigninRequest {
     }
 
     @Getter
-    public static class After {
+    public static class Login {
         @NotBlank(message = "phoneNumber는 필수값입니다.")
         private String phoneNumber;
 

@@ -21,43 +21,54 @@ public class AuthService {
     private final AccountRepository accountRepository;
     private final JwtProvider jwtProvider;
 
+
+    /**
+     * 1. 전화번호만 입력받아서 해당 전화번호의 직원이 존재하는지 확인
+     * 2. 계정이 존재하는 경우 직원이다. (골프장 등록을 한 사장이 다시 최초 접속을 한 경우 -> 개발환경에서는 열어둠)
+     * 3. 계정이 존재하는 사람에 대해서는 jwt 토큰을 발급해주고, 해당 사람이 속한 골프장 정보를 같이 반환함.
+     * 4. 계정이 존재하지 않으면 골프장 등록을 하지 않은 사장님으로 간주함.
+     */
     @Transactional(readOnly = true)
-    public SigninResponse.First firstLogin(SigninRequest.First request) {
-        Optional<Account> manager = accountRepository.findByPhoneNumber(request.getPhoneNumber());
-        if (manager.isPresent() && manager.get().getRole() == Role.ROLE_EMPLOYEE ) {
-            JwtResponse jwts = jwtProvider.issueTokens(Role.ROLE_EMPLOYEE, manager.get().getName(), manager.get().getId());
-            return SigninResponse.First.from(jwts, manager.get().getGolfField().getId(), manager.get().getGolfField().getName(), manager.get().getGolfField().getImageUrl());
+    public SigninResponse.Main firstLogin(SigninRequest.First request) {
+        Optional<Account> accountOpt = accountRepository.findByPhoneNumber(request.getPhoneNumber());
+
+        if (accountOpt.isPresent()) {
+            Account account = accountOpt.get();
+            JwtResponse jwtResponse = jwtProvider.issueTokens(account.getRole(), account.getName(), account.getId());
+
+            if (account.getRole() == Role.ROLE_EMPLOYEE ||
+                    (account.getRole() == Role.ROLE_OWNER && account.getGolfField() != null)) {
+                return SigninResponse.Main.from(jwtResponse, account.getGolfField(), account.getRole());
+            }
         }
-        else if (manager.isPresent() && manager.get().getRole() == Role.ROLE_OWNER ) {
-            JwtResponse jwts = jwtProvider.issueTokens(Role.ROLE_EMPLOYEE, manager.get().getName(), manager.get().getId());
-            return SigninResponse.First.from(SigninResponse.First.Status.YET, jwts);
-        }
-        else {
-            return SigninResponse.First.from(SigninResponse.First.Status.YET);
-        }
+        return SigninResponse.Main.first();
     }
 
 
+    /**
+     * 1. 전화번호와 비밀번호를 입력받아서 해당 전화번호의 직원/사장이 존재하는지 확인
+     * 2. 계정이 존재하는 경우 비밀번호가 일치하는지 확인
+     * 3. 비밀번호가 일치하는 경우 jwt 토큰을 발급해주고, 해당 사람이 속한 골프장 정보를 같이 반환함.
+     */
     @Transactional(readOnly = true)
-    public SigninResponse.After afterLogin(SigninRequest.After request) {
+    public SigninResponse.Main afterLogin(SigninRequest.After request) {
         Account account = accountRepository.findByPhoneNumber(request.getPhoneNumber()).
-                orElseThrow(() -> new NoSuchElementException("해당 전화번호의 직원은 존재하지 않습니다."));
+                orElseThrow(() -> new NoSuchElementException("해당 전화번호의 직원/사장은 존재하지 않습니다."));
+        //TODO: 인코딩 된 비밀번호 match 검사하도록 수정 필요
         if (!account.getPassword().equals(request.getPassword()))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        JwtResponse jwts = jwtProvider.issueTokens(account.getRole(), account.getName(), account.getId());
-        if (account.getGolfField().getStatus() == ApprovalStatus.APPROVED) {
-            return SigninResponse.After.from(jwts, account);
-        }
-        else {
-            return SigninResponse.After.from(jwts, account.getRole());
-        }
 
+        JwtResponse jwtResponse = jwtProvider.issueTokens(account.getRole(), account.getName(), account.getId());
+        return SigninResponse.Main.from(jwtResponse, account.getGolfField(), account.getRole());
     }
+
 
     @Transactional
     public void setPassword(SigninRequest.Password request) {
         Account account = accountRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new NoSuchElementException("해당 전화번호의 직원은 존재하지 않습니다."));
+
+        //TODO: 비밀번호 인코딩하여 저장
         account.updatePassword(request.getPassword());
     }
 }

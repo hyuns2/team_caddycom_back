@@ -31,16 +31,16 @@ public class AuthController {
     @Operation(summary="골프장 사장/직원 첫번째 로그인 API", description="골프장 사장/직원의 최초 로그인/회원가입 시 사용")
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in/first")
-    public ResponseEntity<SigninResponse.First> firstSignin(@Valid @RequestBody SigninRequest.First request){
-        SigninResponse.First response = authService.firstLogin(request);
+    public ResponseEntity<SigninResponse.Main> firstSignin(@Valid @RequestBody SigninRequest.First request){
+        SigninResponse.Main response = authService.firstLogin(request);
         return ResponseEntity.ok().body(response);
     }
 
     @Operation(summary="골프장 사장/직원 이후 로그인 API", description="골프장 사장/직원의 최초 이후 로그인/회원가입 시 사용")
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in")
-    public ResponseEntity<SigninResponse.After> signin(@Valid @RequestBody SigninRequest.After request){
-        SigninResponse.After response = authService.afterLogin(request);
+    public ResponseEntity<SigninResponse.Main> signin(@Valid @RequestBody SigninRequest.After request){
+        SigninResponse.Main response = authService.afterLogin(request);
         return ResponseEntity.ok().body(response);
     }
 

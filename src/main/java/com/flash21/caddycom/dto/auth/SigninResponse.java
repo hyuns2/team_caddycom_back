@@ -3,6 +3,8 @@ package com.flash21.caddycom.dto.auth;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.flash21.caddycom.entity.account.Account;
 import com.flash21.caddycom.entity.account.Role;
+import com.flash21.caddycom.entity.golfField.ApprovalStatus;
+import com.flash21.caddycom.entity.golfField.GolfField;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,13 +47,13 @@ public class SigninResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Builder
     @Getter
-    public static class First {
+    public static class Main {
         private String role;
         private String accessToken;
         private String refreshToken;
         private Long golfFieldId;
-        private String name;
-        private String imageUrl;
+        private String golfFieldName;
+        private String golfFieldImage;
         private Status status;
 
         @Getter
@@ -59,75 +61,46 @@ public class SigninResponse {
             DONE, WAITING, YET
         }
 
-        public static SigninResponse.First from(JwtResponse jwtResponse, Long golfFieldId, String name, String imageUrl) {
-            return First.builder()
-                    .role("EMPLOYEE")
-                    .accessToken(jwtResponse.getAccessToken())
-                    .refreshToken(jwtResponse.getRefreshToken())
-                    .golfFieldId(golfFieldId)
-                    .name(name)
-                    .imageUrl(imageUrl)
-                    .status(Status.DONE)
-                    .build();
+        private static Status getStatus(ApprovalStatus status){
+            if (status == ApprovalStatus.APPROVED) return Status.DONE;
+            else if (status == ApprovalStatus.WAITING) return Status.WAITING;
+            else return Status.YET;
         }
 
-        public static SigninResponse.First from(Status status, JwtResponse jwtResponse){
-            return SigninResponse.First.builder()
-                    .role("OWNER")
-                    .accessToken(jwtResponse.getAccessToken())
-                    .refreshToken(jwtResponse.getRefreshToken())
-                    .status(status)
-                    .build();
-        }
+        public static Main from(JwtResponse jwtResponse, GolfField golfField, Role role){
+            if (golfField.getStatus() == ApprovalStatus.WAITING)
+                return Main.builder()
+                        .role(role.toString().substring(5))
+                        .accessToken(jwtResponse.getAccessToken())
+                        .refreshToken(jwtResponse.getRefreshToken())
+                        .status(Status.WAITING)
+                        .build();
 
-        public static SigninResponse.First from(Status status){
-            return SigninResponse.First.builder()
-                    .role("OWNER")
-                    .status(status)
-                    .build();
-        }
+            if (golfField.getStatus() == ApprovalStatus.REJECTED)
+                return Main.builder()
+                        .role(role.toString().substring(5))
+                        .status(Status.YET)
+                        .build();
 
-
-    }
-
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Getter
-    @Builder
-    public static class After {
-        private String role;
-        private String accessToken;
-        private String refreshToken;
-        private Long golfFieldId;
-        private String name;
-        private String imageUrl;
-        private Status status;
-
-        @Getter
-        public enum Status {
-            DONE, WAITING, YET
-        }
-
-        public static SigninResponse.After from(JwtResponse jwtResponse, Account account) {
-            return SigninResponse.After.builder()
-                    .role(account.getRole().toString().substring(5))
-                    .accessToken(jwtResponse.getAccessToken())
-                    .refreshToken(jwtResponse.getRefreshToken())
-                    .golfFieldId(account.getGolfField().getId())
-                    .name(account.getGolfField().getName())
-                    .imageUrl(account.getGolfField().getImageUrl())
-                    .status(Status.DONE)
-                    .build();
-        }
-
-        public static SigninResponse.After from(JwtResponse jwtResponse, Role role) {
-            return SigninResponse.After.builder()
+            else return Main.builder()
                     .role(role.toString().substring(5))
                     .accessToken(jwtResponse.getAccessToken())
                     .refreshToken(jwtResponse.getRefreshToken())
-                    .status(Status.WAITING)
+                    .golfFieldId(golfField.getId())
+                    .golfFieldName(golfField.getName())
+                    .golfFieldImage(golfField.getImageUrl())
+                    .status(Status.DONE)
+                    .build();
+        }
+
+
+        public static Main first(){
+            return Main.builder()
+                    .role("OWNER")
+                    .status(Status.YET)
                     .build();
         }
 
     }
+
 }

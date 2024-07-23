@@ -43,4 +43,8 @@ public class Account {
     public void updateToken(String refreshToken){
         this.refreshToken = refreshToken;
     }
+
+    public void linkGolfField(GolfField golfField){
+        this.golfField = golfField;
+    }
 }

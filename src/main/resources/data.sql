@@ -1,6 +1,7 @@
 
 insert into `caddycom`.`golf_field` (address, address_detail, amenities, area, business_license, caddy_type, car_guide, cart_info, contact, employment_license, fax, image_url, name, opening_date, public_transport_guide, registration_number, status, id) values
-    ('대구시','북구 오른쪽 끝','레스토랑, 주차시설 완비','1000평','image.png',1,'사거리에서 우회전하면 있음','전동 카드 10개','010-0000-0000','file.pdf','13451-342','https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/caddycom-logo.png.png','인터불고 CC','2020-09-09','지하철 1호선 대공원역 2번 출구 하차','123456',1,1);
+    ('대구시','북구 오른쪽 끝','레스토랑, 주차시설 완비','1000평','image.png',1,'사거리에서 우회전하면 있음','전동 카드 10개','010-0000-0000','file.pdf','13451-342','https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/caddycom-logo.png.png','인터불고 CC','2020-09-09','지하철 1호선 대공원역 2번 출구 하차','123456',1,1),
+    ('대구시','북구 오른쪽 끝','레스토랑, 주차시설 완비','1000평','image.png',1,'사거리에서 우회전하면 있음','전동 카드 10개','010-0000-0000','file.pdf','13451-342','https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/caddycom-logo.png.png','인터불고 CC','2020-09-09','지하철 1호선 대공원역 2번 출구 하차','123457',0,2);
 
 insert into `caddycom`.`facility` (id, name,content, golf_field_id) values
     ('1', '프로샵','저희 레스토랑은 신선한 재료와 정성을 담은 요리로 고객님의 미각을 만족시킵니다. 아늑한 분위기와 친절한 서비스로 편안한 식사 시간을 제공합니다. 매일 새롭게 준비되는 특별 메뉴로 다양한 맛을 경험하실 수 있습니다. 가족, 친구들과 함께 즐길 수 있는 최고의 장소입니다. 저희 레스토랑에서 특별한 추억을 만들어 보세요.', '1'),
@@ -19,9 +20,11 @@ insert into `caddycom`.`facility_image` (id, facility_id, image_url) values
     ('16', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+1.jpg'), ('17', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+2.jpg'), ('18', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+3.jpg');
 
 
-insert into `caddycom`.`account` (id, name, phone_number, password, golf_field_id, role) values
-    (1, '김매니저', '010-0000-0000', '123456', 1, 2),
-    (2, '김매니저', '000-0000-0000', '123456', 1, 3);
+insert into `caddycom`.`account` (id, name, phone_number, golf_field_id, role) values
+    (1, '김매니저', '010-0000-0000', 1, 2),
+    (2, '김매니저', '000-0000-0000', 1, 3),
+    (3, '김매니저', '020-0000-0000', 2, 2),
+    (4, '김매니저', '021-0000-0000', 2, 3);
 
 
 insert into `caddycom`.`formation` (`id`, `name`, `golf_field_id`)

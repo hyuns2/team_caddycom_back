@@ -27,7 +27,7 @@ import java.util.Map;
 public class JwtProvider {
     @Value("${jwt.secret}")
     private String jwtSecret;
-    private final long ACCESS_EXPIRAION = 1000 * 60 * 10; // 10분
+    private final long ACCESS_EXPIRAION = 1000 * 60 * 60 * 1; // 1시간
     private final long REFRESH_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7일
 
     private final AccountRepository accountRepository;

@@ -41,6 +41,12 @@ public class AuthService {
                 return SigninResponse.Main.from(jwtResponse, account.getGolfField(), account.getRole(), account.getPassword());
             }
         }
+        // 사장님 최초 로그인
+        Account owner = Account.builder()
+                .phoneNumber(request.getPhoneNumber())
+                .role(Role.ROLE_OWNER)
+                .build();
+        accountRepository.save(owner);
         return SigninResponse.Main.first();
     }
 

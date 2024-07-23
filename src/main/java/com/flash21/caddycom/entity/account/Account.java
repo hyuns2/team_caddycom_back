@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Builder
@@ -25,6 +27,12 @@ public class Account {
     private String password;
 
     private Role role;
+
+    private LocalDate enteringDate;
+
+    private String address;
+
+    private String position;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private GolfField golfField;

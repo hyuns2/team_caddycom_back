@@ -21,7 +21,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         response.setContentType("application/json; charset=UTF-8");
         ObjectMapper objectMapper = new ObjectMapper();
 
-        ExceptionDto exceptionDto = ExceptionDto.fail(HttpStatus.UNAUTHORIZED, request.getAttribute("exception").toString());
+        ExceptionDto exceptionDto = ExceptionDto.fail(HttpStatus.FORBIDDEN, request.getAttribute("exception").toString());
         objectMapper.writeValue(response.getOutputStream(), exceptionDto);
     }
 }

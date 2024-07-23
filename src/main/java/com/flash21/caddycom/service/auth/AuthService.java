@@ -38,7 +38,7 @@ public class AuthService {
 
             if (account.getRole() == Role.ROLE_EMPLOYEE ||
                     (account.getRole() == Role.ROLE_OWNER && account.getGolfField() != null)) {
-                return SigninResponse.Main.from(jwtResponse, account.getGolfField(), account.getRole());
+                return SigninResponse.Main.from(jwtResponse, account.getGolfField(), account.getRole(), account.getPassword());
             }
         }
         return SigninResponse.Main.first();
@@ -60,7 +60,7 @@ public class AuthService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 
         JwtResponse jwtResponse = jwtProvider.issueTokens(account.getRole(), account.getName(), account.getId());
-        return SigninResponse.Main.from(jwtResponse, account.getGolfField(), account.getRole());
+        return SigninResponse.Main.from(jwtResponse, account.getGolfField(), account.getRole(), account.getPassword());
     }
 
 

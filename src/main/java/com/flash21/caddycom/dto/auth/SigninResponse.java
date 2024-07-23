@@ -55,6 +55,7 @@ public class SigninResponse {
         private String golfFieldName;
         private String golfFieldImage;
         private Status status;
+        private boolean isSetup;
 
         @Getter
         public enum Status {
@@ -67,19 +68,21 @@ public class SigninResponse {
             else return Status.YET;
         }
 
-        public static Main from(JwtResponse jwtResponse, GolfField golfField, Role role){
+        public static Main from(JwtResponse jwtResponse, GolfField golfField, Role role, String password){
             if (golfField.getStatus() == ApprovalStatus.WAITING)
                 return Main.builder()
                         .role(role.toString().substring(5))
                         .accessToken(jwtResponse.getAccessToken())
                         .refreshToken(jwtResponse.getRefreshToken())
                         .status(Status.WAITING)
+                        .isSetup(password != null)
                         .build();
 
             if (golfField.getStatus() == ApprovalStatus.REJECTED)
                 return Main.builder()
                         .role(role.toString().substring(5))
                         .status(Status.YET)
+                        .isSetup(password != null)
                         .build();
 
             else return Main.builder()
@@ -90,6 +93,7 @@ public class SigninResponse {
                     .golfFieldName(golfField.getName())
                     .golfFieldImage(golfField.getImageUrl())
                     .status(Status.DONE)
+                    .isSetup(password != null)
                     .build();
         }
 
@@ -98,6 +102,7 @@ public class SigninResponse {
             return Main.builder()
                     .role("OWNER")
                     .status(Status.YET)
+                    .isSetup(false)
                     .build();
         }
 

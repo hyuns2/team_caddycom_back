@@ -34,7 +34,7 @@ public class AuthService {
 
         if (accountOpt.isPresent()) {
             Account account = accountOpt.get();
-            JwtResponse jwtResponse = jwtProvider.issueTokens(account.getRole(), account.getName(), account.getId());
+            JwtResponse jwtResponse = jwtProvider.issueTokens(account.getRole(), account.getPhoneNumber(), account.getId());
 
             if (account.getRole() == Role.ROLE_EMPLOYEE ||
                     (account.getRole() == Role.ROLE_OWNER && account.getGolfField() != null)) {
@@ -65,7 +65,7 @@ public class AuthService {
         if (!account.getPassword().equals(request.getPassword()))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 
-        JwtResponse jwtResponse = jwtProvider.issueTokens(account.getRole(), account.getName(), account.getId());
+        JwtResponse jwtResponse = jwtProvider.issueTokens(account.getRole(), account.getPhoneNumber(), account.getId());
         return SigninResponse.Main.from(jwtResponse, account.getGolfField(), account.getRole(), account.getPassword());
     }
 
@@ -94,7 +94,7 @@ public class AuthService {
 
 
     @Transactional
-    public JwtResponse issueTokens(JwtRequest request) {
+    public JwtResponse reissueTokens(JwtRequest request) {
         return jwtProvider.reissueTokens(request.getRefreshToken());
     }
 }

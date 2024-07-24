@@ -10,6 +10,9 @@ import java.util.Optional;
 public interface HoleRepository extends JpaRepository<Hole, Long>, HoleJdbcRepository {
     Optional<List<Hole>> findAllByCourseId(Long courseId);
 
+    @Query("select h from Hole h where h.course.id in :courseIds")
+    Optional<List<Hole>> findAllByCourseIds(List<Long> courseIds);
+
     @Query("select distinct h from Hole h join fetch h.tees where h.course.id = :courseId")
     Optional<List<Hole>> findAllByCourseIdFetchJoinTee(Long courseId);
 }

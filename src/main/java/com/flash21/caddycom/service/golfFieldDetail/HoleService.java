@@ -40,7 +40,7 @@ public class HoleService {
     }
 
     @Transactional
-    public List<Hole> createHoles(List<Course> courses) {
+    public List<Long> createHoles(List<Course> courses) {
         List<Hole> holes = new ArrayList<>();
         for(Course course : courses) {
             for(int i = course.getHoles().size() + 1; i <= course.getTotalHoles(); i++) {
@@ -49,9 +49,7 @@ public class HoleService {
             }
         }
         List<Long> holeIds = holeRepository.saveAllInBatch(holes);
-        List<Hole> saveHoles = holeRepository.findAllById(holeIds);
-        teeService.createTees(saveHoles);
-        return saveHoles;
+        return holeIds;
     }
 
     @Transactional

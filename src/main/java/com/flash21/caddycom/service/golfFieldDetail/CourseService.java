@@ -36,7 +36,7 @@ public class CourseService {
         return returnDtoList;
     }
 
-    public List<Course> createCourses(Formation formation, List<CourseRequest.create> requests) {
+    public List<Long> createCourses(Formation formation, List<CourseRequest.create> requests) {
         List<Course> courses = new ArrayList<>();
         for(CourseRequest.create request : requests) {
             Course course = Course.builder()
@@ -48,10 +48,7 @@ public class CourseService {
         }
 
         List<Long> courseIds = courseRepository.saveAllInBatch(courses);
-        List<Course> savedCourse = courseRepository.findAllById(courseIds);
-
-        holeService.createHoles(savedCourse);
-        return savedCourse;
+        return courseIds;
     }
 
     public void updateCourse(CourseRequest.update request) {

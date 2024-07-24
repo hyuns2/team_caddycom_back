@@ -1,6 +1,6 @@
 package com.flash21.caddycom.service.auth;
 
-import com.flash21.caddycom.dto.auth.JwtRequest;
+import  com.flash21.caddycom.dto.auth.JwtRequest;
 import com.flash21.caddycom.dto.auth.JwtResponse;
 import com.flash21.caddycom.dto.auth.SigninRequest;
 import com.flash21.caddycom.dto.auth.SigninResponse;
@@ -61,6 +61,10 @@ public class AuthService {
     public SigninResponse.Main afterLogin(SigninRequest.Login request) {
         Account account = accountRepository.findByPhoneNumber(request.getPhoneNumber()).
                 orElseThrow(() -> new NoSuchElementException("해당 전화번호의 직원/사장은 존재하지 않습니다."));
+
+        if (account.getPassword() == null)
+            throw new IllegalArgumentException("비밀번호가 아직 설정되지 않았습니다.");
+
         //TODO: 인코딩 된 비밀번호 match 검사하도록 수정 필요
         if (!account.getPassword().equals(request.getPassword()))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");

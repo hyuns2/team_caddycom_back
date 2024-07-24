@@ -1,5 +1,6 @@
 package com.flash21.caddycom.dto.reservationSheet;
 
+import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
 import com.flash21.caddycom.entity.reservationSheet.ReservationSheetInfo;
@@ -21,6 +22,10 @@ public class ReservationSheetDto {
     @Data
     @AllArgsConstructor
     public static class CreateRequest {
+        @Schema(description = "골프장 Id")
+        @NotNull
+        private Long goldFieldId;
+
         @Schema(description = "코스 리스트")
         @NotNull
         private List<Long> courseList;
@@ -45,17 +50,17 @@ public class ReservationSheetDto {
         @NotEmpty
         private List<String> teeOffList;
 
-        public static List<ReservationSheet> toEntities(CreateRequest dto, ReservationSheetInfo reservationSheetInfo, List<Course> courseList) {
+        public static List<ReservationSheet> toEntities(GolfField goldField, CreateRequest dto, List<Course> courseList) {
             List<ReservationSheet> sheets = new ArrayList<>();
             int part = 1;
 
             for (int i = 0; i < dto.teeOffList.size(); i++) {
                 for (Course course: courseList) {
                     ReservationSheet sheet = ReservationSheet.builder().
-                            reservationSheetInfo(reservationSheetInfo).
+                            golfField(goldField).
                             course(course).
-                            startTime(LocalTime.parse(dto.startTimeList.get(i))).
-                            endTime(LocalTime.parse(dto.endTimeList.get(i))).
+                            startDateTime(LocalDateTime.of(dto.getStartDate(), LocalTime.parse(dto.startTimeList.get(i)))).
+                            endDateTime(LocalDateTime.of(dto.getEndDate(),LocalTime.parse(dto.endTimeList.get(i)))).
                             teeOff(dto.teeOffList.get(i)).
                             part(part).build();
                     sheets.add(sheet);

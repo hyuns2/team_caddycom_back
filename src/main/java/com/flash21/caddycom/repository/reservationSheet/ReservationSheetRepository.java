@@ -13,5 +13,4 @@ import java.util.List;
 
 @Repository
 public interface ReservationSheetRepository extends JpaRepository<ReservationSheet, Long> {
-    List<ReservationSheet> findAllByReservationSheetInfoId(Long reservationSheetInfoId);
 }

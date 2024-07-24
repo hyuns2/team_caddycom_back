@@ -24,16 +24,16 @@ public class ReservationSheetController {
 
     @Operation(summary = "예약시트 등록", description = "골프장 관리자가 예약시트를 등록합니다.")
     @PostMapping
-    public ResponseEntity<Long> createReservationSheet(@AuthenticationPrincipal User user, @Valid @RequestBody ReservationSheetDto.CreateRequest dto) {
-        Long reservationSheetInfoId = rsService.createReservationSheet(dto);
+    public ResponseEntity<?> createReservationSheet(@AuthenticationPrincipal User user, @Valid @RequestBody ReservationSheetDto.CreateRequest dto) {
+        rsService.createReservationSheet(dto);
 
-        return new ResponseEntity<>(reservationSheetInfoId, HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Operation(summary = "캘린더 메타정보 조회", description = "골프장 관리자가 캘린더에 표기되는 메타정보를 조회합니다.")
-    @GetMapping("/calendar/{reservationSheetInfoId}/{year}/{month}")
-    public ResponseEntity<?> getMetaData(@AuthenticationPrincipal User user, @PathVariable Long reservationSheetInfoId, @PathVariable int year, @PathVariable int month) {
-        List<ReservationSheetDto.MetaDataResponse> responseDtoList = rsService.getMetaData(reservationSheetInfoId, year, month);
+    @GetMapping("/calendar/{golfFieldId}/{year}/{month}")
+    public ResponseEntity<?> getMetaData(@AuthenticationPrincipal User user, @PathVariable Long golfFieldId, @PathVariable int year, @PathVariable int month) {
+        List<ReservationSheetDto.MetaDataResponse> responseDtoList = rsService.getMetaData(golfFieldId, year, month);
 
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }

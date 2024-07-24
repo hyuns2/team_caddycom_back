@@ -13,6 +13,7 @@ public enum ErrorCode {
      */
     // UserService
     USER_NOT_FOUND(600, "사용자를 찾을 수 없습니다", HttpStatus.BAD_REQUEST),
+    GOLF_FIELD_NOT_FOUND(601, "골프장을 찾을 수 없습니다", HttpStatus.BAD_REQUEST),
 
     // CourseService
     COURSE_NOT_FOUND(700, "해당하는 코스를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),

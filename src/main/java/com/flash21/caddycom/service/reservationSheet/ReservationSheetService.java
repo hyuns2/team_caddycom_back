@@ -94,14 +94,14 @@ public class ReservationSheetService {
     }
 
     /**
-     * 예약시트 생성 내부함수3: 주어진 조건 사이의 시간을 모두 찾아, 리스트로 반환합니다.
+     * 주어진 조건 사이의 시간을 모두 찾아, 리스트로 반환합니다.
      *
      * @param startTime 시작시간
      * @param endTime 종료시간
      * @param teeOff 티오프 간격
      * @return 주어진 조건 사이의 시간 리스트
      */
-    private List<LocalTime> getStartTimeList(LocalTime startTime, LocalTime endTime, String teeOff) {
+    public List<LocalTime> getStartTimeList(LocalTime startTime, LocalTime endTime, String teeOff) {
         LocalTime currentStartTime = startTime;
 
         List<Integer> teeOffList = Arrays.stream(teeOff.split("~")).map(Integer::new).toList();

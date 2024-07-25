@@ -16,19 +16,7 @@ public class AssignmentDto {
         @Schema(description = "배정정보 id")
         private Long id;
 
-        @Schema(description = "시작시간")
-        private LocalTime startTime;
-
         @Schema(description = "상태")
         private AssignmentStatus status;
-
-//        @Schema(description = "caddy id")
-//        private Long caddyId;
-
-        @Schema(description = "caddy 이름")
-        private String caddyName;
-
-        @Schema(description = "사유")
-        private String reason;
     }
 }

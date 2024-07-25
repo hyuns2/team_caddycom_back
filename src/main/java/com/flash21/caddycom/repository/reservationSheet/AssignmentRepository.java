@@ -15,10 +15,6 @@ import java.util.List;
 @Repository
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     @Query("select a from Assignment a"
-            + " where a.reservationDate.reservationSheet.course = ?1 and a.reservationDate.reservationAt = ?2")
-    Page<Assignment> findAllByCourseAndReservationDate(Course course, LocalDate date, Pageable pageable);
-
-    @Query("select a from Assignment a"
-            + " where a.reservationDate.reservationSheet.course = ?1 and a.reservationDate.reservationSheet.part =?2 and a.reservationDate.reservationAt = ?3")
-    Page<Assignment> findAllByCourseAndPartAndReservationDate(Course course, int part, LocalDate date, Pageable pageable);
+            + " where a.reservationDate.reservationAt = ?1 order by a.startTime")
+    Page<Assignment> findAllByReservationDate(LocalDate date, Pageable pageable);
 }

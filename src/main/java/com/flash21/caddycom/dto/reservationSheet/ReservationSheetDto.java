@@ -3,7 +3,6 @@ package com.flash21.caddycom.dto.reservationSheet;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
-import com.flash21.caddycom.entity.reservationSheet.ReservationSheetInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

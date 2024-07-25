@@ -1,5 +1,6 @@
 package com.flash21.caddycom.entity.reservationSheet;
 
+import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -21,17 +22,17 @@ public class ReservationSheet {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private ReservationSheetInfo reservationSheetInfo;
+    private GolfField golfField;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Course course;
 
     @Column(nullable = false)
-    private LocalTime startTime;
+    private LocalDateTime startDateTime;
 
     @Column(nullable = false)
-    private LocalTime endTime;
+    private LocalDateTime endDateTime;
 
     @Column(nullable = false)
     private String teeOff;

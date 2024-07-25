@@ -44,8 +44,10 @@ public class FormationController {
             for(FormationRequest.update updateRequest : request.getUpdate())
                 formationService.updateFormation(updateRequest);
 
-        formationService.deleteFormations(request.getDeleteFormations());
-        courseService.deleteCourses(request.getDeleteCourses());
+        if(!request.getDeleteFormations().isEmpty())
+            formationService.deleteFormations(request.getDeleteFormations());
+        if(!request.getDeleteCourses().isEmpty())
+            courseService.deleteCourses(request.getDeleteCourses());
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

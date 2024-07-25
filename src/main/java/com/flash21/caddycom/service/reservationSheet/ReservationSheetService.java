@@ -13,15 +13,19 @@ import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.reservationSheet.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationSheetService {
@@ -52,12 +56,12 @@ public class ReservationSheetService {
         for (ReservationSheet sheet: sheets) {
             ReservationSheet returnSheet = rsRepository.save(sheet);
             createReservationDate(returnSheet, dto.getStartDate(), dto.getEndDate(),
-                    getStartTimeList(returnSheet.getStartDateTime().toLocalTime(), returnSheet.getEndDateTime().toLocalTime(), returnSheet.getTeeOff()).size());
+                    getStartTimeList(sheet.getStartDateTime().toLocalTime(), sheet.getEndDateTime().toLocalTime(), sheet.getTeeOff()).size());
         }
     }
 
     /**
-     * 예약시트 생성 내부함수1: 예약시트 생성요청 dto와 같은 날짜의 같은 코스 예약이 있는지를 검증합니다.
+     * 예약시트 생성 내부함수1: 예약시트 생성요청 dto & 같은 날짜의 같은 코스 예약이 있는지 검증합니다.
      *
      * @param dto 예약시트 생성요청 dto
      *
@@ -69,7 +73,8 @@ public class ReservationSheetService {
             throw new CInvalidPartInfoException();
 
         for (Course course: courseList) {
-            if (rsRepository.findOneByGolfFieldIdAndCourseIdAndPartBetweenNewDate(dto.getGolfFieldId(), course.getId(), dto.getStartDate(), dto.getEndDate()).isPresent())
+            if (!rsRepository.findAllByGolfFieldIdAndCourseIdAndPartBetweenNewDate(
+                    dto.getGolfFieldId(), course.getId(), LocalDateTime.of(dto.getStartDate(), LocalTime.MIDNIGHT), LocalDateTime.of(dto.getEndDate(), LocalTime.MIDNIGHT)).isEmpty())
                 throw new CBadReservationRequestException();
         }
     }
@@ -136,7 +141,7 @@ public class ReservationSheetService {
         List<MetaDataReport> reports = rdRepository.countAllMetaDataByDate(targetDate, targetDate.plusMonths(1).minusDays(1), golfFieldId);
 
         List<ReservationSheetDto.MetaDataResponse> responseDtoList = new ArrayList<>();
-        for (MetaDataReport report: reports) {
+        for (MetaDataReport report : reports) {
             int totalCntResult = report.getTotalCntSum();
             int blockedCntResult = report.getBlockedCntSum();
             int availableCntResult = totalCntResult - blockedCntResult;
@@ -148,6 +153,18 @@ public class ReservationSheetService {
                     availableCntSum(report.getIsAssigned() ? availableCntResult : 0).build());
         }
 
-        return responseDtoList;
+        return responseDtoList.stream().sorted(new DtoComparator()).toList();
+    }
+}
+
+class DtoComparator implements Comparator<ReservationSheetDto.MetaDataResponse> {
+    @Override
+    public int compare(ReservationSheetDto.MetaDataResponse dto1, ReservationSheetDto.MetaDataResponse dto2) {
+        if (dto1.getTargetDate().isAfter(dto2.getTargetDate()))
+            return 1;
+        else if (dto1.getTargetDate().isBefore(dto2.getTargetDate()))
+            return -1;
+        else
+            return 0;
     }
 }

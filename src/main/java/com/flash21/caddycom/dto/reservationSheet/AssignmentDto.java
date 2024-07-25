@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalTime;
-
 public class AssignmentDto {
     @Data
     @AllArgsConstructor

@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -24,7 +23,7 @@ public class AssignmentController {
     final AssignmentService assignmentService;
 
     @Operation(summary = "배정정보 조회", description = "골프장 관리자가 배정정보를 조회합니다.")
-    @GetMapping("/{golfFieldId}/{targetDate}/{part}/{page}")
+    @GetMapping("/{golfFieldId}/{targetDate}/{page}")
     public ResponseEntity<Map<String, Map<String, AssignmentDto.AssignmentsResponse>>> getAssignments(@AuthenticationPrincipal User user, @PathVariable Long golfFieldId, @PathVariable LocalDate targetDate, @PathVariable int page) {
         Map<String, Map<String, AssignmentDto.AssignmentsResponse>> result = assignmentService.getAssignments(golfFieldId, targetDate, page);
 

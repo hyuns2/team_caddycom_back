@@ -1,5 +1,6 @@
 package com.flash21.caddycom.dto.reservationSheet;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,15 +28,17 @@ public class ReservationSheetDto {
         private Long golfFieldId;
 
         @Schema(description = "코스 리스트")
-        @NotNull
+        @NotEmpty
         private List<Long> courseList;
 
-        @Schema(description = "시작 날짜 (yyyy-mm-dd)")
+        @Schema(description = "시작날짜 (yyyy-mm-dd)")
         @NotNull
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         private LocalDate startDate;
 
-        @Schema(description = "종료 날짜 (yyyy-mm-dd)")
+        @Schema(description = "종료날짜 (yyyy-mm-dd)")
         @NotNull
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         private LocalDate endDate;
 
         @Schema(description = "시작시간 (hh:mm) 리스트")
@@ -49,17 +53,19 @@ public class ReservationSheetDto {
         @NotEmpty
         private List<String> teeOffList;
 
-        public static List<ReservationSheet> toEntities(GolfField goldField, CreateRequest dto, List<Course> courseList) {
+        public static List<ReservationSheet> toEntities(GolfField golfField, CreateRequest dto, List<Course> courseList) {
             List<ReservationSheet> sheets = new ArrayList<>();
             int part = 1;
 
             for (int i = 0; i < dto.teeOffList.size(); i++) {
                 for (Course course: courseList) {
+                    LocalDateTime currentStartDateTime = LocalDateTime.of(dto.getStartDate(), LocalTime.parse(dto.startTimeList.get(i)));
+                    LocalDateTime currentEndDateTime = LocalDateTime.of(dto.getEndDate(), LocalTime.parse(dto.endTimeList.get(i)));
                     ReservationSheet sheet = ReservationSheet.builder().
-                            golfField(goldField).
+                            golfField(golfField).
                             course(course).
-                            startDateTime(LocalDateTime.of(dto.getStartDate(), LocalTime.parse(dto.startTimeList.get(i)))).
-                            endDateTime(LocalDateTime.of(dto.getEndDate(),LocalTime.parse(dto.endTimeList.get(i)))).
+                            startDateTime(currentStartDateTime).
+                            endDateTime(currentEndDateTime).
                             teeOff(dto.teeOffList.get(i)).
                             part(part).build();
                     sheets.add(sheet);

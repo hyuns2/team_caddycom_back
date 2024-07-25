@@ -6,8 +6,11 @@ import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
+import com.flash21.caddycom.repository.golfFieldDetail.CommentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.formation.FormationRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +23,11 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 @Transactional
 public class CourseService {
-    final CourseRepository courseRepository;
+    private final CourseRepository courseRepository;
+    private final HoleRepository holeRepository;
+    private final TeeRepository teeRepository;
+    private final CommentRepository commentRepository;
+
     private final HoleService holeService;
 
     public List<CourseInfoResponseDto> retrieveCourseInfo() {
@@ -36,7 +43,7 @@ public class CourseService {
         return returnDtoList;
     }
 
-    public List<Course> createCourses(Formation formation, List<CourseRequest.create> requests) {
+    public List<Long> createCourses(Formation formation, List<CourseRequest.create> requests) {
         List<Course> courses = new ArrayList<>();
         for(CourseRequest.create request : requests) {
             Course course = Course.builder()
@@ -48,10 +55,7 @@ public class CourseService {
         }
 
         List<Long> courseIds = courseRepository.saveAllInBatch(courses);
-        List<Course> savedCourse = courseRepository.findAllById(courseIds);
-
-        holeService.createHoles(savedCourse);
-        return savedCourse;
+        return courseIds;
     }
 
     public void updateCourse(CourseRequest.update request) {
@@ -77,6 +81,9 @@ public class CourseService {
     }
 
     public void deleteCourses(List<Long> ids) {
+        teeRepository.deleteAllByCourseIds(ids);
+        commentRepository.deleteAllByCourseIds(ids);
+        holeRepository.deleteAllByCourseIds(ids);
         courseRepository.deleteAllByIdInBatch(ids);
     }
 

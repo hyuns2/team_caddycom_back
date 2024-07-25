@@ -7,8 +7,13 @@ import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
+import com.flash21.caddycom.entity.golfFieldDetail.Hole;
+import com.flash21.caddycom.repository.golfFieldDetail.CommentRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.formation.FormationRepository;
-import jakarta.transaction.Transactional;
+import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +26,14 @@ import java.util.NoSuchElementException;
 @Transactional
 public class FormationService {
     private final FormationRepository formationRepository;
+    private final CourseRepository courseRepository;
+    private final HoleRepository holeRepository;
+    private final TeeRepository teeRepository;
+    private final CommentRepository commentRepository;
+
     private final CourseService courseService;
+    private final HoleService holeService;
+    private final TeeService teeService;
 
     public void createFormation(GolfField golfField, FormationRequest.create request) {
         Formation formation;
@@ -33,8 +45,18 @@ public class FormationService {
         formationRepository.save(formation);
 
         courseService.createCourses(formation, request.getCourseInfos());
-    }
+        List<Course> courses = courseRepository.findAllByFormationId(formation.getId());
 
+        holeService.createHoles(courses);
+
+        List<Long> courseIds = new ArrayList<>();
+        for(Course course : courses)
+            courseIds.add(course.getId());
+
+        List<Hole> holes = holeRepository.findAllByCourseIds(courseIds).orElseThrow(() -> new NoSuchElementException("해당 코스가 존재하지 않습니다."));
+
+        teeService.createTees(holes);
+    }
 
     public void updateFormation(FormationRequest.update request) {
         Formation formation = formationRepository.findById(request.getFormationId())
@@ -64,6 +86,10 @@ public class FormationService {
     }
 
     public void deleteFormations(List<Long> ids) {
+        commentRepository.deleteAllByFormationIds(ids);
+        teeRepository.deleteAllByFormationIds(ids);
+        holeRepository.deleteAllByFormationIds(ids);
+        courseRepository.deleteAllByFormationIds(ids);
         formationRepository.deleteAllByIdInBatch(ids);
     }
 

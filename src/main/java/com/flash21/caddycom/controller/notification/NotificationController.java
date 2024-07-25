@@ -4,11 +4,9 @@ import com.flash21.caddycom.dto.Message;
 import com.flash21.caddycom.service.notification.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -27,8 +25,8 @@ public class NotificationController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/test")
-    public void test(@RequestParam Long id) {
-        notificationService.notify(id, new Message("test"));
+    @GetMapping("/publish/{id}")
+    public void test(@PathVariable Long id) {
+        notificationService.publish(id, new Message("알림이 전송되었습니다."));
     }
 }

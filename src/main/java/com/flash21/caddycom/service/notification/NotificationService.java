@@ -14,11 +14,11 @@ public class NotificationService {
     public SseEmitter subscribe(Long id) {
         SseEmitter emitter = createEmitter(id);
 
-        sendToClient(id, "EventStream Created. [id=" + id + "]");
+        sendToClient(id, "알림이 구독되었습니다.");
         return emitter;
     }
 
-    public void notify(Long id, Object data) {
+    public void publish(Long id, Object data) {
         sendToClient(id, data);
     }
 

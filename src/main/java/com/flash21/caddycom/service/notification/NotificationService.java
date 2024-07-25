@@ -18,6 +18,10 @@ public class NotificationService {
         return emitter;
     }
 
+    public void unsubscribe(Long id) {
+        emitterRepository.deleteById(id);
+    }
+
     public void publish(Long id, Object data) {
         sendToClient(id, data);
     }

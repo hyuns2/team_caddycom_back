@@ -25,8 +25,16 @@ public class NotificationController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/unsubscribe/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @Operation(summary = "알림 구독취소 API", description="알림 구독을 취소한다.")
+    public void unsubscribe(@PathVariable Long id) {
+        notificationService.unsubscribe(id);
+    }
+
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/publish/{id}")
     public void test(@PathVariable Long id) {
-        notificationService.publish(id, new Message("알림이 전송되었습니다."));
+        notificationService.publish(id, "알림이 전송되었습니다.");
     }
 }

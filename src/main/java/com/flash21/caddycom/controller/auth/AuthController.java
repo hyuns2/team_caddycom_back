@@ -60,7 +60,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/token/refresh")
     public ResponseEntity<JwtResponse> refresh(@Valid @RequestBody JwtRequest request){
-        return ResponseEntity.ok().body(authService.issueTokens(request));
+        return ResponseEntity.ok().body(authService.reissueTokens(request));
     }
 
 }

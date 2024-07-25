@@ -17,10 +17,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException, ServletException {
-        response.setContentType("application/json; charset=UTF-8");
-        ObjectMapper objectMapper = new ObjectMapper();
+        if (request.getAttribute("exception") != null) {
+            response.setContentType("application/json; charset=UTF-8");
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
-        ExceptionDto exceptionDto = ExceptionDto.fail(HttpStatus.UNAUTHORIZED, request.getAttribute("exception").toString());
-        objectMapper.writeValue(response.getOutputStream(), exceptionDto);
+            ObjectMapper objectMapper = new ObjectMapper();
+            ExceptionDto exceptionDto = ExceptionDto.fail(HttpStatus.UNAUTHORIZED, request.getAttribute("exception").toString());
+            objectMapper.writeValue(response.getOutputStream(), exceptionDto);
+        }
+
     }
 }

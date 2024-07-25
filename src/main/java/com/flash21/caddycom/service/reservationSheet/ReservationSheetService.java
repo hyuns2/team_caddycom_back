@@ -5,6 +5,7 @@ import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.dto.reservationSheet.ReservationSheetDto;
 import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
 import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
+import com.flash21.caddycom.global.exception.cException.CBadReservationRequestException;
 import com.flash21.caddycom.global.exception.cException.CCourseNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CGolfFieldNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
@@ -39,16 +40,15 @@ public class ReservationSheetService {
      */
     @Transactional
     public void createReservationSheet(ReservationSheetDto.CreateRequest dto) {
-        validToCreateReservationSheet(dto);
-
-        GolfField golfField = golfFieldRepository.findById(dto.getGoldFieldId())
+        GolfField golfField = golfFieldRepository.findById(dto.getGolfFieldId())
                 .orElseThrow(CGolfFieldNotFoundException::new);
         List<Course> courseList = courseRepository.findAllById(dto.getCourseList());
         if (courseList.isEmpty())
             throw new CCourseNotFoundException();
 
-        List<ReservationSheet> sheets = ReservationSheetDto.CreateRequest.toEntities(golfField, dto, courseList);
+        validToCreateReservationSheet(dto, courseList);
 
+        List<ReservationSheet> sheets = ReservationSheetDto.CreateRequest.toEntities(golfField, dto, courseList);
         for (ReservationSheet sheet: sheets) {
             ReservationSheet returnSheet = rsRepository.save(sheet);
             createReservationDate(returnSheet, dto.getStartDate(), dto.getEndDate(),
@@ -57,16 +57,21 @@ public class ReservationSheetService {
     }
 
     /**
-     * 예약시트 생성 내부함수1: 예약시트 생성요청 dto를 검증합니다.
+     * 예약시트 생성 내부함수1: 예약시트 생성요청 dto와 같은 날짜의 같은 코스 예약이 있는지를 검증합니다.
      *
      * @param dto 예약시트 생성요청 dto
      *
      * @throws CInvalidPartInfoException 부(파트)에 대한 일부 정보가 빠진 경우
      */
-    private void validToCreateReservationSheet(ReservationSheetDto.CreateRequest dto) {
+    private void validToCreateReservationSheet(ReservationSheetDto.CreateRequest dto, List<Course> courseList) {
         if (dto.getTeeOffList().size() != dto.getStartTimeList().size() ||
                 dto.getStartTimeList().size() != dto.getEndTimeList().size())
             throw new CInvalidPartInfoException();
+
+        for (Course course: courseList) {
+            if (rsRepository.findOneByGolfFieldIdAndCourseIdAndPartBetweenNewDate(dto.getGolfFieldId(), course.getId(), dto.getStartDate(), dto.getEndDate()).isPresent())
+                throw new CBadReservationRequestException();
+        }
     }
 
     /**
@@ -128,7 +133,7 @@ public class ReservationSheetService {
      */
     public List<ReservationSheetDto.MetaDataResponse> getMetaData(Long golfFieldId, int year, int month) {
         LocalDate targetDate = LocalDate.of(year, month, 1);
-        List<MetaDataReport> reports = rdRepository.countAllMetaDataByDate(targetDate, targetDate.plusMonths(1), golfFieldId);
+        List<MetaDataReport> reports = rdRepository.countAllMetaDataByDate(targetDate, targetDate.plusMonths(1).minusDays(1), golfFieldId);
 
         List<ReservationSheetDto.MetaDataResponse> responseDtoList = new ArrayList<>();
         for (MetaDataReport report: reports) {
@@ -140,7 +145,7 @@ public class ReservationSheetService {
                     targetDate(report.getReservationAt()).
                     totalCntSum(totalCntResult).
                     blockedCntSum(blockedCntResult).
-                    availableCntSum(availableCntResult).build());
+                    availableCntSum(report.getIsAssigned() ? availableCntResult : 0).build());
         }
 
         return responseDtoList;

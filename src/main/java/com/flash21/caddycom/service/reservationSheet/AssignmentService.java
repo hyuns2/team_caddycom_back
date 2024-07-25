@@ -14,6 +14,7 @@ import com.flash21.caddycom.repository.reservationSheet.AssignmentRepository;
 import com.flash21.caddycom.repository.reservationSheet.ReservationDateRepository;
 import com.flash21.caddycom.repository.reservationSheet.ReservationSheetRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AssignmentService {
@@ -75,36 +77,36 @@ public class AssignmentService {
      * @return 시간, 코스별 dto 형태의 map 반환
      */
     private Map<String, Map<String, AssignmentDto.AssignmentsResponse>> findAndGetAssignmentsByCourse(List<Course> courseList, LocalDate date, int page) {
-        Map<String, Map<String, AssignmentDto.AssignmentsResponse>> result = new WeakHashMap<>();
-
+        Map<String, Map<String, AssignmentDto.AssignmentsResponse>> result = new TreeMap<>();
         int pageSize = 10;
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Assignment> assignmentPageList = assignmentRepository.findAllByReservationDate(date, pageable);
-        List<Assignment> assignmentList = assignmentPageList.getContent();
 
-        for (Assignment assignment: assignmentList) {
-            String courseName = assignment.getReservationDate().getReservationSheet().getCourse().getName();
-            String startTime = assignment.getStartTime().toString();
-            AssignmentDto.AssignmentsResponse dto = AssignmentDto.AssignmentsResponse.builder()
-                    .id(assignment.getId())
-                    .status(assignment.getStatus()).build();
+        for (Course course: courseList) {
+            Page<Assignment> assignmentPageList = assignmentRepository.findAllByCourseAndReservationDate(course.getId(), date, pageable);
+            List<Assignment> assignmentList = assignmentPageList.getContent();
 
-            if (result.containsKey(startTime))
-                result.get(startTime).put(courseName, dto);
-            else {
-                Map<String, AssignmentDto.AssignmentsResponse> dtoMap = new WeakHashMap<>();
-                dtoMap.put(courseName, dto);
-                result.put(startTime, dtoMap);
+            for (Assignment assignment: assignmentList) {
+                String startTime = assignment.getStartTime().toString();
+                AssignmentDto.AssignmentsResponse dto = AssignmentDto.AssignmentsResponse.builder()
+                        .id(assignment.getId())
+                        .status(assignment.getStatus()).build();
+
+                if (result.containsKey(startTime))
+                    result.get(startTime).put(course.getName(), dto);
+                else {
+                    Map<String, AssignmentDto.AssignmentsResponse> dtoMap = new WeakHashMap<>();
+                    dtoMap.put(course.getName(), dto);
+                    result.put(startTime, dtoMap);
+                }
             }
         }
 
         result.forEach((key, value) -> {
             for (Course course: courseList) {
-                if (!result.containsKey(course.getName()))
+                if (!value.containsKey(course.getName()))
                     value.put(course.getName(), null);
             }
         });
-
         return result;
     }
 

@@ -19,6 +19,7 @@ public enum ErrorCode {
     COURSE_NOT_FOUND(700, "해당하는 코스를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
 
     // ReservationSheetService
+    BAD_RESERVATION_REQUEST(805, "일부 코스와 날짜에 대한 예약이 이미 존재합니다.", HttpStatus.BAD_REQUEST),
     INVALID_PART_INFO(810, "부(파트)에 대한 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
     INVALID_DATE_ORDER(820, "날짜의 순서가 맞지 않습니다.", HttpStatus.BAD_REQUEST),
     INVALID_TIME_ORDER(830, "시간의 순서가 맞지 않습니다.", HttpStatus.BAD_REQUEST),

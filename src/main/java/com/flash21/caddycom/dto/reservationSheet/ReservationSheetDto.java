@@ -23,7 +23,7 @@ public class ReservationSheetDto {
     public static class CreateRequest {
         @Schema(description = "골프장 Id")
         @NotNull
-        private Long goldFieldId;
+        private Long golfFieldId;
 
         @Schema(description = "코스 리스트")
         @NotNull

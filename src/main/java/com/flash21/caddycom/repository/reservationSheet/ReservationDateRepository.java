@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface ReservationDateRepository extends JpaRepository<ReservationDate, Long> {
     @Query("select d.reservationAt as reservationAt, d.isAssigned as isAssigned, sum(d.totalCnt) as totalCntSum, sum(d.blockedCnt) as blockedCntSum from ReservationDate d"
             + " where d.reservationAt between ?1 and ?2"
-            + " and d.reservationSheet.golfField.id = ?3 group by d.reservationAt")
+            + " and d.reservationSheet.golfField.id = ?3 group by d.reservationAt, d.isAssigned")
     List<MetaDataReport> countAllMetaDataByDate(LocalDate startDate, LocalDate endDate, Long golfFieldId);
 
     Optional<ReservationDate> findByReservationSheetIdAndReservationAt(Long id, LocalDate date);

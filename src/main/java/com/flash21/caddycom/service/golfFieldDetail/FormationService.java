@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class FormationService {
     private final FormationRepository formationRepository;
     private final CourseRepository courseRepository;
@@ -53,8 +54,6 @@ public class FormationService {
         teeService.createTees(holes);
     }
 
-
-    @Transactional
     public void updateFormation(FormationRequest.update request) {
         Formation formation = formationRepository.findById(request.getFormationId())
                 .orElseThrow(() -> new NoSuchElementException("해당 구성은 존재하지 않습니다."));
@@ -82,7 +81,6 @@ public class FormationService {
         }
     }
 
-    @Transactional
     public void deleteFormations(List<Long> ids) {
         formationRepository.deleteAllByIdInBatch(ids);
     }

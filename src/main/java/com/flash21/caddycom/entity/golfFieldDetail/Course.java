@@ -20,7 +20,7 @@ public class Course {
 
     private Integer totalHoles;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Hole> holes = new ArrayList<>();
 
     @ManyToOne

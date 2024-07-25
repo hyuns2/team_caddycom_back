@@ -6,7 +6,7 @@ import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.entity.golfFieldDetail.Tee;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -63,6 +63,7 @@ public class TeeService {
         savedTees.addAll(newTees);
     }
 
+    @Transactional
     public List<Long> createTees(List<Hole> holes) {
         List<Tee> tees = new ArrayList<>();
         for(Hole hole : holes) {

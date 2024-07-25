@@ -18,8 +18,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -100,8 +102,11 @@ public class FormationService {
         List<FormationResponse.create> response = new ArrayList<>();
         for(Formation formation : formations) {
             List<CourseResponse.Create> courseInfos = new ArrayList<>();
-            for (Course course : formation.getCourses()) {
-                courseInfos.add(new CourseResponse.Create(course.getId(), course.getName(), course.getTotalHoles()));
+            if(!formation.getCourses().isEmpty()) {
+                courseInfos = formation.getCourses().stream()
+                        .map(course -> new CourseResponse.Create(course.getId(), course.getName(), course.getTotalHoles()))
+                        .sorted(Comparator.comparingLong(CourseResponse.Create::getId))
+                        .collect(Collectors.toList());
             }
             response.add(new FormationResponse.create(formation.getId(), formation.getName(), courseInfos));
         }

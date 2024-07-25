@@ -21,10 +21,10 @@ public class Hole {
 
     private Integer handicap = 0;
 
-    @OneToMany(mappedBy = "hole", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "hole", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tee> tees = new ArrayList<>();
 
-    @OneToMany(mappedBy = "hole", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "hole", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToOne

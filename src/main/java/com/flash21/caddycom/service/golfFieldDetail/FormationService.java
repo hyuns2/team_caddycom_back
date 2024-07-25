@@ -8,9 +8,11 @@ import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
+import com.flash21.caddycom.repository.golfFieldDetail.CommentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.formation.FormationRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ public class FormationService {
     private final FormationRepository formationRepository;
     private final CourseRepository courseRepository;
     private final HoleRepository holeRepository;
+    private final TeeRepository teeRepository;
+    private final CommentRepository commentRepository;
 
     private final CourseService courseService;
     private final HoleService holeService;
@@ -82,6 +86,10 @@ public class FormationService {
     }
 
     public void deleteFormations(List<Long> ids) {
+        commentRepository.deleteAllByFormationIds(ids);
+        teeRepository.deleteAllByFormationIds(ids);
+        holeRepository.deleteAllByFormationIds(ids);
+        courseRepository.deleteAllByFormationIds(ids);
         formationRepository.deleteAllByIdInBatch(ids);
     }
 

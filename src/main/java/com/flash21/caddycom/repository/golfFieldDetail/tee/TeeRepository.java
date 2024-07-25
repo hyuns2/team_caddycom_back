@@ -17,4 +17,14 @@ public interface TeeRepository extends JpaRepository<Tee, Long>, TeeJdbcReposito
     @Transactional
     @Query(value = "delete from Tee t where t.hole in :holes")
     void deleteAllByHoles(Iterable<Hole> holes);
+
+    @Modifying
+    @Transactional
+    @Query(value = "delete from Tee t where t.hole.course.formation.id in :formationIds")
+    void deleteAllByFormationIds(Iterable<Long> formationIds);
+
+    @Modifying
+    @Transactional
+    @Query(value = "delete from Tee t where t.hole.course.id in :courseIds")
+    void deleteAllByCourseIds(Iterable<Long> courseIds);
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public interface MetaDataReport {
     LocalDate getReservationAt();
+    Boolean getIsAssigned();
     Integer getTotalCntSum();
     Integer getBlockedCntSum();
 }

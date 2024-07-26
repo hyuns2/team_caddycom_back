@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -31,7 +32,7 @@ public class HouseCaddy {
     private String name;
 
     @Column(nullable = false)
-    private String contact;
+    private String phoneNumber;
 
     private String password;
 
@@ -43,7 +44,7 @@ public class HouseCaddy {
     @Convert(converter = DayListConverter.class)
     private List<Days> changedHoliday;
 
-    private String birth;
+    private LocalDate birth;
 
     private String address;
 

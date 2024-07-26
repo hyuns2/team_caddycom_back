@@ -47,12 +47,12 @@ public class AssignmentService {
      * @throws CReservationSheetNotFoundException ReservationSheet 객체가 존재하지 않을 경우
      */
     @Transactional
-    public Map<String, Map<String, AssignmentDto.AssignmentsResponse>> getAssignments(Long golfFieldId, LocalDate targetDate, int page) {
+    public Map<String, List<Object>> getAssignments(Long golfFieldId, LocalDate targetDate, int page) {
         List<ReservationSheet> reservationSheetList = rsRepository.findAllByGolfFieldId(golfFieldId);
         if (reservationSheetList.isEmpty())
             throw new CReservationSheetNotFoundException();
 
-        List<Course> courseList = new ArrayList<>();
+        Set<Course> courseSet = new HashSet<>();
         for (ReservationSheet reservationSheet : reservationSheetList) {
             ReservationDate reservationDate = rdRepository.findByReservationSheetIdAndReservationAt(reservationSheet.getId(), targetDate)
                     .orElseThrow(CReservationDateNotFoundException::new);
@@ -60,10 +60,11 @@ public class AssignmentService {
             if (!reservationDate.getIsAssigned())
                 createAssignments(reservationSheet, reservationDate);
 
-            courseList.add(reservationSheet.getCourse());
+            courseSet.add(reservationSheet.getCourse());
         }
 
-        return findAndGetAssignmentsByTime(courseList, targetDate, page);
+        List<String> courseNameList = courseSet.stream().map(Course::getName).sorted().toList();
+        return makeResponse(courseNameList, findAndGetAssignmentsByTime(courseNameList, targetDate, page));
     }
 
     /**
@@ -73,17 +74,18 @@ public class AssignmentService {
      * @param page page 페이지 번호 (데이터 10개)
      * @return 시간, 코스별 dto 형태의 map 반환
      */
-    private Map<String, Map<String, AssignmentDto.AssignmentsResponse>> findAndGetAssignmentsByTime(List<Course> courseList, LocalDate date, int page) {
+    private Map<String, Map<String, AssignmentDto.AssignmentsResponse>> findAndGetAssignmentsByTime(List<String> courseNameList, LocalDate date, int page) {
         Map<String, Map<String, AssignmentDto.AssignmentsResponse>> result = new TreeMap<>();
 
         getResultFromRepo(result, date, page);
 
         result.forEach((key, value) -> {
-            for (Course course: courseList) {
-                if (!value.containsKey(course.getName()))
-                    value.put(course.getName(), null);
+            for (String courseName: courseNameList) {
+                if (!value.containsKey(courseName))
+                    value.put(courseName, null);
             }
         });
+
         return result;
     }
 
@@ -129,5 +131,25 @@ public class AssignmentService {
                 reservationSheet.getStartDateTime().toLocalTime(), reservationSheet.getEndDateTime().toLocalTime(), reservationSheet.getTeeOff()));
 
         reservationDate.setIsAssigned();
+    }
+
+    private Map<String, List<Object>> makeResponse(List<String> courseNameList, Map<String, Map<String, AssignmentDto.AssignmentsResponse>> dtoMap) {
+        Map<String, List<Object>> response = new WeakHashMap<>();
+        List<String> timeList = new ArrayList<>();
+
+        for (String courseName: courseNameList) {
+            response.put(courseName, new ArrayList<>());
+        }
+
+        dtoMap.forEach((time, courseInfo) -> {
+            timeList.add(time);
+            courseInfo.forEach((courseName, dto) -> {
+                response.get(courseName).add(dto);
+            });
+        });
+
+        response.put("courseList", Arrays.asList(courseNameList.toArray()));
+        response.put("timeList", Arrays.asList(timeList.toArray()));
+        return response;
     }
 }

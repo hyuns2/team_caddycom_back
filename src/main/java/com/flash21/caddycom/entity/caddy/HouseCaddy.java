@@ -1,5 +1,6 @@
 package com.flash21.caddycom.entity.caddy;
 
+import com.flash21.caddycom.entity.caddy.converter.DayListConverter;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.reservationSheet.Assignment;
 import jakarta.persistence.*;
@@ -22,7 +23,7 @@ public class HouseCaddy {
     @JoinColumn
     private GolfField golfField;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn
     private List<Assignment> assignmentList;
 
@@ -36,7 +37,11 @@ public class HouseCaddy {
 
     private Gender gender;
 
-    private String holiday;
+    @Convert(converter = DayListConverter.class)
+    private List<Days> holiday;
+
+    @Convert(converter = DayListConverter.class)
+    private List<Days> changedHoliday;
 
     private String birth;
 

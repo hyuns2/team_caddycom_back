@@ -5,7 +5,6 @@ import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.reservationSheet.Assignment;
 import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
 import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
-import com.flash21.caddycom.global.exception.cException.CReservationDateNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CReservationSheetNotFoundException;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.reservationSheet.AssignmentJdbcRepository;
@@ -43,7 +42,6 @@ public class AssignmentService {
      * @param page 페이지 번호 (데이터 10개)
      * @return 코스리스트, 시간리스트, 부별 id-status 형태의 map 반환
      *
-     * @throws CReservationDateNotFoundException ReservationDate 객체가 존재하지 않을 경우
      * @throws CReservationSheetNotFoundException ReservationSheet 객체가 존재하지 않을 경우
      */
     @Transactional
@@ -54,13 +52,15 @@ public class AssignmentService {
 
         Set<Course> courseSet = new HashSet<>();
         for (ReservationSheet reservationSheet : reservationSheetList) {
-            ReservationDate reservationDate = rdRepository.findByReservationSheetIdAndReservationAt(reservationSheet.getId(), targetDate)
-                    .orElseThrow(CReservationDateNotFoundException::new);
+            courseSet.add(reservationSheet.getCourse());
+
+            Optional<ReservationDate> reservationDateOption = rdRepository.findByReservationSheetIdAndReservationAt(reservationSheet.getId(), targetDate);
+            if (reservationDateOption.isEmpty())
+                continue;
+            ReservationDate reservationDate = reservationDateOption.get();
 
             if (!reservationDate.getIsAssigned())
                 createAssignments(reservationSheet, reservationDate);
-
-            courseSet.add(reservationSheet.getCourse());
         }
 
         List<String> courseNameList = courseSet.stream().map(Course::getName).sorted().toList();

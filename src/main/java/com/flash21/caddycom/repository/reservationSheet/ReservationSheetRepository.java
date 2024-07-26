@@ -15,5 +15,5 @@ public interface ReservationSheetRepository extends JpaRepository<ReservationShe
     @Query("select s from ReservationSheet s"
             + " where s.golfField.id = ?1 and s.course.id = ?2"
             + " and ((s.startDateTime between ?3 and ?4) or (s.endDateTime between ?3 and ?4))")
-    List<ReservationSheet> findAllByGolfFieldIdAndCourseIdAndPartBetweenNewDate(Long golfFieldId, Long courseId, LocalDateTime startDate, LocalDateTime endDate);
+    List<ReservationSheet> findAllByGolfFieldIdAndCourseIdBetweenNewDate(Long golfFieldId, Long courseId, LocalDateTime startDate, LocalDateTime endDate);
 }

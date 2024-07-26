@@ -17,6 +17,4 @@ public interface ReservationDateRepository extends JpaRepository<ReservationDate
     List<MetaDataReport> countAllMetaDataByDate(LocalDate startDate, LocalDate endDate, Long golfFieldId);
 
     Optional<ReservationDate> findByReservationSheetIdAndReservationAt(Long id, LocalDate date);
-
-    List<ReservationDate> findAllByReservationSheetIdOrderByReservationAt(Long id);
 }

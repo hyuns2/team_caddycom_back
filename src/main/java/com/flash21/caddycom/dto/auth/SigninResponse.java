@@ -69,6 +69,14 @@ public class SigninResponse {
         }
 
         public static Main from(JwtResponse jwtResponse, GolfField golfField, Role role, String password){
+            // 골프장 등록 안한 사장님 재접속시 방어로직
+            if (golfField == null)
+                return Main.builder()
+                        .role(role.toString().substring(5))
+                        .status(Status.YET)
+                        .isSetup(password != null)
+                        .build();
+
             if (golfField.getStatus() == ApprovalStatus.WAITING)
                 return Main.builder()
                         .role(role.toString().substring(5))

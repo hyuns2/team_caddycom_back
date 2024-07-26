@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "0. Auth", description = "로그인/회원가입 API")
+@Tag(name = "0-1. Auth", description = "로그인/회원가입 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")

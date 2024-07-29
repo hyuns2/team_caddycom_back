@@ -2,7 +2,10 @@ package com.flash21.caddycom.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flash21.caddycom.entity.account.Account;
+import com.flash21.caddycom.entity.account.Role;
+import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.repository.account.AccountRepository;
+import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import io.jsonwebtoken.*;
 import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ public class JwtValidator {
     @Value("${jwt.secret}")
     private String jwtSecret;
     private final AccountRepository accountRepository;
+    private final HouseCaddyRepository houseCaddyRepository;
 
     /**
      * 추후 리프레시 토큰 검증에도 동일한 로직을 수행하기 위해 메서드추출
@@ -60,11 +64,18 @@ public class JwtValidator {
         ObjectMapper mapper = new ObjectMapper();
         JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
 
-        Account account = accountRepository.findById(jwtClaims.getId())
-                .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 토큰입니다."));
-        if (!account.getRefreshToken().equals(refreshToken))
-            throw new JwtException("올바르지 않은 리프레시 토큰입니다.");
+        if (jwtClaims.getRole() == Role.ROLE_EMPLOYEE || jwtClaims.getRole() == Role.ROLE_OWNER) {
+            Account account = accountRepository.findById(jwtClaims.getId())
+                    .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 토큰입니다."));
+            if (!account.getRefreshToken().equals(refreshToken))
+                throw new JwtException("올바르지 않은 리프레시 토큰입니다.");
 
+        } else if (jwtClaims.getRole() == Role.ROLE_HOUSE_CADDY) {
+            HouseCaddy caddy = houseCaddyRepository.findById(jwtClaims.getId())
+                    .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 토큰입니다."));
+            if (!caddy.getRefreshToken().equals(refreshToken))
+                throw new JwtException("올바르지 않은 리프레시 토큰입니다.");
+        }
         return jwtClaims;
     }
 }

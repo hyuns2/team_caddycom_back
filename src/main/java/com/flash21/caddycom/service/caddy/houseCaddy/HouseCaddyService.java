@@ -2,6 +2,7 @@ package com.flash21.caddycom.service.caddy.houseCaddy;
 
 import com.flash21.caddycom.dto.caddy.HouseCaddyDto;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
+import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundException;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,8 @@ public class HouseCaddyService {
 
     public List<HouseCaddyDto.houseCaddyResponse> getHouseCaddyByTeam(String teamName) {
         List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByTeam(teamName);
+        if (houseCaddyList.isEmpty())
+            throw new CTeamNameNotFoundException();
 
         return houseCaddyList.stream().map(hc -> { return HouseCaddyDto.houseCaddyResponse.builder()
                 .id(hc.getId())

@@ -26,7 +26,10 @@ public enum ErrorCode {
 
     // AssignmentService
     RESERVATION_SHEET_NOT_FOUND(840, "해당하는 예약 시트를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
-    RESERVATION_DATE_NOT_FOUND(850, "해당하는 예약 시트의 날짜를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST);
+    RESERVATION_DATE_NOT_FOUND(850, "해당하는 예약 시트의 날짜를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
+
+    // HouseCaddyService
+    TEAM_NAME_NOT_FOUND(910, "해당하는 팀을 찾을 수 없습니다.",HttpStatus.BAD_REQUEST);
 
     private final int code;
     private final String message;

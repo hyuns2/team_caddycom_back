@@ -59,8 +59,13 @@ public class HouseCaddy {
 
     private Role role;
 
+    private String refreshToken;
+
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+    public void updateToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

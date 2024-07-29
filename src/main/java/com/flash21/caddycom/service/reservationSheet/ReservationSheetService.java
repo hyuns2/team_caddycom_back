@@ -73,7 +73,7 @@ public class ReservationSheetService {
             throw new CInvalidPartInfoException();
 
         for (Course course: courseList) {
-            if (!rsRepository.findAllByGolfFieldIdAndCourseIdAndPartBetweenNewDate(
+            if (!rsRepository.findAllByGolfFieldIdAndCourseIdBetweenNewDate(
                     dto.getGolfFieldId(), course.getId(), LocalDateTime.of(dto.getStartDate(), LocalTime.MIDNIGHT), LocalDateTime.of(dto.getEndDate(), LocalTime.MIDNIGHT)).isEmpty())
                 throw new CBadReservationRequestException();
         }

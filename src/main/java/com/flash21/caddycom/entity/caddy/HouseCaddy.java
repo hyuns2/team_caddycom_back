@@ -53,4 +53,6 @@ public class HouseCaddy {
     private String team;
 
     private String role;
+
+    private String career;
 }

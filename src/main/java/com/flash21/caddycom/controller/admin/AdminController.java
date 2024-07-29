@@ -1,7 +1,6 @@
 package com.flash21.caddycom.controller.admin;
 
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
-import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.service.golfField.GolfFieldService;
 import com.flash21.caddycom.service.admin.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,7 +38,7 @@ public class AdminController {
 
     @GetMapping("golf-field")
     @Operation(summary = "모든 골프장 조회", description="시스템 총 관리자만 접근 가능하다. 모든 골프장을 조회한다.")
-    public ResponseEntity<List<GolfField>> getAll(){
+    public ResponseEntity<List<GolfFieldResponse.Overview>> getAll(){
         return ResponseEntity.ok().body(golfFieldService.getAll());
     }
 

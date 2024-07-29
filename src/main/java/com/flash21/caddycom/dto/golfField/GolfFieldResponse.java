@@ -1,5 +1,6 @@
 package com.flash21.caddycom.dto.golfField;
 
+import com.flash21.caddycom.entity.golfField.CaddyType;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import lombok.AllArgsConstructor;
@@ -14,13 +15,28 @@ public class GolfFieldResponse {
     @Getter
     @Builder
     public static class Overview{
+        private Long id;
         private String name;
         private String contact;
+        private String address;
+        private String addressDetail;
+        private String registrationNumber;
+        private String businessLicense;
+        private String imageUrl;
+        private CaddyType caddyType;
+        private String employmentLicense;
 
         public static Overview from(GolfField golfField){
             return Overview.builder()
+                    .id(golfField.getId())
                     .name(golfField.getName())
                     .contact(golfField.getContact())
+                    .address(golfField.getAddress())
+                    .addressDetail(golfField.getAddressDetail())
+                    .registrationNumber(golfField.getRegistrationNumber())
+                    .imageUrl(golfField.getImageUrl())
+                    .caddyType(golfField.getCaddyType())
+                    .employmentLicense(golfField.getEmploymentLicense())
                     .build();
         }
     }

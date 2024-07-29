@@ -58,8 +58,10 @@ public class GolfFieldService {
      * @return 골프장 전체 조회 응답 DTO 리스트
      */
     @Transactional(readOnly = true)
-    public List<GolfField> getAll(){
-        return golfFieldRepository.findAll();
+    public List<GolfFieldResponse.Overview> getAll(){
+        return golfFieldRepository.findAll().stream()
+                .map(GolfFieldResponse.Overview::from)
+                .collect(Collectors.toList());
     }
 
     /**

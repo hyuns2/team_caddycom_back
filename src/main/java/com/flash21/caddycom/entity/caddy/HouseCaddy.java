@@ -1,5 +1,6 @@
 package com.flash21.caddycom.entity.caddy;
 
+import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.caddy.converter.DayListConverter;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.reservationSheet.Assignment;
@@ -55,4 +56,11 @@ public class HouseCaddy {
     private String teamRole;
 
     private Long point;
+
+    private Role role;
+
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

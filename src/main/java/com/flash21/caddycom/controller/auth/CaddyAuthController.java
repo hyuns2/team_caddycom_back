@@ -33,7 +33,7 @@ public class CaddyAuthController {
     @Operation(summary="하우스 캐디 이후 로그인 API", description="하우스 캐디의 최초 이후 로그인/회원가입 시 사용")
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in")
-    public ResponseEntity<SigninResponse.Caddy> signin(@Valid @RequestBody SigninRequest.Login request){
+    public ResponseEntity<SigninResponse.Caddy> signin(@Valid @RequestBody SigninRequest.Caddy request){
         SigninResponse.Caddy response = caddyAuthService.afterLogin(request);
         return ResponseEntity.ok().body(response);
     }

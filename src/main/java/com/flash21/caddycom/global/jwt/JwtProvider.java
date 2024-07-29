@@ -4,8 +4,10 @@ import com.flash21.caddycom.dto.auth.JwtResponse;
 import com.flash21.caddycom.dto.auth.SigninResponse;
 import com.flash21.caddycom.entity.account.Account;
 import com.flash21.caddycom.entity.account.Role;
+import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.repository.account.AccountRepository;
+import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -31,6 +33,7 @@ public class JwtProvider {
     private final long REFRESH_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7일
 
     private final AccountRepository accountRepository;
+    private final HouseCaddyRepository houseCaddyRepository;
     private final JwtValidator jwtValidator;
 
     public JwtResponse issueTokens(Role role, String phoneNumber, Long id) {
@@ -51,7 +54,7 @@ public class JwtProvider {
         String accessToken = generateToken(accessTokenExpireTime, claims);
         String refreshToken = generateToken(refreshTokenExpireTime, claims);
 
-        saveRefreshToken(id, refreshToken);
+        saveRefreshToken(role, id, refreshToken);
 
         return JwtResponse.builder()
                 .accessToken(accessToken)
@@ -59,9 +62,16 @@ public class JwtProvider {
                 .build();
     }
 
-    private void saveRefreshToken(Long id, String refreshToken) {
-        Account account = accountRepository.findById(id).orElseThrow();
-        account.updateToken(refreshToken);
+    private void saveRefreshToken(Role role, Long id, String refreshToken) {
+        if (role == Role.ROLE_EMPLOYEE || role == Role.ROLE_OWNER) {
+            Account account = accountRepository.findById(id).orElseThrow();
+            account.updateToken(refreshToken);
+        }
+        else if (role == Role.ROLE_HOUSE_CADDY) {
+            HouseCaddy caddy = houseCaddyRepository.findById(id).orElseThrow();
+            caddy.updateToken(refreshToken);
+        }
+
     }
 
     private String generateToken(Date expiration, Map<String,?> claims) {

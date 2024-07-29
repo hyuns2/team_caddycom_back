@@ -19,25 +19,22 @@ public class HouseCaddyService {
         return houseCaddyRepository.findAllTeam(golfFieldId);
     }
 
-    public List<HouseCaddyDto.houseCaddyResponse> getHouseCaddyByTeam(String teamName, int page) {
-        int pageSize = 5;
-        Pageable pageable = PageRequest.of(page, pageSize);
-
-        Page<HouseCaddy> houseCaddyPage = houseCaddyRepository.findAllByTeam(teamName, pageable);
-        List<HouseCaddy> houseCaddyList = houseCaddyPage.getContent();
+    public List<HouseCaddyDto.houseCaddyResponse> getHouseCaddyByTeam(String teamName) {
+        List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByTeam(teamName);
 
         return houseCaddyList.stream().map(hc -> { return HouseCaddyDto.houseCaddyResponse.builder()
                 .id(hc.getId())
                 .name(hc.getName())
                 .phoneNumber(hc.getPhoneNumber())
                 .team(hc.getTeam())
-                .role(hc.getRole())
+                .role(hc.getTeamRole())
                 .holiday(hc.getHoliday())
                 .changeHoliday(hc.getHoliday())
                 .gender(hc.getGender())
                 .birth(hc.getBirth())
                 .address(hc.getAddress())
                 .addressDetail(hc.getAddressDetail())
-                .career(hc.getCareer()).build(); } ).toList();
+                .career(hc.getCareer())
+                .build(); } ).toList();
     }
 }

@@ -50,7 +50,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
                 .authorizeHttpRequests(authorizeRequest -> authorizeRequest
-                        .requestMatchers(ADMIN_AUTHENTICATION_LIST).hasRole("ADMIN")
+//                        .requestMatchers(ADMIN_AUTHENTICATION_LIST).hasRole("ADMIN")
                         .anyRequest().permitAll()
                 );
 

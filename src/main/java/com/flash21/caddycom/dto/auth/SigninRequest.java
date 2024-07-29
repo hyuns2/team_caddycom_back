@@ -42,4 +42,16 @@ public class SigninRequest {
         public String password;
     }
 
+    @Getter
+    public static class Caddy {
+        @NotBlank(message = "type은 필수값입니다.")
+        private String type;
+
+        @NotBlank(message = "phoneNumber는 필수값입니다.")
+        private String phoneNumber;
+
+        @NotBlank(message = "password는 필수값입니다.")
+        private String password;
+    }
+
 }

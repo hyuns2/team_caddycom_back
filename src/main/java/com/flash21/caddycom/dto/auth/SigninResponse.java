@@ -1,8 +1,8 @@
 package com.flash21.caddycom.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.flash21.caddycom.entity.account.Account;
 import com.flash21.caddycom.entity.account.Role;
+import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.golfField.ApprovalStatus;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import lombok.AllArgsConstructor;
@@ -94,15 +94,15 @@ public class SigninResponse {
                         .build();
 
             else return Main.builder()
-                    .role(role.toString().substring(5))
-                    .accessToken(jwtResponse.getAccessToken())
-                    .refreshToken(jwtResponse.getRefreshToken())
-                    .golfFieldId(golfField.getId())
-                    .golfFieldName(golfField.getName())
-                    .golfFieldImage(golfField.getImageUrl())
-                    .status(Status.DONE)
-                    .isSetup(password != null)
-                    .build();
+                        .role(role.toString().substring(5))
+                        .accessToken(jwtResponse.getAccessToken())
+                        .refreshToken(jwtResponse.getRefreshToken())
+                        .golfFieldId(golfField.getId())
+                        .golfFieldName(golfField.getName())
+                        .golfFieldImage(golfField.getImageUrl())
+                        .status(Status.DONE)
+                        .isSetup(password != null)
+                        .build();
         }
 
 
@@ -114,6 +114,39 @@ public class SigninResponse {
                     .build();
         }
 
+    }
+
+
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Builder
+    @Getter
+    public static class Caddy {
+        private String accessToken;
+        private String refreshToken;
+        private Long caddyId;
+        private Long golfFieldId;
+        private String name;
+        private String team;
+        private String teamRole;
+        private Long point;
+        private boolean isSetup;
+        private String role;
+
+        public static Caddy from(JwtResponse jwtResponse, HouseCaddy caddy, Role role){
+            return Caddy.builder()
+                    .accessToken(jwtResponse.getAccessToken())
+                    .refreshToken(jwtResponse.getRefreshToken())
+                    .caddyId(caddy.getId())
+                    .golfFieldId(caddy.getGolfField().getId())
+                    .name(caddy.getName())
+                    .team(caddy.getTeam())
+                    .teamRole(caddy.getTeamRole())
+                    .point(caddy.getPoint())
+                    .role(role.toString().substring(5))
+                    .isSetup(caddy.getPassword() != null)
+                    .build();
+        }
     }
 
 }

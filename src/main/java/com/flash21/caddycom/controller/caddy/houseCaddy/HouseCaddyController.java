@@ -32,9 +32,9 @@ public class HouseCaddyController {
     }
 
     @Operation(summary = "조별 조회", description = "해당하는 조에 속해있는 하우스 캐디들을 조회합니다.")
-    @GetMapping("/{teamName}/{page}")
-    public ResponseEntity<?> getHouseCaddyByTeam(@AuthenticationPrincipal User user, @PathVariable String teamName, @PathVariable int page) {
-        List<HouseCaddyDto.houseCaddyResponse> result = houseCaddyService.getHouseCaddyByTeam(teamName, page);
+    @GetMapping("/{teamName}")
+    public ResponseEntity<?> getHouseCaddyByTeam(@AuthenticationPrincipal User user, @PathVariable String teamName) {
+        List<HouseCaddyDto.houseCaddyResponse> result = houseCaddyService.getHouseCaddyByTeam(teamName);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

@@ -1,5 +1,6 @@
 package com.flash21.caddycom.entity.reservationSheet;
 
+import com.flash21.caddycom.entity.schedule.Schedule;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,10 @@ public class Assignment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private ReservationDate reservationDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Schedule schedule;
 
     @Column(nullable = false)
     private LocalTime startTime;

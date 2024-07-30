@@ -67,6 +67,7 @@ public class HouseCaddyController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @Operation(summary = "캐디 휴무일 전체 조회", description = "골프장에 속해있는 모든 하우스 캐디의 휴무일을 조회합니다.")
     @GetMapping("/holiday/{golfFieldId}")
     public ResponseEntity<List<HouseCaddyResponse.TeamHoliday>> getAllHolidayInfo(@PathVariable("golfFieldId") Long golfFieldId) {
         List<HouseCaddyResponse.TeamHoliday> allHoliday = houseCaddyService.getAllHoliday(golfFieldId);
@@ -74,6 +75,7 @@ public class HouseCaddyController {
         return ResponseEntity.ok(allHoliday);
     }
 
+    @Operation(summary = "캐디 휴무일 조별 조회", description = "특정 조의 전체 인원의 휴무일을 조회합니다.")
     @GetMapping("/holiday/{golfFieldId}/team")
     public ResponseEntity<HouseCaddyResponse.TeamHoliday> getTeamHolidayInfo(@PathVariable("golfFieldId") Long golfFieldId, String name) {
         HouseCaddyResponse.TeamHoliday holiday = houseCaddyService.getTeamHoliday(golfFieldId, name);
@@ -81,6 +83,7 @@ public class HouseCaddyController {
         return ResponseEntity.ok(holiday);
     }
 
+    @Operation(summary = "캐디 휴무일 일괄 변경", description = "하우스 캐디의 휴무일을 일괄적으로 변경합니다.")
     @PostMapping("/holiday")
     public ResponseEntity<Void> updateHolidayAll(@Valid @RequestBody List<HouseCaddyRequest.createHoliday> request) {
         houseCaddyService.updateHolidayAll(request);

@@ -48,4 +48,10 @@ public class Assignment {
     public void cancel() {
         this.status = AssignmentStatus.CANCELED;
     }
+
+
+    public void vacateCaddy(){
+        this.caddy = null;
+        this.caddyName = null;
+    }
 }

@@ -1,11 +1,14 @@
 package com.flash21.caddycom.repository.reservationSheet;
 
+import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.reservationSheet.Assignment;
 import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -49,4 +52,14 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             "AND a.schedule.course.id = :courseId " +
             "AND a.status = :status")
     Page<Assignment> findAllByDateAndCourseIdAndStatus(Pageable pageable, Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status);
+
+
+
+    @Query("SELECT a FROM Assignment a WHERE a.id IN :ids")
+    List<Assignment> findByIds(@Param("ids") List<Long> ids);
+
+
+    @Modifying
+    @Query("UPDATE Assignment a SET a.caddy = :caddy, a.caddyName = :caddyName WHERE a.id = :assignmentId")
+    void switchAssignment(@Param("assignmentId") Long assignmentId, @Param("caddy") HouseCaddy caddy, @Param("caddyName") String caddyName);
 }

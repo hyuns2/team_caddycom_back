@@ -2,6 +2,7 @@ package com.flash21.caddycom.service.assignment;
 
 import com.flash21.caddycom.dto.PagingResponse;
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
+import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.reservationSheet.Assignment;
 import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
 import com.flash21.caddycom.repository.reservationSheet.AssignmentRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -58,4 +60,34 @@ public class AssignmentCaddyService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 배정 정보가 없습니다."));
         assignment.cancel();
     }
+
+
+    @Transactional
+    public void switchAssignment(Long from, Long to) {
+        List<Assignment> assignments = assignmentRepository.findByIds(List.of(from, to));
+        if (assignments.size() != 2)
+            throw new IllegalArgumentException("해당 배정 정보가 없습니다.");
+        // swap
+        swapCaddy(assignments.get(0), assignments.get(1));
+    }
+
+
+    /**
+     * sql batch 처리로 인해 one-to-one 관계의 엔티티를 변경 시 duplicate key 에러가 발생
+     * -> 두 엔티티의 caddy를 null로 변경 후 다시 업데이트
+     */
+    private void swapCaddy(Assignment fromAssignment, Assignment toAssignment) {
+        HouseCaddy fromCaddy = fromAssignment.getCaddy();
+        String fromCaddyName = fromAssignment.getCaddyName();
+        HouseCaddy toCaddy = toAssignment.getCaddy();
+        String toCaddyName = toAssignment.getCaddyName();
+
+        fromAssignment.vacateCaddy();
+        toAssignment.vacateCaddy();
+
+        assignmentRepository.switchAssignment(fromAssignment.getId(), toCaddy, toCaddyName);
+        assignmentRepository.switchAssignment(toAssignment.getId(), fromCaddy, fromCaddyName);
+    }
+
+
 }

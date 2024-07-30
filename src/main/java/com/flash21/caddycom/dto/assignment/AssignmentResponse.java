@@ -34,7 +34,7 @@ public class AssignmentResponse {
                     .id(assignment.getId())
                     .startTime(assignment.getStartTime().format(timeFormatter))
                     .caddyName(assignment.getCaddyName())
-                    .caddyId(assignment.getId())
+                    .caddyId(assignment.getCaddy().getId())
                     .courseName(assignment.getSchedule().getCourse().getName())
                     .part(assignment.getSchedule().getPart())
                     .status(assignment.getStatus())

@@ -52,4 +52,13 @@ public class AssignmentCaddyController {
         return ResponseEntity.ok().body(new Message("배정이 취소되었습니다."));
     }
 
+
+    @PatchMapping("/switch")
+    @Operation(summary="배정 변경 API", description="두 캐디간 배정을 변경한다.")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Message> switchAssignment(@RequestParam Long fromId, @RequestParam Long toId) {
+        assignmentCaddyService.switchAssignment(fromId, toId);
+        return ResponseEntity.ok().body(new Message("배정이 변경되었습니다."));
+    }
+
 }

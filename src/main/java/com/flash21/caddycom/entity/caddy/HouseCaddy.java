@@ -7,6 +7,7 @@ import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.reservationSheet.Assignment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class HouseCaddy {
@@ -96,5 +98,10 @@ public class HouseCaddy {
     public void updateHoliday() {
         this.holiday = new ArrayList<>(changedHoliday);
         this.changedHoliday = null;
+    }
+
+    public HouseCaddy attachGolfField(GolfField golfField) {
+        this.golfField = golfField;
+        return this;
     }
 }

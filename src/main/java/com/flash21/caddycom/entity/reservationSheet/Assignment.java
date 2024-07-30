@@ -37,4 +37,14 @@ public class Assignment {
 
     @Column
     private String reason;
+
+    public void blockAssignment(String reason) {
+        this.status = AssignmentStatus.BLOCKED;
+        this.reason = reason;
+    }
+
+    public void cancelBlockAssignment(String reason) {
+        this.status = AssignmentStatus.NOTHING;
+        this.reason = "";
+    }
 }

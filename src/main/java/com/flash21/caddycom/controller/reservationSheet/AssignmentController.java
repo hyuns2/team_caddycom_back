@@ -1,5 +1,6 @@
 package com.flash21.caddycom.controller.reservationSheet;
 
+import com.flash21.caddycom.dto.reservationSheet.AssignmentDto;
 import com.flash21.caddycom.service.reservationSheet.AssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,9 +24,23 @@ public class AssignmentController {
 
     @Operation(summary = "배정정보 조회", description = "골프장 관리자가 배정정보를 조회합니다.")
     @GetMapping("/{golfFieldId}/{targetDate}/{page}")
-    public ResponseEntity<Map<String, List<Object>>> getAssignments(@AuthenticationPrincipal User user, @PathVariable Long golfFieldId, @PathVariable LocalDate targetDate, @PathVariable int page) {
+    public ResponseEntity<Map<String, List<Object>>> getAssignments(@AuthenticationPrincipal User user,
+                                                                    @PathVariable Long golfFieldId,
+                                                                    @PathVariable LocalDate targetDate,
+                                                                    @PathVariable int page
+    ) {
         Map<String, List<Object>> result = assignmentService.getAssignments(golfFieldId, targetDate, page);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @Operation(summary = "블락 설정", description = "골프장 관리자가 해당 시간대의 배정 정보에 블락을 설정합니다.")
+    @GetMapping("/{assignmentsId}")
+    public void setBlock(@AuthenticationPrincipal User user,
+                         @PathVariable Long assignmentsId,
+                         @RequestBody AssignmentDto.BlockRequest blockRequest
+    ) {
+        assignmentService.setBlock(assignmentsId, blockRequest);
+    }
+
 }

@@ -38,11 +38,13 @@ public class Assignment {
     @JoinColumn(name = "house_caddy_id")
     HouseCaddy caddy;
 
-    @Column
     private String caddyName;
 
-    @Column
     private String reason;
+
+    private String courseName;
+
+    private String part;
 
     public void blockAssignment(String reason) {
         this.status = AssignmentStatus.BLOCKED;

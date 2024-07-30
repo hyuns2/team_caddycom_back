@@ -32,7 +32,7 @@ public class HouseCaddyService {
                 .team(hc.getTeam())
                 .teamRole(hc.getTeamRole())
                 .holiday(hc.getHoliday())
-                .changeHoliday(hc.getHoliday())
+                .changedHoliday(hc.getChangedHoliday())
                 .gender(hc.getGender())
                 .birth(hc.getBirth())
                 .address(hc.getAddress())

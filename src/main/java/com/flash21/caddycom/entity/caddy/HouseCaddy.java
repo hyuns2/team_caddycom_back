@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -93,7 +94,7 @@ public class HouseCaddy {
         this.teamRole = teamRole;
     }
     public void updateHoliday() {
-        this.holiday = this.changedHoliday;
+        this.holiday = new ArrayList<>(changedHoliday);
         this.changedHoliday = null;
     }
 }

@@ -61,7 +61,7 @@ public class HouseCaddyDto {
         private List<Days> holiday;
 
         @Schema(description = "변경 요청 휴무일")
-        private List<Days> changeHoliday;
+        private List<Days> changedHoliday;
 
         @Schema(description = "성별")
         private Gender gender;

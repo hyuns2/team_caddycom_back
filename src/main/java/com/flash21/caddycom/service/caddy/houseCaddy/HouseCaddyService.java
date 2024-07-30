@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,9 +47,17 @@ public class HouseCaddyService {
                 .orElseThrow(CCaddyNotFoundException::new);
 
         if (dto.getTeamRole() != null && dto.getTeamRole().equals(TeamRole.LEADER)) {
-            houseCaddyRepository.findByTeamAndTeamRole(dto.getTeam(), TeamRole.LEADER)
+            houseCaddyRepository.findByTeamAndTeamRole(houseCaddy.getTeam(), TeamRole.LEADER)
                             .ifPresent((caddy) -> { caddy.setTeamRole(TeamRole.MEMBER); });
         }
         houseCaddy.updateHouseCaddy(dto);
+    }
+
+    @Transactional
+    public void updateHouseCaddyHoliday(Long caddyId) {
+        HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
+                .orElseThrow(CCaddyNotFoundException::new);
+
+        houseCaddy.updateHoliday();
     }
 }

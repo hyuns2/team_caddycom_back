@@ -92,4 +92,8 @@ public class HouseCaddy {
     public void setTeamRole(TeamRole teamRole) {
         this.teamRole = teamRole;
     }
+    public void updateHoliday() {
+        this.holiday = this.changedHoliday;
+        this.changedHoliday = null;
+    }
 }

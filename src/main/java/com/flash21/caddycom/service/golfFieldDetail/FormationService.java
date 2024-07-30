@@ -75,7 +75,7 @@ public class FormationService {
         List<CourseRequest.create> courseCreateInfos = new ArrayList<>();
         if(courseUpdateInfos != null) {
             for(CourseRequest.update courseUpdateInfo : courseUpdateInfos) {
-                if (courseUpdateInfo.getId() == null)
+                if (courseUpdateInfo.getId() == 0)
                     courseCreateInfos.add(
                             new CourseRequest.create(courseUpdateInfo.getName(), courseUpdateInfo.getTotalHoles())
                     );

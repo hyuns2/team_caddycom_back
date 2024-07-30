@@ -224,3 +224,12 @@ insert into `caddycom`.`tee` (id, hole_id, name, distance) values
                                                                (133, 27, "WHILE", 270),
                                                                (134, 27, "RED", 250),
                                                                (135, 27, "GREEN", 230);
+
+insert into `caddycom`.`schedule` (id, golf_field_id, course_id, start_date_time, end_date_time, tee_off, part, is_assigned, total_cnt, blocked_cnt) values
+    (1, 1, 1, '2020-09-09 09:00:00', '2020-09-09 12:00:00', 1, 4, true, 0, 0);
+
+insert into `caddycom`.`assignment` (id, schedule_id, start_time, status, caddy_name, caddy_id, reason) values
+    (1, 1, '2020-09-09 09:00:00', 1, '김캐디', 1, '휴가 갔음'),
+    (2, 1, '2020-09-09 09:00:00', 3, '이캐디', 2, null),
+    (3, 1, '2020-09-09 09:00:00', 2, '박캐디', 3, '휴가 갔음'),
+    (4, 1, '2020-09-09 09:00:00', 1, '최캐디', 4, '휴가 갔음');

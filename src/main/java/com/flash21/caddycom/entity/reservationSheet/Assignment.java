@@ -37,9 +37,11 @@ public class Assignment {
 //    @JoinColumn
 //    Caddy caddy;
 
-    @Column
     private String caddyName;
 
-    @Column
     private String reason;
+
+    private String courseName;
+
+    private String part;
 }

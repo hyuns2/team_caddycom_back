@@ -68,4 +68,7 @@ public class HouseCaddy {
     public void updateToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
+    public void updateHolidays(List<Days> holiday) {
+        this.holiday = holiday;
+    }
 }

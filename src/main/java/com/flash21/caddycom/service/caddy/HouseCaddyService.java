@@ -1,7 +1,9 @@
 package com.flash21.caddycom.service.caddy;
 
 import com.flash21.caddycom.dto.caddy.HouseCaddyDto;
+import com.flash21.caddycom.dto.caddy.HouseCaddyRequest;
 import com.flash21.caddycom.dto.caddy.HouseCaddyResponse;
+import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,5 +57,24 @@ public class HouseCaddyService {
         }
 
         return new HouseCaddyResponse.TeamHoliday(teamName, infos);
+    }
+
+    @Transactional
+    public void updateHolidayAll(List<HouseCaddyRequest.createHoliday> request) {
+        List<Long> ids = request.stream()
+                .map(HouseCaddyRequest.createHoliday::getId)
+                .toList();
+
+        Map<Long, List<Days>> requestMap = request.stream()
+                .collect(Collectors.toMap(HouseCaddyRequest.createHoliday::getId, HouseCaddyRequest.createHoliday::getHolidays
+                , (oldValue, newValue) -> oldValue, HashMap::new));
+
+        List<HouseCaddy> caddies = houseCaddyRepository.findAllByIdIn(ids)
+                .orElseThrow(() -> new NoSuchElementException("해당 하우스 캐디가 없습니다."));
+
+        for(HouseCaddy houseCaddy : caddies) {
+            houseCaddy.updateHolidays(requestMap.get(houseCaddy.getId()));
+        }
+
     }
 }

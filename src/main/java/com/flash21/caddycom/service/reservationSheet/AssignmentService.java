@@ -6,6 +6,7 @@ import com.flash21.caddycom.entity.reservationSheet.Assignment;
 import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
 import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
 import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
+import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.exception.cException.CReservationSheetNotFoundException;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.reservationSheet.AssignmentJdbcRepository;

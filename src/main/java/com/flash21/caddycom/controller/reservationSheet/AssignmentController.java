@@ -39,21 +39,23 @@ public class AssignmentController {
 
     @Operation(summary = "블락 설정", description = "골프장 관리자가 해당 시간대의 배정 정보에 블락을 설정합니다.")
     @PatchMapping("/{assignmentsId}")
-    public void setBlock(@AuthenticationPrincipal User user,
-                         @PathVariable Long assignmentsId,
-                         @RequestBody AssignmentDto.BlockRequest blockRequest
+    public ResponseEntity<?> setBlock(@AuthenticationPrincipal User user,
+                                      @PathVariable Long assignmentsId,
+                                      @RequestBody AssignmentDto.BlockRequest blockRequest
     ) {
         assignmentService.setBlock(assignmentsId, blockRequest);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "캐디 선택 배정", description = "골프장 관리자가 해당 시간대의 배정 정보에 캐디를 직접 설정합니다.")
     @PatchMapping("/{assignmentsId}/{caddyId}")
-    public void setBlock(@AuthenticationPrincipal User user,
-                         @PathVariable Long assignmentsId,
-                         @PathVariable Long caddyId
+    public ResponseEntity<?> setBlock(@AuthenticationPrincipal User user,
+                                      @PathVariable Long assignmentsId,
+                                      @PathVariable Long caddyId
 
     ) {
         assignmentCaddyService.assignSelectedCaddy(assignmentsId, caddyId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

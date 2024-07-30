@@ -85,7 +85,7 @@ public class HouseCaddyDto {
     public static class HolidayInfo{
         private Long id;
         private String name;
-        private String teamRole;
+        private TeamRole teamRole;
         private List<Days> holiday;
     }
 }

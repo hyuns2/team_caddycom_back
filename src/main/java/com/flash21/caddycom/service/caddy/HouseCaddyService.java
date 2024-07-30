@@ -20,8 +20,7 @@ public class HouseCaddyService {
 
     @Transactional(readOnly = true)
     public List<HouseCaddyResponse.TeamHoliday> getAllHoliday(Long golfFieldId) {
-        List<HouseCaddy> houseCaddies = houseCaddyRepository.findAllByGolfFieldId(golfFieldId)
-                .orElseThrow(() -> new NoSuchElementException("골프장에 등록된 하우스 캐디가 없습니다."));
+        List<HouseCaddy> houseCaddies = houseCaddyRepository.findAllByGolfFieldId(golfFieldId);
 
         Map<String, List<HouseCaddy>> collect = houseCaddies.stream().collect(Collectors.groupingBy(HouseCaddy::getTeam));
 
@@ -44,8 +43,7 @@ public class HouseCaddyService {
 
     @Transactional(readOnly = true)
     public HouseCaddyResponse.TeamHoliday getTeamHoliday(Long golfFieldId, String teamName) {
-        List<HouseCaddy> caddies = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, teamName)
-                .orElseThrow(() -> new NoSuchElementException("해당 조의 조원이 존재하지 않습니다"));
+        List<HouseCaddy> caddies = houseCaddyRepository.findAllByTeamAndGolfFieldId(golfFieldId, teamName);
 
         List<HouseCaddyDto.HolidayInfo> infos = new ArrayList<>();
         for(HouseCaddy houseCaddy : caddies) {
@@ -69,11 +67,10 @@ public class HouseCaddyService {
                 .collect(Collectors.toMap(HouseCaddyRequest.createHoliday::getId, HouseCaddyRequest.createHoliday::getHolidays
                 , (oldValue, newValue) -> oldValue, HashMap::new));
 
-        List<HouseCaddy> caddies = houseCaddyRepository.findAllByIdIn(ids)
-                .orElseThrow(() -> new NoSuchElementException("해당 하우스 캐디가 없습니다."));
+        List<HouseCaddy> caddies = houseCaddyRepository.findAllByIdIn(ids);
 
         for(HouseCaddy houseCaddy : caddies) {
-            houseCaddy.updateHolidays(requestMap.get(houseCaddy.getId()));
+            houseCaddy.setHoliday(requestMap.get(houseCaddy.getId()));
         }
 
     }

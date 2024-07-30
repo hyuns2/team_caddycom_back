@@ -1,4 +1,4 @@
-package com.flash21.caddycom.entity.reservationSheet;
+package com.flash21.caddycom.entity.schedule;
 
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
@@ -10,16 +10,12 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-
-/**
- * deprecated !!
- */
 @Entity
-@Builder
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReservationSheet {
+@Builder
+@Getter
+public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,4 +39,13 @@ public class ReservationSheet {
 
     @Column(nullable = false)
     private Integer part;
+
+    @Column(nullable = false)
+    private Boolean isAssigned;
+
+    @Column(nullable = false)
+    private Integer totalCnt;
+
+    @Column(nullable = false)
+    private Integer blockedCnt;
 }

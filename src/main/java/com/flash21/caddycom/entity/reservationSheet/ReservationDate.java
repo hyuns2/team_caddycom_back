@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+
+/**
+ * deprecated !!
+ */
 @Entity
 @Builder
 @Getter

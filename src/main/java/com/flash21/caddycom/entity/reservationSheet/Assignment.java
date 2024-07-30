@@ -1,5 +1,6 @@
 package com.flash21.caddycom.entity.reservationSheet;
 
+import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,9 +34,9 @@ public class Assignment {
     @Column(nullable = false)
     private AssignmentStatus status;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn
-//    Caddy caddy;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    HouseCaddy caddy;
 
     @Column
     private String caddyName;

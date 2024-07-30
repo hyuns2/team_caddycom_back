@@ -34,4 +34,12 @@ public class AssignmentCaddyController {
         return ResponseEntity.ok().body(assignmentCaddyService.getAssignments(golfFieldId, date, courseId, status, page));
     }
 
+
+    @GetMapping("/detail")
+    @Operation(summary="배정 상세 조회 API", description="캐디 배정 상세 정보를 조회한다.")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<AssignmentResponse.Detail> getAssignmentDetail(@RequestParam Long assignmentId) {
+        return ResponseEntity.ok().body(assignmentCaddyService.getAssignmentDetail(assignmentId));
+    }
+
 }

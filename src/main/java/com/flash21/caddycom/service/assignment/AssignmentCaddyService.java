@@ -42,6 +42,24 @@ public class AssignmentCaddyService {
     }
 
 
+    @Transactional(readOnly = true)
+    public PagingResponse<AssignmentResponse.Info> getSwitchingCaddy(Long golfFieldId, LocalDate date, Long id, Long courseId, Integer part, int page) {
+        Pageable pageable = PageRequest.of(page, 30);
+        Page<Assignment> assignmentPage;
+
+        if (courseId != null && part != null){
+            assignmentPage = assignmentRepository.findAssignedByDateAndCourseIdAndPart(pageable,id,golfFieldId,date,courseId,part);
+        } else if (courseId != null) {
+            assignmentPage = assignmentRepository.findAssignedByDateAndCourseId(pageable,id,golfFieldId,date,courseId);
+        } else if (part != null) {
+            assignmentPage = assignmentRepository.findAssignedByDateAndPart(pageable,id,golfFieldId,date,part);
+        } else {
+            assignmentPage = assignmentRepository.findAssignedByDate(pageable,id,golfFieldId,date);
+        }
+        return PagingResponse.from(assignmentPage, AssignmentResponse.Info::fromSwitchable);
+    }
+
+
 
 
     // TODO: CANCELED, ASSIGNED 상태일때만 조회 가능하도록 예외처리 추가 필요

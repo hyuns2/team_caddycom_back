@@ -54,12 +54,50 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     Page<Assignment> findAllByDateAndCourseIdAndStatus(Pageable pageable, Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status);
 
 
+    @Query("SELECT a FROM Assignment a " +
+            "WHERE a.schedule.golfField.id = :golfFieldId " +
+            "AND a.id != :id " +
+            "AND DATE(a.schedule.startDateTime) =:date " +
+            "AND a.schedule.course.id = :courseId " +
+            "AND a.schedule.part = :part " +
+            "AND a.status = 'ASSIGNED'")
+    Page<Assignment> findAssignedByDateAndCourseIdAndPart(Pageable pageable, Long id, Long golfFieldId, LocalDate date, Long courseId, int part);
+
+
+    @Query("SELECT a FROM Assignment a " +
+            "WHERE a.schedule.golfField.id = :golfFieldId " +
+            "AND a.id != :id " +
+            "AND DATE(a.schedule.startDateTime) =:date " +
+            "AND a.schedule.part = :part " +
+            "AND a.status = 'ASSIGNED'")
+    Page<Assignment> findAssignedByDateAndPart(Pageable pageable, Long id, Long golfFieldId, LocalDate date, int part);
+
+
+    @Query("SELECT a FROM Assignment a " +
+            "WHERE a.schedule.golfField.id = :golfFieldId " +
+            "AND a.id != :id " +
+            "AND DATE(a.schedule.startDateTime) =:date " +
+            "AND a.schedule.course.id = :courseId " +
+            "AND a.status = 'ASSIGNED'")
+    Page<Assignment> findAssignedByDateAndCourseId(Pageable pageable, Long id, Long golfFieldId, LocalDate date, Long courseId);
+
+
+    @Query("SELECT a FROM Assignment a " +
+            "WHERE a.schedule.golfField.id = :golfFieldId " +
+            "AND a.id != :id " +
+            "AND DATE(a.schedule.startDateTime) =:date " +
+            "AND a.status = 'ASSIGNED'")
+    Page<Assignment> findAssignedByDate(Pageable pageable, Long id, Long golfFieldId, LocalDate date);
+
+
 
     @Query("SELECT a FROM Assignment a WHERE a.id IN :ids")
     List<Assignment> findByIds(@Param("ids") List<Long> ids);
 
 
     @Modifying
-    @Query("UPDATE Assignment a SET a.caddy = :caddy, a.caddyName = :caddyName WHERE a.id = :assignmentId")
+    @Query("UPDATE Assignment a " +
+            "SET a.caddy = :caddy, a.caddyName = :caddyName " +
+            "WHERE a.id = :assignmentId")
     void switchAssignment(@Param("assignmentId") Long assignmentId, @Param("caddy") HouseCaddy caddy, @Param("caddyName") String caddyName);
 }

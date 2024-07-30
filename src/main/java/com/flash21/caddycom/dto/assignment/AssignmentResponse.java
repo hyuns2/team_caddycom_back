@@ -41,6 +41,17 @@ public class AssignmentResponse {
                     .reason(assignment.getReason())
                     .build();
         }
+
+        public static Info fromSwitchable(Assignment assignment) {
+            return Info.builder()
+                    .id(assignment.getId())
+                    .startTime(assignment.getStartTime().format(timeFormatter))
+                    .caddyName(assignment.getCaddyName())
+                    .caddyId(assignment.getCaddy().getId())
+                    .courseName(assignment.getSchedule().getCourse().getName())
+                    .part(assignment.getSchedule().getPart())
+                    .build();
+        }
     }
 
 

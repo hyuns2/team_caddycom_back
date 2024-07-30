@@ -36,6 +36,22 @@ public class AssignmentCaddyController {
     }
 
 
+    @GetMapping("switch/{golfFieldId}/{date}")
+    @Operation(summary="배정 결과 조회 API", description="캐디 배정 후 결과를 페이징 조회한다.")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<PagingResponse<AssignmentResponse.Info>> getSwitchingCaddy(
+            @PathVariable Long golfFieldId,
+            @PathVariable LocalDate date,
+            @RequestParam Long assignmentId,
+            @RequestParam(required = false) Long courseId,
+            @RequestParam(required = false) Integer part,
+            @RequestParam(defaultValue = "0") int page)
+    {
+        return ResponseEntity.ok().body(assignmentCaddyService.getSwitchingCaddy(golfFieldId, date, assignmentId, courseId, part, page));
+    }
+
+
+
     @GetMapping("/detail")
     @Operation(summary="배정 상세 조회 API", description="캐디 배정 상세 정보를 조회한다.")
     @ResponseStatus(HttpStatus.OK)

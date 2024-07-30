@@ -156,7 +156,7 @@ public class AssignmentService {
     @Transactional
     public void setBlock(Long assignmentsId, AssignmentDto.BlockRequest blockRequest) {
         Assignment findAssignment = assignmentRepository.findById(assignmentsId)
-                .orElseThrow(() -> new NoSuchElementException("예약이 존재하지 않습니다."));
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
 
         if (findAssignment.getStatus() != AssignmentStatus.BLOCKED) {
             findAssignment.blockAssignment(blockRequest.getReason());

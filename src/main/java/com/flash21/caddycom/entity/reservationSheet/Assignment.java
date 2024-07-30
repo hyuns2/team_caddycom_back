@@ -37,4 +37,20 @@ public class Assignment {
     private String caddyName;
 
     private String reason;
+
+    public void blockAssignment(String reason) {
+        this.status = AssignmentStatus.BLOCKED;
+        this.reason = reason;
+    }
+
+    public void cancelBlockAssignment(String reason) {
+        this.status = AssignmentStatus.NOTHING;
+        this.reason = "";
+    }
+
+    public void assignCaddy(HouseCaddy caddy) {
+        this.caddyName = caddy.getName();
+        this.houseCaddy = caddy;
+        caddy.getAssignmentList().add(this);
+    }
 }

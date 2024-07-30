@@ -5,6 +5,7 @@ import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.reservationSheet.Assignment;
 import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
+import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
 import com.flash21.caddycom.global.exception.cException.CReservationSheetNotFoundException;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.reservationSheet.*;
@@ -34,10 +35,9 @@ public class AssignmentService {
      * 배정정보 조회: 배정정보가 존재하는 경우에는 반환하고, 존재하지 않는 경우에는 생성하여 반환합니다.
      *
      * @param golfFieldId 골프장 Id
-     * @param targetDate 대상 날짜
-     * @param page 페이지 번호 (데이터 10개)
+     * @param targetDate  대상 날짜
+     * @param page        페이지 번호 (데이터 10개)
      * @return 코스리스트, 시간리스트, 부별 id-status 형태의 map 반환
-     *
      * @throws CReservationSheetNotFoundException ReservationSheet 객체가 존재하지 않을 경우
      */
     @Transactional
@@ -68,7 +68,7 @@ public class AssignmentService {
         getResultFromRepo(result, date, page);
 
         result.forEach((key, value) -> {
-            for (String courseName: courseNameList) {
+            for (String courseName : courseNameList) {
                 if (!value.containsKey(courseName))
                     value.put(courseName, null);
             }
@@ -81,8 +81,8 @@ public class AssignmentService {
      * 배정정보 조회 내부함수1-1: 한 페이지만큼의 시간을 추출하고, 이 예약시간을 가지는 코스 정보를 조회하여 반환합니다.
      *
      * @param result 예약시간과 예약시간을 가지는 코스 정보 형태의 map
-     * @param date 대상 날짜
-     * @param page page 페이지 번호 (데이터 10개)
+     * @param date   대상 날짜
+     * @param page   page 페이지 번호 (데이터 10개)
      */
     private void getResultFromRepo(Map<String, Map<String, AssignmentDto.AssignmentsResponse>> result, LocalDate date, int page) {
         int pageSize = 10;
@@ -111,6 +111,7 @@ public class AssignmentService {
     /**
      * 배정정보 조회 내부함수2: 배정정보를 생성합니다.
      *
+<<<<<<< HEAD
      * @param schedule 스케쥴 객체
      */
     private void createAssignments(Schedule schedule) {
@@ -124,7 +125,7 @@ public class AssignmentService {
         Map<String, List<Object>> response = new WeakHashMap<>();
         List<String> timeList = new ArrayList<>();
 
-        for (String courseName: courseNameList) {
+        for (String courseName : courseNameList) {
             response.put(courseName, new ArrayList<>());
         }
 
@@ -138,5 +139,15 @@ public class AssignmentService {
         response.put("courseList", Arrays.asList(courseNameList.toArray()));
         response.put("timeList", Arrays.asList(timeList.toArray()));
         return response;
+    }
+
+    @Transactional
+    public void setBlock(Long assignmentsId, AssignmentDto.BlockRequest blockRequest) {
+        Assignment findAssignment = assignmentRepository.findById(assignmentsId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
+
+        if (findAssignment.getStatus() != AssignmentStatus.BLOCKED) {
+            findAssignment.blockAssignment(blockRequest.getReason());
+        }
     }
 }

@@ -49,7 +49,7 @@ public class HouseCaddy {
     @Convert(converter = DayListConverter.class)
     private List<Days> changedHoliday;
 
-    private String notWantPart;
+    private String offPart;
 
     private LocalDate birth;
 
@@ -66,7 +66,9 @@ public class HouseCaddy {
     private Long point;
 
     private Role role;
+
     private String refreshToken;
+
 
     public void updatePassword(String password) {
         this.password = password;
@@ -98,6 +100,9 @@ public class HouseCaddy {
     public void updateHoliday() {
         this.holiday = new ArrayList<>(changedHoliday);
         this.changedHoliday = null;
+    }
+    public void setHoliday(List<Days> holiday) {
+        this.holiday = holiday;
     }
 
     public HouseCaddy attachGolfField(GolfField golfField) {

@@ -134,7 +134,7 @@ public class AdminService {
         String career = tableList.get(8);
         String address = tableList.get(9);
         String addressDetail = tableList.get(10);
-        String notWantPart = tableList.get(11);
+        String offPart = tableList.get(11);
 
 
 
@@ -149,7 +149,7 @@ public class AdminService {
                 .career(career)
                 .address(address)
                 .addressDetail(addressDetail)
-                .notWantPart(notWantPart)
+                .offPart(offPart)
                 .build();
     }
 

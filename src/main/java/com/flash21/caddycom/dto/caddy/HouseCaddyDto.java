@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -77,5 +78,14 @@ public class HouseCaddyDto {
 
         @Schema(description = "경력")
         private String career;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class HolidayInfo{
+        private Long id;
+        private String name;
+        private TeamRole teamRole;
+        private List<Days> holiday;
     }
 }

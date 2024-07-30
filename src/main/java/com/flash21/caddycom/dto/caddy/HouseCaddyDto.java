@@ -12,18 +12,15 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class HouseCaddyDto {
-
     @Data
-    @AllArgsConstructor
-    @Builder
     public static class updateHouseCaddyRequest {
         @Schema(description = "조 이름")
         private String team;
 
-        @Schema(description = "조장/조원")
+        @Schema(description = "LEADER/MEMBER")
         private TeamRole teamRole;
 
-        @Schema(description = "휴무일")
+        @Schema(description = "휴무일 ex) [\"MON\", \"FRI\"]")
         private List<Days> holiday;
 
         @Schema(description = "성별")
@@ -41,7 +38,6 @@ public class HouseCaddyDto {
         @Schema(description = "경력")
         private String career;
     }
-
     @Data
     @AllArgsConstructor
     @Builder
@@ -82,5 +78,4 @@ public class HouseCaddyDto {
         @Schema(description = "경력")
         private String career;
     }
-
 }

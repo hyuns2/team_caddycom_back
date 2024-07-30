@@ -21,7 +21,7 @@ public class HouseCaddyService {
     }
 
     public List<HouseCaddyDto.houseCaddyResponse> getHouseCaddyByTeam(Long golfFieldId, String teamName) {
-        List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByTeam(golfFieldId, teamName);
+        List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, teamName);
         if (houseCaddyList.isEmpty())
             throw new CTeamNameNotFoundException();
 
@@ -42,12 +42,12 @@ public class HouseCaddyService {
     }
 
     @Transactional
-    public void updateHouseCaddy(Long caddyId, HouseCaddyDto.updateHouseCaddyRequest dto) {
+    public void updateHouseCaddy(Long golfFieldId, Long caddyId, HouseCaddyDto.updateHouseCaddyRequest dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 
         if (dto.getTeamRole() != null && dto.getTeamRole().equals(TeamRole.LEADER)) {
-            houseCaddyRepository.findByTeamAndTeamRole(houseCaddy.getTeam(), TeamRole.LEADER)
+            houseCaddyRepository.findByGolfFieldIdTeamAndTeamRole(golfFieldId, houseCaddy.getTeam(), TeamRole.LEADER)
                             .ifPresent((caddy) -> { caddy.setTeamRole(TeamRole.MEMBER); });
         }
         houseCaddy.updateHouseCaddy(dto);

@@ -2,8 +2,6 @@ package com.flash21.caddycom.service.assignment;
 
 import com.flash21.caddycom.dto.PagingResponse;
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
-import com.flash21.caddycom.dto.caddy.CaddyResponse;
-import com.flash21.caddycom.dto.caddy.CaddySearchCond;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.reservationSheet.Assignment;
 import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service

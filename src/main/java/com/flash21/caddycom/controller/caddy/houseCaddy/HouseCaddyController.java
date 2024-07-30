@@ -1,5 +1,7 @@
 package com.flash21.caddycom.controller.caddy.houseCaddy;
 
+import com.flash21.caddycom.dto.caddy.HouseCaddyResponse;
+import com.flash21.caddycom.dto.caddy.CaddySearchCond;
 import com.flash21.caddycom.dto.caddy.HouseCaddyDto;
 import com.flash21.caddycom.service.caddy.houseCaddy.HouseCaddyService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,4 +54,16 @@ public class HouseCaddyController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @Operation(summary = "캐디 목록 전체 조회", description = "골프장에 속해있는 모든 하우스 캐디들을 모두 조회합니다.")
+    @GetMapping("/all/{golfFieldId}")
+    public ResponseEntity<?> getAllHouseCaddies(@AuthenticationPrincipal User user,
+                                                @PathVariable("golfFieldId") Long golfFieldId,
+                                                @ModelAttribute CaddySearchCond searchCond
+    ) {
+        List<HouseCaddyResponse> result = houseCaddyService.getAllHouseCaddy(golfFieldId, searchCond);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }

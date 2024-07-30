@@ -125,4 +125,12 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(ExceptionDto.fail(errorCode));
     }
+
+    @ExceptionHandler(CCaddyNotFoundException.class)
+    protected ResponseEntity<ExceptionDto> handle(CCaddyNotFoundException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        e.printStackTrace();
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(ExceptionDto.fail(errorCode));
+    }
 }

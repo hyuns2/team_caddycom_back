@@ -1,5 +1,6 @@
 package com.flash21.caddycom.entity.reservationSheet;
 
+import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,10 +22,6 @@ public class Assignment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private ReservationDate reservationDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
     private Schedule schedule;
 
     @Column(nullable = false)
@@ -33,15 +30,11 @@ public class Assignment {
     @Column(nullable = false)
     private AssignmentStatus status;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn
-//    Caddy caddy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private HouseCaddy houseCaddy;
 
     private String caddyName;
 
     private String reason;
-
-    private String courseName;
-
-    private String part;
 }

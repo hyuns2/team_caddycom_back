@@ -69,4 +69,8 @@ public class Schedule {
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Assignment> assignments;
+
+    public void setDateStatus(DateStatus dateStatus) {
+        this.dateStatus = dateStatus;
+    }
 }

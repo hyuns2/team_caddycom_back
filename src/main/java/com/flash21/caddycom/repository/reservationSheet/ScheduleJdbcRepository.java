@@ -20,8 +20,8 @@ public class ScheduleJdbcRepository {
     @Transactional
     public void saveAll(List<Schedule> scheduleList) {
         String sql = "INSERT INTO schedule"
-                + "(golf_field_id, course_id, reservation_at, start_time, end_time, tee_off, part, date_status, total_cnt, blocked_cnt)"
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + " (golf_field_id, course_id, reservation_at, start_time, end_time, tee_off, part, date_status, total_cnt, blocked_cnt)"
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.batchUpdate(new PreparedStatementCreator() {
             @Override

@@ -3,14 +3,11 @@ package com.flash21.caddycom.service.reservationSheet;
 import com.flash21.caddycom.dto.reservationSheet.AssignmentDto;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.reservationSheet.Assignment;
-import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
-import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
+import com.flash21.caddycom.entity.schedule.DateStatus;
+import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.exception.cException.CReservationSheetNotFoundException;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
-import com.flash21.caddycom.repository.reservationSheet.AssignmentJdbcRepository;
-import com.flash21.caddycom.repository.reservationSheet.AssignmentRepository;
-import com.flash21.caddycom.repository.reservationSheet.ReservationDateRepository;
-import com.flash21.caddycom.repository.reservationSheet.ReservationSheetRepository;
+import com.flash21.caddycom.repository.reservationSheet.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,8 +25,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AssignmentService {
     final ReservationSheetService rsService;
-    final ReservationSheetRepository rsRepository;
-    final ReservationDateRepository rdRepository;
+    final ScheduleRepository scheduleRepository;
     final AssignmentRepository assignmentRepository;
     final AssignmentJdbcRepository assignmentJdbcRepository;
     final CourseRepository courseRepository;
@@ -46,21 +42,13 @@ public class AssignmentService {
      */
     @Transactional
     public Map<String, List<Object>> getAssignments(Long golfFieldId, LocalDate targetDate, int page) {
-        List<ReservationSheet> reservationSheetList = rsRepository.findAllByGolfFieldId(golfFieldId);
-        if (reservationSheetList.isEmpty())
-            throw new CReservationSheetNotFoundException();
-
+        List<Schedule> scheduleList = scheduleRepository.findAllByGolfFieldIdAndReservationAt(golfFieldId, targetDate);
         Set<Course> courseSet = new HashSet<>();
-        for (ReservationSheet reservationSheet : reservationSheetList) {
-            courseSet.add(reservationSheet.getCourse());
+        for (Schedule schedule: scheduleList) {
+            courseSet.add(schedule.getCourse());
 
-            Optional<ReservationDate> reservationDateOption = rdRepository.findByReservationSheetIdAndReservationAt(reservationSheet.getId(), targetDate);
-            if (reservationDateOption.isEmpty())
-                continue;
-            ReservationDate reservationDate = reservationDateOption.get();
-
-            if (!reservationDate.getIsAssigned())
-                createAssignments(reservationSheet, reservationDate);
+            if (schedule.getDateStatus() == DateStatus.NOTHING)
+                createAssignments(schedule);
         }
 
         List<String> courseNameList = courseSet.stream().map(Course::getName).sorted().toList();
@@ -99,13 +87,13 @@ public class AssignmentService {
     private void getResultFromRepo(Map<String, Map<String, AssignmentDto.AssignmentsResponse>> result, LocalDate date, int page) {
         int pageSize = 10;
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<LocalTime> resultTimePage = assignmentRepository.findTimesByReservationDate(date, pageable);
+        Page<LocalTime> resultTimePage = assignmentRepository.findTimesByReservationAt(date, pageable);
         List<LocalTime> resultTimeList = resultTimePage.getContent();
 
-        List<Assignment> assignmentList = assignmentRepository.findAllByReservationDateAndBetweenTime(date, resultTimeList.get(0), resultTimeList.get(resultTimeList.size()-1));
+        List<Assignment> assignmentList = assignmentRepository.findAllByReservationAtAndBetweenTime(date, resultTimeList.get(0), resultTimeList.get(resultTimeList.size()-1));
         for (Assignment assignment: assignmentList) {
             String startTime = assignment.getStartTime().toString();
-            String courseName = assignment.getReservationDate().getReservationSheet().getCourse().getName();
+            String courseName = assignment.getSchedule().getCourse().getName();
             AssignmentDto.AssignmentsResponse dto = AssignmentDto.AssignmentsResponse.builder()
                     .id(assignment.getId())
                     .status(assignment.getStatus()).build();
@@ -123,14 +111,13 @@ public class AssignmentService {
     /**
      * 배정정보 조회 내부함수2: 배정정보를 생성합니다.
      *
-     * @param reservationSheet 대상 reservationSheet 객체
-     * @param reservationDate 대상 reservationDate 객체
+     * @param schedule 스케쥴 객체
      */
-    private void createAssignments(ReservationSheet reservationSheet, ReservationDate reservationDate) {
-        assignmentJdbcRepository.saveAll(reservationDate.getId(), rsService.getStartTimeList(
-                reservationSheet.getStartDateTime().toLocalTime(), reservationSheet.getEndDateTime().toLocalTime(), reservationSheet.getTeeOff()));
+    private void createAssignments(Schedule schedule) {
+        assignmentJdbcRepository.saveAll(schedule.getId(), rsService.getStartTimeList(
+                schedule.getStartTime(), schedule.getEndTime(), schedule.getTeeOff()));
 
-        reservationDate.setIsAssigned();
+        schedule.setDateStatus(DateStatus.SETTING);
     }
 
     private Map<String, List<Object>> makeResponse(List<String> courseNameList, Map<String, Map<String, AssignmentDto.AssignmentsResponse>> dtoMap) {

@@ -18,4 +18,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             + " where s.reservationAt between ?1 and ?2"
             + " and s.golfField.id = ?3 group by s.reservationAt, s.dateStatus")
     List<MetaDataReport> countAllMetaDataByDate(LocalDate startDate, LocalDate endDate, Long golfFieldId);
+
+    List<Schedule> findAllByGolfFieldIdAndReservationAt(Long golfFieldId, LocalDate date);
 }

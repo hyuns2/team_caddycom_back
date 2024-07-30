@@ -1,5 +1,6 @@
 package com.flash21.caddycom.entity.reservationSheet;
 
+import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,9 +34,9 @@ public class Assignment {
     @Column(nullable = false)
     private AssignmentStatus status;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn
-//    Caddy caddy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "house_caddy_id")
+    HouseCaddy caddy;
 
     private String caddyName;
 
@@ -44,4 +45,20 @@ public class Assignment {
     private String courseName;
 
     private String part;
+
+    public void blockAssignment(String reason) {
+        this.status = AssignmentStatus.BLOCKED;
+        this.reason = reason;
+    }
+
+    public void cancelBlockAssignment(String reason) {
+        this.status = AssignmentStatus.NOTHING;
+        this.reason = "";
+    }
+
+    public void assignCaddy(HouseCaddy caddy) {
+        this.caddyName = caddy.getName();
+        this.caddy = caddy;
+        caddy.getAssignmentList().add(this);
+    }
 }

@@ -23,4 +23,11 @@ public class HouseCaddyController {
 
         return ResponseEntity.ok(allHoliday);
     }
+
+    @GetMapping("/holiday/{golfFieldId}/team")
+    public ResponseEntity<HouseCaddyResponse.TeamHoliday> getTeamHolidayInfo(@PathVariable("golfFieldId") Long golfFieldId, String name) {
+        HouseCaddyResponse.TeamHoliday holiday = houseCaddyService.getTeamHoliday(golfFieldId, name);
+
+        return ResponseEntity.ok(holiday);
+    }
 }

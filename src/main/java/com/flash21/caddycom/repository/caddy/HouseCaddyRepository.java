@@ -11,4 +11,6 @@ public interface HouseCaddyRepository extends JpaRepository<HouseCaddy, Long> {
         Optional<HouseCaddy> findByPhoneNumber(String phoneNumber);
 
         Optional<List<HouseCaddy>> findAllByGolfFieldId(Long golfFieldId);
+
+        Optional<List<HouseCaddy>> findAllByGolfFieldIdAndTeam(Long golfFieldId, String team);
 }

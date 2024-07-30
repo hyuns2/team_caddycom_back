@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,4 +40,20 @@ public class HouseCaddyService {
         return allHolidays;
     }
 
+    @Transactional(readOnly = true)
+    public HouseCaddyResponse.TeamHoliday getTeamHoliday(Long golfFieldId, String teamName) {
+        List<HouseCaddy> caddies = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, teamName)
+                .orElseThrow(() -> new NoSuchElementException("해당 조의 조원이 존재하지 않습니다"));
+
+        List<HouseCaddyDto.HolidayInfo> infos = new ArrayList<>();
+        for(HouseCaddy houseCaddy : caddies) {
+            infos.add(new HouseCaddyDto.HolidayInfo(
+                    houseCaddy.getId(),
+                    houseCaddy.getName(),
+                    houseCaddy.getTeamRole(),
+                    houseCaddy.getHoliday()));
+        }
+
+        return new HouseCaddyResponse.TeamHoliday(teamName, infos);
+    }
 }

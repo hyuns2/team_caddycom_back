@@ -43,4 +43,9 @@ public class Assignment {
 
     @Column
     private String reason;
+
+
+    public void cancel() {
+        this.status = AssignmentStatus.CANCELED;
+    }
 }

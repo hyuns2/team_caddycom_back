@@ -1,5 +1,6 @@
 package com.flash21.caddycom.controller.assignment;
 
+import com.flash21.caddycom.dto.Message;
 import com.flash21.caddycom.dto.PagingResponse;
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
@@ -40,6 +41,15 @@ public class AssignmentCaddyController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<AssignmentResponse.Detail> getAssignmentDetail(@RequestParam Long assignmentId) {
         return ResponseEntity.ok().body(assignmentCaddyService.getAssignmentDetail(assignmentId));
+    }
+
+
+    @PatchMapping("/cancel")
+    @Operation(summary="배정 취소 API", description="취소 요청된 배정을 취소 / 골프장 관리자가 직접 취소")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Message> cancelAssignment(@RequestParam Long assignmentId) {
+        assignmentCaddyService.cancelAssignment(assignmentId);
+        return ResponseEntity.ok().body(new Message("배정이 취소되었습니다."));
     }
 
 }

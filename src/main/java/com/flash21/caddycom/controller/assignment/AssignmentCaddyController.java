@@ -21,7 +21,7 @@ public class AssignmentCaddyController {
     private final AssignmentCaddyService assignmentCaddyService;
 
 
-    @GetMapping("{golfFieldId}/{date}/{courseId}/{status}/{page}")
+    @GetMapping("{golfFieldId}/{date}")
     @Operation(summary="배정 결과 조회 API", description="캐디 배정 후 결과를 페이징 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PagingResponse<AssignmentResponse.Info>> getAssignments(

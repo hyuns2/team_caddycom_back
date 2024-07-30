@@ -47,7 +47,7 @@ public class HouseCaddyService {
                 .orElseThrow(CCaddyNotFoundException::new);
 
         if (dto.getTeamRole() != null && dto.getTeamRole().equals(TeamRole.LEADER)) {
-            houseCaddyRepository.findByGolfFieldIdTeamAndTeamRole(golfFieldId, houseCaddy.getTeam(), TeamRole.LEADER)
+            houseCaddyRepository.findByGolfFieldIdAndTeamAndTeamRole(golfFieldId, houseCaddy.getTeam(), TeamRole.LEADER)
                             .ifPresent((caddy) -> { caddy.setTeamRole(TeamRole.MEMBER); });
         }
         houseCaddy.updateHouseCaddy(dto);

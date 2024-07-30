@@ -20,8 +20,8 @@ public class HouseCaddyService {
         return houseCaddyRepository.findAllTeam(golfFieldId);
     }
 
-    public List<HouseCaddyDto.houseCaddyResponse> getHouseCaddyByTeam(String teamName) {
-        List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByTeam(teamName);
+    public List<HouseCaddyDto.houseCaddyResponse> getHouseCaddyByTeam(Long golfFieldId, String teamName) {
+        List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByTeam(golfFieldId, teamName);
         if (houseCaddyList.isEmpty())
             throw new CTeamNameNotFoundException();
 

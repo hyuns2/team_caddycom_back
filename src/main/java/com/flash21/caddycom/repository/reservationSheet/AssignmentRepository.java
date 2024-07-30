@@ -20,4 +20,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     @Query("select a from Assignment a"
             + " where a.reservationDate.reservationAt = ?1 and ?2 <= a.startTime and ?3 >= a.startTime order by a.startTime")
     List<Assignment> findAllByReservationDateAndBetweenTime(LocalDate date, LocalTime startTime, LocalTime endTime);
+
+    @Query("SELECT a FROM Assignment a " +
+            "WHERE a.reservationDate.reservationAt =:date")
+    Page<Assignment> findAllByReservationDateAndGolfFieldId(Long golfFieldId, LocalDate date);
 }

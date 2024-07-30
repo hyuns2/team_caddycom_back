@@ -15,6 +15,10 @@ import java.time.LocalDate;
 public class AssignmentCaddyService {
     private final AssignmentRepository assignmentRepository;
 
+    /**
+     * 골프장 id와 date로 assignment를 모두 조회한다.
+     *
+     */
     @Transactional(readOnly = true)
     public PagingResponse<AssignmentResponse.Info> getAssignments(Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status, int page) {
         return null;

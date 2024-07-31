@@ -60,7 +60,7 @@ public class HouseCaddyController {
                                                 @PathVariable("golfFieldId") Long golfFieldId,
                                                 @ModelAttribute HouseCaddyRequestDto.CaddySearchCond searchCond
     ) {
-        List<HouseCaddyResponseDto> result = houseCaddyService.getAllHouseCaddy(golfFieldId, searchCond);
+        List<HouseCaddyResponseDto.Info> result = houseCaddyService.getAllHouseCaddy(golfFieldId, searchCond);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

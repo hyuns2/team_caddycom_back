@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface HouseCaddyQueryRepository {
 
-    List<HouseCaddyResponseDto> findAllByGoldFieldIdAndSort(Long goldFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond);
+    List<HouseCaddyResponseDto.Info> findAllByGoldFieldIdAndSort(Long goldFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond);
 }

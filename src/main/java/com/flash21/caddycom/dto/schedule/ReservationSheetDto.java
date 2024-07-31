@@ -3,6 +3,7 @@ package com.flash21.caddycom.dto.schedule;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
+import com.flash21.caddycom.entity.schedule.DateStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -58,6 +59,9 @@ public class ReservationSheetDto {
     public static class MetaDataResponse {
         @Schema(description = "결과 날짜 (yyyy-mm-dd)")
         private LocalDate targetDate;
+
+        @Schema(description = "일별 배정상태")
+        private DateStatus dateStatus;
 
         @Schema(description = "총 개수")
         private int totalCntSum;

@@ -158,6 +158,7 @@ public class ReservationSheetService {
 
             responseDtoList.add(ReservationSheetDto.MetaDataResponse.builder().
                     targetDate(report.getReservationAt()).
+                    dateStatus(report.getDateStatus()).
                     totalCntSum(totalCntResult).
                     blockedCntSum(blockedCntResult).
                     availableCntSum(report.getDateStatus() != DateStatus.NOTHING ? availableCntResult : 0).build());

@@ -55,9 +55,6 @@ public class Schedule {
     @Column(nullable = false)
     private DateStatus dateStatus;
 
-//    @Column(nullable = false)
-//    private Boolean isAssigned;
-
     @Column(nullable = false)
     private Integer totalCnt;
 

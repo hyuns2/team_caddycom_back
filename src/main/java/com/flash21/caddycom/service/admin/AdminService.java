@@ -66,9 +66,9 @@ public class AdminService {
 
         List<List<String>> stringData = excelReader.uploadCaddy(file);
         List<HouseCaddy> caddyList = stringData.stream()
-                .map(data -> entityConverter.toEntity(golfField, data))
+                .map(entityConverter::toEntity)
                 .toList();
 
-        houseCaddyService.saveCaddyList(caddyList);
+        houseCaddyService.saveCaddyList(golfField.getId(), caddyList);
     }
 }

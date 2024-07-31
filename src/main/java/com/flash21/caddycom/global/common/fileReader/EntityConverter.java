@@ -16,7 +16,7 @@ import java.util.List;
 public class EntityConverter {
     private final CellValueConverter cellValueConverter;
 
-    public HouseCaddy toEntity(GolfField golfField, List<String> tableList) {
+    public HouseCaddy toEntity(List<String> tableList) {
         String type = tableList.get(0);
         String name = tableList.get(1);
         String phoneNumber = tableList.get(2);
@@ -32,7 +32,6 @@ public class EntityConverter {
 
 
         return HouseCaddy.builder()
-                .golfField(golfField)
                 .caddyType(type)
                 .name(name)
                 .phoneNumber(phoneNumber)

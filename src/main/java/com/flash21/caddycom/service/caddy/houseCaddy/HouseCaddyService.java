@@ -8,6 +8,7 @@ import com.flash21.caddycom.entity.caddy.TeamRole;
 import com.flash21.caddycom.global.exception.cException.CCaddyNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidCaddyRequestException;
 import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundException;
+import com.flash21.caddycom.repository.caddy.HouseCaddyJdbcRepository;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class HouseCaddyService {
     final HouseCaddyRepository houseCaddyRepository;
+    private final HouseCaddyJdbcRepository houseCaddyJdbcRepository;
 
     /**
      * 조 전제조회: 골프장 Id에 해당하는 캐디의 조이름을 전부 반환합니다.
@@ -174,9 +176,9 @@ public class HouseCaddyService {
     }
 
     @Transactional
-    public void saveCaddyList(List<HouseCaddy> caddyList) {
+    public void saveCaddyList(Long golfFieldId, List<HouseCaddy> caddyList) {
         //TODO: bulk insert로 변경 필요
-        houseCaddyRepository.saveAll(caddyList);
+        houseCaddyJdbcRepository.saveAll(caddyList, golfFieldId);
     }
 
 

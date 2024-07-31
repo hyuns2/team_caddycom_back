@@ -69,6 +69,8 @@ public class HouseCaddy {
 
     private String refreshToken;
 
+    private String caddyType;
+
 
     public void updatePassword(String password) {
         this.password = password;

@@ -12,7 +12,7 @@ public class DayListConverter implements AttributeConverter<List<Days>, String> 
 
     @Override
     public String convertToDatabaseColumn(List<Days> days) {
-        if (days == null)
+        if (days == null || days.isEmpty())
             return null;
 
         return days.stream()
@@ -22,7 +22,7 @@ public class DayListConverter implements AttributeConverter<List<Days>, String> 
 
     @Override
     public List<Days> convertToEntityAttribute(String s) {
-        if (s == null)
+        if (s == null || s.isEmpty())
             return null;
 
         return Arrays.stream(s.split(SPLIT_CHAR))

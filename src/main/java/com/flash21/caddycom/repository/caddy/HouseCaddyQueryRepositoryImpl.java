@@ -1,7 +1,7 @@
 package com.flash21.caddycom.repository.caddy;
 
 import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
-import com.flash21.caddycom.dto.caddy.HouseCaddyResponseDto;
+import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +16,9 @@ public class HouseCaddyQueryRepositoryImpl implements HouseCaddyQueryRepository 
     private final EntityManager em;
 
     @Override
-    public List<HouseCaddyResponseDto.Info> findAllByGoldFieldIdAndSort(Long goldFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
+    public List<HouseCaddy> findAllByGolfFieldIdAndSearchCond(Long golfFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
         StringBuilder queryBuilder = new StringBuilder(
-                "select new com.flash21.caddycom.dto.caddy.HouseCaddyResponseDto.Info(hc.id, hc.team, hc.teamRole, hc.name, hc.holiday) " +
-                        "from HouseCaddy hc " +
-                        "where hc.golfField.id = :goldFieldId");
+                "select hc from HouseCaddy hc where hc.golfField.id = :goldFieldId");
 
         boolean nameCond = searchCond.getName() != null && !searchCond.getName().isEmpty();
         boolean teamCond = searchCond.getTeam() != null && !searchCond.getTeam().isEmpty();
@@ -32,8 +30,8 @@ public class HouseCaddyQueryRepositoryImpl implements HouseCaddyQueryRepository 
             queryBuilder.append(" and hc.team = :team");
         }
 
-        Query query = em.createQuery(queryBuilder.toString(), HouseCaddyResponseDto.Info.class);
-        query.setParameter("goldFieldId", goldFieldId);
+        Query query = em.createQuery(queryBuilder.toString(), HouseCaddy.class);
+        query.setParameter("goldFieldId", golfFieldId);
 
         if (nameCond) {
             query.setParameter("name", "%" + searchCond.getName() + "%");

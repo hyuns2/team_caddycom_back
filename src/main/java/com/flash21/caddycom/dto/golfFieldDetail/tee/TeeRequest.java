@@ -11,7 +11,7 @@ import java.util.List;
 public class TeeRequest {
     @Getter
     @AllArgsConstructor
-    public static class create {
+    public static class Create {
         @NotBlank
         private String name;
         @NotNull
@@ -21,7 +21,7 @@ public class TeeRequest {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class createAll {
-        private List<create> createInfos;
+    public static class CreateAll {
+        private List<Create> createInfos;
     }
 }

@@ -1,11 +1,9 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
-import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
-import com.flash21.caddycom.service.golfField.GolfFieldService;
 import com.flash21.caddycom.service.golfFieldDetail.CourseService;
 import com.flash21.caddycom.service.golfFieldDetail.FormationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,16 +30,16 @@ public class FormationController {
 
     @PostMapping("/api/formations")
     @Operation(summary = "골프장 구성 정보 생성 API")
-    public ResponseEntity<Void> createFormation(@Valid @RequestBody FormationRequest.process request) {
+    public ResponseEntity<Void> createFormation(@Valid @RequestBody FormationRequest.Process request) {
         GolfField golfField = golfFieldRepository.findById(request.getGolfFieldId())
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
 
         if(request.getCreate() != null)
-            for(FormationRequest.create createRequest : request.getCreate())
+            for(FormationRequest.Create createRequest : request.getCreate())
                 formationService.createFormation(golfField, createRequest);
 
         if(request.getUpdate() != null)
-            for(FormationRequest.update updateRequest : request.getUpdate())
+            for(FormationRequest.Update updateRequest : request.getUpdate())
                 formationService.updateFormation(updateRequest);
 
         if(!request.getDeleteFormations().isEmpty())
@@ -54,8 +52,8 @@ public class FormationController {
 
     @GetMapping("/api/formations")
     @Operation(summary = "골프장 구성 정보 반환 API")
-    public ResponseEntity<List<FormationResponse.create>> getFormations(Long golfFieldId) {
-        List<FormationResponse.create> formationInfos = formationService.getAllFormations(golfFieldId);
+    public ResponseEntity<List<FormationResponse.Create>> getFormations(Long golfFieldId) {
+        List<FormationResponse.Create> formationInfos = formationService.getAllFormations(golfFieldId);
 
         return new ResponseEntity<>(formationInfos, HttpStatus.OK);
     }

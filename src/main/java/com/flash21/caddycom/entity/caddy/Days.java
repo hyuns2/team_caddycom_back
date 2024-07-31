@@ -28,6 +28,8 @@ public enum Days {
         return String.valueOf(number);
     }
 
+
+    // TODO: 비지니스 레이어로 이동 필요
     public static Days fromNumber(String number) {
         Days day = valueToDayMap.get(Integer.parseInt(number));
         if(day == null) {

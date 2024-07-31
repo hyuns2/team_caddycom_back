@@ -21,17 +21,17 @@ public class TeeService {
     private final HoleRepository holeRepository;
 
     @Transactional
-    public void deleteAndCreateAllTee(Long courseId, TeeRequest.createAll request) {
+    public void deleteAndCreateAllTee(Long courseId, TeeRequest.CreateAll request) {
         //1. 기존에 존재하는 모든 티 정보 삭제
         teeRepository.deleteAllByCourseId(courseId);
 
         //2. request 이용해서 새로운 티 정보 생성
-        List<TeeRequest.create> newTeeInfos = request.getCreateInfos();
+        List<TeeRequest.Create> newTeeInfos = request.getCreateInfos();
         List<Hole> holes = holeRepository.findAllByCourseId(courseId).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
         List<Tee> newTees = new ArrayList<>();
 
         for(Hole hole : holes) {
-            for(TeeRequest.create teeInfo : newTeeInfos) {
+            for(TeeRequest.Create teeInfo : newTeeInfos) {
                 newTees.add(new Tee(null, teeInfo.getName(), teeInfo.getDistance(), hole));
             }
         }

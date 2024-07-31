@@ -1,7 +1,9 @@
 package com.flash21.caddycom.dto.caddy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.Gender;
+import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.caddy.TeamRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -25,10 +27,19 @@ public class HouseCaddyResponseDto {
     @AllArgsConstructor
     public static class Info {
         private Long caddyId;
+        @JsonIgnore
         private String team;
         private TeamRole teamRole;
         private String name;
         private List<Days> availDates;
+
+        public Info(HouseCaddy houseCaddy) {
+            this.caddyId = houseCaddy.getId();
+            this.team = houseCaddy.getTeam();
+            this.teamRole = houseCaddy.getTeamRole();
+            this.name = houseCaddy.getName();
+            this.availDates = houseCaddy.getHoliday();
+        }
     }
 
     @Getter

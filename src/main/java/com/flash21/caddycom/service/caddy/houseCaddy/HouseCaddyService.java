@@ -8,21 +8,21 @@ import com.flash21.caddycom.entity.caddy.TeamRole;
 import com.flash21.caddycom.global.exception.cException.CCaddyNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidCaddyRequestException;
 import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundException;
+import com.flash21.caddycom.repository.caddy.HouseCaddyJdbcRepository;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
 public class HouseCaddyService {
     final HouseCaddyRepository houseCaddyRepository;
+    private final HouseCaddyJdbcRepository houseCaddyJdbcRepository;
 
     /**
      * 조 전제조회: 골프장 Id에 해당하는 캐디의 조이름을 전부 반환합니다.
@@ -38,7 +38,7 @@ public class HouseCaddyService {
      * 조별 조회: 해당하는 골프장과 조이름에 속하는 캐디들의 정보를 반환합니다.
      *
      * @param golfFieldId 골프장 Id
-     * @param teamName 조 이름
+     * @param teamName    조 이름
      * @return 캐디정보 리스트
      */
     public List<HouseCaddyResponseDto.houseCaddyDetail> getHouseCaddyByTeam(Long golfFieldId, String teamName) {
@@ -60,15 +60,16 @@ public class HouseCaddyService {
                     .address(hc.getAddress())
                     .addressDetail(hc.getAddressDetail())
                     .career(hc.getCareer())
-                    .build(); }).toList();
+                    .build();
+        }).toList();
     }
 
     /**
      * 하우스캐디 정보 수정: 하우스캐디의 정보를 수정합니다.
      *
      * @param golfFieldId 골프장 Id
-     * @param caddyId 캐디 Id
-     * @param dto 수정할 정보
+     * @param caddyId     캐디 Id
+     * @param dto         수정할 정보
      */
     @Transactional
     public void updateHouseCaddy(Long golfFieldId, Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {
@@ -100,12 +101,21 @@ public class HouseCaddyService {
         houseCaddy.updateHoliday();
     }
 
-    public List<HouseCaddyResponseDto.Info> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
+    public Map<String, List<HouseCaddyResponseDto.Info>> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
 
-        List<HouseCaddyResponseDto.Info> findCaddies = houseCaddyRepository.findAllByGoldFieldIdAndSort(
-                golfFieldId, searchCond);
+        List<HouseCaddyResponseDto.Info> findHouseCaddies =
+                houseCaddyRepository.findAllByGolfFieldIdAndSearchCond(golfFieldId, searchCond)
+                        .stream()
+                        .map(HouseCaddyResponseDto.Info::new)
+                        .sorted(this::comparing)
+                        .toList();
 
-        return findCaddies;
+        return findHouseCaddies.stream()
+                .collect(Collectors.groupingBy(
+                        HouseCaddyResponseDto.Info::getTeam,
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
     }
 
     @Transactional(readOnly = true)
@@ -165,10 +175,33 @@ public class HouseCaddyService {
 
     }
 
-
     @Transactional
-    public void saveCaddyList(List<HouseCaddy> caddyList) {
+    public void saveCaddyList(Long golfFieldId, List<HouseCaddy> caddyList) {
         //TODO: bulk insert로 변경 필요
-        houseCaddyRepository.saveAll(caddyList);
+        houseCaddyJdbcRepository.saveAll(caddyList, golfFieldId);
+    }
+
+
+    private int comparing(HouseCaddyResponseDto.Info hc1, HouseCaddyResponseDto.Info hc2) {
+        int teamNumber1 = extractTeamNumber(hc1.getTeam());
+        int teamNumber2 = extractTeamNumber(hc2.getTeam());
+        if (teamNumber1 != teamNumber2) {
+            return Integer.compare(teamNumber1, teamNumber2);
+        }
+        if (hc1.getTeamRole() == TeamRole.LEADER && hc2.getTeamRole() != TeamRole.LEADER) {
+            return -1;
+        } else if (hc1.getTeamRole() != TeamRole.LEADER && hc2.getTeamRole() == TeamRole.LEADER) {
+            return 1;
+        }
+        return hc1.getName().compareTo(hc2.getName());
+    }
+
+    private int extractTeamNumber(String team) {
+        try {
+            String numericPart = team.replaceAll("\\D+", "");
+            return numericPart.isEmpty() ? Integer.MAX_VALUE : Integer.parseInt(numericPart);
+        } catch (NumberFormatException e) {
+            return Integer.MAX_VALUE;
+        }
     }
 }

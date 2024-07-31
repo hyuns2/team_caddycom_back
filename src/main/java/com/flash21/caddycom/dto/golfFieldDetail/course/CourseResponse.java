@@ -10,8 +10,9 @@ import java.util.List;
 
 public class CourseResponse {
     @Getter
+    @Builder
     @AllArgsConstructor
-    public static class Create {
+    public static class Info {
         private Long id;
         private String name;
         private Integer totalHoles;

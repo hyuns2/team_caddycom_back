@@ -37,7 +37,7 @@ public class FormationService {
     private final HoleService holeService;
     private final TeeService teeService;
 
-    public void createFormation(GolfField golfField, FormationRequest.create request) {
+    public void createFormation(GolfField golfField, FormationRequest.Create request) {
         Formation formation;
         if(request.getName() == null || request.getName().isBlank())
             formation = new Formation(null, golfField, "NONE", null);
@@ -60,7 +60,7 @@ public class FormationService {
         teeService.createTees(holes);
     }
 
-    public void updateFormation(FormationRequest.update request) {
+    public void updateFormation(FormationRequest.Update request) {
         Formation formation = formationRepository.findById(request.getFormationId())
                 .orElseThrow(() -> new NoSuchElementException("해당 구성은 존재하지 않습니다."));
 
@@ -95,20 +95,20 @@ public class FormationService {
         formationRepository.deleteAllByIdInBatch(ids);
     }
 
-    public List<FormationResponse.create> getAllFormations(Long golfFieldId) {
+    public List<FormationResponse.Create> getAllFormations(Long golfFieldId) {
         List<Formation> formations = formationRepository.findAllByGolfFieldId(golfFieldId)
                 .orElseThrow(() -> new NoSuchElementException("골프장에 구성이 존재하지 않습니다."));
 
-        List<FormationResponse.create> response = new ArrayList<>();
+        List<FormationResponse.Create> response = new ArrayList<>();
         for(Formation formation : formations) {
-            List<CourseResponse.Create> courseInfos = new ArrayList<>();
+            List<CourseResponse.Info> courseInfos = new ArrayList<>();
             if(!formation.getCourses().isEmpty()) {
                 courseInfos = formation.getCourses().stream()
-                        .map(course -> new CourseResponse.Create(course.getId(), course.getName(), course.getTotalHoles()))
-                        .sorted(Comparator.comparingLong(CourseResponse.Create::getId))
+                        .map(course -> new CourseResponse.Info(course.getId(), course.getName(), course.getTotalHoles()))
+                        .sorted(Comparator.comparingLong(CourseResponse.Info::getId))
                         .collect(Collectors.toList());
             }
-            response.add(new FormationResponse.create(formation.getId(), formation.getName(), courseInfos));
+            response.add(new FormationResponse.Create(formation.getId(), formation.getName(), courseInfos));
         }
         return response;
     }

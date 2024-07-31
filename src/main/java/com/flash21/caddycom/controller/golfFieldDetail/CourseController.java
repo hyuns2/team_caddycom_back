@@ -1,8 +1,6 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
-import com.flash21.caddycom.dto.CourseInfoResponseDto;
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
-import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleResponse;
 import com.flash21.caddycom.service.golfFieldDetail.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,8 +23,8 @@ public class CourseController {
 
     @Operation(summary = "코스 전체조회", description = "모든 코스정보를 조회합니다.")
     @GetMapping
-    public ResponseEntity<List<CourseInfoResponseDto>> retrieveCourseInfo() {
-        List<CourseInfoResponseDto> responseDtoList = courseService.retrieveCourseInfo();
+    public ResponseEntity<List<CourseResponse.Info>> retrieveCourseInfo() {
+        List<CourseResponse.Info> responseDtoList = courseService.retrieveCourseInfo();
 
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }

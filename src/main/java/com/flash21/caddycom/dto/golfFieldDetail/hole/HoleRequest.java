@@ -11,7 +11,7 @@ import java.util.List;
 public class HoleRequest {
     @Getter
     @AllArgsConstructor
-    public static class updatePar {
+    public static class UpdatePar {
         @NotNull
         private Long holeId;
         @NotNull
@@ -20,7 +20,7 @@ public class HoleRequest {
 
     @Getter
     @AllArgsConstructor
-    public static class updateHandicap {
+    public static class UpdateHandicap {
         @NotNull
         private Long holeId;
         @NotNull
@@ -29,7 +29,7 @@ public class HoleRequest {
 
     @Getter
     @AllArgsConstructor
-    public static class createDetailInfo {
+    public static class CreateDetailInfo {
         @NotNull
         private Long holeId;
         @NotNull

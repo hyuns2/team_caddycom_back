@@ -168,16 +168,19 @@ public class ReservationSheetService {
 
         return responseDtoList.stream().sorted(new DtoComparator()).toList();
     }
-}
 
-class DtoComparator implements Comparator<ReservationSheetDto.MetaDataResponse> {
-    @Override
-    public int compare(ReservationSheetDto.MetaDataResponse dto1, ReservationSheetDto.MetaDataResponse dto2) {
-        if (dto1.getTargetDate().isAfter(dto2.getTargetDate()))
-            return 1;
-        else if (dto1.getTargetDate().isBefore(dto2.getTargetDate()))
-            return -1;
-        else
-            return 0;
+    /**
+     * dto를 날짜 순으로 정렬하는 Comparator
+     */
+    private static class DtoComparator implements Comparator<ReservationSheetDto.MetaDataResponse> {
+        @Override
+        public int compare(ReservationSheetDto.MetaDataResponse dto1, ReservationSheetDto.MetaDataResponse dto2) {
+            if (dto1.getTargetDate().isAfter(dto2.getTargetDate()))
+                return 1;
+            else if (dto1.getTargetDate().isBefore(dto2.getTargetDate()))
+                return -1;
+            else
+                return 0;
+        }
     }
 }

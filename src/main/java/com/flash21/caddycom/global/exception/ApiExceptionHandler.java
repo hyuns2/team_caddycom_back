@@ -133,4 +133,12 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(ExceptionDto.fail(errorCode));
     }
+
+    @ExceptionHandler(CInvalidCaddyRequestException.class)
+    protected ResponseEntity<ExceptionDto> handle(CInvalidCaddyRequestException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        e.printStackTrace();
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(ExceptionDto.fail(errorCode));
+    }
 }

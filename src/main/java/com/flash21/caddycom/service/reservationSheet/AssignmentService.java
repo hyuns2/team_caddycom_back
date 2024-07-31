@@ -148,5 +148,8 @@ public class AssignmentService {
         if (findAssignment.getStatus() != AssignmentStatus.BLOCKED) {
             findAssignment.blockAssignment(blockRequest.getReason());
         }
+
+        Schedule schedule = findAssignment.getSchedule();
+        schedule.addBlockCount();
     }
 }

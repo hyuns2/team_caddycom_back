@@ -73,4 +73,8 @@ public class Schedule {
     public void setDateStatus(DateStatus dateStatus) {
         this.dateStatus = dateStatus;
     }
+
+    public void addBlockCount() {
+        this.blockedCnt++;
+    }
 }

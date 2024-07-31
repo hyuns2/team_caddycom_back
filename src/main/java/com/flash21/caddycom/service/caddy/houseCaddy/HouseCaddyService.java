@@ -1,9 +1,7 @@
 package com.flash21.caddycom.service.caddy.houseCaddy;
 
-import com.flash21.caddycom.dto.caddy.CaddySearchCond;
-import com.flash21.caddycom.dto.caddy.HouseCaddyDto;
-import com.flash21.caddycom.dto.caddy.HouseCaddyRequest;
-import com.flash21.caddycom.dto.caddy.HouseCaddyResponse;
+import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
+import com.flash21.caddycom.dto.caddy.HouseCaddyResponseDto;
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.caddy.TeamRole;
@@ -28,12 +26,12 @@ public class HouseCaddyService {
         return houseCaddyRepository.findAllTeam(golfFieldId);
     }
 
-    public List<HouseCaddyDto.houseCaddyResponse> getHouseCaddyByTeam(Long golfFieldId, String teamName) {
-        List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByTeamAndGolfFieldId(golfFieldId, teamName);
+    public List<HouseCaddyResponseDto.houseCaddyDetail> getHouseCaddyByTeam(Long golfFieldId, String teamName) {
+        List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, teamName);
         if (houseCaddyList.isEmpty())
             throw new CTeamNameNotFoundException();
 
-        return houseCaddyList.stream().map(hc -> { return HouseCaddyDto.houseCaddyResponse.builder()
+        return houseCaddyList.stream().map(hc -> { return HouseCaddyResponseDto.houseCaddyDetail.builder()
                 .id(hc.getId())
                 .name(hc.getName())
                 .phoneNumber(hc.getPhoneNumber())
@@ -50,12 +48,12 @@ public class HouseCaddyService {
     }
 
     @Transactional
-    public void updateHouseCaddy(Long golfFieldId, Long caddyId, HouseCaddyDto.updateHouseCaddyRequest dto) {
+    public void updateHouseCaddy(Long golfFieldId, Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 
         if (dto.getTeamRole() != null && dto.getTeamRole().equals(TeamRole.LEADER)) {
-            houseCaddyRepository.findByTeamAndTeamRoleAndGolFieldId(golfFieldId, houseCaddy.getTeam(), TeamRole.LEADER)
+            houseCaddyRepository.findByGolfFieldIdAndTeamAndTeamRole(golfFieldId, houseCaddy.getTeam(), TeamRole.LEADER)
                             .ifPresent((caddy) -> { caddy.setTeamRole(TeamRole.MEMBER); });
         }
         houseCaddy.updateHouseCaddy(dto);
@@ -69,9 +67,9 @@ public class HouseCaddyService {
         houseCaddy.updateHoliday();
     }
 
-    public List<HouseCaddyResponse> getAllHouseCaddy(Long golfFieldId, CaddySearchCond searchCond) {
+    public List<HouseCaddyResponseDto> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
 
-        List<HouseCaddyResponse> findCaddies = houseCaddyRepository.findAllByGoldFieldIdAndSort(
+        List<HouseCaddyResponseDto> findCaddies = houseCaddyRepository.findAllByGoldFieldIdAndSort(
                 golfFieldId, searchCond);
 
 
@@ -79,52 +77,52 @@ public class HouseCaddyService {
     }
 
     @Transactional(readOnly = true)
-    public List<HouseCaddyResponse.TeamHoliday> getAllHoliday(Long golfFieldId) {
+    public List<HouseCaddyResponseDto.TeamHoliday> getAllHoliday(Long golfFieldId) {
         List<HouseCaddy> houseCaddies = houseCaddyRepository.findAllByGolfFieldId(golfFieldId);
 
         Map<String, List<HouseCaddy>> collect = houseCaddies.stream().collect(Collectors.groupingBy(HouseCaddy::getTeam));
 
-        List<HouseCaddyResponse.TeamHoliday> allHolidays = new ArrayList<>();
+        List<HouseCaddyResponseDto.TeamHoliday> allHolidays = new ArrayList<>();
         for(String team : collect.keySet()) {
-            List<HouseCaddyDto.HolidayInfo> infos = new ArrayList<>();
+            List<HouseCaddyResponseDto.HolidayInfo> infos = new ArrayList<>();
             for(HouseCaddy houseCaddy : collect.get(team)) {
-                HouseCaddyDto.HolidayInfo info = new HouseCaddyDto.HolidayInfo(
+                HouseCaddyResponseDto.HolidayInfo info = new HouseCaddyResponseDto.HolidayInfo(
                         houseCaddy.getId(),
                         houseCaddy.getName(),
                         houseCaddy.getTeamRole(),
                         houseCaddy.getHoliday());
                 infos.add(info);
             }
-            allHolidays.add(new HouseCaddyResponse.TeamHoliday(team, infos));
+            allHolidays.add(new HouseCaddyResponseDto.TeamHoliday(team, infos));
         }
 
         return allHolidays;
     }
 
     @Transactional(readOnly = true)
-    public HouseCaddyResponse.TeamHoliday getTeamHoliday(Long golfFieldId, String teamName) {
-        List<HouseCaddy> caddies = houseCaddyRepository.findAllByTeamAndGolfFieldId(golfFieldId, teamName);
+    public HouseCaddyResponseDto.TeamHoliday getTeamHoliday(Long golfFieldId, String teamName) {
+        List<HouseCaddy> caddies = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, teamName);
 
-        List<HouseCaddyDto.HolidayInfo> infos = new ArrayList<>();
+        List<HouseCaddyResponseDto.HolidayInfo> infos = new ArrayList<>();
         for(HouseCaddy houseCaddy : caddies) {
-            infos.add(new HouseCaddyDto.HolidayInfo(
+            infos.add(new HouseCaddyResponseDto.HolidayInfo(
                     houseCaddy.getId(),
                     houseCaddy.getName(),
                     houseCaddy.getTeamRole(),
                     houseCaddy.getHoliday()));
         }
 
-        return new HouseCaddyResponse.TeamHoliday(teamName, infos);
+        return new HouseCaddyResponseDto.TeamHoliday(teamName, infos);
     }
 
     @Transactional
-    public void updateHolidayAll(List<HouseCaddyRequest.createHoliday> request) {
+    public void updateHolidayAll(List<HouseCaddyRequestDto.createHoliday> request) {
         List<Long> ids = request.stream()
-                .map(HouseCaddyRequest.createHoliday::getId)
+                .map(HouseCaddyRequestDto.createHoliday::getId)
                 .toList();
 
         Map<Long, List<Days>> requestMap = request.stream()
-                .collect(Collectors.toMap(HouseCaddyRequest.createHoliday::getId, HouseCaddyRequest.createHoliday::getHolidays
+                .collect(Collectors.toMap(HouseCaddyRequestDto.createHoliday::getId, HouseCaddyRequestDto.createHoliday::getHolidays
                         , (oldValue, newValue) -> oldValue, HashMap::new));
 
         List<HouseCaddy> caddies = houseCaddyRepository.findAllByIdIn(ids);

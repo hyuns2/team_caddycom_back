@@ -9,10 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Time;
+import java.sql.*;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -23,10 +20,10 @@ public class AssignmentJdbcRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
-    public void saveAll(Long reservationDateId, List<LocalTime> startTimeList) {
+    public void saveAll(Long scheduleId, List<LocalTime> startTimeList) {
         String sql = "INSERT INTO assignment"
-                + "(reservation_date_id, start_time, status, caddy_name, reason, course_name, part)"
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                + " (schedule_id, start_time, status, house_caddy_id, caddy_name, reason)"
+                + " VALUES (?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.batchUpdate(new PreparedStatementCreator() {
              @Override
@@ -39,11 +36,12 @@ public class AssignmentJdbcRepository {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 LocalTime targetTime = startTimeList.get(i);
-                ps.setLong(1, reservationDateId);
+                ps.setLong(1, scheduleId);
                 ps.setTime(2, Time.valueOf(targetTime));
                 ps.setInt(3, AssignmentStatus.NOTHING.ordinal());
-                ps.setString(4, null);
+                ps.setNull(4, Types.LONGVARBINARY);
                 ps.setString(5, null);
+                ps.setString(6, null);
             }
 
             @Override

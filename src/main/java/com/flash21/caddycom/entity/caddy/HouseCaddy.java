@@ -1,6 +1,6 @@
 package com.flash21.caddycom.entity.caddy;
 
-import com.flash21.caddycom.dto.caddy.HouseCaddyDto;
+import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.caddy.converter.DayListConverter;
 import com.flash21.caddycom.entity.golfField.GolfField;
@@ -72,7 +72,7 @@ public class HouseCaddy {
     public void updateToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
-    public void updateHouseCaddy(HouseCaddyDto.updateHouseCaddyRequest dto) {
+    public void updateHouseCaddy(HouseCaddyRequestDto.updateHouseCaddy dto) {
         if (dto.getTeam() != null)
             this.team = dto.getTeam();
         if (dto.getTeamRole() != null)

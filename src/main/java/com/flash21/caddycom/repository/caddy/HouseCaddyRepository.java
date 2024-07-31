@@ -17,11 +17,9 @@ public interface HouseCaddyRepository extends JpaRepository<HouseCaddy, Long>, H
     @Query("select distinct h.team from HouseCaddy h where h.golfField.id = ?1")
     List<String> findAllTeam(Long golfFieldId);
 
-    @Query("select h from HouseCaddy h where h.golfField.id = ?1 and h.team = ?2")
-    List<HouseCaddy> findAllByTeamAndGolfFieldId(Long golfFieldId, String teamName);
+    List<HouseCaddy> findAllByGolfFieldIdAndTeam(Long golfFieldId, String teamName);
 
-    @Query("select h from HouseCaddy h where h.golfField.id = ?1 and h.team = ?2 and h.teamRole = ?3")
-    Optional<HouseCaddy> findByTeamAndTeamRoleAndGolFieldId(Long golfFieldId, String teamName, TeamRole teamRole);
+    Optional<HouseCaddy> findByGolfFieldIdAndTeamAndTeamRole(Long golfFieldId, String teamName, TeamRole teamRole);
 
     @Query("select h from HouseCaddy h where h.golfField.id = ?1")
     List<HouseCaddy> findAllByGolfFieldId(Long golfFieldId);

@@ -10,7 +10,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 
@@ -33,10 +35,19 @@ public class Schedule {
     private Course course;
 
     @Column(nullable = false)
-    private LocalDateTime startDateTime;
+    private LocalDate reservationAt;
 
     @Column(nullable = false)
-    private LocalDateTime endDateTime;
+    private LocalTime startTime;
+
+    @Column(nullable = false)
+    private LocalTime endTime;
+
+//    @Column(nullable = false)
+//    private LocalDateTime startDateTime;
+//
+//    @Column(nullable = false)
+//    private LocalDateTime endDateTime;
 
     @Column(nullable = false)
     private String teeOff;
@@ -45,7 +56,10 @@ public class Schedule {
     private Integer part;
 
     @Column(nullable = false)
-    private Boolean isAssigned;
+    private DateStatus dateStatus;
+
+//    @Column(nullable = false)
+//    private Boolean isAssigned;
 
     @Column(nullable = false)
     private Integer totalCnt;
@@ -55,4 +69,8 @@ public class Schedule {
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Assignment> assignments;
+
+    public void setDateStatus(DateStatus dateStatus) {
+        this.dateStatus = dateStatus;
+    }
 }

@@ -1,7 +1,7 @@
 package com.flash21.caddycom.repository.caddy;
 
-import com.flash21.caddycom.dto.caddy.HouseCaddyResponse;
-import com.flash21.caddycom.dto.caddy.CaddySearchCond;
+import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
+import com.flash21.caddycom.dto.caddy.HouseCaddyResponseDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class HouseCaddyQueryRepositoryImpl implements HouseCaddyQueryRepository 
     private final EntityManager em;
 
     @Override
-    public List<HouseCaddyResponse> findAllByGoldFieldIdAndSort(Long goldFieldId, CaddySearchCond searchCond) {
+    public List<HouseCaddyResponseDto> findAllByGoldFieldIdAndSort(Long goldFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
         StringBuilder queryBuilder = new StringBuilder(
                 "select new com.flash21.caddycom.dto.caddy.HouseCaddyResponse(hc.id, hc.team, hc.teamRole, hc.name, hc.holiday) " +
                         "from HouseCaddy hc " +
@@ -32,7 +32,7 @@ public class HouseCaddyQueryRepositoryImpl implements HouseCaddyQueryRepository 
             queryBuilder.append(" and hc.team = :team");
         }
 
-        Query query = em.createQuery(queryBuilder.toString(), HouseCaddyResponse.class);
+        Query query = em.createQuery(queryBuilder.toString(), HouseCaddyResponseDto.class);
         query.setParameter("goldFieldId", goldFieldId);
 
         if (nameCond) {

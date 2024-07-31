@@ -1,11 +1,11 @@
 package com.flash21.caddycom.repository.caddy;
 
-import com.flash21.caddycom.dto.caddy.HouseCaddyResponse;
-import com.flash21.caddycom.dto.caddy.CaddySearchCond;
+import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
+import com.flash21.caddycom.dto.caddy.HouseCaddyResponseDto;
 
 import java.util.List;
 
 public interface HouseCaddyQueryRepository {
 
-    List<HouseCaddyResponse> findAllByGoldFieldIdAndSort(Long goldFieldId, CaddySearchCond searchCond);
+    List<HouseCaddyResponseDto> findAllByGoldFieldIdAndSort(Long goldFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond);
 }

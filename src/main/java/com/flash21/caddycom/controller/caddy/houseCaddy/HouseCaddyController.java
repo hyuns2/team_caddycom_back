@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -60,7 +61,8 @@ public class HouseCaddyController {
                                                 @PathVariable("golfFieldId") Long golfFieldId,
                                                 @ModelAttribute HouseCaddyRequestDto.CaddySearchCond searchCond
     ) {
-        List<HouseCaddyResponseDto.Info> result = houseCaddyService.getAllHouseCaddy(golfFieldId, searchCond);
+        Map<String, List<HouseCaddyResponseDto.Info>> result =
+                houseCaddyService.getAllHouseCaddy(golfFieldId, searchCond);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

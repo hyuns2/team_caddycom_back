@@ -17,11 +17,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class HouseCaddyService {
     final HouseCaddyRepository houseCaddyRepository;
+
     public List<String> getHouseCaddyTeam(Long golfFieldId) {
         return houseCaddyRepository.findAllTeam(golfFieldId);
     }
@@ -73,10 +75,15 @@ public class HouseCaddyService {
 
     public List<HouseCaddyResponseDto.Info> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
 
-        List<HouseCaddyResponseDto.Info> findCaddies = houseCaddyRepository.findAllByGoldFieldIdAndSort(
-                golfFieldId, searchCond);
-
-        return findCaddies;
+        return houseCaddyRepository.findAllByGolfFieldIdAndSearchCond(golfFieldId, searchCond)
+                .stream()
+                .map(hc -> new HouseCaddyResponseDto.Info(
+                        hc.getId(),
+                        hc.getTeam(),
+                        hc.getTeamRole(),
+                        hc.getName(),
+                        hc.getHoliday())
+                ).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

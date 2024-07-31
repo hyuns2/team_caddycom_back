@@ -1,5 +1,6 @@
 package com.flash21.caddycom.controller.admin;
 
+import com.flash21.caddycom.dto.Message;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.service.golfField.GolfFieldService;
 import com.flash21.caddycom.service.admin.AdminService;
@@ -49,9 +50,9 @@ public class AdminController {
     @PostMapping(value = "/house-caddy",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "하우스 캐디 엑셀파일로 저장 API", description="하우스 캐디 엑셀 파일 일괄 업로드")
-    public ResponseEntity<Void> uploadCaddy(@RequestParam Long golfFieldId, @RequestPart MultipartFile file) {
+    public ResponseEntity<Message> uploadCaddy(@RequestParam Long golfFieldId, @RequestPart MultipartFile file) {
         adminService.uploadCaddy(golfFieldId, file);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().body(new Message("하우스 캐디 엑셀 파일 저장 완료"));
     }
 
 }

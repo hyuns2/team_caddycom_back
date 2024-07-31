@@ -111,7 +111,6 @@ public class AssignmentService {
     /**
      * 배정정보 조회 내부함수2: 배정정보를 생성합니다.
      *
-<<<<<<< HEAD
      * @param schedule 스케쥴 객체
      */
     private void createAssignments(Schedule schedule) {

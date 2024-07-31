@@ -12,37 +12,38 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.util.List;
 
-public class HouseCaddyDto {
-    @Data
-    public static class updateHouseCaddyRequest {
-        @Schema(description = "조 이름")
+public class HouseCaddyResponseDto {
+    @Getter
+    @AllArgsConstructor
+    public static class TeamHoliday {
         private String team;
-
-        @Schema(description = "LEADER/MEMBER")
-        private TeamRole teamRole;
-
-        @Schema(description = "휴무일 ex) [\"MON\", \"FRI\"]")
-        private List<Days> holiday;
-
-        @Schema(description = "성별")
-        private Gender gender;
-
-        @Schema(description = "생년월일")
-        private String birth;
-
-        @Schema(description = "주소")
-        private String address;
-
-        @Schema(description = "상세주소")
-        private String addressDetail;
-
-        @Schema(description = "경력")
-        private String career;
+        private List<HolidayInfo> info;
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class Info {
+        private Long caddyId;
+        private String team;
+        private TeamRole teamRole;
+        private String name;
+        private List<Days> availDates;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class HolidayInfo{
+        private Long id;
+        private String name;
+        private TeamRole teamRole;
+        private List<Days> holiday;
+    }
+
     @Data
     @AllArgsConstructor
     @Builder
-    public static class houseCaddyResponse {
+    public static class houseCaddyDetail {
         @Schema(description = "캐디 Id")
         private Long id;
 
@@ -78,14 +79,5 @@ public class HouseCaddyDto {
 
         @Schema(description = "경력")
         private String career;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public static class HolidayInfo{
-        private Long id;
-        private String name;
-        private TeamRole teamRole;
-        private List<Days> holiday;
     }
 }

@@ -5,6 +5,8 @@ import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.dto.reservationSheet.ReservationSheetDto;
 import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
 import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
+import com.flash21.caddycom.entity.schedule.DateStatus;
+import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.exception.cException.CBadReservationRequestException;
 import com.flash21.caddycom.global.exception.cException.CCourseNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CGolfFieldNotFoundException;
@@ -30,10 +32,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservationSheetService {
     final GolfFieldRepository golfFieldRepository;
-    final ReservationSheetRepository rsRepository;
-    final ReservationDateRepository rdRepository;
+    final ScheduleRepository scheduleRepository;
     final CourseRepository courseRepository;
-    final ReservationDateJdbcRepository rsJdbcRepository;
+    final ScheduleJdbcRepository scheduleJdbcRepository;
 
     /**
      * 예약시트 생성: 예약시트를 생성합니다.
@@ -50,55 +51,67 @@ public class ReservationSheetService {
         if (courseList.isEmpty())
             throw new CCourseNotFoundException();
 
-        validToCreateReservationSheet(dto, courseList);
+        validToCreateSchedules(dto, courseList);
 
-        List<ReservationSheet> sheets = ReservationSheetDto.CreateRequest.toEntities(golfField, dto, courseList);
-        for (ReservationSheet sheet: sheets) {
-            ReservationSheet returnSheet = rsRepository.save(sheet);
-            createReservationDate(returnSheet, dto.getStartDate(), dto.getEndDate(),
-                    getStartTimeList(sheet.getStartDateTime().toLocalTime(), sheet.getEndDateTime().toLocalTime(), sheet.getTeeOff()).size());
+        List<Schedule> scheduleList = new ArrayList<>();
+        for (int i = 0; i < dto.getTeeOffList().size(); i++) {
+            createSchedulesByPart(scheduleList, golfField, courseList, dto.getStartDate(), dto.getEndDate(),
+                    LocalTime.parse(dto.getStartTimeList().get(i)), LocalTime.parse(dto.getEndTimeList().get(i)), dto.getTeeOffList().get(i), i+1);
         }
+        scheduleJdbcRepository.saveAll(scheduleList);
     }
 
     /**
-     * 예약시트 생성 내부함수1: 예약시트 생성요청 dto & 같은 날짜의 같은 코스 예약이 있는지 검증합니다.
+     * 스케쥴 생성 검증함수: 예약시트 생성요청 dto & 같은 날짜의 같은 코스 예약이 있는지 검증합니다.
      *
      * @param dto 예약시트 생성요청 dto
+     * @param courseList 요청에 속한 코스리스트
      *
      * @throws CInvalidPartInfoException 부(파트)에 대한 일부 정보가 빠진 경우
      */
-    private void validToCreateReservationSheet(ReservationSheetDto.CreateRequest dto, List<Course> courseList) {
+    private void validToCreateSchedules(ReservationSheetDto.CreateRequest dto, List<Course> courseList) {
         if (dto.getTeeOffList().size() != dto.getStartTimeList().size() ||
                 dto.getStartTimeList().size() != dto.getEndTimeList().size())
             throw new CInvalidPartInfoException();
 
         for (Course course: courseList) {
-            if (!rsRepository.findAllByGolfFieldIdAndCourseIdBetweenNewDate(
-                    dto.getGolfFieldId(), course.getId(), LocalDateTime.of(dto.getStartDate(), LocalTime.MIDNIGHT), LocalDateTime.of(dto.getEndDate(), LocalTime.MIDNIGHT)).isEmpty())
+            if (!scheduleRepository.findAllByGolfFieldIdAndCourseIdBetweenNewDate(dto.getGolfFieldId(), course.getId(), dto.getStartDate(), dto.getEndDate()).isEmpty())
                 throw new CBadReservationRequestException();
         }
     }
 
     /**
-     * 예약시트 생성 내부함수2: 예약시트에 따른 예약날짜를 생성합니다.
+     * 스케쥴 생성함수: 일별, 코스별, 부별 스케쥴을 생성합니다.
      *
-     * @param sheet ReservationSheet 객체
+     * @param scheduleList 저장할 스케쥴 객체리스트
+     * @param golfField 골프장 객체
+     * @param courseList 코스 리스트
      * @param startDate 시작날짜
      * @param endDate 종료날짜
+     * @param startTime 시작시간
+     * @param endTime 종료시간
+     * @param teeOff 티오프
+     * @param part 몇 부인지
      */
-    private void createReservationDate(ReservationSheet sheet, LocalDate startDate, LocalDate endDate, int totalCnt) {
-        List<ReservationDate> reservationDates = new ArrayList<>();
-        List<LocalDate> localDates = startDate.datesUntil(endDate.plusDays(1)).toList();
+    private void createSchedulesByPart(List<Schedule> scheduleList, GolfField golfField, List<Course> courseList, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String teeOff, int part) {
+        List<LocalDate> localDateList = startDate.datesUntil(endDate.plusDays(1)).toList();
+        int totalCnt = getStartTimeList(startTime, endTime, teeOff).size();
 
-        for (LocalDate oneDay: localDates) {
-            reservationDates.add(ReservationDate.builder().
-                    reservationSheet(sheet).
-                    reservationAt(oneDay).
-                    isAssigned(false).
-                    totalCnt(totalCnt).
-                    blockedCnt(0).build());
+        for (Course course: courseList) {
+            for (LocalDate oneDay: localDateList) {
+                scheduleList.add(Schedule.builder()
+                        .golfField(golfField)
+                        .course(course)
+                        .reservationAt(oneDay)
+                        .startTime(startTime)
+                        .endTime(endTime)
+                        .teeOff(teeOff)
+                        .part(part)
+                        .dateStatus(DateStatus.NOTHING)
+                        .totalCnt(totalCnt)
+                        .blockedCnt(0).build());
+            }
         }
-        rsJdbcRepository.saveAll(reservationDates);
     }
 
     /**
@@ -138,7 +151,7 @@ public class ReservationSheetService {
      */
     public List<ReservationSheetDto.MetaDataResponse> getMetaData(Long golfFieldId, int year, int month) {
         LocalDate targetDate = LocalDate.of(year, month, 1);
-        List<MetaDataReport> reports = rdRepository.countAllMetaDataByDate(targetDate, targetDate.plusMonths(1).minusDays(1), golfFieldId);
+        List<MetaDataReport> reports = scheduleRepository.countAllMetaDataByDate(targetDate, targetDate.plusMonths(1).minusDays(1), golfFieldId);
 
         List<ReservationSheetDto.MetaDataResponse> responseDtoList = new ArrayList<>();
         for (MetaDataReport report : reports) {
@@ -150,7 +163,7 @@ public class ReservationSheetService {
                     targetDate(report.getReservationAt()).
                     totalCntSum(totalCntResult).
                     blockedCntSum(blockedCntResult).
-                    availableCntSum(report.getIsAssigned() ? availableCntResult : 0).build());
+                    availableCntSum(report.getDateStatus() != DateStatus.NOTHING ? availableCntResult : 0).build());
         }
 
         return responseDtoList.stream().sorted(new DtoComparator()).toList();

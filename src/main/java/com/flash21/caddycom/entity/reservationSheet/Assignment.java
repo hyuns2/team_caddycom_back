@@ -22,10 +22,6 @@ public class Assignment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private ReservationDate reservationDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
     private Schedule schedule;
 
     @Column(nullable = false)
@@ -35,16 +31,12 @@ public class Assignment {
     private AssignmentStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "house_caddy_id")
-    HouseCaddy caddy;
+    @JoinColumn
+    private HouseCaddy houseCaddy;
 
     private String caddyName;
 
     private String reason;
-
-    private String courseName;
-
-    private String part;
 
     public void blockAssignment(String reason) {
         this.status = AssignmentStatus.BLOCKED;
@@ -58,7 +50,7 @@ public class Assignment {
 
     public void assignCaddy(HouseCaddy caddy) {
         this.caddyName = caddy.getName();
-        this.caddy = caddy;
+        this.houseCaddy = caddy;
         caddy.getAssignmentList().add(this);
         this.status = AssignmentStatus.ASSIGNED;
     }

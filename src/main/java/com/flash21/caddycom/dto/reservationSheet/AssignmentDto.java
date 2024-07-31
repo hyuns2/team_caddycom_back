@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 public class AssignmentDto {
     @Data
@@ -20,6 +21,7 @@ public class AssignmentDto {
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class BlockRequest {
         private String reason;
     }

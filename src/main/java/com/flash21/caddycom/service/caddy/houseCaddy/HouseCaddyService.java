@@ -31,20 +31,22 @@ public class HouseCaddyService {
         if (houseCaddyList.isEmpty())
             throw new CTeamNameNotFoundException();
 
-        return houseCaddyList.stream().map(hc -> { return HouseCaddyResponseDto.houseCaddyDetail.builder()
-                .id(hc.getId())
-                .name(hc.getName())
-                .phoneNumber(hc.getPhoneNumber())
-                .team(hc.getTeam())
-                .teamRole(hc.getTeamRole())
-                .holiday(hc.getHoliday())
-                .changedHoliday(hc.getChangedHoliday())
-                .gender(hc.getGender())
-                .birth(hc.getBirth())
-                .address(hc.getAddress())
-                .addressDetail(hc.getAddressDetail())
-                .career(hc.getCareer())
-                .build(); } ).toList();
+        return houseCaddyList.stream().map(hc -> {
+            return HouseCaddyResponseDto.houseCaddyDetail.builder()
+                    .id(hc.getId())
+                    .name(hc.getName())
+                    .phoneNumber(hc.getPhoneNumber())
+                    .team(hc.getTeam())
+                    .teamRole(hc.getTeamRole())
+                    .holiday(hc.getHoliday())
+                    .changedHoliday(hc.getChangedHoliday())
+                    .gender(hc.getGender())
+                    .birth(hc.getBirth())
+                    .address(hc.getAddress())
+                    .addressDetail(hc.getAddressDetail())
+                    .career(hc.getCareer())
+                    .build();
+        }).toList();
     }
 
     @Transactional
@@ -54,7 +56,9 @@ public class HouseCaddyService {
 
         if (dto.getTeamRole() != null && dto.getTeamRole().equals(TeamRole.LEADER)) {
             houseCaddyRepository.findByGolfFieldIdAndTeamAndTeamRole(golfFieldId, houseCaddy.getTeam(), TeamRole.LEADER)
-                            .ifPresent((caddy) -> { caddy.setTeamRole(TeamRole.MEMBER); });
+                    .ifPresent((caddy) -> {
+                        caddy.setTeamRole(TeamRole.MEMBER);
+                    });
         }
         houseCaddy.updateHouseCaddy(dto);
     }
@@ -67,11 +71,10 @@ public class HouseCaddyService {
         houseCaddy.updateHoliday();
     }
 
-    public List<HouseCaddyResponseDto> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
+    public List<HouseCaddyResponseDto.Info> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
 
-        List<HouseCaddyResponseDto> findCaddies = houseCaddyRepository.findAllByGoldFieldIdAndSort(
+        List<HouseCaddyResponseDto.Info> findCaddies = houseCaddyRepository.findAllByGoldFieldIdAndSort(
                 golfFieldId, searchCond);
-
 
         return findCaddies;
     }
@@ -83,9 +86,9 @@ public class HouseCaddyService {
         Map<String, List<HouseCaddy>> collect = houseCaddies.stream().collect(Collectors.groupingBy(HouseCaddy::getTeam));
 
         List<HouseCaddyResponseDto.TeamHoliday> allHolidays = new ArrayList<>();
-        for(String team : collect.keySet()) {
+        for (String team : collect.keySet()) {
             List<HouseCaddyResponseDto.HolidayInfo> infos = new ArrayList<>();
-            for(HouseCaddy houseCaddy : collect.get(team)) {
+            for (HouseCaddy houseCaddy : collect.get(team)) {
                 HouseCaddyResponseDto.HolidayInfo info = new HouseCaddyResponseDto.HolidayInfo(
                         houseCaddy.getId(),
                         houseCaddy.getName(),
@@ -104,7 +107,7 @@ public class HouseCaddyService {
         List<HouseCaddy> caddies = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, teamName);
 
         List<HouseCaddyResponseDto.HolidayInfo> infos = new ArrayList<>();
-        for(HouseCaddy houseCaddy : caddies) {
+        for (HouseCaddy houseCaddy : caddies) {
             infos.add(new HouseCaddyResponseDto.HolidayInfo(
                     houseCaddy.getId(),
                     houseCaddy.getName(),
@@ -127,7 +130,7 @@ public class HouseCaddyService {
 
         List<HouseCaddy> caddies = houseCaddyRepository.findAllByIdIn(ids);
 
-        for(HouseCaddy houseCaddy : caddies) {
+        for (HouseCaddy houseCaddy : caddies) {
             houseCaddy.setHoliday(requestMap.get(houseCaddy.getId()));
         }
 

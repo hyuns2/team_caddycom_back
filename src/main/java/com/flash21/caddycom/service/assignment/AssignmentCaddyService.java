@@ -98,9 +98,9 @@ public class AssignmentCaddyService {
      * -> 두 엔티티의 caddy를 null로 변경 후 다시 업데이트
      */
     private void swapCaddy(Assignment fromAssignment, Assignment toAssignment) {
-        HouseCaddy fromCaddy = fromAssignment.getCaddy();
+        HouseCaddy fromCaddy = fromAssignment.getHouseCaddy();
         String fromCaddyName = fromAssignment.getCaddyName();
-        HouseCaddy toCaddy = toAssignment.getCaddy();
+        HouseCaddy toCaddy = toAssignment.getHouseCaddy();
         String toCaddyName = toAssignment.getCaddyName();
 
         fromAssignment.vacateCaddy();

@@ -60,7 +60,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             "AND a.schedule.reservationAt =:date " +
             "AND a.schedule.course.id = :courseId " +
             "AND a.schedule.part = :part " +
-            "AND a.status = 'ASSIGNED'")
+            "AND a.status = 3")
     Page<Assignment> findAssignedByDateAndCourseIdAndPart(Pageable pageable, Long id, Long golfFieldId, LocalDate date, Long courseId, int part);
 
 
@@ -69,7 +69,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             "AND a.id != :id " +
             "AND a.schedule.reservationAt =:date " +
             "AND a.schedule.part = :part " +
-            "AND a.status = 'ASSIGNED'")
+            "AND a.status = 3")
     Page<Assignment> findAssignedByDateAndPart(Pageable pageable, Long id, Long golfFieldId, LocalDate date, int part);
 
 
@@ -78,7 +78,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             "AND a.id != :id " +
             "AND a.schedule.reservationAt =:date " +
             "AND a.schedule.course.id = :courseId " +
-            "AND a.status = 'ASSIGNED'")
+            "AND a.status = 3")
     Page<Assignment> findAssignedByDateAndCourseId(Pageable pageable, Long id, Long golfFieldId, LocalDate date, Long courseId);
 
 
@@ -86,7 +86,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             "WHERE a.schedule.golfField.id = :golfFieldId " +
             "AND a.id != :id " +
             "AND a.schedule.reservationAt =:date " +
-            "AND a.status = 'ASSIGNED'")
+            "AND a.status = 3")
     Page<Assignment> findAssignedByDate(Pageable pageable, Long id, Long golfFieldId, LocalDate date);
 
 
@@ -97,7 +97,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
     @Modifying
     @Query("UPDATE Assignment a " +
-            "SET a.caddy = :caddy, a.caddyName = :caddyName " +
+            "SET a.houseCaddy = :caddy, a.caddyName = :caddyName " +
             "WHERE a.id = :assignmentId")
     void switchAssignment(@Param("assignmentId") Long assignmentId, @Param("caddy") HouseCaddy caddy, @Param("caddyName") String caddyName);
 

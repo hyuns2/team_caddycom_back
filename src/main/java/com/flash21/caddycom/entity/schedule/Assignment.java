@@ -27,12 +27,11 @@ public class Assignment {
     private LocalTime startTime;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
     private AssignmentStatus status;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private HouseCaddy caddy;
+    private HouseCaddy houseCaddy;
 
     private String caddyName;
 
@@ -45,7 +44,7 @@ public class Assignment {
 
 
     public void vacateCaddy() {
-        this.caddy = null;
+        this.houseCaddy = null;
         this.caddyName = null;
     }
 
@@ -61,7 +60,7 @@ public class Assignment {
 
     public void assignCaddy(HouseCaddy caddy) {
         this.caddyName = caddy.getName();
-        this.caddy = caddy;
+        this.houseCaddy = caddy;
         caddy.getAssignmentList().add(this);
     }
 }

@@ -34,7 +34,7 @@ public class AssignmentResponse {
                     .id(assignment.getId())
                     .startTime(assignment.getStartTime().format(timeFormatter))
                     .caddyName(assignment.getCaddyName())
-                    .caddyId(assignment.getCaddy().getId())
+                    .caddyId(assignment.getHouseCaddy().getId())
                     .courseName(assignment.getSchedule().getCourse().getName())
                     .part(assignment.getSchedule().getPart())
                     .status(assignment.getStatus())
@@ -47,7 +47,7 @@ public class AssignmentResponse {
                     .id(assignment.getId())
                     .startTime(assignment.getStartTime().format(timeFormatter))
                     .caddyName(assignment.getCaddyName())
-                    .caddyId(assignment.getCaddy().getId())
+                    .caddyId(assignment.getHouseCaddy().getId())
                     .courseName(assignment.getSchedule().getCourse().getName())
                     .part(assignment.getSchedule().getPart())
                     .build();
@@ -74,9 +74,9 @@ public class AssignmentResponse {
 
         public static Detail from(Assignment assignment) {
             return Detail.builder()
-                    .caddyName(assignment.getCaddy().getName())
-                    .caddyPoint(assignment.getCaddy().getPoint())
-                    .caddyTeamRole(convertRole(assignment.getCaddy().getTeamRole()))
+                    .caddyName(assignment.getHouseCaddy().getName())
+                    .caddyPoint(assignment.getHouseCaddy().getPoint())
+                    .caddyTeamRole(convertRole(assignment.getHouseCaddy().getTeamRole()))
                     .golfFieldName(assignment.getSchedule().getGolfField().getName())
                     .date(assignment.getSchedule().getReservationAt())
                     .courseName(assignment.getSchedule().getCourse().getName())

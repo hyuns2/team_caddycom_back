@@ -141,7 +141,7 @@ public class SigninResponse {
                     .golfFieldId(caddy.getGolfField().getId())
                     .name(caddy.getName())
                     .team(caddy.getTeam())
-                    .teamRole(caddy.getTeamRole())
+                    .teamRole(caddy.getTeamRole().name())
                     .point(caddy.getPoint())
                     .role(role.toString().substring(5))
                     .isSetup(caddy.getPassword() != null)

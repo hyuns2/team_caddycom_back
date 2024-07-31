@@ -17,4 +17,10 @@ public class AssignmentDto {
         @Schema(description = "상태")
         private AssignmentStatus status;
     }
+
+    @Data
+    @AllArgsConstructor
+    public static class BlockRequest {
+        private String reason;
+    }
 }

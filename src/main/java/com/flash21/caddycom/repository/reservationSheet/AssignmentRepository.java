@@ -18,12 +18,12 @@ import java.util.List;
 @Repository
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     @Query("select distinct a.startTime from Assignment a"
-            + " where a.reservationDate.reservationAt = ?1 order by a.startTime")
-    Page<LocalTime> findTimesByReservationDate(LocalDate date, Pageable pageable);
+            + " where a.schedule.reservationAt = ?1 order by a.startTime")
+    Page<LocalTime> findTimesByReservationAt(LocalDate date, Pageable pageable);
 
     @Query("select a from Assignment a"
-            + " where a.reservationDate.reservationAt = ?1 and ?2 <= a.startTime and ?3 >= a.startTime order by a.startTime")
-    List<Assignment> findAllByReservationDateAndBetweenTime(LocalDate date, LocalTime startTime, LocalTime endTime);
+           + " where a.schedule.reservationAt = ?1 and ?2 <= a.startTime and ?3 >= a.startTime order by a.startTime")
+    List<Assignment> findAllByReservationAtAndBetweenTime(LocalDate date, LocalTime startTime, LocalTime endTime);
 
 
 
@@ -100,4 +100,5 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             "SET a.caddy = :caddy, a.caddyName = :caddyName " +
             "WHERE a.id = :assignmentId")
     void switchAssignment(@Param("assignmentId") Long assignmentId, @Param("caddy") HouseCaddy caddy, @Param("caddyName") String caddyName);
+
 }

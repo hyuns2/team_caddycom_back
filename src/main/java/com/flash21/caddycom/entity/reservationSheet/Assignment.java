@@ -22,10 +22,6 @@ public class Assignment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private ReservationDate reservationDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
     private Schedule schedule;
 
     @Column(nullable = false)
@@ -39,10 +35,8 @@ public class Assignment {
     @JoinColumn
     HouseCaddy caddy;
 
-    @Column
     private String caddyName;
 
-    @Column
     private String reason;
 
 
@@ -54,5 +48,20 @@ public class Assignment {
     public void vacateCaddy(){
         this.caddy = null;
         this.caddyName = null;
+
+    public void blockAssignment(String reason) {
+        this.status = AssignmentStatus.BLOCKED;
+        this.reason = reason;
+    }
+
+    public void cancelBlockAssignment(String reason) {
+        this.status = AssignmentStatus.NOTHING;
+        this.reason = "";
+    }
+
+    public void assignCaddy(HouseCaddy caddy) {
+        this.caddyName = caddy.getName();
+        this.houseCaddy = caddy;
+        caddy.getAssignmentList().add(this);
     }
 }

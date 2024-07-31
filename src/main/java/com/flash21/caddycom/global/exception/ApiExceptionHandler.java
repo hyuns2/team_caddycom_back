@@ -117,4 +117,20 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(ExceptionDto.fail(errorCode));
     }
+
+    @ExceptionHandler(CTeamNameNotFoundException.class)
+    protected ResponseEntity<ExceptionDto> handle(CTeamNameNotFoundException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        e.printStackTrace();
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(ExceptionDto.fail(errorCode));
+    }
+
+    @ExceptionHandler(CCaddyNotFoundException.class)
+    protected ResponseEntity<ExceptionDto> handle(CCaddyNotFoundException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        e.printStackTrace();
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(ExceptionDto.fail(errorCode));
+    }
 }

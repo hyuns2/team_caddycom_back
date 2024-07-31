@@ -33,7 +33,7 @@ public class Assignment {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    HouseCaddy caddy;
+    private HouseCaddy caddy;
 
     private String caddyName;
 
@@ -45,9 +45,10 @@ public class Assignment {
     }
 
 
-    public void vacateCaddy(){
+    public void vacateCaddy() {
         this.caddy = null;
         this.caddyName = null;
+    }
 
     public void blockAssignment(String reason) {
         this.status = AssignmentStatus.BLOCKED;
@@ -61,7 +62,7 @@ public class Assignment {
 
     public void assignCaddy(HouseCaddy caddy) {
         this.caddyName = caddy.getName();
-        this.houseCaddy = caddy;
+        this.caddy = caddy;
         caddy.getAssignmentList().add(this);
     }
 }

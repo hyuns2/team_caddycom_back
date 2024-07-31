@@ -31,24 +31,24 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     // TODO: 코스 이름은 schedule.course 에서 가져올 수 있도록 조인 작업 추가로 필요
     @Query("SELECT a FROM Assignment a " +
             "WHERE a.schedule.golfField.id = :golfFieldId " +
-            "AND DATE(a.schedule.startDateTime) =:date")
+            "AND a.schedule.reservationAt =:date")
     Page<Assignment> findAllByDate(Pageable pageable, Long golfFieldId, LocalDate date);
 
     @Query("SELECT a FROM Assignment a " +
             "WHERE a.schedule.golfField.id = :golfFieldId " +
-            "AND DATE(a.schedule.startDateTime) =:date " +
+            "AND a.schedule.reservationAt =:date " +
             "AND a.schedule.course.id = :courseId")
     Page<Assignment> findAllByDateAndCourseId(Pageable pageable, Long golfFieldId, LocalDate date, Long courseId);
 
     @Query("SELECT a FROM Assignment a " +
             "WHERE a.schedule.golfField.id = :golfFieldId " +
-            "AND DATE(a.schedule.startDateTime) =:date " +
+            "AND a.schedule.reservationAt =:date " +
             "AND a.status = :status")
     Page<Assignment> findAllByDateAndStatus(Pageable pageable, Long golfFieldId, LocalDate date, AssignmentStatus status);
 
     @Query("SELECT a FROM Assignment a " +
             "WHERE a.schedule.golfField.id = :golfFieldId " +
-            "AND DATE(a.schedule.startDateTime) =:date " +
+            "AND a.schedule.reservationAt =:date " +
             "AND a.schedule.course.id = :courseId " +
             "AND a.status = :status")
     Page<Assignment> findAllByDateAndCourseIdAndStatus(Pageable pageable, Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status);
@@ -57,7 +57,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     @Query("SELECT a FROM Assignment a " +
             "WHERE a.schedule.golfField.id = :golfFieldId " +
             "AND a.id != :id " +
-            "AND DATE(a.schedule.startDateTime) =:date " +
+            "AND a.schedule.reservationAt =:date " +
             "AND a.schedule.course.id = :courseId " +
             "AND a.schedule.part = :part " +
             "AND a.status = 'ASSIGNED'")
@@ -67,7 +67,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     @Query("SELECT a FROM Assignment a " +
             "WHERE a.schedule.golfField.id = :golfFieldId " +
             "AND a.id != :id " +
-            "AND DATE(a.schedule.startDateTime) =:date " +
+            "AND a.schedule.reservationAt =:date " +
             "AND a.schedule.part = :part " +
             "AND a.status = 'ASSIGNED'")
     Page<Assignment> findAssignedByDateAndPart(Pageable pageable, Long id, Long golfFieldId, LocalDate date, int part);
@@ -76,7 +76,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     @Query("SELECT a FROM Assignment a " +
             "WHERE a.schedule.golfField.id = :golfFieldId " +
             "AND a.id != :id " +
-            "AND DATE(a.schedule.startDateTime) =:date " +
+            "AND a.schedule.reservationAt =:date " +
             "AND a.schedule.course.id = :courseId " +
             "AND a.status = 'ASSIGNED'")
     Page<Assignment> findAssignedByDateAndCourseId(Pageable pageable, Long id, Long golfFieldId, LocalDate date, Long courseId);
@@ -85,7 +85,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     @Query("SELECT a FROM Assignment a " +
             "WHERE a.schedule.golfField.id = :golfFieldId " +
             "AND a.id != :id " +
-            "AND DATE(a.schedule.startDateTime) =:date " +
+            "AND a.schedule.reservationAt =:date " +
             "AND a.status = 'ASSIGNED'")
     Page<Assignment> findAssignedByDate(Pageable pageable, Long id, Long golfFieldId, LocalDate date);
 

@@ -1,7 +1,7 @@
 package com.flash21.caddycom.dto.assignment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.flash21.caddycom.entity.caddy.HouseCaddy;
+import com.flash21.caddycom.entity.caddy.TeamRole;
 import com.flash21.caddycom.entity.reservationSheet.Assignment;
 import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
 import lombok.AllArgsConstructor;
@@ -76,15 +76,22 @@ public class AssignmentResponse {
             return Detail.builder()
                     .caddyName(assignment.getCaddy().getName())
                     .caddyPoint(assignment.getCaddy().getPoint())
-                    .caddyTeamRole(assignment.getCaddy().getTeamRole())
+                    .caddyTeamRole(convertRole(assignment.getCaddy().getTeamRole()))
                     .golfFieldName(assignment.getSchedule().getGolfField().getName())
-                    .date(assignment.getSchedule().getStartDateTime().toLocalDate())
+                    .date(assignment.getSchedule().getReservationAt())
                     .courseName(assignment.getSchedule().getCourse().getName())
                     .part(assignment.getSchedule().getPart())
                     .totalHole(assignment.getSchedule().getCourse().getTotalHoles())
                     .startTime(assignment.getStartTime().format(timeFormatter))
                     .reason(assignment.getReason())
                     .build();
+        }
+
+        private static String convertRole(TeamRole role) {
+            if (role == TeamRole.MEMBER)
+                return "조원";
+            return "조장";
+
         }
     }
 }

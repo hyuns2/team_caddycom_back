@@ -4,7 +4,7 @@ import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.caddy.converter.DayListConverter;
 import com.flash21.caddycom.entity.golfField.GolfField;
-import com.flash21.caddycom.entity.reservationSheet.Assignment;
+import com.flash21.caddycom.entity.schedule.Assignment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

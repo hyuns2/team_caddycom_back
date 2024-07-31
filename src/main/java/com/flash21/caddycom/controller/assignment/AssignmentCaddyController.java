@@ -3,7 +3,7 @@ package com.flash21.caddycom.controller.assignment;
 import com.flash21.caddycom.dto.Message;
 import com.flash21.caddycom.dto.PagingResponse;
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
-import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.service.assignment.AssignmentCaddyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

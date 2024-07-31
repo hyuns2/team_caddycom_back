@@ -2,8 +2,6 @@ package com.flash21.caddycom.entity.schedule;
 
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
-import com.flash21.caddycom.entity.golfFieldDetail.Formation;
-import com.flash21.caddycom.entity.reservationSheet.Assignment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 

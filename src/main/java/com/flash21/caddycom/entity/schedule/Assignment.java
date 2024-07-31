@@ -1,7 +1,6 @@
-package com.flash21.caddycom.entity.reservationSheet;
+package com.flash21.caddycom.entity.schedule;
 
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
-import com.flash21.caddycom.entity.schedule.Schedule;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

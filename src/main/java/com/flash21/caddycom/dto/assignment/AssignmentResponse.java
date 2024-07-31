@@ -2,8 +2,8 @@ package com.flash21.caddycom.dto.assignment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.flash21.caddycom.entity.caddy.TeamRole;
-import com.flash21.caddycom.entity.reservationSheet.Assignment;
-import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
+import com.flash21.caddycom.entity.schedule.Assignment;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

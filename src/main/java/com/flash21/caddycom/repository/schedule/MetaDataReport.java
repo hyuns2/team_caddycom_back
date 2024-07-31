@@ -1,4 +1,4 @@
-package com.flash21.caddycom.repository.reservationSheet;
+package com.flash21.caddycom.repository.schedule;
 
 import com.flash21.caddycom.entity.schedule.DateStatus;
 

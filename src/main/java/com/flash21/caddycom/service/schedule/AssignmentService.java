@@ -1,13 +1,13 @@
-package com.flash21.caddycom.service.reservationSheet;
+package com.flash21.caddycom.service.schedule;
 
-import com.flash21.caddycom.dto.reservationSheet.AssignmentDto;
+import com.flash21.caddycom.dto.schedule.AssignmentDto;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
-import com.flash21.caddycom.entity.reservationSheet.Assignment;
+import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
-import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.global.exception.cException.CReservationSheetNotFoundException;
-import com.flash21.caddycom.repository.reservationSheet.*;
+import com.flash21.caddycom.repository.schedule.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

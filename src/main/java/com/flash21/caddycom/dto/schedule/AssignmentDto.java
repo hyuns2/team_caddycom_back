@@ -1,6 +1,6 @@
-package com.flash21.caddycom.dto.reservationSheet;
+package com.flash21.caddycom.dto.schedule;
 
-import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,16 +1,14 @@
-package com.flash21.caddycom.dto.reservationSheet;
+package com.flash21.caddycom.dto.schedule;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
-import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -52,28 +50,6 @@ public class ReservationSheetDto {
         @Schema(description = "티오프 리스트")
         @NotEmpty
         private List<String> teeOffList;
-
-        public static List<ReservationSheet> toEntities(GolfField golfField, CreateRequest dto, List<Course> courseList) {
-            List<ReservationSheet> sheets = new ArrayList<>();
-            int part = 1;
-
-            for (int i = 0; i < dto.teeOffList.size(); i++) {
-                for (Course course: courseList) {
-                    LocalDateTime currentStartDateTime = LocalDateTime.of(dto.getStartDate(), LocalTime.parse(dto.startTimeList.get(i)));
-                    LocalDateTime currentEndDateTime = LocalDateTime.of(dto.getEndDate(), LocalTime.parse(dto.endTimeList.get(i)));
-                    ReservationSheet sheet = ReservationSheet.builder().
-                            golfField(golfField).
-                            course(course).
-                            startDateTime(currentStartDateTime).
-                            endDateTime(currentEndDateTime).
-                            teeOff(dto.teeOffList.get(i)).
-                            part(part).build();
-                    sheets.add(sheet);
-                }
-                part++;
-            }
-            return sheets;
-        }
     }
 
     @Data

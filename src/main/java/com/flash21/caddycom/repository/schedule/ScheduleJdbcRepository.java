@@ -1,6 +1,5 @@
-package com.flash21.caddycom.repository.reservationSheet;
+package com.flash21.caddycom.repository.schedule;
 
-import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;

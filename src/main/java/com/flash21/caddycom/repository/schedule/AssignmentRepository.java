@@ -1,8 +1,8 @@
-package com.flash21.caddycom.repository.reservationSheet;
+package com.flash21.caddycom.repository.schedule;
 
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
-import com.flash21.caddycom.entity.reservationSheet.Assignment;
-import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
+import com.flash21.caddycom.entity.schedule.Assignment;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

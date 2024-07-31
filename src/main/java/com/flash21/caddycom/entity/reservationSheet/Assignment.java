@@ -28,15 +28,27 @@ public class Assignment {
     private LocalTime startTime;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private AssignmentStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private HouseCaddy houseCaddy;
+    private HouseCaddy caddy;
 
     private String caddyName;
 
     private String reason;
+
+
+    public void cancel() {
+        this.status = AssignmentStatus.CANCELED;
+    }
+
+
+    public void vacateCaddy() {
+        this.caddy = null;
+        this.caddyName = null;
+    }
 
     public void blockAssignment(String reason) {
         this.status = AssignmentStatus.BLOCKED;
@@ -50,7 +62,7 @@ public class Assignment {
 
     public void assignCaddy(HouseCaddy caddy) {
         this.caddyName = caddy.getName();
-        this.houseCaddy = caddy;
+        this.caddy = caddy;
         caddy.getAssignmentList().add(this);
     }
 }

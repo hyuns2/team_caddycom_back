@@ -11,24 +11,24 @@ import java.util.List;
 public class FormationRequest {
     @Getter
     @AllArgsConstructor
-    public static class process {
+    public static class Process {
         @NotNull
         private Long golfFieldId;
-        private List<create> create;
-        private List<update> update;
+        private List<Create> create;
+        private List<Update> update;
         private List<Long> deleteFormations;
         private List<Long> deleteCourses;
     }
     @Getter
     @AllArgsConstructor
-    public static class create {
+    public static class Create {
         private String name;
         @NotEmpty
         private List<CourseRequest.create> courseInfos;
     }
     @Getter
     @AllArgsConstructor
-    public static class update {
+    public static class Update {
         private Long formationId;
         private String formationName;
         private List<CourseRequest.update> courseInfos;

@@ -62,5 +62,6 @@ public class Assignment {
         this.caddyName = caddy.getName();
         this.houseCaddy = caddy;
         caddy.getAssignmentList().add(this);
+        this.status = AssignmentStatus.ASSIGNED;
     }
 }

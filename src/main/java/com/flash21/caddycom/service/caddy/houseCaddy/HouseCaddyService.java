@@ -38,7 +38,7 @@ public class HouseCaddyService {
      * 조별 조회: 해당하는 골프장과 조이름에 속하는 캐디들의 정보를 반환합니다.
      *
      * @param golfFieldId 골프장 Id
-     * @param teamName 조 이름
+     * @param teamName    조 이름
      * @return 캐디정보 리스트
      */
     public List<HouseCaddyResponseDto.houseCaddyDetail> getHouseCaddyByTeam(Long golfFieldId, String teamName) {
@@ -60,15 +60,16 @@ public class HouseCaddyService {
                     .address(hc.getAddress())
                     .addressDetail(hc.getAddressDetail())
                     .career(hc.getCareer())
-                    .build(); }).toList();
+                    .build();
+        }).toList();
     }
 
     /**
      * 하우스캐디 정보 수정: 하우스캐디의 정보를 수정합니다.
      *
      * @param golfFieldId 골프장 Id
-     * @param caddyId 캐디 Id
-     * @param dto 수정할 정보
+     * @param caddyId     캐디 Id
+     * @param dto         수정할 정보
      */
     @Transactional
     public void updateHouseCaddy(Long golfFieldId, Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {
@@ -102,10 +103,16 @@ public class HouseCaddyService {
 
     public List<HouseCaddyResponseDto.Info> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
 
-        List<HouseCaddyResponseDto.Info> findCaddies = houseCaddyRepository.findAllByGoldFieldIdAndSort(
-                golfFieldId, searchCond);
-
-        return findCaddies;
+        return houseCaddyRepository.findAllByGolfFieldIdAndSearchCond(
+                        golfFieldId, searchCond)
+                .stream()
+                .map(hc -> new HouseCaddyResponseDto.Info(
+                        hc.getId(),
+                        hc.getTeam(),
+                        hc.getTeamRole(),
+                        hc.getName(),
+                        hc.getHoliday()
+                )).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

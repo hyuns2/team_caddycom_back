@@ -1,5 +1,6 @@
 package com.flash21.caddycom.controller.admin;
 
+import com.flash21.caddycom.dto.Message;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.service.golfField.GolfFieldService;
 import com.flash21.caddycom.service.admin.AdminService;
@@ -7,8 +8,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -40,6 +43,16 @@ public class AdminController {
     @Operation(summary = "모든 골프장 조회", description="시스템 총 관리자만 접근 가능하다. 모든 골프장을 조회한다.")
     public ResponseEntity<List<GolfFieldResponse.Overview>> getAll(){
         return ResponseEntity.ok().body(golfFieldService.getAll());
+    }
+
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(value = "/house-caddy",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "하우스 캐디 엑셀파일로 저장 API", description="하우스 캐디 엑셀 파일 일괄 업로드")
+    public ResponseEntity<Message> uploadCaddy(@RequestParam Long golfFieldId, @RequestPart MultipartFile file) {
+        adminService.uploadCaddy(golfFieldId, file);
+        return ResponseEntity.ok().body(new Message("하우스 캐디 엑셀 파일 저장 완료"));
     }
 
 }

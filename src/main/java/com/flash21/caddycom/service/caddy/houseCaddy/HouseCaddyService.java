@@ -164,4 +164,11 @@ public class HouseCaddyService {
         }
 
     }
+
+
+    @Transactional
+    public void saveCaddyList(List<HouseCaddy> caddyList) {
+        //TODO: bulk insert로 변경 필요
+        houseCaddyRepository.saveAll(caddyList);
+    }
 }

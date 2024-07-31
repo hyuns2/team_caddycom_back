@@ -7,6 +7,7 @@ import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.reservationSheet.Assignment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class HouseCaddy {
@@ -47,6 +49,8 @@ public class HouseCaddy {
     @Convert(converter = DayListConverter.class)
     private List<Days> changedHoliday;
 
+    private String offPart;
+
     private LocalDate birth;
 
     private String address;
@@ -64,6 +68,8 @@ public class HouseCaddy {
     private Role role;
 
     private String refreshToken;
+
+    private String caddyType;
 
 
     public void updatePassword(String password) {
@@ -99,5 +105,10 @@ public class HouseCaddy {
     }
     public void setHoliday(List<Days> holiday) {
         this.holiday = holiday;
+    }
+
+    public HouseCaddy attachGolfField(GolfField golfField) {
+        this.golfField = golfField;
+        return this;
     }
 }

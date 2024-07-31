@@ -13,11 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.lang.Integer.*;
 
 @Service
 @RequiredArgsConstructor
@@ -101,18 +100,33 @@ public class HouseCaddyService {
         houseCaddy.updateHoliday();
     }
 
-    public List<HouseCaddyResponseDto.Info> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
+    public Map<String, List<HouseCaddyResponseDto.Info>> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
 
-        return houseCaddyRepository.findAllByGolfFieldIdAndSearchCond(
-                        golfFieldId, searchCond)
-                .stream()
-                .map(hc -> new HouseCaddyResponseDto.Info(
-                        hc.getId(),
-                        hc.getTeam(),
-                        hc.getTeamRole(),
-                        hc.getName(),
-                        hc.getHoliday()
-                )).collect(Collectors.toList());
+        List<HouseCaddyResponseDto.Info> findHouseCaddies =
+                houseCaddyRepository.findAllByGolfFieldIdAndSearchCond(golfFieldId, searchCond)
+                        .stream()
+                        .map(HouseCaddyResponseDto.Info::new)
+                        .sorted((hc1, hc2) -> {
+                            int teamNumber1 = parseInt(hc1.getTeam().replace("조", ""));
+                            int teamNumber2 = parseInt(hc2.getTeam().replace("조", ""));
+                            if (teamNumber1 != teamNumber2) {
+                                return compare(teamNumber1, teamNumber2);
+                            }
+                            if (hc1.getTeamRole() == TeamRole.LEADER && hc2.getTeamRole() != TeamRole.LEADER) {
+                                return -1;
+                            } else if (hc1.getTeamRole() != TeamRole.LEADER && hc2.getTeamRole() == TeamRole.LEADER) {
+                                return 1;
+                            }
+                            return hc1.getName().compareTo(hc2.getName());
+                        })
+                        .toList();
+
+        return findHouseCaddies.stream()
+                .collect(Collectors.groupingBy(
+                        HouseCaddyResponseDto.Info::getTeam,
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
     }
 
     @Transactional(readOnly = true)

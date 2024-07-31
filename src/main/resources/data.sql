@@ -230,10 +230,10 @@ insert into `caddycom`.`tee` (id, hole_id, name, distance) values
                                                                (134, 27, "RED", 250),
                                                                (135, 27, "GREEN", 230);
 
-insert into `caddycom`.`schedule` (id, reservation_at, golf_field_id, course_id, start_time, end_time, tee_off, part, total_cnt, blocked_cnt, date_status) values (1, '2024-08-01', 1, 1, '08:00', '12:00', '7', 1, 35, 0, 0),
-                                                                                                                                                                  (2, '2024-08-02', 1, 1, '08:00', '12:00', '7', 1, 35, 0, 0),
-                                                                                                                                                                  (3, '2024-08-03', 1, 1, '08:00', '12:00', '7', 1, 35, 0, 0),
-                                                                                                                                                                  (4, '2024-08-04', 1, 1, '08:00', '12:00', '7', 1, 35, 0, 0),
+insert into `caddycom`.`schedule` (id, reservation_at, golf_field_id, course_id, start_time, end_time, tee_off, part, total_cnt, blocked_cnt, date_status) values (1, '2024-08-01', 1, 1, '08:00', '12:00', '7', 1, 35, 0, 2),
+                                                                                                                                                                  (2, '2024-08-02', 1, 1, '08:00', '12:00', '7', 1, 35, 0, 2),
+                                                                                                                                                                  (3, '2024-08-03', 1, 1, '08:00', '12:00', '7', 1, 35, 0, 2),
+                                                                                                                                                                  (4, '2024-08-04', 1, 1, '08:00', '12:00', '7', 1, 35, 0, 2),
                                                                                                                                                                   (5, '2024-08-05', 1, 1, '08:00', '12:00', '7', 1, 35, 0, 0),
                                                                                                                                                                   (6, '2024-08-06', 1, 1, '08:00', '12:00', '7', 1, 35, 0, 0),
                                                                                                                                                                   (7, '2024-08-07', 1, 1, '08:00', '12:00', '7', 1, 35, 0, 0),

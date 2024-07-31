@@ -1,10 +1,8 @@
-package com.flash21.caddycom.service.reservationSheet;
+package com.flash21.caddycom.service.schedule;
 
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
-import com.flash21.caddycom.dto.reservationSheet.ReservationSheetDto;
-import com.flash21.caddycom.entity.reservationSheet.ReservationDate;
-import com.flash21.caddycom.entity.reservationSheet.ReservationSheet;
+import com.flash21.caddycom.dto.schedule.ReservationSheetDto;
 import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.exception.cException.CBadReservationRequestException;
@@ -13,14 +11,13 @@ import com.flash21.caddycom.global.exception.cException.CGolfFieldNotFoundExcept
 import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
-import com.flash21.caddycom.repository.reservationSheet.*;
+import com.flash21.caddycom.repository.schedule.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -168,16 +165,19 @@ public class ReservationSheetService {
 
         return responseDtoList.stream().sorted(new DtoComparator()).toList();
     }
-}
 
-class DtoComparator implements Comparator<ReservationSheetDto.MetaDataResponse> {
-    @Override
-    public int compare(ReservationSheetDto.MetaDataResponse dto1, ReservationSheetDto.MetaDataResponse dto2) {
-        if (dto1.getTargetDate().isAfter(dto2.getTargetDate()))
-            return 1;
-        else if (dto1.getTargetDate().isBefore(dto2.getTargetDate()))
-            return -1;
-        else
-            return 0;
+    /**
+     * dto를 날짜 순으로 정렬하는 Comparator
+     */
+    private static class DtoComparator implements Comparator<ReservationSheetDto.MetaDataResponse> {
+        @Override
+        public int compare(ReservationSheetDto.MetaDataResponse dto1, ReservationSheetDto.MetaDataResponse dto2) {
+            if (dto1.getTargetDate().isAfter(dto2.getTargetDate()))
+                return 1;
+            else if (dto1.getTargetDate().isBefore(dto2.getTargetDate()))
+                return -1;
+            else
+                return 0;
+        }
     }
 }

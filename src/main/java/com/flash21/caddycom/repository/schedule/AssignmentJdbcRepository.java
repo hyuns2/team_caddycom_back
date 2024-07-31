@@ -1,6 +1,6 @@
-package com.flash21.caddycom.repository.reservationSheet;
+package com.flash21.caddycom.repository.schedule;
 
-import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

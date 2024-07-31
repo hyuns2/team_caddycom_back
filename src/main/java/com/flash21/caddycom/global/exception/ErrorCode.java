@@ -30,7 +30,8 @@ public enum ErrorCode {
 
     // HouseCaddyService
     CADDY_NOT_FOUND(910, "해당하는 캐디를 찾을 수 없습니다.",HttpStatus.BAD_REQUEST),
-    TEAM_NAME_NOT_FOUND(920, "해당하는 팀을 찾을 수 없습니다.",HttpStatus.BAD_REQUEST);
+    TEAM_NAME_NOT_FOUND(920, "해당하는 팀을 찾을 수 없습니다.",HttpStatus.BAD_REQUEST),
+    INVALID_CADDY_REQUEST(930, "휴무일 변경을 요청하지 않은 캐디입니다.", HttpStatus.BAD_REQUEST);
 
     private final int code;
     private final String message;

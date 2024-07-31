@@ -1,7 +1,7 @@
-package com.flash21.caddycom.controller.reservationSheet;
+package com.flash21.caddycom.controller.schedule;
 
-import com.flash21.caddycom.dto.reservationSheet.ReservationSheetDto;
-import com.flash21.caddycom.service.reservationSheet.ReservationSheetService;
+import com.flash21.caddycom.dto.schedule.ReservationSheetDto;
+import com.flash21.caddycom.service.schedule.ReservationSheetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

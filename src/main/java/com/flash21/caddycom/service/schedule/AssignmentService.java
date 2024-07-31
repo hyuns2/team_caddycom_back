@@ -1,14 +1,13 @@
-package com.flash21.caddycom.service.reservationSheet;
+package com.flash21.caddycom.service.schedule;
 
-import com.flash21.caddycom.dto.reservationSheet.AssignmentDto;
+import com.flash21.caddycom.dto.schedule.AssignmentDto;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
-import com.flash21.caddycom.entity.reservationSheet.Assignment;
+import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
-import com.flash21.caddycom.entity.reservationSheet.AssignmentStatus;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.global.exception.cException.CReservationSheetNotFoundException;
-import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
-import com.flash21.caddycom.repository.reservationSheet.*;
+import com.flash21.caddycom.repository.schedule.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,10 +28,9 @@ public class AssignmentService {
     final ScheduleRepository scheduleRepository;
     final AssignmentRepository assignmentRepository;
     final AssignmentJdbcRepository assignmentJdbcRepository;
-    final CourseRepository courseRepository;
 
     /**
-     * 배정정보 조회: 배정정보가 존재하는 경우에는 반환하고, 존재하지 않는 경우에는 생성하여 반환합니다.
+     * 배정정보 조회 및 생성: 배정정보가 존재하는 경우에는 반환하고, 존재하지 않는 경우에는 생성하여 반환합니다.
      *
      * @param golfFieldId 골프장 Id
      * @param targetDate  대상 날짜
@@ -78,7 +76,7 @@ public class AssignmentService {
     }
 
     /**
-     * 배정정보 조회 내부함수1-1: 한 페이지만큼의 시간을 추출하고, 이 예약시간을 가지는 코스 정보를 조회하여 반환합니다.
+     * 배정정보 조회 내부함수2: 한 페이지만큼의 시간을 추출하고, 이 예약시간을 가지는 코스 정보를 조회하여 반환합니다.
      *
      * @param result 예약시간과 예약시간을 가지는 코스 정보 형태의 map
      * @param date   대상 날짜
@@ -109,7 +107,7 @@ public class AssignmentService {
     }
 
     /**
-     * 배정정보 조회 내부함수2: 배정정보를 생성합니다.
+     * 배정정보 조회 내부함수3: 배정정보를 생성합니다.
      *
      * @param schedule 스케쥴 객체
      */
@@ -120,6 +118,13 @@ public class AssignmentService {
         schedule.setDateStatus(DateStatus.SETTING);
     }
 
+    /**
+     * 배정정보 조회 내부함수4: 요구되는 response 형식대로 생성 및 반환합니다.
+     *
+     * @param courseNameList 전체 코스이름 리스트
+     * @param dtoMap 코스, dto 구조의 map
+     * @return 요구되는 api response
+     */
     private Map<String, List<Object>> makeResponse(List<String> courseNameList, Map<String, Map<String, AssignmentDto.AssignmentsResponse>> dtoMap) {
         Map<String, List<Object>> response = new WeakHashMap<>();
         List<String> timeList = new ArrayList<>();

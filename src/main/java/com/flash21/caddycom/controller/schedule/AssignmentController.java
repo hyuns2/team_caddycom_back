@@ -1,8 +1,8 @@
-package com.flash21.caddycom.controller.reservationSheet;
+package com.flash21.caddycom.controller.schedule;
 
-import com.flash21.caddycom.dto.reservationSheet.AssignmentDto;
+import com.flash21.caddycom.dto.schedule.AssignmentDto;
 import com.flash21.caddycom.service.assignment.AssignmentCaddyService;
-import com.flash21.caddycom.service.reservationSheet.AssignmentService;
+import com.flash21.caddycom.service.schedule.AssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

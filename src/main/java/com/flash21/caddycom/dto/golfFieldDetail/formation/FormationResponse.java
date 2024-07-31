@@ -13,6 +13,6 @@ public class FormationResponse {
     public static class create {
         private Long id;
         private String name;
-        private List<CourseResponse.Create> courseInfos;
+        private List<CourseResponse.Info> courseInfos;
     }
 }

@@ -101,11 +101,11 @@ public class FormationService {
 
         List<FormationResponse.create> response = new ArrayList<>();
         for(Formation formation : formations) {
-            List<CourseResponse.Create> courseInfos = new ArrayList<>();
+            List<CourseResponse.Info> courseInfos = new ArrayList<>();
             if(!formation.getCourses().isEmpty()) {
                 courseInfos = formation.getCourses().stream()
-                        .map(course -> new CourseResponse.Create(course.getId(), course.getName(), course.getTotalHoles()))
-                        .sorted(Comparator.comparingLong(CourseResponse.Create::getId))
+                        .map(course -> new CourseResponse.Info(course.getId(), course.getName(), course.getTotalHoles()))
+                        .sorted(Comparator.comparingLong(CourseResponse.Info::getId))
                         .collect(Collectors.toList());
             }
             response.add(new FormationResponse.create(formation.getId(), formation.getName(), courseInfos));

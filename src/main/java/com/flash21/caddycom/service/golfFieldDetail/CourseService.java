@@ -1,14 +1,12 @@
 package com.flash21.caddycom.service.golfFieldDetail;
 
-import com.flash21.caddycom.dto.CourseInfoResponseDto;
+
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
-import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.repository.golfFieldDetail.CommentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
-import com.flash21.caddycom.repository.golfFieldDetail.formation.FormationRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +28,12 @@ public class CourseService {
 
     private final HoleService holeService;
 
-    public List<CourseInfoResponseDto> retrieveCourseInfo() {
+    public List<CourseResponse.Info> retrieveCourseInfo() {
         List<Course> courseList = courseRepository.findAll();
 
-        List<CourseInfoResponseDto> returnDtoList = new ArrayList<>();
+        List<CourseResponse.Info> returnDtoList = new ArrayList<>();
         for (Course course: courseList) {
-            returnDtoList.add(CourseInfoResponseDto.builder().
+            returnDtoList.add(CourseResponse.Info.builder().
                     id(course.getId())
                     .name(course.getName())
                     .totalHoles(course.getTotalHoles()).build());

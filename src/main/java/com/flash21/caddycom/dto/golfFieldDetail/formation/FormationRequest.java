@@ -1,8 +1,6 @@
 package com.flash21.caddycom.dto.golfFieldDetail.formation;
 
-import com.flash21.caddycom.dto.golfFieldDetail.course.CourseDto;
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseRequest;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

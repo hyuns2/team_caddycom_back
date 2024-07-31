@@ -10,9 +10,9 @@ public class FormationResponse {
 
     @Getter
     @AllArgsConstructor
-    public static class create {
+    public static class Create {
         private Long id;
         private String name;
-        private List<CourseResponse.Create> courseInfos;
+        private List<CourseResponse.Info> courseInfos;
     }
 }

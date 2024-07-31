@@ -19,7 +19,7 @@ public class TeeController {
 
     @PostMapping("/api/course/{courseId}/tees")
     @Operation(summary = "홀 전체 티 설정")
-    public void deleteAndCreateAllTees(@PathVariable Long courseId, @Valid @RequestBody TeeRequest.createAll request) {
+    public void deleteAndCreateAllTees(@PathVariable Long courseId, @Valid @RequestBody TeeRequest.CreateAll request) {
         teeService.deleteAndCreateAllTee(courseId, request);
     }
 }

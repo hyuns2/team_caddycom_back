@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/golf-field")
-public class FacilityController {
+public class GolfFieldOverviewController {
     private final GolfFieldService golfFieldService;
     private final FacilityService facilityService;
 

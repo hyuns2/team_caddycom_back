@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.lang.Integer.*;
 
 @Service
 @RequiredArgsConstructor
@@ -106,19 +105,7 @@ public class HouseCaddyService {
                 houseCaddyRepository.findAllByGolfFieldIdAndSearchCond(golfFieldId, searchCond)
                         .stream()
                         .map(HouseCaddyResponseDto.Info::new)
-                        .sorted((hc1, hc2) -> {
-                            int teamNumber1 = parseInt(hc1.getTeam().replace("조", ""));
-                            int teamNumber2 = parseInt(hc2.getTeam().replace("조", ""));
-                            if (teamNumber1 != teamNumber2) {
-                                return compare(teamNumber1, teamNumber2);
-                            }
-                            if (hc1.getTeamRole() == TeamRole.LEADER && hc2.getTeamRole() != TeamRole.LEADER) {
-                                return -1;
-                            } else if (hc1.getTeamRole() != TeamRole.LEADER && hc2.getTeamRole() == TeamRole.LEADER) {
-                                return 1;
-                            }
-                            return hc1.getName().compareTo(hc2.getName());
-                        })
+                        .sorted(this::comparing)
                         .toList();
 
         return findHouseCaddies.stream()
@@ -186,10 +173,33 @@ public class HouseCaddyService {
 
     }
 
-
     @Transactional
     public void saveCaddyList(List<HouseCaddy> caddyList) {
         //TODO: bulk insert로 변경 필요
         houseCaddyRepository.saveAll(caddyList);
+    }
+
+
+    private int comparing(HouseCaddyResponseDto.Info hc1, HouseCaddyResponseDto.Info hc2) {
+        int teamNumber1 = extractTeamNumber(hc1.getTeam());
+        int teamNumber2 = extractTeamNumber(hc2.getTeam());
+        if (teamNumber1 != teamNumber2) {
+            return Integer.compare(teamNumber1, teamNumber2);
+        }
+        if (hc1.getTeamRole() == TeamRole.LEADER && hc2.getTeamRole() != TeamRole.LEADER) {
+            return -1;
+        } else if (hc1.getTeamRole() != TeamRole.LEADER && hc2.getTeamRole() == TeamRole.LEADER) {
+            return 1;
+        }
+        return hc1.getName().compareTo(hc2.getName());
+    }
+
+    private int extractTeamNumber(String team) {
+        try {
+            String numericPart = team.replaceAll("\\D+", "");
+            return numericPart.isEmpty() ? Integer.MAX_VALUE : Integer.parseInt(numericPart);
+        } catch (NumberFormatException e) {
+            return Integer.MAX_VALUE;
+        }
     }
 }

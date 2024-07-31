@@ -6,6 +6,7 @@ import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.caddy.TeamRole;
 import com.flash21.caddycom.global.exception.cException.CCaddyNotFoundException;
+import com.flash21.caddycom.global.exception.cException.CInvalidCaddyRequestException;
 import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundException;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,24 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class HouseCaddyService {
     final HouseCaddyRepository houseCaddyRepository;
+
+    /**
+     * 조 전제조회: 골프장 Id에 해당하는 캐디의 조이름을 전부 반환합니다.
+     *
+     * @param golfFieldId 골프장 Id
+     * @return 조이름 리스트
+     */
     public List<String> getHouseCaddyTeam(Long golfFieldId) {
         return houseCaddyRepository.findAllTeam(golfFieldId);
     }
 
+    /**
+     * 조별 조회: 해당하는 골프장과 조이름에 속하는 캐디들의 정보를 반환합니다.
+     *
+     * @param golfFieldId 골프장 Id
+     * @param teamName 조 이름
+     * @return 캐디정보 리스트
+     */
     public List<HouseCaddyResponseDto.houseCaddyDetail> getHouseCaddyByTeam(Long golfFieldId, String teamName) {
         List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, teamName);
         if (houseCaddyList.isEmpty())
@@ -45,10 +60,16 @@ public class HouseCaddyService {
                     .address(hc.getAddress())
                     .addressDetail(hc.getAddressDetail())
                     .career(hc.getCareer())
-                    .build();
-        }).toList();
+                    .build(); }).toList();
     }
 
+    /**
+     * 하우스캐디 정보 수정: 하우스캐디의 정보를 수정합니다.
+     *
+     * @param golfFieldId 골프장 Id
+     * @param caddyId 캐디 Id
+     * @param dto 수정할 정보
+     */
     @Transactional
     public void updateHouseCaddy(Long golfFieldId, Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
@@ -63,10 +84,18 @@ public class HouseCaddyService {
         houseCaddy.updateHouseCaddy(dto);
     }
 
+    /**
+     * 하우스캐디 휴무일 승인: 하우스캐디가 요청한 휴무일로 변경합니다.
+     *
+     * @param caddyId 캐디 Id
+     */
     @Transactional
     public void updateHouseCaddyHoliday(Long caddyId) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
+
+        if (houseCaddy.getChangedHoliday() == null)
+            throw new CInvalidCaddyRequestException();
 
         houseCaddy.updateHoliday();
     }

@@ -1,4 +1,4 @@
-package com.flash21.caddycom.service.caddy.houseCaddy;
+package com.flash21.caddycom.service.caddy;
 
 import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
 import com.flash21.caddycom.dto.caddy.HouseCaddyResponseDto;
@@ -55,11 +55,13 @@ public class HouseCaddyService {
                     .teamRole(hc.getTeamRole())
                     .holiday(hc.getHoliday())
                     .changedHoliday(hc.getChangedHoliday())
+                    .offPart(hc.getOffPart())
                     .gender(hc.getGender())
                     .birth(hc.getBirth())
                     .address(hc.getAddress())
                     .addressDetail(hc.getAddressDetail())
                     .career(hc.getCareer())
+                    .caddyType(hc.getCaddyType())
                     .build();
         }).toList();
     }

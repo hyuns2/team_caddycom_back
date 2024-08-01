@@ -3,6 +3,7 @@ package com.flash21.caddycom.entity.caddy;
 import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.caddy.converter.DayListConverter;
+import com.flash21.caddycom.entity.caddy.converter.IntegerToStringConverter;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import jakarta.persistence.*;
@@ -49,7 +50,7 @@ public class HouseCaddy {
     @Convert(converter = DayListConverter.class)
     private List<Days> changedHoliday;
 
-    @Convert()
+    @Convert(converter = IntegerToStringConverter.class)
     private List<Integer> offPart;
 
     private LocalDate birth;
@@ -80,22 +81,15 @@ public class HouseCaddy {
         this.refreshToken = refreshToken;
     }
     public void updateHouseCaddy(HouseCaddyRequestDto.updateHouseCaddy dto) {
-        if (dto.getTeam() != null)
-            this.team = dto.getTeam();
-        if (dto.getTeamRole() != null)
-            this.teamRole = dto.getTeamRole();
-        if (dto.getHoliday() != null)
-            this.holiday = dto.getHoliday();
-        if (dto.getGender() != null)
-            this.gender = dto.getGender();
-        if (dto.getBirth() != null)
-            this.birth = LocalDate.parse(dto.getBirth());
-        if (dto.getAddress() != null)
-            this.address = dto.getAddress();
-        if (dto.getAddressDetail() != null)
-            this.addressDetail = dto.getAddressDetail();
-        if (dto.getCareer() != null)
-            this.career = dto.getCareer();
+        this.team = dto.getTeam();
+        this.teamRole = dto.getTeamRole();
+        this.holiday = dto.getHoliday();
+        this.offPart = dto.getOffPart();
+        this.gender = dto.getGender();
+        this.birth = LocalDate.parse(dto.getBirth());
+        this.address = dto.getAddress();
+        this.addressDetail = dto.getAddressDetail();
+        this.career = dto.getCareer();
     }
     public void setTeamRole(TeamRole teamRole) {
         this.teamRole = teamRole;

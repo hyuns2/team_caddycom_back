@@ -40,7 +40,7 @@ public class HouseCaddyController {
     }
 
     @Operation(summary = "하우스캐디 정보변경", description = "하우스캐디의 정보를 변경합니다.")
-    @PatchMapping("/{golfFieldId}/{caddyId}")
+    @PutMapping("/{golfFieldId}/{caddyId}")
     public ResponseEntity<?> updateHouseCaddy(@AuthenticationPrincipal User user, @PathVariable Long golfFieldId, @PathVariable Long caddyId, @Valid @RequestBody HouseCaddyRequestDto.updateHouseCaddy dto) {
         houseCaddyService.updateHouseCaddy(golfFieldId, caddyId, dto);
 

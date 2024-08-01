@@ -38,7 +38,9 @@ public class Assignment {
     private String reason;
 
 
-    public void cancel() {
+    public void cancel(String reason) {
+        if (reason != null && !reason.isEmpty())
+            this.reason = reason;
         this.status = AssignmentStatus.CANCELED;
     }
 

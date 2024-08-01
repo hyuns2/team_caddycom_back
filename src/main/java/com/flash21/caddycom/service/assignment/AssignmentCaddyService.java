@@ -61,10 +61,10 @@ public class AssignmentCaddyService {
 
 
     @Transactional
-    public void cancelAssignment(Long assignmentId) {
+    public void cancelAssignment(Long assignmentId, String reason) {
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 배정 정보가 없습니다."));
-        assignment.cancel();
+        assignment.cancel(reason);
     }
 
 

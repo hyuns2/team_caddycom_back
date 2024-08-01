@@ -4,7 +4,6 @@ import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.Gender;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.caddy.TeamRole;
-import com.flash21.caddycom.entity.golfField.GolfField;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -47,7 +47,7 @@ public class TeeService {
         List<Tee> savedTees = hole.getTees();
         List<Tee> newTees = new ArrayList<>();
         for(TeeDto.Info teeInfo: requestTees) {
-            if(teeInfo.getId() == null) {
+            if(teeInfo.getId() == 0) {
                 newTees.add(new Tee(null, teeInfo.getName(), teeInfo.getDistance(), hole));
                 break;
             }

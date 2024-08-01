@@ -26,7 +26,7 @@ public class CommentService {
         List<Comment> savedComments = hole.getComments();
         List<Comment> newComments = new ArrayList<>();
         for(CommentDto.Info info : tipInfos) {
-            if(info.getId() == null) {
+            if(info.getId() == 0) {
                 newComments.add(new Comment(null, info.getTitle(), info.getContent(), hole));
                 break;
             }

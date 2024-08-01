@@ -1,11 +1,13 @@
 package com.flash21.caddycom.entity.caddy.converter;
 
 import jakarta.persistence.AttributeConverter;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class IntegerToStringConverter implements AttributeConverter<List<Integer>, String> {
     private static final String SPLIT_CHAR = ",";
 

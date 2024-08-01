@@ -2,6 +2,7 @@ package com.flash21.caddycom.repository.caddy;
 
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
+import com.flash21.caddycom.entity.caddy.converter.IntegerToStringConverter;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class HouseCaddyJdbcRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final IntegerToStringConverter integerToStringConverter;
 
     @Transactional
     public void saveAll(List<HouseCaddy> houseCaddyList, Long golfFieldId) {
@@ -38,7 +40,7 @@ public class HouseCaddyJdbcRepository {
                     ps.setString(8, houseCaddy.getCareer());
                     ps.setString(9, houseCaddy.getAddress());
                     ps.setString(10, houseCaddy.getAddressDetail());
-                    ps.setString(11, houseCaddy.getOffPart());
+                    ps.setString(11, integerToStringConverter.convertToDatabaseColumn(houseCaddy.getOffPart()));
                     ps.setString(12, convertHoliday(houseCaddy.getHoliday()));
                     ps.setDate(13, java.sql.Date.valueOf(houseCaddy.getBirth()));
                 }

@@ -3,7 +3,7 @@ package com.flash21.caddycom.entity.caddy;
 import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.caddy.converter.DayListConverter;
-import com.flash21.caddycom.entity.caddy.converter.IntegerToStringConverter;
+import com.flash21.caddycom.entity.caddy.converter.PartListConverter;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import jakarta.persistence.*;
@@ -50,7 +50,7 @@ public class HouseCaddy {
     @Convert(converter = DayListConverter.class)
     private List<Days> changedHoliday;
 
-    @Convert(converter = IntegerToStringConverter.class)
+    @Convert(converter = PartListConverter.class)
     private List<Integer> offPart;
 
     private LocalDate birth;

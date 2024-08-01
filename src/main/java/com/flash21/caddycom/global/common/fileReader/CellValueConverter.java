@@ -7,11 +7,16 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Component
 public class CellValueConverter {
     private final LocalDate baseDate = LocalDate.of(1900,1,1);
+    private final int limitPart = 2;
 
     protected Gender convertGender(String gender) {
         if (gender.equals("남")) {
@@ -47,6 +52,27 @@ public class CellValueConverter {
             days.add(day);
         }
         return days;
+    }
+
+    protected List<Integer> convertPart(String partString) {
+        if (partString == null || partString.isEmpty()) {
+            return null;
+        }
+        List<String> parts = Arrays.asList(partString.split(","));
+        List<Integer> offPart = parts.stream().map(part -> part.replaceAll("\\D",""))
+                .filter(s -> !s.isEmpty())
+                .map(Integer::parseInt)
+                .toList();
+
+        List<Integer> range = IntStream.rangeClosed(1, limitPart)
+                .boxed()
+                .toList();
+
+        List<Integer> result = range.stream()
+                .filter(num -> !offPart.contains(num))
+                .toList();
+
+        return result;
     }
 
 

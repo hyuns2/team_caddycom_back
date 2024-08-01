@@ -2,7 +2,6 @@ package com.flash21.caddycom.repository.caddy;
 
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
-import com.flash21.caddycom.entity.caddy.converter.IntegerToStringConverter;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class HouseCaddyJdbcRepository {
     private final JdbcTemplate jdbcTemplate;
-    private final IntegerToStringConverter integerToStringConverter;
 
     @Transactional
     public void saveAll(List<HouseCaddy> houseCaddyList, Long golfFieldId) {
@@ -40,7 +39,7 @@ public class HouseCaddyJdbcRepository {
                     ps.setString(8, houseCaddy.getCareer());
                     ps.setString(9, houseCaddy.getAddress());
                     ps.setString(10, houseCaddy.getAddressDetail());
-                    ps.setString(11, integerToStringConverter.convertToDatabaseColumn(houseCaddy.getOffPart()));
+                    ps.setString(11, convertOffPart(houseCaddy.getOffPart()));
                     ps.setString(12, convertHoliday(houseCaddy.getHoliday()));
                     ps.setDate(13, java.sql.Date.valueOf(houseCaddy.getBirth()));
                 }
@@ -59,6 +58,12 @@ public class HouseCaddyJdbcRepository {
     private String convertHoliday(List<Days> holiday) {
         return  holiday.stream()
                 .map(Days::getNumber)
+                .collect(Collectors.joining(","));
+    }
+
+    private String convertOffPart(List<Integer> part) {
+        return  part.stream()
+                .map(String::valueOf)
                 .collect(Collectors.joining(","));
     }
 }

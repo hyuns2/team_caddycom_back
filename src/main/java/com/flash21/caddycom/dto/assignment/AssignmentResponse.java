@@ -30,11 +30,13 @@ public class AssignmentResponse {
         private String reason;
 
         public static Info from(Assignment assignment) {
+            Long caddyId = assignment.getHouseCaddy() == null ? null : assignment.getHouseCaddy().getId();
+
             return Info.builder()
                     .id(assignment.getId())
                     .startTime(assignment.getStartTime().format(timeFormatter))
                     .caddyName(assignment.getCaddyName())
-                    .caddyId(assignment.getHouseCaddy().getId())
+                    .caddyId(caddyId)
                     .courseName(assignment.getSchedule().getCourse().getName())
                     .part(assignment.getSchedule().getPart())
                     .status(assignment.getStatus())

@@ -7,6 +7,7 @@ import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
+import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
@@ -124,17 +125,25 @@ public class AssignmentCaddyService {
 
         //스케줄 검증
         List<Schedule> findSchedules = scheduleRepository.findAllByGolfFieldIdAndReservationAtFetchJoin(golfFieldId, date);
+        for (Schedule findSchedule : findSchedules) {
+            if (findSchedule.getDateStatus() != DateStatus.SETTING) {
+                throw new IllegalStateException("전체 배정이 불가능한 상태입니다");
+            }
+        }
         if (findSchedules.isEmpty()) {
             throw new NoSuchElementException("존재하지 않는 스케줄입니다.");
         }
 
         //오늘의 요일 변환
-        Days todaysDayOfWeek = getDays(date.plusDays(5));
+        Days todaysDayOfWeek = getDays(date.plusDays(4));
 
         //배정 검증
         List<Assignment> findAssignments = getAllAssignmentsSortByTime(findSchedules);
         if (findAssignments.isEmpty()) {
             throw new NoSuchElementException("배정 정보가 존재하지 않습니다.");
+        }
+        for (Assignment findAssignment : findAssignments) {
+            System.out.println("findAssignment.getStartTime() = " + findAssignment.getStartTime());
         }
 
         //캐디 검증
@@ -147,16 +156,35 @@ public class AssignmentCaddyService {
         int currentCaddyIndex = 0;
         Long recentlyAssignedCaddyId = null;
 
+
+        Long cursor = findGolfField.getCaddyAssignCursor();
+        if (cursor != null) {
+            currentCaddyIndex = findCaddies.indexOf(
+                    houseCaddyRepository.findById(cursor)
+                            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 캐디입니다."))
+            ) + 1 % findCaddies.size();
+        }
+
+        List<Assignment> blockedAssignments = getBlockedAssignmentsSortByTime(findSchedules);
+        for (Assignment assignment : blockedAssignments) {
+            HouseCaddy caddy = assignment.getHouseCaddy();
+            if (caddy != null) {
+                findCaddies.remove(caddy);
+            }
+        }
+
         for (Assignment assignment : findAssignments) {
             boolean isAssigned = false;
 
-            if (assignment.getStatus() == AssignmentStatus.BLOCKED) continue;
+            AssignmentStatus status = assignment.getStatus();
+            if (assignment.getStatus() == AssignmentStatus.BLOCKED || status == AssignmentStatus.ASSIGNED) continue;
 
             while (!isAssigned) {
 
                 HouseCaddy currentCaddy = findCaddies.get(currentCaddyIndex);
                 if (verifyCaddy(assignment, currentCaddy, todaysDayOfWeek)) {
                     assignment.assignCaddy(currentCaddy);
+
                     System.out.println("배정된 캐디 이름: " + currentCaddy.getName() + " 캐디 ID: " + currentCaddy.getId() + " 배정 Id: " + assignment.getId());
                     isAssigned = true;
                     recentlyAssignedCaddyId = currentCaddy.getId();
@@ -167,11 +195,21 @@ public class AssignmentCaddyService {
         }
 
         findGolfField.changeCaddyAssignCursor(recentlyAssignedCaddyId);
+        findSchedules.forEach(fs -> fs.setDateStatus(DateStatus.ASSIGNED));
     }
 
     private List<Assignment> getAllAssignmentsSortByTime(List<Schedule> findSchedules) {
         return findSchedules.stream()
                 .flatMap(schedule -> schedule.getAssignments().stream())
+                .filter(assignment -> assignment.getStatus() == AssignmentStatus.NOTHING)
+                .sorted(Comparator.comparing(Assignment::getStartTime))
+                .toList();
+    }
+
+    private List<Assignment> getBlockedAssignmentsSortByTime(List<Schedule> findSchedules) {
+        return findSchedules.stream()
+                .flatMap(schedule -> schedule.getAssignments().stream())
+                .filter(assignment -> assignment.getStatus() == AssignmentStatus.BLOCKED)
                 .sorted(Comparator.comparing(Assignment::getStartTime))
                 .toList();
     }

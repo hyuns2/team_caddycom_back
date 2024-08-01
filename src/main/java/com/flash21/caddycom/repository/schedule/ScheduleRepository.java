@@ -3,6 +3,7 @@ package com.flash21.caddycom.repository.schedule;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -20,4 +21,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<MetaDataReport> countAllMetaDataByDate(LocalDate startDate, LocalDate endDate, Long golfFieldId);
 
     List<Schedule> findAllByGolfFieldIdAndReservationAt(Long golfFieldId, LocalDate date);
+
+    @Query("select s from Schedule s join fetch s.assignments a where s.golfField.id = :golfFieldId and s.reservationAt = :date")
+    List<Schedule> findAllByGolfFieldIdAndReservationAtFetchJoin(@Param("golfFieldId") Long golfFieldId, @Param("date") LocalDate date);
 }

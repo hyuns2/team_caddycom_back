@@ -67,9 +67,8 @@ public class GolfField {
     @OneToMany(mappedBy = "golfField", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Formation> formations;
 
-
-
-
+    private Long caddyAssignCursor;
+    
     public void approve(){
         this.status = ApprovalStatus.APPROVED;
     }
@@ -111,4 +110,8 @@ public class GolfField {
         this.amenities = amenities;
     }
 
+
+    public void changeCaddyAssignCursor(Long cursor) {
+        this.caddyAssignCursor = cursor;
+    }
 }

@@ -23,21 +23,20 @@ public class AssignmentCaddyController {
 
 
     @GetMapping("{golfFieldId}/{date}")
-    @Operation(summary="배정 결과 조회 API", description="캐디 배정 후 결과를 페이징 조회한다.")
+    @Operation(summary = "배정 결과 조회 API", description = "캐디 배정 후 결과를 페이징 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PagingResponse<AssignmentResponse.Info>> getAssignments(
             @PathVariable Long golfFieldId,
             @PathVariable LocalDate date,
             @RequestParam(required = false) Long courseId,
             @RequestParam(required = false) AssignmentStatus status,
-            @RequestParam(defaultValue = "0") int page)
-    {
+            @RequestParam(defaultValue = "0") int page) {
         return ResponseEntity.ok().body(assignmentCaddyService.getAssignments(golfFieldId, date, courseId, status, page));
     }
 
 
     @GetMapping("switch/{golfFieldId}/{date}")
-    @Operation(summary="배정 결과 변경 API", description="변경 가능한 캐디의 목록을 페이징 조회한다.")
+    @Operation(summary = "배정 결과 변경 API", description = "변경 가능한 캐디의 목록을 페이징 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PagingResponse<AssignmentResponse.Info>> getSwitchingCaddy(
             @PathVariable Long golfFieldId,
@@ -45,15 +44,13 @@ public class AssignmentCaddyController {
             @RequestParam Long assignmentId,
             @RequestParam(required = false) Long courseId,
             @RequestParam(required = false) Integer part,
-            @RequestParam(defaultValue = "0") int page)
-    {
+            @RequestParam(defaultValue = "0") int page) {
         return ResponseEntity.ok().body(assignmentCaddyService.getSwitchingCaddy(golfFieldId, date, assignmentId, courseId, part, page));
     }
 
 
-
     @GetMapping("/detail")
-    @Operation(summary="배정 상세 조회 API", description="캐디 배정 상세 정보를 조회한다.")
+    @Operation(summary = "배정 상세 조회 API", description = "캐디 배정 상세 정보를 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<AssignmentResponse.Detail> getAssignmentDetail(@RequestParam Long assignmentId) {
         return ResponseEntity.ok().body(assignmentCaddyService.getAssignmentDetail(assignmentId));
@@ -61,21 +58,31 @@ public class AssignmentCaddyController {
 
 
     @PatchMapping("/cancel")
-    @Operation(summary="배정 취소 API", description="취소 요청된 배정을 취소 / 골프장 관리자가 직접 취소")
+    @Operation(summary = "배정 취소 API", description = "취소 요청된 배정을 취소 / 골프장 관리자가 직접 취소")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Message> cancelAssignment(@RequestParam Long assignmentId,
-                                                    @RequestBody(required = false) String reason){
+                                                    @RequestBody(required = false) String reason) {
         assignmentCaddyService.cancelAssignment(assignmentId, reason);
         return ResponseEntity.ok().body(new Message("배정이 취소되었습니다."));
     }
 
 
     @PatchMapping("/switch")
-    @Operation(summary="배정 변경 API", description="두 캐디간 배정을 변경한다.")
+    @Operation(summary = "배정 변경 API", description = "두 캐디간 배정을 변경한다.")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Message> switchAssignment(@RequestParam Long fromId, @RequestParam Long toId) {
         assignmentCaddyService.switchAssignment(fromId, toId);
         return ResponseEntity.ok().body(new Message("배정이 변경되었습니다."));
+    }
+
+    @PostMapping("{golfFieldId}/{date}")
+    @Operation(summary = "캐디 자동 배정", description = "해당 날짜의 스케줄들에 캐디를 배정한다")
+    public ResponseEntity<?> assignCaddyToSchedule(
+            @PathVariable("golfFieldId") Long golfFieldId,
+            @PathVariable("date") LocalDate date
+    ) {
+        assignmentCaddyService.assignCaddyToSchedule(golfFieldId, date);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,7 @@ public class HouseCaddyJdbcRepository {
                     ps.setString(8, houseCaddy.getCareer());
                     ps.setString(9, houseCaddy.getAddress());
                     ps.setString(10, houseCaddy.getAddressDetail());
-                    ps.setString(11, houseCaddy.getOffPart());
+                    ps.setString(11, convertOffPart(houseCaddy.getOffPart()));
                     ps.setString(12, convertHoliday(houseCaddy.getHoliday()));
                     ps.setDate(13, java.sql.Date.valueOf(houseCaddy.getBirth()));
                 }
@@ -57,6 +58,12 @@ public class HouseCaddyJdbcRepository {
     private String convertHoliday(List<Days> holiday) {
         return  holiday.stream()
                 .map(Days::getNumber)
+                .collect(Collectors.joining(","));
+    }
+
+    private String convertOffPart(List<Integer> part) {
+        return  part.stream()
+                .map(String::valueOf)
                 .collect(Collectors.joining(","));
     }
 }

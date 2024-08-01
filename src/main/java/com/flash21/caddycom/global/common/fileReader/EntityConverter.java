@@ -28,7 +28,7 @@ public class EntityConverter {
         String career = tableList.get(8);
         String address = tableList.get(9);
         String addressDetail = tableList.get(10);
-        String offPart = tableList.get(11);
+        List<Integer> offPart = cellValueConverter.convertPart(tableList.get(11));
 
 
         return HouseCaddy.builder()

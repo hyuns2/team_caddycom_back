@@ -30,8 +30,7 @@ public class HouseCaddy {
     @JoinColumn
     private GolfField golfField;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn
+    @OneToMany(mappedBy = "houseCaddy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Assignment> assignmentList;
 
     @Column(nullable = false)
@@ -77,9 +76,11 @@ public class HouseCaddy {
     public void updatePassword(String password) {
         this.password = password;
     }
+
     public void updateToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
+
     public void updateHouseCaddy(HouseCaddyRequestDto.updateHouseCaddy dto) {
         this.team = dto.getTeam();
         this.teamRole = dto.getTeamRole();
@@ -91,13 +92,16 @@ public class HouseCaddy {
         this.addressDetail = dto.getAddressDetail();
         this.career = dto.getCareer();
     }
+
     public void setTeamRole(TeamRole teamRole) {
         this.teamRole = teamRole;
     }
+
     public void updateHoliday() {
         this.holiday = new ArrayList<>(changedHoliday);
         this.changedHoliday = null;
     }
+
     public void setHoliday(List<Days> holiday) {
         this.holiday = holiday;
     }

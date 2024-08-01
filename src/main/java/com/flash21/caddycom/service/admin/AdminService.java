@@ -6,7 +6,7 @@ import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.global.common.fileReader.EntityConverter;
 import com.flash21.caddycom.global.common.fileReader.ExcelReader;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
-import com.flash21.caddycom.service.caddy.houseCaddy.HouseCaddyService;
+import com.flash21.caddycom.service.caddy.HouseCaddyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

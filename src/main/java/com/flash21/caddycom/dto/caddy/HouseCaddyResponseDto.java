@@ -76,6 +76,9 @@ public class HouseCaddyResponseDto {
         @Schema(description = "변경 요청 휴무일")
         private List<Days> changedHoliday;
 
+        @Schema(description = "참여하지않는 부")
+        private List<Integer> offPart;
+
         @Schema(description = "성별")
         private Gender gender;
 
@@ -90,5 +93,8 @@ public class HouseCaddyResponseDto {
 
         @Schema(description = "경력")
         private String career;
+
+        @Schema(description = "캐디 분류")
+        private String caddyType;
     }
 }

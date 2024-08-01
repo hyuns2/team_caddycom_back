@@ -49,7 +49,8 @@ public class HouseCaddy {
     @Convert(converter = DayListConverter.class)
     private List<Days> changedHoliday;
 
-    private String offPart;
+    @Convert()
+    private List<Integer> offPart;
 
     private LocalDate birth;
 

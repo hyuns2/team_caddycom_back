@@ -1,8 +1,8 @@
-package com.flash21.caddycom.controller.caddy.houseCaddy;
+package com.flash21.caddycom.controller.caddy;
 
 import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
 import com.flash21.caddycom.dto.caddy.HouseCaddyResponseDto;
-import com.flash21.caddycom.service.caddy.houseCaddy.HouseCaddyService;
+import com.flash21.caddycom.service.caddy.HouseCaddyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

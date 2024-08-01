@@ -63,8 +63,9 @@ public class AssignmentCaddyController {
     @PatchMapping("/cancel")
     @Operation(summary="배정 취소 API", description="취소 요청된 배정을 취소 / 골프장 관리자가 직접 취소")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Message> cancelAssignment(@RequestParam Long assignmentId) {
-        assignmentCaddyService.cancelAssignment(assignmentId);
+    public ResponseEntity<Message> cancelAssignment(@RequestParam Long assignmentId,
+                                                    @RequestBody(required = false) String reason){
+        assignmentCaddyService.cancelAssignment(assignmentId, reason);
         return ResponseEntity.ok().body(new Message("배정이 취소되었습니다."));
     }
 

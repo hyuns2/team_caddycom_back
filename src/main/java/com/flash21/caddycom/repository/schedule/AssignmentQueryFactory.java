@@ -28,10 +28,19 @@ public class AssignmentQueryFactory {
                         .and(QAssignment.assignment.schedule.reservationAt.eq(date))
                         .and(eqCourseId(courseId))
                         .and(eqStatus(status)))
+                .orderBy(QAssignment.assignment.startTime.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        return new PageImpl<>(assignments, pageable, assignments.size());
+        Long total = jpaQueryFactory
+                .select(QAssignment.assignment.count())
+                .from(QAssignment.assignment)
+                .where(QAssignment.assignment.schedule.golfField.id.eq(golfFieldId)
+                        .and(QAssignment.assignment.schedule.reservationAt.eq(date))
+                        .and(eqCourseId(courseId))
+                        .and(eqStatus(status)))
+                .fetchFirst();
+        return new PageImpl<>(assignments, pageable, total == null ? 0 : total);
     }
 
 
@@ -44,10 +53,21 @@ public class AssignmentQueryFactory {
                         .and(eqCourseId(courseId))
                         .and(eqPart(part))
                         .and(eqStatus(AssignmentStatus.ASSIGNED)))
+                .orderBy(QAssignment.assignment.startTime.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        return new PageImpl<>(assignments, pageable, assignments.size());
+        Long total = jpaQueryFactory
+                .select(QAssignment.assignment.count())
+                .from(QAssignment.assignment)
+                .where(QAssignment.assignment.schedule.golfField.id.eq(golfFieldId)
+                        .and(QAssignment.assignment.id.ne(id))
+                        .and(QAssignment.assignment.schedule.reservationAt.eq(date))
+                        .and(eqCourseId(courseId))
+                        .and(eqPart(part))
+                        .and(eqStatus(AssignmentStatus.ASSIGNED)))
+                .fetchFirst();
+        return new PageImpl<>(assignments, pageable, total == null ? 0 : total);
     }
 
 

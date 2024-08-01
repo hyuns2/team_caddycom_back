@@ -29,6 +29,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
 
     // TODO: 코스 이름은 schedule.course 에서 가져올 수 있도록 조인 작업 추가로 필요
+    // TODO: JPA 말고 다른 동적 쿼리 생성기 이용
     @Query("SELECT a FROM Assignment a " +
             "WHERE a.schedule.golfField.id = :golfFieldId " +
             "AND a.schedule.reservationAt =:date")

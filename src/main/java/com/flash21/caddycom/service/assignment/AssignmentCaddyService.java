@@ -6,6 +6,7 @@ import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
+import com.flash21.caddycom.repository.schedule.AssignmentQueryFactory;
 import com.flash21.caddycom.repository.schedule.AssignmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ public class AssignmentCaddyService {
 
     private final AssignmentRepository assignmentRepository;
     private final HouseCaddyRepository houseCaddyRepository;
+    private final AssignmentQueryFactory assignmentQueryFactory;
 
     /**
      * 골프장 id와 date로 assignment를 모두 조회한다.
@@ -35,7 +37,7 @@ public class AssignmentCaddyService {
         if (courseId != null && status != null){
             assignmentPage = assignmentRepository.findAllByDateAndCourseIdAndStatus(pageable,golfFieldId, date, courseId, status);
         } else if (courseId != null) {
-            assignmentPage = assignmentRepository.findAllByDateAndCourseId(pageable,golfFieldId,date,courseId);
+            assignmentPage = assignmentQueryFactory.findAllByDateAndCourseId(pageable,golfFieldId,date,courseId);
         } else if (status != null) {
             assignmentPage = assignmentRepository.findAllByDateAndStatus(pageable,golfFieldId,date,status);
         } else {

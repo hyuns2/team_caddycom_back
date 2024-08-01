@@ -25,4 +25,7 @@ public interface HouseCaddyRepository extends JpaRepository<HouseCaddy, Long>, H
     List<HouseCaddy> findAllByGolfFieldId(Long golfFieldId);
 
     List<HouseCaddy> findAllByIdIn(List<Long> ids);
+
+    @Query("select hc from HouseCaddy hc where hc.golfField.id = ?1 order by hc.id ASC")
+    List<HouseCaddy> findAllByGolfFieldIdSortById(Long golfFieldId);
 }

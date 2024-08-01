@@ -29,7 +29,7 @@ public class Assignment {
     @Column(nullable = false)
     private AssignmentStatus status;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private HouseCaddy houseCaddy;
 

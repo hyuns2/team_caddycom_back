@@ -33,16 +33,8 @@ public class AssignmentCaddyService {
     @Transactional(readOnly = true)
     public PagingResponse<AssignmentResponse.Info> getAssignments(Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status, int page) {
         Pageable pageable = PageRequest.of(page, 30);
-        Page<Assignment> assignmentPage;
-        if (courseId != null && status != null){
-            assignmentPage = assignmentRepository.findAllByDateAndCourseIdAndStatus(pageable,golfFieldId, date, courseId, status);
-        } else if (courseId != null) {
-            assignmentPage = assignmentQueryFactory.findAllByDateAndCourseId(pageable,golfFieldId,date,courseId);
-        } else if (status != null) {
-            assignmentPage = assignmentRepository.findAllByDateAndStatus(pageable,golfFieldId,date,status);
-        } else {
-            assignmentPage = assignmentRepository.findAllByDate(pageable, golfFieldId, date);
-        }
+        Page<Assignment> assignmentPage =
+                assignmentQueryFactory.findAllByDateAndCourseIdAndStatus(pageable, golfFieldId, date, courseId, status);
         return PagingResponse.from(assignmentPage, AssignmentResponse.Info::from);
     }
 
@@ -50,17 +42,8 @@ public class AssignmentCaddyService {
     @Transactional(readOnly = true)
     public PagingResponse<AssignmentResponse.Info> getSwitchingCaddy(Long golfFieldId, LocalDate date, Long id, Long courseId, Integer part, int page) {
         Pageable pageable = PageRequest.of(page, 30);
-        Page<Assignment> assignmentPage;
-
-        if (courseId != null && part != null){
-            assignmentPage = assignmentRepository.findAssignedByDateAndCourseIdAndPart(pageable,id,golfFieldId,date,courseId,part);
-        } else if (courseId != null) {
-            assignmentPage = assignmentRepository.findAssignedByDateAndCourseId(pageable,id,golfFieldId,date,courseId);
-        } else if (part != null) {
-            assignmentPage = assignmentRepository.findAssignedByDateAndPart(pageable,id,golfFieldId,date,part);
-        } else {
-            assignmentPage = assignmentRepository.findAssignedByDate(pageable,id,golfFieldId,date);
-        }
+        Page<Assignment> assignmentPage =
+                assignmentQueryFactory.findAssignedByDateAndCourseIdAndPart(pageable, id, golfFieldId, date, courseId, part);
         return PagingResponse.from(assignmentPage, AssignmentResponse.Info::fromSwitchable);
     }
 

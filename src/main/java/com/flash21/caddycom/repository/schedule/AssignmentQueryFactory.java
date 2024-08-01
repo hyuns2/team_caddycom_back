@@ -1,7 +1,9 @@
 package com.flash21.caddycom.repository.schedule;
 
 import com.flash21.caddycom.entity.schedule.Assignment;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.entity.schedule.QAssignment;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,15 +19,49 @@ import java.util.List;
 public class AssignmentQueryFactory {
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Page<Assignment> findAllByDateAndCourseId(Pageable pageable, Long golfFieldId, LocalDate date, Long courseId){
+
+    // TODO: 코스 이름은 schedule.course 에서 가져올 수 있도록 조인 작업 추가로 필요
+    public Page<Assignment> findAllByDateAndCourseIdAndStatus(Pageable pageable, Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status){
         List<Assignment> assignments = jpaQueryFactory
                 .selectFrom(QAssignment.assignment)
                 .where(QAssignment.assignment.schedule.golfField.id.eq(golfFieldId)
                         .and(QAssignment.assignment.schedule.reservationAt.eq(date))
-                        .and(QAssignment.assignment.schedule.course.id.eq(courseId)))
+                        .and(eqCourseId(courseId))
+                        .and(eqStatus(status)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
         return new PageImpl<>(assignments, pageable, assignments.size());
+    }
+
+
+    public Page<Assignment> findAssignedByDateAndCourseIdAndPart(Pageable pageable, Long id, Long golfFieldId, LocalDate date, Long courseId, Integer part){
+        List<Assignment> assignments = jpaQueryFactory
+                .selectFrom(QAssignment.assignment)
+                .where(QAssignment.assignment.schedule.golfField.id.eq(golfFieldId)
+                        .and(QAssignment.assignment.id.ne(id))
+                        .and(QAssignment.assignment.schedule.reservationAt.eq(date))
+                        .and(eqCourseId(courseId))
+                        .and(eqPart(part))
+                        .and(eqStatus(AssignmentStatus.ASSIGNED)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        return new PageImpl<>(assignments, pageable, assignments.size());
+    }
+
+
+    private BooleanExpression eqPart(Integer part) {
+        return part == null ? null : QAssignment.assignment.schedule.part.eq(part);
+    }
+
+
+    private BooleanExpression eqCourseId(Long courseId) {
+        return courseId == null ? null : QAssignment.assignment.schedule.course.id.eq(courseId);
+    }
+
+
+    private BooleanExpression eqStatus(AssignmentStatus status) {
+        return status == null ? null : QAssignment.assignment.status.eq(status);
     }
 }

@@ -122,7 +122,7 @@ public class ReservationSheetService {
     public List<LocalTime> getStartTimeList(LocalTime startTime, LocalTime endTime, String teeOff) {
         LocalTime currentStartTime = startTime;
 
-        List<Integer> teeOffList = Arrays.stream(teeOff.split("~")).map(Integer::new).toList();
+        List<Integer> teeOffList = Arrays.stream(teeOff.split("~")).map(Integer::valueOf).toList();
         int teeOffListSize = teeOffList.size();
         int currentTeeOffIndex = 0;
 

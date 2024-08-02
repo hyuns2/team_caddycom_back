@@ -72,17 +72,6 @@ public class AssignmentQueryFactory {
         return new PageImpl<>(assignments, pageable, total == null ? 0 : total);
     }
 
-
-    public List<Schedule> findAllByGolfFieldIdAndReservationAtFetchJoinAssignmentAndHouseCaddy(Long golfFieldId, LocalDate date) {
-        return jpaQueryFactory.selectFrom(schedule)
-                .leftJoin(schedule.assignments, assignment).fetchJoin()
-                .leftJoin(assignment.houseCaddy, houseCaddy).fetchJoin()
-                .where(schedule.golfField.id.eq(golfFieldId)
-                        .and(schedule.reservationAt.eq(date)))
-                .orderBy(schedule.course.id.asc())
-                .fetch();
-    }
-
     private BooleanExpression eqPart(Integer part) {
         return part == 0 ? null : QAssignment.assignment.schedule.part.eq(part);
 

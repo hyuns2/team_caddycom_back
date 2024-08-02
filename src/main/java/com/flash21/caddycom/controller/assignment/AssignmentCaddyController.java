@@ -81,7 +81,7 @@ public class AssignmentCaddyController {
             @PathVariable("golfFieldId") Long golfFieldId,
             @PathVariable("date") LocalDate date
     ) {
-        assignmentCaddyService.assignCaddyToSchedule(golfFieldId, date);
+        assignmentCaddyService.assignCaddyAutomatically(golfFieldId, date);
         return ResponseEntity.noContent().build();
     }
 

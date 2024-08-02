@@ -1,6 +1,7 @@
 package com.flash21.caddycom.repository.golfFieldDetail;
 
 import com.flash21.caddycom.entity.golfFieldDetail.Comment;
+import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +23,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Transactional
     @Query("delete from Comment c where c.hole.course.id in :courseIds")
     void deleteAllByCourseIds(Iterable<Long> courseIds);
+
+    @Modifying
+    @Transactional
+    @Query("delete from Comment c where c.hole in :holes")
+    void deleteAllByHoles(Iterable<Hole> holes);
 }

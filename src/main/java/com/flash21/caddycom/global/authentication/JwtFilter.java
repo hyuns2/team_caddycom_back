@@ -31,6 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String jwtHeader = request.getHeader("Authorization");
 
         if (jwtHeader==null){
+            request.setAttribute("exception", "엑세스 토큰이 없습니다.");
             filterChain.doFilter(request,response);
             return;
         }

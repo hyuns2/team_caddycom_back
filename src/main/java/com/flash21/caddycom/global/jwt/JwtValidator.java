@@ -49,7 +49,7 @@ public class JwtValidator {
                     .getBody();
         } catch (ExpiredJwtException e) {
             throw new ExpiredJwtException(e.getHeader(), e.getClaims(), "만료된 토큰입니다.");
-        } catch (Exception e) {
+        } catch (JwtException e) {
             throw new JwtException("토큰 파싱 중 오류 발생. 유효하지 않은 토큰입니다.", e);
         }
     }
@@ -66,15 +66,15 @@ public class JwtValidator {
 
         if (jwtClaims.getRole() == Role.ROLE_EMPLOYEE || jwtClaims.getRole() == Role.ROLE_OWNER) {
             Account account = accountRepository.findById(jwtClaims.getId())
-                    .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 토큰입니다."));
+                    .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 리프레시 토큰입니다."));
             if (!account.getRefreshToken().equals(refreshToken))
-                throw new JwtException("올바르지 않은 리프레시 토큰입니다.");
+                throw new JwtException("리프레시 토큰이 일치하지 않습니다.");
 
         } else if (jwtClaims.getRole() == Role.ROLE_HOUSE_CADDY) {
             HouseCaddy caddy = houseCaddyRepository.findById(jwtClaims.getId())
-                    .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 토큰입니다."));
+                    .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 리프레시 토큰입니다."));
             if (!caddy.getRefreshToken().equals(refreshToken))
-                throw new JwtException("올바르지 않은 리프레시 토큰입니다.");
+                throw new JwtException("리프레시 토큰이 일치하지 않습니다.");
         }
         return jwtClaims;
     }

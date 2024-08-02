@@ -3,6 +3,7 @@ package com.flash21.caddycom.service.golfFieldDetail;
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
+import com.flash21.caddycom.repository.golfFieldDetail.CommentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ public class HoleService {
     private final TeeService teeService;
     private final CommentService commentService;
     private final TeeRepository teeRepository;
+    private final CommentRepository commentRepository;
 
     /**
      * 홀의 핸디를 수정한다.
@@ -113,6 +115,7 @@ public class HoleService {
                     deleteHoles.add(hole);
             }
         }
+        commentRepository.deleteAllByHoles(deleteHoles);
         teeRepository.deleteAllByHoles(deleteHoles);
         holeRepository.deleteAllInBatch(deleteHoles);
     }

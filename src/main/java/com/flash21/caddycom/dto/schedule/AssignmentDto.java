@@ -1,5 +1,6 @@
 package com.flash21.caddycom.dto.schedule;
 
+import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -24,5 +25,19 @@ public class AssignmentDto {
     @NoArgsConstructor
     public static class BlockRequest {
         private String reason;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class BlockResponse {
+        private String caddyName;
+        private String reason;
+
+        public BlockResponse(Assignment assignment) {
+            this.reason = assignment.getReason() != null ? assignment.getReason() : "사용자의 요청으로 블락된 상태입니다.";
+            this.caddyName = assignment.getCaddyName() != null ? assignment.getCaddyName() : "블락 상태에서 캐디가 배정되지 않았습니다.";
+        }
+
     }
 }

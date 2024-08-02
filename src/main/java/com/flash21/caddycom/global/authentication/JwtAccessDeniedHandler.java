@@ -18,13 +18,12 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e)
             throws IOException, ServletException {
-        if (request.getAttribute("exception") != null) {
-            response.setContentType("application/json; charset=UTF-8");
-            response.setStatus(HttpStatus.FORBIDDEN.value());
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            ExceptionDto exceptionDto = ExceptionDto.fail(HttpStatus.FORBIDDEN, request.getAttribute("exception").toString());
-            objectMapper.writeValue(response.getOutputStream(), exceptionDto);
-        }
+        response.setContentType("application/json; charset=UTF-8");
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ExceptionDto exceptionDto = ExceptionDto.fail(HttpStatus.FORBIDDEN, "접근 권한이 없는 요청입니다.");
+        objectMapper.writeValue(response.getOutputStream(), exceptionDto);
     }
 }

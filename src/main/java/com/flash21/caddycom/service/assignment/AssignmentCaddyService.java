@@ -15,6 +15,7 @@ import com.flash21.caddycom.repository.schedule.AssignmentQueryFactory;
 import com.flash21.caddycom.repository.schedule.AssignmentRepository;
 import com.flash21.caddycom.repository.schedule.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AssignmentCaddyService {
@@ -185,7 +187,7 @@ public class AssignmentCaddyService {
                 if (verifyCaddy(assignment, currentCaddy, todaysDayOfWeek)) {
                     assignment.assignCaddy(currentCaddy);
 
-                    System.out.println("배정된 캐디 이름: " + currentCaddy.getName() + " 캐디 ID: " + currentCaddy.getId() + " 배정 Id: " + assignment.getId());
+                    log.info("배정된 캐디 이름: " + currentCaddy.getName() + " 캐디 ID: " + currentCaddy.getId() + " 배정 Id: " + assignment.getId());
                     isAssigned = true;
                     recentlyAssignedCaddyId = currentCaddy.getId();
                 }

@@ -3,9 +3,9 @@ package com.flash21.caddycom.service.schedule;
 import com.flash21.caddycom.dto.schedule.AssignmentDto;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.schedule.Assignment;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
-import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.global.exception.cException.CReservationSheetNotFoundException;
 import com.flash21.caddycom.repository.schedule.*;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class AssignmentService {
     public Map<String, List<Object>> getAssignments(Long golfFieldId, LocalDate targetDate, int page) {
         List<Schedule> scheduleList = scheduleRepository.findAllByGolfFieldIdAndReservationAt(golfFieldId, targetDate);
         Set<Course> courseSet = new HashSet<>();
-        for (Schedule schedule: scheduleList) {
+        for (Schedule schedule : scheduleList) {
             courseSet.add(schedule.getCourse());
 
             if (schedule.getDateStatus() == DateStatus.NOTHING)
@@ -88,8 +88,8 @@ public class AssignmentService {
         Page<LocalTime> resultTimePage = assignmentRepository.findTimesByReservationAt(date, pageable);
         List<LocalTime> resultTimeList = resultTimePage.getContent();
 
-        List<Assignment> assignmentList = assignmentRepository.findAllByReservationAtAndBetweenTime(date, resultTimeList.get(0), resultTimeList.get(resultTimeList.size()-1));
-        for (Assignment assignment: assignmentList) {
+        List<Assignment> assignmentList = assignmentRepository.findAllByReservationAtAndBetweenTime(date, resultTimeList.get(0), resultTimeList.get(resultTimeList.size() - 1));
+        for (Assignment assignment : assignmentList) {
             String startTime = assignment.getStartTime().toString();
             String courseName = assignment.getSchedule().getCourse().getName();
             AssignmentDto.AssignmentsResponse dto = AssignmentDto.AssignmentsResponse.builder()
@@ -115,14 +115,14 @@ public class AssignmentService {
         assignmentJdbcRepository.saveAll(schedule.getId(), rsService.getStartTimeList(
                 schedule.getStartTime(), schedule.getEndTime(), schedule.getTeeOff()));
 
-        schedule.setDateStatus(DateStatus.SETTING);
+        schedule.changeDateStatus(DateStatus.SETTING);
     }
 
     /**
      * 배정정보 조회 내부함수4: 요구되는 response 형식대로 생성 및 반환합니다.
      *
      * @param courseNameList 전체 코스이름 리스트
-     * @param dtoMap 코스, dto 구조의 map
+     * @param dtoMap         코스, dto 구조의 map
      * @return 요구되는 api response
      */
     private Map<String, List<Object>> makeResponse(List<String> courseNameList, Map<String, Map<String, AssignmentDto.AssignmentsResponse>> dtoMap) {
@@ -150,11 +150,27 @@ public class AssignmentService {
         Assignment findAssignment = assignmentRepository.findById(assignmentsId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
 
+        findAssignment.blockAssignment(blockRequest.getReason());
+
+    }
+
+    @Transactional
+    public void cancelBlock(Long assignmentsId) {
+        Assignment findAssignment = assignmentRepository.findById(assignmentsId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
+
+        findAssignment.cancelBlock();
+
+    }
+
+    public AssignmentDto.BlockResponse getBlock(Long assignmentsId) {
+        Assignment findAssignment = assignmentRepository.findById(assignmentsId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
+
         if (findAssignment.getStatus() != AssignmentStatus.BLOCKED) {
-            findAssignment.blockAssignment(blockRequest.getReason());
+            throw new IllegalStateException("블락상태가 아닌 배정 정보입니다.");
         }
 
-        Schedule schedule = findAssignment.getSchedule();
-        schedule.addBlockCount();
+        return new AssignmentDto.BlockResponse(findAssignment);
     }
 }

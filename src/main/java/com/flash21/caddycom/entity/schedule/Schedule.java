@@ -61,14 +61,20 @@ public class Schedule {
     @Column(nullable = false)
     private Integer blockedCnt;
 
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Assignment> assignments;
 
-    public void setDateStatus(DateStatus dateStatus) {
+    public void changeDateStatus(DateStatus dateStatus) {
         this.dateStatus = dateStatus;
     }
 
     public void addBlockCount() {
         this.blockedCnt++;
+    }
+
+    public void subBlockCount() {
+        if (this.blockedCnt >= 1) {
+            this.blockedCnt--;
+        }
     }
 }

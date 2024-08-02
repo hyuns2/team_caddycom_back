@@ -94,9 +94,9 @@ public class HoleService {
         if(!request.getDeleteTeeIds().isEmpty())
             teeService.deleteTees(request.getDeleteTeeIds());
 
-        commentService.createAndUpdateComments(request.getHoleId(), request.getTipInfoData());
-        if(!request.getDeleteTipInfoIds().isEmpty())
-            commentService.deleteComments(request.getDeleteTipInfoIds());
+        commentService.createAndUpdateComments(request.getHoleId(), request.getCommentData());
+        if(!request.getDeleteCommentIds().isEmpty())
+            commentService.deleteComments(request.getDeleteCommentIds());
     }
 
     /**

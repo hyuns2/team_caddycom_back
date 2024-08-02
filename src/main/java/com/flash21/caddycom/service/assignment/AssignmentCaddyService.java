@@ -135,7 +135,7 @@ public class AssignmentCaddyService {
         }
 
         //오늘의 요일 변환
-        Days todaysDayOfWeek = getDays(date.plusDays(5));
+        Days todaysDayOfWeek = getDays(date);
 
         //배정 검증
         List<Assignment> findAssignments = getAllAssignmentsSortByTime(findSchedules);
@@ -154,7 +154,12 @@ public class AssignmentCaddyService {
 
         int caddySize = findCaddies.size();
         int currentCaddyIndex = getStartIndex(findGolfField, caddySize, findCaddies);
-        System.out.println(todaysDayOfWeek.name() + " 기준으로");
+
+        System.out.println("시작 인덱스는 " + currentCaddyIndex);
+        HouseCaddy houseCaddy = findCaddies.get(currentCaddyIndex);
+        System.out.println("첫 배정 시작 인원은 " + houseCaddy.getName());
+        System.out.println(todaysDayOfWeek.name() + "요일 기준으로 배정");
+
         for (Assignment assignment : findAssignments) {
             boolean isAssigned = false;
 
@@ -166,7 +171,9 @@ public class AssignmentCaddyService {
                 HouseCaddy currentCaddy = findCaddies.get(currentCaddyIndex);
                 if (isAlreadyAssigned(blockedCaddyIds, currentCaddy) && isAvailable(assignment, currentCaddy, todaysDayOfWeek)) {
                     assignment.assignCaddy(currentCaddy);
-                    System.out.printf(assignment.getSchedule().getCourse().getName() + "코스 " + assignment.getStartTime() + "은 -> " + currentCaddy.getId() + " " + currentCaddy.getName() + "가 배정 됨\n");
+                    System.out.printf("❗❗" + assignment.getSchedule().getCourse().getName() + "코스 "
+                            + assignment.getStartTime() + "은 -> ID(" + currentCaddy.getId() + ") "
+                            + currentCaddy.getName() + "가 배정 됨❗❗️\n");
                     isAssigned = true;
                 }
 
@@ -200,7 +207,7 @@ public class AssignmentCaddyService {
     private boolean isAlreadyAssigned(Set<Long> blockedCaddyIds, HouseCaddy currentCaddy) {
         boolean b = !blockedCaddyIds.contains(currentCaddy.getId());
         if (!b) {
-            log.info(currentCaddy.getName() + " 이미 배정되었으므로 배정이 불가능함");
+            System.out.println(currentCaddy.getId() + " " + currentCaddy.getName() + "는 블락에 배정되었으므로 배정이 불가능함");
         }
         return b;
     }
@@ -227,14 +234,14 @@ public class AssignmentCaddyService {
 
 
         if (!isWorkDay) {
-            System.out.print(currentCaddy.getId() + " " + currentCaddy.getName() + "는 휴일이므로 ");
+            System.out.print("ID(" + currentCaddy.getId() + ") " + currentCaddy.getName() + "는 " + todaysDayOfWeek + "에 휴일이므로 ");
             if (isOffPart) {
                 System.out.println("배정이 불가능함");
             }
         }
         if (!isOffPart) {
             if (isWorkDay) {
-                System.out.print(currentCaddy.getId() + " " + currentCaddy.getName() + "는 휴일이 아니지만 오프 파트이므로 배정이 불가능함\n");
+                System.out.print("ID(" + currentCaddy.getId() + " " + currentCaddy.getName() + "는 휴일이 아니지만 오프 파트이므로 배정이 불가능함\n");
             } else {
                 System.out.print("또한 오프 파트이므로 배정이 불가능함\n");
             }

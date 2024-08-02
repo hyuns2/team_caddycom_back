@@ -3,6 +3,7 @@ package com.flash21.caddycom.service.schedule;
 import com.flash21.caddycom.dto.schedule.AssignmentDto;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.schedule.Assignment;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.exception.cException.CReservationSheetNotFoundException;
@@ -160,5 +161,16 @@ public class AssignmentService {
 
         findAssignment.cancelBlock();
 
+    }
+
+    public AssignmentDto.BlockResponse getBlock(Long assignmentsId) {
+        Assignment findAssignment = assignmentRepository.findById(assignmentsId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
+
+        if (findAssignment.getStatus() != AssignmentStatus.BLOCKED) {
+            throw new IllegalStateException("블락상태가 아닌 배정 정보입니다.");
+        }
+
+        return new AssignmentDto.BlockResponse(findAssignment);
     }
 }

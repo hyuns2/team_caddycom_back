@@ -23,6 +23,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+/**
+ * 골프장 구성과 관련된 CRUD
+ *
+ * @author Koo-EunSung
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -37,6 +42,12 @@ public class FormationService {
     private final HoleService holeService;
     private final TeeService teeService;
 
+    /**
+     * 구성 정보를 생성하면서 코스, 홀, 티의 정보를 같이 생성한다.
+     *
+     * @param golfField 구성을 추가할 골프장의 id. null일 수 없다.
+     * @param request 구성 생성 요청 DTO
+     */
     public void createFormation(GolfField golfField, FormationRequest.Create request) {
         Formation formation;
         if(request.getName() == null || request.getName().isBlank())
@@ -60,6 +71,15 @@ public class FormationService {
         teeService.createTees(holes);
     }
 
+    /**
+     * 구성 정보를 수정한다. 구성에 포함된 코스 정보도 포함된다.
+     *
+     * @param request 구성 정보 수정 요청 DTO
+     * @throws NoSuchElementException
+     *          수정하려는 구성이 존재하지 않을 경우
+     * @throws IllegalArgumentException
+     *          구성의 이름을 공백으로 수정하려는 경우
+     */
     public void updateFormation(FormationRequest.Update request) {
         Formation formation = formationRepository.findById(request.getFormationId())
                 .orElseThrow(() -> new NoSuchElementException("해당 구성은 존재하지 않습니다."));
@@ -87,6 +107,11 @@ public class FormationService {
         }
     }
 
+    /**
+     * 구성에 포함된 멘트, 티, 홀, 코스와 구성 정보를 함께 삭제한다.
+     *
+     * @param ids 삭제할 구성의 id 리스트
+     */
     public void deleteFormations(List<Long> ids) {
         commentRepository.deleteAllByFormationIds(ids);
         teeRepository.deleteAllByFormationIds(ids);
@@ -95,6 +120,14 @@ public class FormationService {
         formationRepository.deleteAllByIdInBatch(ids);
     }
 
+    /**
+     * 골프장의 모든 구성 정보를 반환한다.
+     *
+     * @param golfFieldId 구성 정보를 조회할 골프장의 id. null일 수 없다.
+     * @return 골프장의 모든 구성 정보
+     * @throws NoSuchElementException
+     *          골프장에 구성이 존재하지 않는 경우
+     */
     public List<FormationResponse.Create> getAllFormations(Long golfFieldId) {
         List<Formation> formations = formationRepository.findAllByGolfFieldId(golfFieldId);
         if(formations.isEmpty())

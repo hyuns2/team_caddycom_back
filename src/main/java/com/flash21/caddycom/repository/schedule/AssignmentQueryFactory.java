@@ -72,12 +72,12 @@ public class AssignmentQueryFactory {
 
 
     private BooleanExpression eqPart(Integer part) {
-        return part == null ? null : QAssignment.assignment.schedule.part.eq(part);
+        return part == 0 ? null : QAssignment.assignment.schedule.part.eq(part);
     }
 
 
     private BooleanExpression eqCourseId(Long courseId) {
-        return courseId == null ? null : QAssignment.assignment.schedule.course.id.eq(courseId);
+        return courseId == 0 ? null : QAssignment.assignment.schedule.course.id.eq(courseId);
     }
 
 

@@ -73,6 +73,15 @@ public class ApiExceptionHandler {
                 .body(ExceptionDto.fail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
 
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ExceptionDto> nullPointerException(NullPointerException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ExceptionDto.fail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+    }
+
     @ExceptionHandler(CInvalidPartInfoException.class)
     protected ResponseEntity<ExceptionDto> handle(CInvalidPartInfoException e) {
         ErrorCode errorCode = e.getErrorCode();

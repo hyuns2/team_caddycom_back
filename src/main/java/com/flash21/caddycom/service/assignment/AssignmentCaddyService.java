@@ -137,7 +137,7 @@ public class AssignmentCaddyService {
         }
 
         //오늘의 요일 변환
-        Days todaysDayOfWeek = getDays(date.plusDays(4));
+        Days todaysDayOfWeek = getDays(date);
 
         //배정 검증
         List<Assignment> findAssignments = getAllAssignmentsSortByTime(findSchedules);

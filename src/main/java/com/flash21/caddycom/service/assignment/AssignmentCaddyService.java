@@ -203,8 +203,8 @@ public class AssignmentCaddyService {
                 .collect(Collectors.toList());
     }
 
-    private Set<Long> getBlockedHouseCaddies(List<Assignment> findSchedules) {
-        return findSchedules.stream()
+    private Set<Long> getBlockedHouseCaddies(List<Assignment> findAssignment) {
+        return findAssignment.stream()
                 .filter(assignment -> assignment.getStatus() == AssignmentStatus.BLOCKED && assignment.getHouseCaddy() != null)
                 .map(Assignment::getHouseCaddy)
                 .map(HouseCaddy::getId)

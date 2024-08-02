@@ -63,9 +63,9 @@ public class HoleService {
         if(!request.getDeleteTeeIds().isEmpty())
             teeService.deleteTees(request.getDeleteTeeIds());
 
-        commentService.createAndUpdateTipInfos(request.getHoleId(), request.getTipInfoData());
+        commentService.createAndUpdateComments(request.getHoleId(), request.getTipInfoData());
         if(!request.getDeleteTipInfoIds().isEmpty())
-            commentService.deleteTipInfos(request.getDeleteTipInfoIds());
+            commentService.deleteComments(request.getDeleteTipInfoIds());
     }
 
     @Transactional

@@ -20,7 +20,7 @@ public class CommentService {
     private final HoleRepository holeRepository;
 
     @Transactional
-    public void createAndUpdateTipInfos(Long holeId, List<CommentDto.Info> tipInfos) {
+    public void createAndUpdateComments(Long holeId, List<CommentDto.Info> tipInfos) {
         Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
         List<Comment> savedComments = hole.getComments();
@@ -43,12 +43,12 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteTipInfos(List<Long> tipInfoIds) {
+    public void deleteComments(List<Long> tipInfoIds) {
         commentRepository.deleteAllByIdInBatch(tipInfoIds);
     }
 
     @Transactional(readOnly = true)
-    public List<CommentDto.Info> getAllTipInfos(Long holeId) {
+    public List<CommentDto.Info> getAllComments(Long holeId) {
         List<Comment> comments = commentRepository.findAllByHoleId(holeId)
                 .orElse(null);
 

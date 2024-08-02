@@ -27,7 +27,9 @@ public class TeeService {
 
         //2. request 이용해서 새로운 티 정보 생성
         List<TeeRequest.Create> newTeeInfos = request.getCreateInfos();
-        List<Hole> holes = holeRepository.findAllByCourseId(courseId).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
+        List<Hole> holes = holeRepository.findAllByCourseId(courseId);
+        if(holes.isEmpty())
+            throw new NoSuchElementException("해당 코스에 홀이 존재하지 않습니다.");
         List<Tee> newTees = new ArrayList<>();
 
         for(Hole hole : holes) {

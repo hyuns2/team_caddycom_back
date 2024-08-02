@@ -55,7 +55,7 @@ public class FormationService {
         for(Course course : courses)
             courseIds.add(course.getId());
 
-        List<Hole> holes = holeRepository.findAllByCourseIds(courseIds).orElseThrow(() -> new NoSuchElementException("해당 코스가 존재하지 않습니다."));
+        List<Hole> holes = holeRepository.findAllByCourseIds(courseIds);
 
         teeService.createTees(holes);
     }

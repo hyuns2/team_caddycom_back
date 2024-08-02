@@ -182,7 +182,7 @@ public class AssignmentCaddyService {
         }
 
         findGolfField.changeCaddyAssignCursor(findCaddies.get(currentCaddyIndex).getId());
-        findSchedules.forEach(fs -> fs.setDateStatus(DateStatus.ASSIGNED));
+        findSchedules.forEach(fs -> fs.changeDateStatus(DateStatus.ASSIGNED));
     }
 
     private int getStartIndex(GolfField findGolfField, int caddySize, List<HouseCaddy> findCaddies) {

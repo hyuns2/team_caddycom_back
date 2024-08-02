@@ -61,7 +61,7 @@ public class Schedule {
     @Column(nullable = false)
     private Integer blockedCnt;
 
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Assignment> assignments;
 
     public void setDateStatus(DateStatus dateStatus) {

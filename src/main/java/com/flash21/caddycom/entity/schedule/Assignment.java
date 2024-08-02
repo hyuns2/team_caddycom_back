@@ -64,6 +64,7 @@ public class Assignment {
         this.caddyName = caddy.getName();
         this.houseCaddy = caddy;
         caddy.getAssignmentList().add(this);
+        if (this.status == AssignmentStatus.BLOCKED) return;
         this.status = AssignmentStatus.ASSIGNED;
     }
 }

@@ -96,8 +96,9 @@ public class FormationService {
     }
 
     public List<FormationResponse.Create> getAllFormations(Long golfFieldId) {
-        List<Formation> formations = formationRepository.findAllByGolfFieldId(golfFieldId)
-                .orElseThrow(() -> new NoSuchElementException("골프장에 구성이 존재하지 않습니다."));
+        List<Formation> formations = formationRepository.findAllByGolfFieldId(golfFieldId);
+        if(formations.isEmpty())
+            throw new NoSuchElementException("골프장에 구성이 존재하지 않습니다.");
 
         List<FormationResponse.Create> response = new ArrayList<>();
         for(Formation formation : formations) {

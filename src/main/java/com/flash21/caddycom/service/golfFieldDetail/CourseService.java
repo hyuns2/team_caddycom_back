@@ -33,6 +33,11 @@ public class CourseService {
 
     private final HoleService holeService;
 
+    /**
+     * 모든 코스 정보를 반환한다.
+     *
+     * @return 코스 정보 DTO 리스트
+     */
     public List<CourseResponse.Info> retrieveCourseInfo() {
         List<Course> courseList = courseRepository.findAll();
 
@@ -51,7 +56,7 @@ public class CourseService {
      *
      * @param formation 코스가 포함되는 구성
      * @param requests 코스 생성 요청 DTO
-     * @return 생성된 코스 id 리스트
+     * @return 생성된 코스 id 리스트 <b>(mysql 사용 시 id가 아닌 null 반환됨)</b>
      */
     public List<Long> createCourses(Formation formation, List<CourseRequest.create> requests) {
         List<Course> courses = new ArrayList<>();

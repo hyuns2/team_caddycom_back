@@ -13,7 +13,6 @@ import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.repository.schedule.AssignmentQueryFactory;
 import com.flash21.caddycom.repository.schedule.AssignmentRepository;
-import com.flash21.caddycom.repository.schedule.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,6 +26,8 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -36,7 +37,6 @@ public class AssignmentCaddyService {
     private final AssignmentRepository assignmentRepository;
     private final HouseCaddyRepository houseCaddyRepository;
     private final AssignmentQueryFactory assignmentQueryFactory;
-    private final ScheduleRepository scheduleRepository;
     private final GolfFieldRepository golfFieldRepository;
 
     /**
@@ -126,55 +126,35 @@ public class AssignmentCaddyService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 골프장입니다."));
 
         //스케줄 검증
-        List<Schedule> findSchedules = scheduleRepository.findAllByGolfFieldIdAndReservationAtFetchJoin(golfFieldId, date);
-        for (Schedule findSchedule : findSchedules) {
-            if (findSchedule.getDateStatus() != DateStatus.SETTING) {
-                throw new IllegalStateException("전체 배정이 불가능한 상태입니다");
-            }
-        }
-        if (findSchedules.isEmpty()) {
+        List<Schedule> findSchedules = assignmentQueryFactory.findAllByGolfFieldIdAndReservationAtFetchJoinAssignmentAndHouseCaddy(golfFieldId, date);
+
+        boolean invalidScheduleExists = findSchedules.stream()
+                .anyMatch(findSchedule -> findSchedule.getDateStatus() != DateStatus.SETTING);
+        if (findSchedules.isEmpty() || invalidScheduleExists) {
             throw new NoSuchElementException("존재하지 않는 스케줄입니다.");
         }
 
         //오늘의 요일 변환
-        Days todaysDayOfWeek = getDays(date);
+        Days todaysDayOfWeek = getDays(date.plusDays(5));
 
         //배정 검증
         List<Assignment> findAssignments = getAllAssignmentsSortByTime(findSchedules);
         if (findAssignments.isEmpty()) {
             throw new NoSuchElementException("배정 정보가 존재하지 않습니다.");
         }
-        for (Assignment findAssignment : findAssignments) {
-            System.out.println("findAssignment.getStartTime() = " + findAssignment.getStartTime());
-        }
 
         //캐디 검증
         List<HouseCaddy> findCaddies = houseCaddyRepository.findAllByGolfFieldIdSortById(golfFieldId);
+
         if (findCaddies.isEmpty()) {
             throw new NoSuchElementException("캐디가 존재하지 않습니다.");
         }
 
+        Set<Long> blockedCaddyIds = getBlockedHouseCaddies(findAssignments);
+
         int caddySize = findCaddies.size();
-        int currentCaddyIndex = 0;
-        Long recentlyAssignedCaddyId = null;
-
-
-        Long cursor = findGolfField.getCaddyAssignCursor();
-        if (cursor != null) {
-            currentCaddyIndex = findCaddies.indexOf(
-                    houseCaddyRepository.findById(cursor)
-                            .orElseThrow(() -> new NoSuchElementException("존재하지 않는 캐디입니다."))
-            ) + 1 % findCaddies.size();
-        }
-
-        List<Assignment> blockedAssignments = getBlockedAssignmentsSortByTime(findSchedules);
-        for (Assignment assignment : blockedAssignments) {
-            HouseCaddy caddy = assignment.getHouseCaddy();
-            if (caddy != null) {
-                findCaddies.remove(caddy);
-            }
-        }
-
+        int currentCaddyIndex = getStartIndex(findGolfField, caddySize, findCaddies);
+        System.out.println(todaysDayOfWeek.name() + " 기준으로");
         for (Assignment assignment : findAssignments) {
             boolean isAssigned = false;
 
@@ -184,43 +164,83 @@ public class AssignmentCaddyService {
             while (!isAssigned) {
 
                 HouseCaddy currentCaddy = findCaddies.get(currentCaddyIndex);
-                if (verifyCaddy(assignment, currentCaddy, todaysDayOfWeek)) {
+                if (isAlreadyAssigned(blockedCaddyIds, currentCaddy) && isAvailable(assignment, currentCaddy, todaysDayOfWeek)) {
                     assignment.assignCaddy(currentCaddy);
-
-                    log.info("배정된 캐디 이름: " + currentCaddy.getName() + " 캐디 ID: " + currentCaddy.getId() + " 배정 Id: " + assignment.getId());
+                    System.out.printf(assignment.getSchedule().getCourse().getName() + "코스 " + assignment.getStartTime() + "은 -> " + currentCaddy.getId() + " " + currentCaddy.getName() + "가 배정 됨\n");
                     isAssigned = true;
-                    recentlyAssignedCaddyId = currentCaddy.getId();
                 }
 
                 currentCaddyIndex = (currentCaddyIndex + 1) % caddySize;
             }
         }
 
-        findGolfField.changeCaddyAssignCursor(recentlyAssignedCaddyId);
+        findGolfField.changeCaddyAssignCursor(findCaddies.get(currentCaddyIndex).getId());
         findSchedules.forEach(fs -> fs.setDateStatus(DateStatus.ASSIGNED));
+    }
+
+    private int getStartIndex(GolfField findGolfField, int caddySize, List<HouseCaddy> findCaddies) {
+
+        if (findGolfField.getCaddyAssignCursor() == null) return 0;
+
+        Long cursor = findGolfField.getCaddyAssignCursor();
+        int index = -1;
+        for (int i = 0; i < caddySize; i++) {
+            if (findCaddies.get(i).getId().equals(cursor)) {
+                index = i;
+                break;
+            } else if (findCaddies.get(i).getId() > cursor) {
+                index = i;
+                break;
+            }
+        }
+
+        return (index == -1) ? 0 : index;
+    }
+
+    private boolean isAlreadyAssigned(Set<Long> blockedCaddyIds, HouseCaddy currentCaddy) {
+        boolean b = !blockedCaddyIds.contains(currentCaddy.getId());
+        if (!b) {
+            log.info(currentCaddy.getName() + " 이미 배정되었으므로 배정이 불가능함");
+        }
+        return b;
     }
 
     private List<Assignment> getAllAssignmentsSortByTime(List<Schedule> findSchedules) {
         return findSchedules.stream()
                 .flatMap(schedule -> schedule.getAssignments().stream())
-                .filter(assignment -> assignment.getStatus() == AssignmentStatus.NOTHING)
+                .filter(assignment -> assignment.getStatus() == AssignmentStatus.NOTHING || assignment.getStatus() == AssignmentStatus.BLOCKED)
                 .sorted(Comparator.comparing(Assignment::getStartTime))
-                .toList();
+                .collect(Collectors.toList());
     }
 
-    private List<Assignment> getBlockedAssignmentsSortByTime(List<Schedule> findSchedules) {
+    private Set<Long> getBlockedHouseCaddies(List<Assignment> findSchedules) {
         return findSchedules.stream()
-                .flatMap(schedule -> schedule.getAssignments().stream())
                 .filter(assignment -> assignment.getStatus() == AssignmentStatus.BLOCKED)
-                .sorted(Comparator.comparing(Assignment::getStartTime))
-                .toList();
+                .map(Assignment::getHouseCaddy)
+                .map(HouseCaddy::getId)
+                .collect(Collectors.toSet());
     }
 
-    private boolean verifyCaddy(Assignment assignment, HouseCaddy currentCaddy, Days todaysDayOfWeek) {
-        boolean isHoliday = currentCaddy.getHoliday() == null || !currentCaddy.getHoliday().contains(todaysDayOfWeek);
+    private boolean isAvailable(Assignment assignment, HouseCaddy currentCaddy, Days todaysDayOfWeek) {
+        boolean isWorkDay = currentCaddy.getHoliday() == null || !currentCaddy.getHoliday().contains(todaysDayOfWeek);
         boolean isOffPart = currentCaddy.getOffPart() == null || !currentCaddy.getOffPart().contains(assignment.getSchedule().getPart());
 
-        return isHoliday && isOffPart;
+
+        if (!isWorkDay) {
+            System.out.print(currentCaddy.getId() + " " + currentCaddy.getName() + "는 휴일이므로 ");
+            if (isOffPart) {
+                System.out.println("배정이 불가능함");
+            }
+        }
+        if (!isOffPart) {
+            if (isWorkDay) {
+                System.out.print(currentCaddy.getId() + " " + currentCaddy.getName() + "는 휴일이 아니지만 오프 파트이므로 배정이 불가능함\n");
+            } else {
+                System.out.print("또한 오프 파트이므로 배정이 불가능함\n");
+            }
+        }
+
+        return isWorkDay && isOffPart;
     }
 
 

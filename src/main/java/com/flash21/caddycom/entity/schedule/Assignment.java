@@ -63,10 +63,9 @@ public class Assignment {
     public void cancelBlock() {
         if (this.status == AssignmentStatus.BLOCKED) {
             this.status = AssignmentStatus.NOTHING;
-            this.reason = "";
-            if (this.getHouseCaddy() != null) {
-                this.houseCaddy = null;
-            }
+            this.reason = null;
+            this.caddyName = null;
+            this.houseCaddy = null;
             this.schedule.subBlockCount();
         }
     }

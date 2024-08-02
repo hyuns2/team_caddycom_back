@@ -73,7 +73,7 @@ public class Schedule {
     }
 
     public void subBlockCount() {
-        if (this.blockedCnt > 1) {
+        if (this.blockedCnt >= 1) {
             this.blockedCnt--;
         }
     }

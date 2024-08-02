@@ -31,14 +31,13 @@ public class AssignmentDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class BlockResponse {
+        private String caddyName;
         private String reason;
 
         public BlockResponse(Assignment assignment) {
-            if (assignment.getReason() != null) {
-                this.reason = assignment.getReason();
-            } else {
-                this.reason = "사용자의 요청으로 블락되었습니다.";
-            }
+            this.reason = assignment.getReason() != null ? assignment.getReason() : "사용자의 요청으로 블락된 상태입니다.";
+            this.caddyName = assignment.getCaddyName() != null ? assignment.getCaddyName() : "블락 상태에서 캐디가 배정되지 않았습니다.";
         }
+
     }
 }

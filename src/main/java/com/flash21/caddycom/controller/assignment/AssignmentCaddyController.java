@@ -28,7 +28,7 @@ public class AssignmentCaddyController {
     public ResponseEntity<PagingResponse<AssignmentResponse.Info>> getAssignments(
             @PathVariable Long golfFieldId,
             @PathVariable LocalDate date,
-            @RequestParam(required = false) Long courseId,
+            @RequestParam(required = false, defaultValue = "0") Long courseId,
             @RequestParam(required = false) AssignmentStatus status,
             @RequestParam(defaultValue = "0") int page) {
         return ResponseEntity.ok().body(assignmentCaddyService.getAssignments(golfFieldId, date, courseId, status, page));
@@ -36,14 +36,14 @@ public class AssignmentCaddyController {
 
 
     @GetMapping("switch/{golfFieldId}/{date}")
-    @Operation(summary = "배정 결과 변경 API", description = "변경 가능한 캐디의 목록을 페이징 조회한다.")
+    @Operation(summary = "배정 변경 가능한 캐디 목록 조회 API", description = "변경 가능한 캐디의 목록을 페이징 조회한다.")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PagingResponse<AssignmentResponse.Info>> getSwitchingCaddy(
             @PathVariable Long golfFieldId,
             @PathVariable LocalDate date,
             @RequestParam Long assignmentId,
-            @RequestParam(required = false) Long courseId,
-            @RequestParam(required = false) Integer part,
+            @RequestParam(required = false, defaultValue = "0") Long courseId,
+            @RequestParam(required = false, defaultValue = "0") Integer part,
             @RequestParam(defaultValue = "0") int page) {
         return ResponseEntity.ok().body(assignmentCaddyService.getSwitchingCaddy(golfFieldId, date, assignmentId, courseId, part, page));
     }
@@ -77,7 +77,7 @@ public class AssignmentCaddyController {
 
     @PostMapping("{golfFieldId}/{date}")
     @Operation(summary = "캐디 자동 배정", description = "해당 날짜의 스케줄들에 캐디를 배정한다")
-    public ResponseEntity<?> assignCaddyToSchedule(
+    public ResponseEntity<Void> assignCaddyToSchedule(
             @PathVariable("golfFieldId") Long golfFieldId,
             @PathVariable("date") LocalDate date
     ) {

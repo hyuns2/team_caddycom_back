@@ -73,12 +73,7 @@ public class CommentService {
      */
     @Transactional(readOnly = true)
     public List<CommentDto.Info> getAllComments(Long holeId) {
-        List<Comment> comments = commentRepository.findAllByHoleId(holeId)
-                .orElse(null);
-
-        if(comments == null) {
-            return null;
-        }
+        List<Comment> comments = commentRepository.findAllByHoleId(holeId);
 
         List<CommentDto.Info> Infos = new ArrayList<>();
         comments.forEach(comment ->

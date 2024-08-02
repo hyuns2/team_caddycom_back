@@ -51,13 +51,23 @@ public class Assignment {
     }
 
     public void blockAssignment(String reason) {
-        this.status = AssignmentStatus.BLOCKED;
-        this.reason = reason;
+        if (this.status != AssignmentStatus.BLOCKED) {
+            this.status = AssignmentStatus.BLOCKED;
+            this.reason = reason;
+            this.schedule.addBlockCount();
+        } else if (this.status == AssignmentStatus.BLOCKED) {
+            this.reason = reason;
+        }
     }
 
-    public void cancelBlockAssignment(String reason) {
-        this.status = AssignmentStatus.NOTHING;
-        this.reason = "";
+    public void cancelBlock() {
+        if (this.status == AssignmentStatus.BLOCKED) {
+            this.status = AssignmentStatus.NOTHING;
+            this.reason = null;
+            this.caddyName = null;
+            this.houseCaddy = null;
+            this.schedule.subBlockCount();
+        }
     }
 
     public void assignCaddy(HouseCaddy caddy) {

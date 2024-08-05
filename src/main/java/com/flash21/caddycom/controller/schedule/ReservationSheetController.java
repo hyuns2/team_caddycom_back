@@ -23,7 +23,8 @@ public class ReservationSheetController {
 
     @Operation(summary = "예약시트 등록", description = "골프장 관리자가 예약시트를 등록합니다.")
     @PostMapping
-    public ResponseEntity<?> createReservationSheet(@AuthenticationPrincipal User user, @Valid @RequestBody ReservationSheetDto.CreateRequest dto) {
+    public ResponseEntity<?> createReservationSheet(@AuthenticationPrincipal User user,
+                                                    @Valid @RequestBody ReservationSheetDto.CreateRequest dto) {
         rsService.createReservationSheet(dto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -31,9 +32,25 @@ public class ReservationSheetController {
 
     @Operation(summary = "캘린더 메타정보 조회", description = "골프장 관리자가 캘린더에 표기되는 메타정보를 조회합니다.")
     @GetMapping("/calendar/{golfFieldId}/{year}/{month}")
-    public ResponseEntity<?> getMetaData(@AuthenticationPrincipal User user, @PathVariable Long golfFieldId, @PathVariable int year, @PathVariable int month) {
+    public ResponseEntity<?> getMetaData(@AuthenticationPrincipal User user,
+                                         @PathVariable Long golfFieldId,
+                                         @PathVariable int year,
+                                         @PathVariable int month) {
         List<ReservationSheetDto.MetaDataResponse> responseDtoList = rsService.getMetaData(golfFieldId, year, month);
 
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
+    }
+
+    @Operation(summary = "캐디 캘린더 배정 정보 조회", description = "캐디가 캘린더에 표기되는 배정 정보를 조회합니다.")
+    @GetMapping("/calendar/{golfFieldId}/{caddyId}/{year}/{month}")
+    public ResponseEntity<?> getCaddyAssignments(@AuthenticationPrincipal User user,
+                                                 @PathVariable Long golfFieldId,
+                                                 @PathVariable Long caddyId,
+                                                 @PathVariable int year,
+                                                 @PathVariable int month) {
+
+        rsService.getAssignmentResultSheet(golfFieldId, caddyId, year, month);
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }

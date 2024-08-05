@@ -16,7 +16,8 @@ import java.time.LocalDate;
 @SuperBuilder
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "CTYPE")
-public class Caddy {
+public abstract class Caddy {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;

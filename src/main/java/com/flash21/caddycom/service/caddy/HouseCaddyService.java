@@ -8,7 +8,6 @@ import com.flash21.caddycom.entity.caddy.TeamRole;
 import com.flash21.caddycom.global.exception.cException.CCaddyNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidCaddyRequestException;
 import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundException;
-import com.flash21.caddycom.repository.caddy.HouseCaddyJdbcRepository;
 import com.flash21.caddycom.repository.caddy.HouseCaddyQueryFactory;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 public class HouseCaddyService {
 
     private final HouseCaddyRepository houseCaddyRepository;
-    private final HouseCaddyJdbcRepository houseCaddyJdbcRepository;
     private final HouseCaddyQueryFactory houseCaddyQueryFactory;
 
     /**
@@ -183,7 +181,7 @@ public class HouseCaddyService {
     @Transactional
     public void saveCaddyList(Long golfFieldId, List<HouseCaddy> caddyList) {
         //TODO: bulk insert로 변경 필요
-        houseCaddyJdbcRepository.saveAll(caddyList, golfFieldId);
+        houseCaddyRepository.bulkInsert(caddyList, golfFieldId);
     }
 
 

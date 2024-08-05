@@ -4,7 +4,7 @@ import com.flash21.caddycom.dto.golfField.FacilityResponse;
 import com.flash21.caddycom.entity.golfField.Facility;
 import com.flash21.caddycom.entity.golfField.FacilityImage;
 import com.flash21.caddycom.entity.golfField.GolfField;
-import com.flash21.caddycom.repository.golfField.FacilityImageJdbcRepository;
+import com.flash21.caddycom.repository.golfField.FacilityImageJdbcRepositoryImpl;
 import com.flash21.caddycom.repository.golfField.FacilityImageRepository;
 import com.flash21.caddycom.repository.golfField.FacilityRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
  * 골프장 시설 정보와 관련된 CRUD
  *
  * @see FacilityRepository : 골프장 시설 정보 조회, 저장을 위한 repository
- * @see FacilityImageJdbcRepository : 골프장 시설 이미지의 배치 insert를 위한 repository
+ * @see FacilityImageJdbcRepositoryImpl : 골프장 시설 이미지의 배치 insert를 위한 repository
  * @author kwonssshyeon
  */
 @Service
@@ -28,7 +28,6 @@ public class FacilityService {
     private final GolfFieldRepository golfFieldRepository;
     private final FacilityRepository facilityRepository;
     private final FacilityImageRepository facilityImageRepository;
-    private final FacilityImageJdbcRepository facilityImageJdbcRepository;
 
 
     /**
@@ -50,7 +49,7 @@ public class FacilityService {
         List<FacilityImage> facilityImages = imageUrls.stream()
                         .map(imageUrl -> new FacilityImage(imageUrl, facility))
                         .toList();
-        facilityImageJdbcRepository.saveAll(facilityImages);
+        facilityImageRepository.bulkInsert(facilityImages);
     }
 
 
@@ -88,7 +87,7 @@ public class FacilityService {
         List<FacilityImage> facilityImages = newImageUrls.stream()
                 .map(imageUrl -> new FacilityImage(imageUrl, facility))
                 .toList();
-        facilityImageJdbcRepository.saveAll(facilityImages);
+        facilityImageRepository.bulkInsert(facilityImages);
 
         facility.update(name, content);
     }

@@ -11,7 +11,7 @@ import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
-import com.flash21.caddycom.repository.schedule.AssignmentQueryFactory;
+import com.flash21.caddycom.repository.schedule.AssignmentQueryFactoryImpl;
 import com.flash21.caddycom.repository.schedule.AssignmentRepository;
 import com.flash21.caddycom.repository.schedule.ScheduleQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,6 @@ public class AssignmentCaddyService {
 
     private final AssignmentRepository assignmentRepository;
     private final HouseCaddyRepository houseCaddyRepository;
-    private final AssignmentQueryFactory assignmentQueryFactoryscheduleQueryFactory;
     private final ScheduleQueryFactory scheduleQueryFactory;
     private final GolfFieldRepository golfFieldRepository;
 
@@ -48,7 +47,7 @@ public class AssignmentCaddyService {
     public PagingResponse<AssignmentResponse.Info> getAssignments(Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status, int page) {
         Pageable pageable = PageRequest.of(page, 30);
         Page<Assignment> assignmentPage =
-                assignmentQueryFactoryscheduleQueryFactory.findAllByDateAndCourseIdAndStatus(pageable, golfFieldId, date, courseId, status);
+                assignmentRepository.findAllByDateAndCourseIdAndStatus(pageable, golfFieldId, date, courseId, status);
         return PagingResponse.from(assignmentPage, AssignmentResponse.Info::from);
     }
 
@@ -57,7 +56,7 @@ public class AssignmentCaddyService {
     public PagingResponse<AssignmentResponse.Info> getSwitchingCaddy(Long golfFieldId, LocalDate date, Long id, Long courseId, Integer part, int page) {
         Pageable pageable = PageRequest.of(page, 30);
         Page<Assignment> assignmentPage =
-                assignmentQueryFactoryscheduleQueryFactory.findAssignedByDateAndCourseIdAndPart(pageable, id, golfFieldId, date, courseId, part);
+                assignmentRepository.findAssignedByDateAndCourseIdAndPart(pageable, id, golfFieldId, date, courseId, part);
         return PagingResponse.from(assignmentPage, AssignmentResponse.Info::fromSwitchable);
     }
 

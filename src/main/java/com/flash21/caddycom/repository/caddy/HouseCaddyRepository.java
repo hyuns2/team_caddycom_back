@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface HouseCaddyRepository extends JpaRepository<HouseCaddy, Long> {
+public interface HouseCaddyRepository extends JpaRepository<HouseCaddy, Long>, HouseCaddyJdbcRepository {
     Optional<HouseCaddy> findByPhoneNumber(String phoneNumber);
 
     @Query("select distinct h.team from HouseCaddy h where h.golfField.id = ?1")

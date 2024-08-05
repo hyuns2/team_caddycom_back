@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,13 +19,11 @@ import java.util.List;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class HouseCaddy {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@DiscriminatorValue(value = "H")
+public class HouseCaddy extends Caddy{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
@@ -32,16 +31,6 @@ public class HouseCaddy {
 
     @OneToMany(mappedBy = "houseCaddy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Assignment> assignmentList;
-
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String phoneNumber;
-
-    private String password;
-
-    private Gender gender;
 
     @Convert(converter = DayListConverter.class)
     private List<Days> holiday;
@@ -52,8 +41,6 @@ public class HouseCaddy {
     @Convert(converter = PartListConverter.class)
     private List<Integer> offPart;
 
-    private LocalDate birth;
-
     private String address;
 
     private String addressDetail;
@@ -61,14 +48,6 @@ public class HouseCaddy {
     private String team;
 
     private TeamRole teamRole;
-
-    private String career;
-
-    private Long point;
-
-    private Role role;
-
-    private String refreshToken;
 
     private String caddyType;
 

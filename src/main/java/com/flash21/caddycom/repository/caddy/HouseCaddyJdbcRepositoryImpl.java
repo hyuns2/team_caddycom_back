@@ -20,8 +20,8 @@ public class HouseCaddyJdbcRepositoryImpl implements HouseCaddyJdbcRepository{
 
     @Transactional
     public void bulkInsert(List<HouseCaddy> houseCaddyList, Long golfFieldId) {
-        String sql = "INSERT INTO house_caddy (golf_field_id, caddy_type, name, phone_number, gender, team, team_role, career, address, address_detail, off_part, holiday, birth) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO caddy (golf_field_id, caddy_type, name, phone_number, gender, team, team_role, career, address, address_detail, off_part, holiday, birth, ctype) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.batchUpdate(sql,
             new BatchPreparedStatementSetter() {
@@ -41,6 +41,7 @@ public class HouseCaddyJdbcRepositoryImpl implements HouseCaddyJdbcRepository{
                     ps.setString(11, convertOffPart(houseCaddy.getOffPart()));
                     ps.setString(12, convertHoliday(houseCaddy.getHoliday()));
                     ps.setDate(13, java.sql.Date.valueOf(houseCaddy.getBirth()));
+                    ps.setString(14, "H");
                 }
 
                 @Override

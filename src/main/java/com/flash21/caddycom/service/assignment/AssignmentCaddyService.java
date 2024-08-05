@@ -11,7 +11,6 @@ import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
-import com.flash21.caddycom.repository.schedule.AssignmentQueryFactoryImpl;
 import com.flash21.caddycom.repository.schedule.AssignmentRepository;
 import com.flash21.caddycom.repository.schedule.ScheduleQueryFactory;
 import lombok.RequiredArgsConstructor;

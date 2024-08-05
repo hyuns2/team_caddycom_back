@@ -1,6 +1,7 @@
 package com.flash21.caddycom.entity.golfField;
 
 import com.flash21.caddycom.entity.account.Role;
+import com.flash21.caddycom.entity.caddy.MatchedFreeCaddy;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import jakarta.persistence.*;
 import lombok.*;
@@ -67,17 +68,21 @@ public class GolfField {
     @OneToMany(mappedBy = "golfField", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Formation> formations;
 
+    @OneToMany(mappedBy = "golfField", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MatchedFreeCaddy> matchedFreeCaddyList;
+
     private Long caddyAssignCursor;
-    
-    public void approve(){
+
+    public void approve() {
         this.status = ApprovalStatus.APPROVED;
     }
-    public void reject(){
+
+    public void reject() {
         this.status = ApprovalStatus.REJECTED;
     }
 
 
-    public void addInfo(String fax, String area, LocalDate openingDate, String cartInfo, String amenities){
+    public void addInfo(String fax, String area, LocalDate openingDate, String cartInfo, String amenities) {
         this.fax = fax;
         this.area = area;
         this.openingDate = openingDate;
@@ -85,7 +90,7 @@ public class GolfField {
         this.amenities = amenities;
     }
 
-    public void addDirectionInfo(String publicTransportGuide, String carGuide){
+    public void addDirectionInfo(String publicTransportGuide, String carGuide) {
         this.carGuide = carGuide;
         this.publicTransportGuide = publicTransportGuide;
     }
@@ -98,7 +103,7 @@ public class GolfField {
                        String area,
                        LocalDate openingDate,
                        String cartInfo,
-                       String amenities){
+                       String amenities) {
         this.name = name;
         this.address = address;
         this.addressDetail = addressDetail;

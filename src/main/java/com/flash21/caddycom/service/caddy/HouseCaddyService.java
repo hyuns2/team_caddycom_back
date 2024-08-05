@@ -9,6 +9,7 @@ import com.flash21.caddycom.global.exception.cException.CCaddyNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidCaddyRequestException;
 import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundException;
 import com.flash21.caddycom.repository.caddy.HouseCaddyJdbcRepository;
+import com.flash21.caddycom.repository.caddy.HouseCaddyQueryFactory;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class HouseCaddyService {
-    final HouseCaddyRepository houseCaddyRepository;
+
+    private final HouseCaddyRepository houseCaddyRepository;
     private final HouseCaddyJdbcRepository houseCaddyJdbcRepository;
+    private final HouseCaddyQueryFactory houseCaddyQueryFactory;
 
     /**
      * 조 전제조회: 골프장 Id에 해당하는 캐디의 조이름을 전부 반환합니다.
@@ -106,7 +109,7 @@ public class HouseCaddyService {
     public Map<String, List<HouseCaddyResponseDto.Info>> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
 
         List<HouseCaddyResponseDto.Info> findHouseCaddies =
-                houseCaddyRepository.findAllByGolfFieldIdAndSearchCond(golfFieldId, searchCond)
+                houseCaddyQueryFactory.findAllByGolfFieldIdAndSearchCond(golfFieldId, searchCond)
                         .stream()
                         .map(HouseCaddyResponseDto.Info::new)
                         .sorted(this::comparing)

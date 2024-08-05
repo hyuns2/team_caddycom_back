@@ -17,6 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * 코스 정보와 관련된 CRUD
+ *
+ * @author Koo-EunSung
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -28,6 +33,11 @@ public class CourseService {
 
     private final HoleService holeService;
 
+    /**
+     * 모든 코스 정보를 반환한다.
+     *
+     * @return 코스 정보 DTO 리스트
+     */
     public List<CourseResponse.Info> retrieveCourseInfo() {
         List<Course> courseList = courseRepository.findAll();
 
@@ -41,6 +51,13 @@ public class CourseService {
         return returnDtoList;
     }
 
+    /**
+     * 코스 정보를 생성한다.
+     *
+     * @param formation 코스가 포함되는 구성
+     * @param requests 코스 생성 요청 DTO
+     * @return 생성된 코스 id 리스트 <b>(mysql 사용 시 id가 아닌 null 반환됨)</b>
+     */
     public List<Long> createCourses(Formation formation, List<CourseRequest.create> requests) {
         List<Course> courses = new ArrayList<>();
         for(CourseRequest.create request : requests) {
@@ -56,6 +73,17 @@ public class CourseService {
         return courseIds;
     }
 
+    /**
+     * 코스 정보를 수정한다. 이때 수정되는 내용에 따라 홀 정보도 수정될 수 있다. <br>
+     * 코스의 홀 수가 늘어날 경우 - 홀 정보 생성 <br>
+     * 코스의 홀 수가 줄어들 경우 - 홀 정보 삭제
+     *
+     * @param request 코스 수정 요청 DTO
+     * @throws NoSuchElementException
+     *          수정하려는 코스가 없는 경우
+     * @throws IllegalArgumentException
+     *          코스의 이름을 공백으로 수정하려는 경우
+     */
     public void updateCourse(CourseRequest.update request) {
         Course course = courseRepository.findById(request.getId())
                 .orElseThrow(() -> new NoSuchElementException("해당 코스는 존재하지 않습니다."));
@@ -78,6 +106,11 @@ public class CourseService {
         }
     }
 
+    /**
+     * 코스에 포함된 멘트, 티, 홀과 코스를 함께 삭제한다.
+     *
+     * @param ids 삭제할 코스의 id 리스트
+     */
     public void deleteCourses(List<Long> ids) {
         teeRepository.deleteAllByCourseIds(ids);
         commentRepository.deleteAllByCourseIds(ids);
@@ -86,6 +119,12 @@ public class CourseService {
     }
 
 
+    /**
+     * 구성의 포함된 코스의 모든 정보를 반환한다.
+     *
+     * @param formationId 구성 id
+     * @return 코스 상세 정보 리스트
+     */
     @Transactional(readOnly = true)
     public List<CourseResponse.Detail> getHoles(Long formationId) {
         List<Course> courses = courseRepository.findAllByFormationId(formationId);

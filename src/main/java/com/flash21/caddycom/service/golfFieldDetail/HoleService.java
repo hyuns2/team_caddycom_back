@@ -14,6 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * 홀 정보와 관련된 CRUD
+ *
+ * @author Koo-EunSung
+ */
 @Service
 @RequiredArgsConstructor
 public class HoleService {
@@ -23,6 +28,13 @@ public class HoleService {
     private final TeeRepository teeRepository;
     private final CommentRepository commentRepository;
 
+    /**
+     * 홀의 핸디를 수정한다.
+     *
+     * @param request 홀의 핸디 수정 요청 DTO
+     * @throws NoSuchElementException
+     *          핸디를 수정할 홀이 존재하지 않는 경우
+     */
     @Transactional
     public void updateHandicap(HoleRequest.UpdateHandicap request) {
         Hole hole = holeRepository.findById(request.getHoleId())
@@ -31,6 +43,13 @@ public class HoleService {
         hole.updateHandicap(request.getHandicap());
     }
 
+    /**
+     * 홀의 파(par)를 수정한다.
+     *
+     * @param request 홀의 파 수정 요청 DTO
+     * @throws NoSuchElementException
+     *          파를 수정할 홀이 존재하지 않는 경우
+     */
     @Transactional
     public void updatePar(HoleRequest.UpdatePar request) {
         Hole hole = holeRepository.findById(request.getHoleId())
@@ -39,6 +58,12 @@ public class HoleService {
         hole.updatePar(request.getPar());
     }
 
+    /**
+     * 홀 정보를 생성한다.
+     *
+     * @param courses 코스 리스트
+     * @return 생성된 홀의 id 리스트 <b>(mysql 사용 시 id가 아닌 null 반환됨)</b>
+     */
     @Transactional
     public List<Long> createHoles(List<Course> courses) {
         List<Hole> holes = new ArrayList<>();
@@ -52,6 +77,12 @@ public class HoleService {
         return holeIds;
     }
 
+    /**
+     * 홀의 상세 정보(파, 핸디, 티, 멘트)를 설정한다.<br>
+     * request에 따라 홀 정보의 수정 및 티와 멘트의 생성, 수정, 삭제가 이루어질 수 있다.
+     *
+     * @param request 홀 상세 정보 설정 DTO
+     */
     @Transactional
     public void createDetailInfo(HoleRequest.CreateDetailInfo request) {
         Hole savedHole = holeRepository.findById(request.getHoleId()).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
@@ -65,11 +96,16 @@ public class HoleService {
         if(!request.getDeleteTeeIds().isEmpty())
             teeService.deleteTees(request.getDeleteTeeIds());
 
-        commentService.createAndUpdateTipInfos(request.getHoleId(), request.getTipInfoData());
-        if(!request.getDeleteTipInfoIds().isEmpty())
-            commentService.deleteTipInfos(request.getDeleteTipInfoIds());
+        commentService.createAndUpdateComments(request.getHoleId(), request.getCommentData());
+        if(!request.getDeleteCommentIds().isEmpty())
+            commentService.deleteComments(request.getDeleteCommentIds());
     }
 
+    /**
+     * 특정 코스에 포함된 모든 홀을 티, 멘트와 함께 삭제한다.
+     *
+     * @param courses 코스 리스트
+     */
     @Transactional
     public void deleteHoles(List<Course> courses) {
         List<Hole> deleteHoles = new ArrayList<>();

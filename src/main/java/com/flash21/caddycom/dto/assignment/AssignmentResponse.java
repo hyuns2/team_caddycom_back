@@ -1,5 +1,6 @@
 package com.flash21.caddycom.dto.assignment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.flash21.caddycom.entity.caddy.TeamRole;
 import com.flash21.caddycom.entity.schedule.Assignment;
@@ -94,6 +95,26 @@ public class AssignmentResponse {
                 return "조원";
             return "조장";
 
+        }
+    }
+
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Builder
+    @Getter
+    public static class CaddyAssignmentInfo {
+
+        private Long assignmentId;
+        private Integer part;
+        private String startTime;
+        @JsonIgnore
+        private LocalDate date;
+
+        public CaddyAssignmentInfo(Assignment assignment) {
+            this.assignmentId = assignment.getId();
+            this.part = assignment.getSchedule().getPart();
+            this.date = assignment.getSchedule().getReservationAt();
+            this.startTime = assignment.getStartTime().format(timeFormatter);
         }
     }
 }

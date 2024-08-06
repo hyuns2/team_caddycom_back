@@ -58,7 +58,7 @@ public class HouseCaddy extends Caddy {
         this.refreshToken = refreshToken;
     }
 
-    public void updateHouseCaddy(HouseCaddyRequestDto.updateHouseCaddy dto) {
+    public void updateHouseCaddyByManager(HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
         this.team = dto.getTeam();
         this.teamRole = dto.getTeamRole();
         this.holiday = dto.getHoliday();
@@ -68,6 +68,21 @@ public class HouseCaddy extends Caddy {
         this.address = dto.getAddress();
         this.addressDetail = dto.getAddressDetail();
         this.career = dto.getCareer();
+    }
+
+    public void updateHouseCaddy(HouseCaddyRequestDto.updateHouseCaddy dto, String profileUrl) {
+        if (dto.getProfile() != null)
+            this.profileUrl = profileUrl;
+        if (dto.getChangedHoliday() != null)
+            this.changedHoliday = dto.getChangedHoliday();
+        if (dto.getBirth() != null)
+            this.birth = LocalDate.parse(dto.getBirth());
+        if (dto.getAddress() != null)
+            this.address = dto.getAddress();
+        if (dto.getAddressDetail() != null)
+            this.addressDetail = dto.getAddressDetail();
+        if (dto.getCareer() != null)
+            this.career = dto.getCareer();
     }
 
     public void setTeamRole(TeamRole teamRole) {

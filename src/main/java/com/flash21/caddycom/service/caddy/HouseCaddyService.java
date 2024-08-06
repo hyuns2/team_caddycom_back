@@ -5,6 +5,7 @@ import com.flash21.caddycom.dto.caddy.HouseCaddyResponseDto;
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.caddy.TeamRole;
+import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.global.exception.cException.CCaddyNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidCaddyRequestException;
 import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundException;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class HouseCaddyService {
 
     private final HouseCaddyRepository houseCaddyRepository;
+    private final FileUploader fileUploader;
 
     /**
      * 조 전제조회: 골프장 Id에 해당하는 캐디의 조이름을 전부 반환합니다.
@@ -47,33 +49,36 @@ public class HouseCaddyService {
 
         return houseCaddyList.stream().map(hc -> {
             return HouseCaddyResponseDto.houseCaddyDetail.builder()
-                    .id(hc.getId())
-                    .name(hc.getName())
-                    .phoneNumber(hc.getPhoneNumber())
-                    .team(hc.getTeam())
-                    .teamRole(hc.getTeamRole())
-                    .holiday(hc.getHoliday())
-                    .changedHoliday(hc.getChangedHoliday())
-                    .offPart(hc.getOffPart())
-                    .gender(hc.getGender())
-                    .birth(hc.getBirth())
-                    .address(hc.getAddress())
-                    .addressDetail(hc.getAddressDetail())
-                    .career(hc.getCareer())
-                    .caddyType(hc.getCaddyType())
-                    .build();
-        }).toList();
+                            .id(hc.getId())
+                            .golfFieldName(null)
+                            .profileUrl(hc.getProfileUrl())
+                            .name(hc.getName())
+                            .phoneNumber(hc.getPhoneNumber())
+                            .team(hc.getTeam())
+                            .teamRole(hc.getTeamRole())
+                            .holiday(hc.getHoliday())
+                            .changedHoliday(hc.getChangedHoliday())
+                            .offPart(hc.getOffPart())
+                            .gender(hc.getGender())
+                            .birth(hc.getBirth())
+                            .address(hc.getAddress())
+                            .addressDetail(hc.getAddressDetail())
+                            .career(hc.getCareer())
+                            .caddyType(hc.getCaddyType())
+                            .build();
+        }
+        ).toList();
     }
 
     /**
-     * 하우스캐디 정보 수정: 하우스캐디의 정보를 수정합니다.
+     * 하우스캐디 정보 수정: 관리자가 하우스캐디의 정보를 수정합니다.
      *
      * @param golfFieldId 골프장 Id
      * @param caddyId     캐디 Id
      * @param dto         수정할 정보
      */
     @Transactional
-    public void updateHouseCaddy(Long golfFieldId, Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {
+    public void updateHouseCaddyByManager(Long golfFieldId, Long caddyId, HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 
@@ -83,7 +88,7 @@ public class HouseCaddyService {
                         caddy.setTeamRole(TeamRole.MEMBER);
                     });
         }
-        houseCaddy.updateHouseCaddy(dto);
+        houseCaddy.updateHouseCaddyByManager(dto);
     }
 
     /**
@@ -144,7 +149,7 @@ public class HouseCaddyService {
             }
             allHolidays.add(new HouseCaddyResponseDto.TeamHoliday(team, infos));
         }
-
+        Collections.sort(allHolidays, Comparator.comparing(HouseCaddyResponseDto.TeamHoliday::getTeam));
         return allHolidays;
     }
 
@@ -222,5 +227,49 @@ public class HouseCaddyService {
         } catch (NumberFormatException e) {
             return Integer.MAX_VALUE;
         }
+    }
+
+    /**
+     * 하우스캐디 단일 정보조회: 하우스캐디의 정보를 조회합니다
+     *
+     * @param caddyId 캐디 Id
+     * @return 하우스캐디 정보 dto
+     */
+    public HouseCaddyResponseDto.houseCaddyDetail getHouseCaddy(Long caddyId) {
+        HouseCaddy hc = houseCaddyRepository.findById(caddyId)
+                .orElseThrow(CCaddyNotFoundException::new);
+
+        return HouseCaddyResponseDto.houseCaddyDetail.builder()
+                .id(hc.getId())
+                .golfFieldName(hc.getGolfField().getName())
+                .profileUrl(hc.getProfileUrl())
+                .name(hc.getName())
+                .phoneNumber(hc.getPhoneNumber())
+                .team(hc.getTeam())
+                .teamRole(hc.getTeamRole())
+                .holiday(hc.getHoliday())
+                .changedHoliday(hc.getChangedHoliday())
+                .offPart(hc.getOffPart())
+                .gender(hc.getGender())
+                .birth(hc.getBirth())
+                .address(hc.getAddress())
+                .addressDetail(hc.getAddressDetail())
+                .career(hc.getCareer())
+                .caddyType(hc.getCaddyType())
+                .build();
+    }
+
+    /**
+     * 하우스캐디 정보 변경: 하우스캐디가 자신의 정보를 변경합니다.
+     *
+     * @param caddyId 캐디 Id
+     * @param dto 변경할 정보 dto
+     */
+    @Transactional
+    public void updateHouseCaddy(Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {
+        HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
+                .orElseThrow(CCaddyNotFoundException::new);
+        String profileUrl = fileUploader.upload(dto.getProfile());
+        houseCaddy.updateHouseCaddy(dto, profileUrl);
     }
 }

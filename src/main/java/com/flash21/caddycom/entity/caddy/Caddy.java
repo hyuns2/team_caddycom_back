@@ -42,4 +42,5 @@ public abstract class Caddy {
 
     protected Role role;
 
+    protected String profileUrl;
 }

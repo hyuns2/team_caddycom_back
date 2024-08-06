@@ -5,7 +5,6 @@ import com.flash21.caddycom.entity.caddy.converter.DayListConverter;
 import com.flash21.caddycom.entity.caddy.converter.PartListConverter;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.schedule.Assignment;
-import com.flash21.caddycom.global.common.FileUploader;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -71,9 +70,9 @@ public class HouseCaddy extends Caddy {
         this.career = dto.getCareer();
     }
 
-    public void updateHouseCaddy(HouseCaddyRequestDto.updateHouseCaddy dto, FileUploader fileUploader) {
+    public void updateHouseCaddy(HouseCaddyRequestDto.updateHouseCaddy dto, String profileUrl) {
         if (dto.getProfile() != null)
-            this.profileUrl = fileUploader.upload(dto.getProfile());
+            this.profileUrl = profileUrl;
         if (dto.getChangedHoliday() != null)
             this.changedHoliday = dto.getChangedHoliday();
         if (dto.getBirth() != null)

@@ -20,8 +20,9 @@ import java.util.List;
 public class ExcelReader {
     /**
      * 엑셀 파일을 읽어 행/열의 이차원 리스트로 반환한다.
+     * @return List<List<String>>
      */
-    public List<List<String>> uploadCaddy(MultipartFile file)  {
+    public List<List<String>> readExcelToList(MultipartFile file)  {
 
         // 엑셀 파일 파싱 후 하우스 캐디 등록
         try {

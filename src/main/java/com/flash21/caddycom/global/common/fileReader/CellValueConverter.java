@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 public class CellValueConverter {
     private final LocalDate baseDate = LocalDate.of(1900,1,1);
 
-    protected String convertPhoneNumber(String phoneNumber) {
+    public String convertPhoneNumber(String phoneNumber) {
         return phoneNumber.replaceAll("[^0-9]", "");
     }
 

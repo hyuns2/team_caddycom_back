@@ -26,7 +26,7 @@ public class AccountRequest {
 
         private final String address;
 
-        public Account toEntity(GolfField golfField) {
+        public Account toEntity(GolfField golfField, String phoneNumber) {
             return Account.builder()
                     .enteringDate(enteringDate)
                     .position(position)

@@ -74,6 +74,8 @@ public class Schedule {
         }
     }
     public void addNotAssignedCount() {
+        if (this.notAssignedCnt == null)
+            this.notAssignedCnt = this.totalCnt - this.blockedCnt;
         this.notAssignedCnt++;
     }
 }

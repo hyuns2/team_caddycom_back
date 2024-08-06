@@ -94,13 +94,10 @@ public class AssignmentCaddyService {
      */
     private void swapCaddy(Assignment fromAssignment, Assignment toAssignment) {
 
-        if (!(fromAssignment.getCaddy() instanceof HouseCaddy) || !(toAssignment.getCaddy() instanceof HouseCaddy)) {
-            throw new IllegalArgumentException("하우스 캐디가 아닙니다.");
-        }
 
-        HouseCaddy fromCaddy = (HouseCaddy) fromAssignment.getCaddy();
+        HouseCaddy fromCaddy = fromAssignment.getHouseCaddy();
         String fromCaddyName = fromAssignment.getCaddyName();
-        HouseCaddy toCaddy = (HouseCaddy) toAssignment.getCaddy();
+        HouseCaddy toCaddy = toAssignment.getHouseCaddy();
         String toCaddyName = toAssignment.getCaddyName();
 
         fromAssignment.vacateCaddy();
@@ -209,8 +206,8 @@ public class AssignmentCaddyService {
 
     private Set<Long> getBlockedHouseCaddies(List<Assignment> findAssignment) {
         return findAssignment.stream()
-                .filter(assignment -> assignment.getStatus() == AssignmentStatus.BLOCKED && assignment.getCaddy() != null)
-                .map(Assignment::getCaddy)
+                .filter(assignment -> assignment.getStatus() == AssignmentStatus.BLOCKED && assignment.getHouseCaddy() != null)
+                .map(Assignment::getHouseCaddy)
                 .map(Caddy::getId)
                 .collect(Collectors.toSet());
     }

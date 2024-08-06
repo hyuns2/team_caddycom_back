@@ -176,10 +176,8 @@ public class ReservationSheetService {
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
 
-        //캐디가 가지고 있는 8월의 배정 정보들을 가져옴
         List<Assignment> findAssignments = assignmentRepository.findAllByGolfFieldAndCaddyAndMonth(caddyId, startDate, endDate);
 
-        // 8월 1일이라면 1일의 Assignment들로 그룹핑, 2일이라면 2일의 Assignment들로 그룹핑
         return findAssignments.stream()
                 .map(AssignmentResponse.CaddyAssignmentInfo::new)
                 .collect(

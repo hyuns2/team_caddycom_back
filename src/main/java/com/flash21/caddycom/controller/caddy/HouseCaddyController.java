@@ -8,10 +8,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -39,15 +41,17 @@ public class HouseCaddyController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @Operation(summary = "하우스캐디 정보변경", description = "하우스캐디의 정보를 변경합니다.")
+    @Operation(summary = "관리자의 하우스캐디 정보변경", description = "관리자가 하우스캐디의 정보를 변경합니다.")
     @PutMapping("/{golfFieldId}/{caddyId}")
-    public ResponseEntity<Void> updateHouseCaddy(@PathVariable Long golfFieldId, @PathVariable Long caddyId, @Valid @RequestBody HouseCaddyRequestDto.updateHouseCaddy dto) {
-        houseCaddyService.updateHouseCaddy(golfFieldId, caddyId, dto);
+    public ResponseEntity<Void> updateHouseCaddyByManager(@PathVariable Long golfFieldId,
+                                                          @PathVariable Long caddyId,
+                                                          @Valid @RequestBody HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
+        houseCaddyService.updateHouseCaddyByManager(golfFieldId, caddyId, dto);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "하우스캐디 휴무일 승인", description = "하우스캐디의 휴무일을 승인합니다.")
+    @Operation(summary = "하우스캐디 휴무일 승인", description = "관리자가 하우스캐디의 휴무일을 승인합니다.")
     @PostMapping("/holiday/{caddyId}")
     public ResponseEntity<Void> updateHouseCaddyHoliday(@PathVariable Long caddyId) {
         houseCaddyService.updateHouseCaddyHoliday(caddyId);
@@ -58,7 +62,6 @@ public class HouseCaddyController {
     @Operation(summary = "캐디 목록 전체 조회", description = "골프장에 속해있는 모든 하우스 캐디들을 모두 조회합니다.")
     @GetMapping("/all/{golfFieldId}")
     public ResponseEntity<Map<String, List<HouseCaddyResponseDto.Info>>> getAllHouseCaddies(
-            @AuthenticationPrincipal User user,
             @PathVariable("golfFieldId") Long golfFieldId,
             @ModelAttribute HouseCaddyRequestDto.CaddySearchCond searchCond
     ) {
@@ -89,5 +92,22 @@ public class HouseCaddyController {
     public ResponseEntity<Void> updateHolidayAll(@Valid @RequestBody List<HouseCaddyRequestDto.createHoliday> request) {
         houseCaddyService.updateHolidayAll(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "하우스캐디의 정보 조회", description = "하우스캐디가 본인의 정보를 조회합니다.")
+    @GetMapping("/{caddyId}")
+    public ResponseEntity<HouseCaddyResponseDto.houseCaddyDetail> getHouseCaddy(@PathVariable Long caddyId) {
+        HouseCaddyResponseDto.houseCaddyDetail result = houseCaddyService.getHouseCaddy(caddyId);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "하우스캐디 정보변경 및 휴무일 요청", description = "하우스캐디가 본인의 정보를 변경합니다.")
+    @PatchMapping(value = "/{caddyId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> updateHouseCaddy(@PathVariable Long caddyId,
+                                                 @ModelAttribute HouseCaddyRequestDto.updateHouseCaddy dto) {
+        houseCaddyService.updateHouseCaddy(caddyId, dto);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

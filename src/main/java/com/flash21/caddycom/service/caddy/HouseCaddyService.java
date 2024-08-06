@@ -144,7 +144,7 @@ public class HouseCaddyService {
             }
             allHolidays.add(new HouseCaddyResponseDto.TeamHoliday(team, infos));
         }
-
+        Collections.sort(allHolidays, Comparator.comparing(HouseCaddyResponseDto.TeamHoliday::getTeam));
         return allHolidays;
     }
 

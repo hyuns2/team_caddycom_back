@@ -61,6 +61,9 @@ public class HouseCaddyResponseDto {
         @Schema(description = "소속 골프장")
         private String golfFieldName;
 
+        @Schema(description = "프로필 Url")
+        private String profileUrl;
+
         @Schema(description = "이름")
         private String name;
 

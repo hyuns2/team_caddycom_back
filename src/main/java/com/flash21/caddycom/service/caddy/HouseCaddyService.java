@@ -5,6 +5,7 @@ import com.flash21.caddycom.dto.caddy.HouseCaddyResponseDto;
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.caddy.TeamRole;
+import com.flash21.caddycom.global.common.FileUploader;
 import com.flash21.caddycom.global.exception.cException.CCaddyNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidCaddyRequestException;
 import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundException;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class HouseCaddyService {
 
     private final HouseCaddyRepository houseCaddyRepository;
+    private final FileUploader fileUploader;
 
     /**
      * 조 전제조회: 골프장 Id에 해당하는 캐디의 조이름을 전부 반환합니다.
@@ -52,6 +54,7 @@ public class HouseCaddyService {
         return HouseCaddyResponseDto.houseCaddyDetail.builder()
                 .id(hc.getId())
                 .golfFieldName(hc.getGolfField().getName())
+                .profileUrl(hc.getProfileUrl())
                 .name(hc.getName())
                 .phoneNumber(hc.getPhoneNumber())
                 .team(hc.getTeam())
@@ -251,6 +254,6 @@ public class HouseCaddyService {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 
-        houseCaddy.updateHouseCaddy(dto);
+        houseCaddy.updateHouseCaddy(dto, fileUploader);
     }
 }

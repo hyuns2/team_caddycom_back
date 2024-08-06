@@ -99,7 +99,7 @@ public class HouseCaddyController {
     }
 
     @Operation(summary = "하우스캐디 정보변경 및 휴무일 요청", description = "하우스캐디가 본인의 정보를 변경합니다.")
-    @PutMapping("/{caddyId}")
+    @PatchMapping("/{caddyId}")
     public ResponseEntity<?> updateHouseCaddy(@AuthenticationPrincipal User user, @PathVariable Long caddyId, @Valid @RequestBody HouseCaddyRequestDto.updateHouseCaddy dto) {
         houseCaddyService.updateHouseCaddy(caddyId, dto);
 

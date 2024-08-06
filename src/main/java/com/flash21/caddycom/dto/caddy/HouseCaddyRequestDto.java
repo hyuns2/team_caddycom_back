@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -67,22 +68,21 @@ public class HouseCaddyRequestDto {
 
     @Data
     public static class updateHouseCaddy {
+        @Schema(description = "프로필 사진파일")
+        private MultipartFile profile;
+
         @Schema(description = "변경을 희망하는 휴무일 ex) [\"MON\", \"FRI\"]")
         private List<Days> changedHoliday;
 
-        @NotNull
         @Schema(description = "생년월일")
         private String birth;
 
-        @NotNull
         @Schema(description = "주소")
         private String address;
 
-        @NotNull
         @Schema(description = "상세주소")
         private String addressDetail;
 
-        @NotNull
         @Schema(description = "경력")
         private String career;
     }

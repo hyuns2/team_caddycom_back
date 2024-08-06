@@ -44,6 +44,12 @@ public class Assignment {
         this.status = AssignmentStatus.CANCELED;
     }
 
+    public void requestCancel(String reason) {
+        if (reason != null && !reason.isEmpty())
+            this.reason = reason;
+        this.status = AssignmentStatus.REQUESTED;
+    }
+
 
     public void vacateCaddy() {
         this.houseCaddy = null;

@@ -280,3 +280,6 @@ insert into `caddycom`.`tee` (id, hole_id, name, distance) values
 -- #             (6, 1, '09:20:00', 3, '이캐디', 6, null),
 -- #             (7, 1, '09:30:00', 2, '박캐디', 7, '휴가 갔음'),
 -- #             (8, 1, '09:40:00', 1, '최캐디', 8, '휴가 갔음');
+
+insert into `caddycom`.`caddy` (id, name, phone_number, golf_field_id, ctype, password)
+values (1, '김캐디', '010-0000-1111', 1, 'H', '111111')

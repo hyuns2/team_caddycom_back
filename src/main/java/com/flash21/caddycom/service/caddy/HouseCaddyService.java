@@ -13,6 +13,7 @@ import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,28 +48,27 @@ public class HouseCaddyService {
         if (houseCaddyList.isEmpty())
             throw new CTeamNameNotFoundException();
 
-        return houseCaddyList.stream().map(hc -> toHouseCaddyDetail(hc)).toList();
-    }
-
-    private HouseCaddyResponseDto.houseCaddyDetail toHouseCaddyDetail(HouseCaddy hc) {
-        return HouseCaddyResponseDto.houseCaddyDetail.builder()
-                .id(hc.getId())
-                .golfFieldName(hc.getGolfField().getName())
-                .profileUrl(hc.getProfileUrl())
-                .name(hc.getName())
-                .phoneNumber(hc.getPhoneNumber())
-                .team(hc.getTeam())
-                .teamRole(hc.getTeamRole())
-                .holiday(hc.getHoliday())
-                .changedHoliday(hc.getChangedHoliday())
-                .offPart(hc.getOffPart())
-                .gender(hc.getGender())
-                .birth(hc.getBirth())
-                .address(hc.getAddress())
-                .addressDetail(hc.getAddressDetail())
-                .career(hc.getCareer())
-                .caddyType(hc.getCaddyType())
-                .build();
+        return houseCaddyList.stream().map(hc -> {
+            return HouseCaddyResponseDto.houseCaddyDetail.builder()
+                            .id(hc.getId())
+                            .golfFieldName(null)
+                            .profileUrl(hc.getProfileUrl())
+                            .name(hc.getName())
+                            .phoneNumber(hc.getPhoneNumber())
+                            .team(hc.getTeam())
+                            .teamRole(hc.getTeamRole())
+                            .holiday(hc.getHoliday())
+                            .changedHoliday(hc.getChangedHoliday())
+                            .offPart(hc.getOffPart())
+                            .gender(hc.getGender())
+                            .birth(hc.getBirth())
+                            .address(hc.getAddress())
+                            .addressDetail(hc.getAddressDetail())
+                            .career(hc.getCareer())
+                            .caddyType(hc.getCaddyType())
+                            .build();
+        }
+        ).toList();
     }
 
     /**
@@ -240,7 +240,24 @@ public class HouseCaddyService {
         HouseCaddy hc = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 
-        return toHouseCaddyDetail(hc);
+        return HouseCaddyResponseDto.houseCaddyDetail.builder()
+                .id(hc.getId())
+                .golfFieldName(hc.getGolfField().getName())
+                .profileUrl(hc.getProfileUrl())
+                .name(hc.getName())
+                .phoneNumber(hc.getPhoneNumber())
+                .team(hc.getTeam())
+                .teamRole(hc.getTeamRole())
+                .holiday(hc.getHoliday())
+                .changedHoliday(hc.getChangedHoliday())
+                .offPart(hc.getOffPart())
+                .gender(hc.getGender())
+                .birth(hc.getBirth())
+                .address(hc.getAddress())
+                .addressDetail(hc.getAddressDetail())
+                .career(hc.getCareer())
+                .caddyType(hc.getCaddyType())
+                .build();
     }
 
     /**

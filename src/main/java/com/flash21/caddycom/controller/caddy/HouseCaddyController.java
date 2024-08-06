@@ -8,10 +8,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -99,8 +101,8 @@ public class HouseCaddyController {
     }
 
     @Operation(summary = "하우스캐디 정보변경 및 휴무일 요청", description = "하우스캐디가 본인의 정보를 변경합니다.")
-    @PatchMapping("/{caddyId}")
-    public ResponseEntity<?> updateHouseCaddy(@AuthenticationPrincipal User user, @PathVariable Long caddyId, @Valid @RequestBody HouseCaddyRequestDto.updateHouseCaddy dto) {
+    @PatchMapping(value = "/{caddyId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateHouseCaddy(@AuthenticationPrincipal User user, @PathVariable Long caddyId, @ModelAttribute HouseCaddyRequestDto.updateHouseCaddy dto) {
         houseCaddyService.updateHouseCaddy(caddyId, dto);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

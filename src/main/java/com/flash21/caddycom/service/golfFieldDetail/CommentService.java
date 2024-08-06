@@ -44,14 +44,18 @@ public class CommentService {
         List<Comment> newComments = new ArrayList<>();
         for(CommentRequest.Create request : commentInfos) {
             if(request.getId() == 0) {
-                String imageUrl = uploadImage(request.getImage());
+                String imageUrl = null;
+                if(request.getImage() != null && !request.getImage().isEmpty())
+                    imageUrl = uploadImage(request.getImage());
                 newComments.add(new Comment(null, request.getTitle(), request.getContent(), imageUrl, hole));
                 break;
             }
 
             for(Comment comment : savedComments) {
                 if(request.getId().equals(comment.getId())) {
-                    String imageUrl = uploadImage(request.getImage());
+                    String imageUrl = null;
+                    if(request.getImage() != null && !request.getImage().isEmpty())
+                        imageUrl = uploadImage(request.getImage());
                     comment.update(request.getTitle(), request.getContent(), imageUrl);
                     break;
                 }

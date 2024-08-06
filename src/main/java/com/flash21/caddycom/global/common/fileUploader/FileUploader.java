@@ -1,4 +1,4 @@
-package com.flash21.caddycom.global.common;
+package com.flash21.caddycom.global.common.fileUploader;
 
 import org.springframework.web.multipart.MultipartFile;
 

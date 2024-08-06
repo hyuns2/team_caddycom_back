@@ -39,7 +39,7 @@ public class HouseCaddyController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @Operation(summary = "하우스캐디 정보변경", description = "관리자가 하우스캐디의 정보를 변경합니다.")
+    @Operation(summary = "관리자의 하우스캐디 정보변경", description = "관리자가 하우스캐디의 정보를 변경합니다.")
     @PutMapping("/{golfFieldId}/{caddyId}")
     public ResponseEntity<?> updateHouseCaddyByManager(@AuthenticationPrincipal User user, @PathVariable Long golfFieldId, @PathVariable Long caddyId, @Valid @RequestBody HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
         houseCaddyService.updateHouseCaddyByManager(golfFieldId, caddyId, dto);
@@ -47,7 +47,7 @@ public class HouseCaddyController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "하우스캐디 휴무일 승인", description = "사장님이 하우스캐디의 휴무일을 승인합니다.")
+    @Operation(summary = "하우스캐디 휴무일 승인", description = "관리자가 하우스캐디의 휴무일을 승인합니다.")
     @PostMapping("/holiday/{caddyId}")
     public ResponseEntity<?> updateHouseCaddyHoliday(@AuthenticationPrincipal User user, @PathVariable Long caddyId) {
         houseCaddyService.updateHouseCaddyHoliday(caddyId);

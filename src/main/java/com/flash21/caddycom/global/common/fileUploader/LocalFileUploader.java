@@ -16,8 +16,8 @@ public class LocalFileUploader implements FileUploader{
     @Override
     public String upload(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
-        UUID uuid = UUID.randomUUID();
-        String savedFilename = uploadPath + uuid.toString() + "_" + originalFilename;
+
+        String savedFilename = uploadPath + UUID.randomUUID() + "_" + originalFilename;
         File file1 = new File(savedFilename);
         try {
             file.transferTo(file1);

@@ -25,7 +25,7 @@ public class HouseCaddyController {
 
     @Operation(summary = "조 전체조회", description = "골프장에 속해있는 하우스 캐디의 모든 조를 조회합니다.")
     @GetMapping("/team/{golfFieldId}")
-    public ResponseEntity<?> getHouseCaddyTeam(@AuthenticationPrincipal User user, @PathVariable Long golfFieldId) {
+    public ResponseEntity<List<String>> getHouseCaddyTeam(@PathVariable Long golfFieldId) {
         List<String> result = houseCaddyService.getHouseCaddyTeam(golfFieldId);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -33,7 +33,7 @@ public class HouseCaddyController {
 
     @Operation(summary = "조별 조회", description = "해당하는 조에 속해있는 하우스 캐디들을 조회합니다.")
     @GetMapping("/{golfFieldId}/{teamName}")
-    public ResponseEntity<?> getHouseCaddyByTeam(@AuthenticationPrincipal User user, @PathVariable Long golfFieldId, @PathVariable String teamName) {
+    public ResponseEntity<List<HouseCaddyResponseDto.houseCaddyDetail>> getHouseCaddyByTeam(@PathVariable Long golfFieldId, @PathVariable String teamName) {
         List<HouseCaddyResponseDto.houseCaddyDetail> result = houseCaddyService.getHouseCaddyByTeam(golfFieldId, teamName);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -41,7 +41,7 @@ public class HouseCaddyController {
 
     @Operation(summary = "하우스캐디 정보변경", description = "하우스캐디의 정보를 변경합니다.")
     @PutMapping("/{golfFieldId}/{caddyId}")
-    public ResponseEntity<?> updateHouseCaddy(@AuthenticationPrincipal User user, @PathVariable Long golfFieldId, @PathVariable Long caddyId, @Valid @RequestBody HouseCaddyRequestDto.updateHouseCaddy dto) {
+    public ResponseEntity<Void> updateHouseCaddy(@PathVariable Long golfFieldId, @PathVariable Long caddyId, @Valid @RequestBody HouseCaddyRequestDto.updateHouseCaddy dto) {
         houseCaddyService.updateHouseCaddy(golfFieldId, caddyId, dto);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -49,7 +49,7 @@ public class HouseCaddyController {
 
     @Operation(summary = "하우스캐디 휴무일 승인", description = "하우스캐디의 휴무일을 승인합니다.")
     @PostMapping("/holiday/{caddyId}")
-    public ResponseEntity<?> updateHouseCaddyHoliday(@AuthenticationPrincipal User user, @PathVariable Long caddyId) {
+    public ResponseEntity<Void> updateHouseCaddyHoliday(@PathVariable Long caddyId) {
         houseCaddyService.updateHouseCaddyHoliday(caddyId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -57,9 +57,10 @@ public class HouseCaddyController {
 
     @Operation(summary = "캐디 목록 전체 조회", description = "골프장에 속해있는 모든 하우스 캐디들을 모두 조회합니다.")
     @GetMapping("/all/{golfFieldId}")
-    public ResponseEntity<?> getAllHouseCaddies(@AuthenticationPrincipal User user,
-                                                @PathVariable("golfFieldId") Long golfFieldId,
-                                                @ModelAttribute HouseCaddyRequestDto.CaddySearchCond searchCond
+    public ResponseEntity<Map<String, List<HouseCaddyResponseDto.Info>>> getAllHouseCaddies(
+            @AuthenticationPrincipal User user,
+            @PathVariable("golfFieldId") Long golfFieldId,
+            @ModelAttribute HouseCaddyRequestDto.CaddySearchCond searchCond
     ) {
         Map<String, List<HouseCaddyResponseDto.Info>> result =
                 houseCaddyService.getAllHouseCaddy(golfFieldId, searchCond);

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class HoleRequest {
         private Integer par;
         @NotNull
         private Integer handicap;
+        private MultipartFile image;
         private List<TeeDto.Info> teeData;
         private List<CommentRequest.Create> commentData;
         private List<Long> deleteTeeIds;

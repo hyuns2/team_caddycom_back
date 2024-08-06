@@ -31,6 +31,8 @@ public class Hole {
     @JoinColumn(name="courseId")
     private Course course;
 
+    private String imageUrl;
+
     public Hole(Integer num, Course course) {
         this.num = num;
         this.course = course;
@@ -42,5 +44,9 @@ public class Hole {
 
     public void updatePar(Integer par) {
         this.par = par;
+    }
+
+    public void updateImage(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

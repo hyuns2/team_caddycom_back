@@ -3,12 +3,14 @@ package com.flash21.caddycom.service.golfFieldDetail;
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
+import com.flash21.caddycom.global.common.FileUploader;
 import com.flash21.caddycom.repository.golfFieldDetail.CommentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ public class HoleService {
     private final CommentService commentService;
     private final TeeRepository teeRepository;
     private final CommentRepository commentRepository;
+    private final FileUploader fileUploader;
 
     /**
      * 홀의 핸디를 수정한다.
@@ -92,6 +95,11 @@ public class HoleService {
         if(request.getHandicap() != savedHole.getHandicap())
             savedHole.updateHandicap(request.getHandicap());
 
+        if(request.getImage() != null && !request.getImage().isEmpty()) {
+            String imageUrl = uploadImage(request.getImage());
+            savedHole.updateImage(imageUrl);
+        }
+
         if(request.getTeeData() != null)
             teeService.createAndUpdateTees(request.getHoleId(), request.getTeeData());
         if(!request.getDeleteTeeIds().isEmpty())
@@ -120,5 +128,15 @@ public class HoleService {
         commentRepository.deleteAllByHoles(deleteHoles);
         teeRepository.deleteAllByHoles(deleteHoles);
         holeRepository.deleteAllInBatch(deleteHoles);
+    }
+
+    /**
+     * 외부 저장소에 이미지를 저장하고 그 url을 반환한다.
+     *
+     * @param image 저장할 이미지
+     * @return 저장된 파일 url
+     */
+    private String uploadImage(MultipartFile image) {
+        return fileUploader.upload(image);
     }
 }

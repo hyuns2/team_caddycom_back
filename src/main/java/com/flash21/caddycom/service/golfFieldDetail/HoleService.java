@@ -92,11 +92,13 @@ public class HoleService {
         if(request.getHandicap() != savedHole.getHandicap())
             savedHole.updateHandicap(request.getHandicap());
 
-        teeService.createAndUpdateTees(request.getHoleId(), request.getTeeData());
+        if(request.getTeeData() != null)
+            teeService.createAndUpdateTees(request.getHoleId(), request.getTeeData());
         if(!request.getDeleteTeeIds().isEmpty())
             teeService.deleteTees(request.getDeleteTeeIds());
 
-        commentService.createAndUpdateComments(request.getHoleId(), request.getCommentData());
+        if(request.getCommentData() != null)
+            commentService.createAndUpdateComments(request.getHoleId(), request.getCommentData());
         if(!request.getDeleteCommentIds().isEmpty())
             commentService.deleteComments(request.getDeleteCommentIds());
     }

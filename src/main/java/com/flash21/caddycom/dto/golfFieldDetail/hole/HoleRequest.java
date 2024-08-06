@@ -5,6 +5,8 @@ import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -29,6 +31,8 @@ public class HoleRequest {
 
     @Getter
     @AllArgsConstructor
+    @Setter
+    @NoArgsConstructor
     public static class CreateDetailInfo {
         @NotNull
         private Long holeId;

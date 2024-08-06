@@ -77,6 +77,7 @@ public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
                 .where(assignment.houseCaddy.id.eq(caddyId)
                         .and(assignment.schedule.reservationAt.between(startDate, endDate)))
                 .leftJoin(assignment.schedule).fetchJoin()
+                .orderBy(assignment.schedule.reservationAt.asc())
                 .fetch();
     }
 

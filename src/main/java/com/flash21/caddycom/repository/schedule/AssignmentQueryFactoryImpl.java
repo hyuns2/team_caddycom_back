@@ -16,7 +16,7 @@ import static com.flash21.caddycom.entity.schedule.QAssignment.*;
 
 @Repository
 @RequiredArgsConstructor
-public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory{
+public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
     private final JPAQueryFactory jpaQueryFactory;
 
 
@@ -68,6 +68,16 @@ public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory{
                         .and(eqStatus(AssignmentStatus.ASSIGNED)))
                 .fetchFirst();
         return new PageImpl<>(assignments, pageable, total == null ? 0 : total);
+    }
+
+    @Override
+    public List<Assignment> findAllByGolfFieldAndCaddyAndMonth(Long caddyId, LocalDate startDate, LocalDate endDate) {
+        return jpaQueryFactory
+                .selectFrom(assignment)
+                .where(assignment.houseCaddy.id.eq(caddyId)
+                        .and(assignment.schedule.reservationAt.between(startDate, endDate)))
+                .leftJoin(assignment.schedule).fetchJoin()
+                .fetch();
     }
 
     private BooleanExpression eqPart(Integer part) {

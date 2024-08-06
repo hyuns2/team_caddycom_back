@@ -1,5 +1,6 @@
 package com.flash21.caddycom.controller.schedule;
 
+import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.dto.schedule.ReservationSheetDto;
 import com.flash21.caddycom.service.schedule.ReservationSheetService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +13,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,16 +44,16 @@ public class ReservationSheetController {
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
 
-    @Operation(summary = "캐디 캘린더 배정 정보 조회", description = "캐디가 캘린더에 표기되는 배정 정보를 조회합니다.")
-    @GetMapping("/calendar/{golfFieldId}/{caddyId}/{year}/{month}")
+    @Operation(summary = "캐디 캘린더 배정 정보 조회", description = "캐디가 캘린더에 표기되는 배정 메타정보를 조회합니다.")
+    @GetMapping("/calendar/caddy/{caddyId}/{year}/{month}")
     public ResponseEntity<?> getCaddyAssignments(@AuthenticationPrincipal User user,
-                                                 @PathVariable Long golfFieldId,
                                                  @PathVariable Long caddyId,
                                                  @PathVariable int year,
                                                  @PathVariable int month) {
 
-        rsService.getAssignmentResultSheet(golfFieldId, caddyId, year, month);
+        Map<LocalDate, List<AssignmentResponse.CaddyAssignmentInfo>> responseDtoList =
+                rsService.getAssignmentResultSheet(caddyId, year, month);
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
 }

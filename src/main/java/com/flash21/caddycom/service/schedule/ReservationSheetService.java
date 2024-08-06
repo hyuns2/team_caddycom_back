@@ -1,14 +1,17 @@
 package com.flash21.caddycom.service.schedule;
 
+import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.dto.schedule.ReservationSheetDto;
+import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.exception.cException.CBadReservationRequestException;
 import com.flash21.caddycom.global.exception.cException.CCourseNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CGolfFieldNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
+import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.schedule.*;
@@ -19,20 +22,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationSheetService {
-    final GolfFieldRepository golfFieldRepository;
-    final ScheduleRepository scheduleRepository;
-    final CourseRepository courseRepository;
-    final ScheduleJdbcRepository scheduleJdbcRepository;
+    private final GolfFieldRepository golfFieldRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final CourseRepository courseRepository;
+    private final ScheduleJdbcRepository scheduleJdbcRepository;
     private final AssignmentRepository assignmentRepository;
+    private final HouseCaddyRepository houseCaddyRepository;
 
     /**
      * 예약시트 생성: 예약시트를 생성합니다.
@@ -166,12 +168,27 @@ public class ReservationSheetService {
         return responseDtoList.stream().sorted(new DtoComparator()).toList();
     }
 
-    public List<?> getAssignmentResultSheet(Long golfFieldId, Long caddyId, int year, int month) {
+    public Map<LocalDate, List<AssignmentResponse.CaddyAssignmentInfo>> getAssignmentResultSheet(Long caddyId, int year, int month) {
 
-//        assignmentRepository
+        houseCaddyRepository.findById(caddyId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 캐디 정보입니다."));
 
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
 
-        return null;
+        //캐디가 가지고 있는 8월의 배정 정보들을 가져옴
+        List<Assignment> findAssignments = assignmentRepository.findAllByGolfFieldAndCaddyAndMonth(caddyId, startDate, endDate);
+
+        // 8월 1일이라면 1일의 Assignment들로 그룹핑, 2일이라면 2일의 Assignment들로 그룹핑
+        return findAssignments.stream()
+                .map(AssignmentResponse.CaddyAssignmentInfo::new)
+                .collect(
+                        Collectors.groupingBy(
+                                AssignmentResponse.CaddyAssignmentInfo::getDate,
+                                LinkedHashMap::new,
+                                Collectors.toList()
+                        )
+                );
     }
 
     /**

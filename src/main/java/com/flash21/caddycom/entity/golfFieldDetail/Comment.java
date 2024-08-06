@@ -18,12 +18,15 @@ public class Comment {
 
     private String content;
 
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name="HoleId")
     private Hole hole;
 
-    public void update(String title, String content) {
+    public void update(String title, String content, String imageUrl) {
         this.title = title;
         this.content = content;
+        this.imageUrl = imageUrl;
     }
 }

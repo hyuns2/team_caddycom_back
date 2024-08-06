@@ -2,6 +2,7 @@ package com.flash21.caddycom.dto.account;
 
 import com.flash21.caddycom.entity.account.Account;
 import com.flash21.caddycom.entity.golfField.GolfField;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,12 +16,17 @@ public class AccountRequest {
     @Getter
     public static class Create {
         private final LocalDate enteringDate;
+
         private final String position;
+
         private final String name;
+
+        @NotBlank(message = "phoneNumber 는 필수값입니다.")
         private final String phoneNumber;
+
         private final String address;
 
-        public Account toEntity(GolfField golfField) {
+        public Account toEntity(GolfField golfField, String phoneNumber) {
             return Account.builder()
                     .enteringDate(enteringDate)
                     .position(position)

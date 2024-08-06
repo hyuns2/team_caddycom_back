@@ -16,6 +16,7 @@ public class HouseCaddyRequestDto {
     @Getter
     @AllArgsConstructor
     public static class createHoliday {
+        @NotNull(message = "id는 필수값입니다.")
         private Long id;
         private List<Days> holidays;
     }
@@ -29,48 +30,48 @@ public class HouseCaddyRequestDto {
 
     @Data
     public static class updateHouseCaddyByManager {
-        @NotNull
+        @NotNull(message = "team는 필수값입니다.")
         @Schema(description = "조 이름")
         private String team;
 
-        @NotNull
+        @NotNull(message = "teamRole는 필수값입니다.")
         @Schema(description = "LEADER/MEMBER")
         private TeamRole teamRole;
 
-        @NotNull
+        @NotNull(message = "holiday은 필수값입니다.")
         @Schema(description = "휴무일 ex) [\"MON\", \"FRI\"]")
         private List<Days> holiday;
 
-        @NotNull
+        @NotNull(message = "offPart는 필수값입니다.")
         @Schema(description = "참여하지않는 부")
         private List<Integer> offPart;
 
-        @NotNull
+        @NotNull(message = "gender은 필수값입니다.")
         @Schema(description = "성별")
         private Gender gender;
 
-        @NotNull
+        @NotNull(message = "birth은 필수값입니다.")
         @Schema(description = "생년월일")
         private String birth;
 
-        @NotNull
+        @NotNull(message = "address는 필수값입니다.")
         @Schema(description = "주소")
         private String address;
 
-        @NotNull
+        @NotNull(message = "addressDetail은 필수값입니다.")
         @Schema(description = "상세주소")
         private String addressDetail;
 
-        @NotNull
+        @NotNull(message = "career는 필수값입니다.")
         @Schema(description = "경력")
         private String career;
     }
 
     @Data
-    @NoArgsConstructor
+    @AllArgsConstructor
     public static class updateHouseCaddy {
         @Schema(description = "프로필 사진파일")
-        private MultipartFile profile;
+        private final MultipartFile profile = null;
 
         @Schema(description = "변경을 희망하는 휴무일 ex) [\"MON\", \"FRI\"]")
         private List<Days> changedHoliday;

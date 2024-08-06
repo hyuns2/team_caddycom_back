@@ -23,33 +23,33 @@ public class ReservationSheetDto {
     @AllArgsConstructor
     public static class CreateRequest {
         @Schema(description = "골프장 Id")
-        @NotNull
+        @NotNull(message = "golfFieldId는 필수값입니다.")
         private Long golfFieldId;
 
         @Schema(description = "코스 리스트")
-        @NotEmpty
+        @NotEmpty(message = "courseList는 필수값입니다.")
         private List<Long> courseList;
 
         @Schema(description = "시작날짜 (yyyy-mm-dd)")
-        @NotNull
+        @NotNull(message = "startDate는 필수값입니다.")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         private LocalDate startDate;
 
         @Schema(description = "종료날짜 (yyyy-mm-dd)")
-        @NotNull
+        @NotNull(message = "endDate는 필수값입니다.")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         private LocalDate endDate;
 
         @Schema(description = "시작시간 (hh:mm) 리스트")
-        @NotEmpty
+        @NotEmpty(message = "startTimeList는 필수값입니다.")
         private List<String> startTimeList;
 
         @Schema(description = "종료시간 (hh:mm) 리스트")
-        @NotEmpty
+        @NotEmpty(message = "endTimeList는 필수값입니다.")
         private List<String> endTimeList;
 
         @Schema(description = "티오프 리스트")
-        @NotEmpty
+        @NotEmpty(message = "teeOffList는 필수값입니다.")
         private List<String> teeOffList;
     }
 

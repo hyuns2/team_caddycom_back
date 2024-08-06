@@ -12,29 +12,30 @@ public class HoleRequest {
     @Getter
     @AllArgsConstructor
     public static class UpdatePar {
-        @NotNull
+        @NotNull(message = "holeId는 필수값입니다.")
         private Long holeId;
-        @NotNull
+
+        @NotNull(message = "par는 필수값입니다.")
         private Integer par;
     }
 
     @Getter
     @AllArgsConstructor
     public static class UpdateHandicap {
-        @NotNull
+        @NotNull(message = "holeId는 필수값입니다.")
         private Long holeId;
-        @NotNull
+        @NotNull(message = "handicap은 필수값입니다.")
         private Integer handicap;
     }
 
     @Getter
     @AllArgsConstructor
     public static class CreateDetailInfo {
-        @NotNull
+        @NotNull(message = "holeId는 필수값입니다.")
         private Long holeId;
-        @NotNull
+        @NotNull(message = "par는 필수값입니다.")
         private Integer par;
-        @NotNull
+        @NotNull(message = "handicap은 필수값입니다.")
         private Integer handicap;
         private List<TeeDto.Info> teeData;
         private List<CommentDto.Info> commentData;

@@ -21,6 +21,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> illegalStateException(IllegalStateException e) {
+        log.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionDto.fail(HttpStatus.BAD_REQUEST,e.getMessage()));
     }
@@ -28,6 +29,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> illegalArgumentException(IllegalArgumentException e) {
+        log.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionDto.fail(HttpStatus.BAD_REQUEST,e.getMessage()));
     }
@@ -35,6 +37,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ExceptionDto> noSuchElementException(NoSuchElementException e) {
+        log.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ExceptionDto.fail(HttpStatus.NOT_FOUND,e.getMessage()));
     }
@@ -46,6 +49,7 @@ public class ApiExceptionHandler {
                 .getAllErrors()
                 .get(0)
                 .getDefaultMessage();
+        log.error(message);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionDto.fail(HttpStatus.BAD_REQUEST, message));
     }
@@ -53,6 +57,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> invalidDataAccessApiUsageException(InvalidDataAccessApiUsageException e) {
+        log.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionDto.fail(HttpStatus.BAD_REQUEST, "요청 데이터가 잘못되었습니다. 누락되거나, 올바른 타입인지 확인하세요."));
     }

@@ -90,7 +90,15 @@ public class HouseCaddyController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @Operation(summary = "하우스캐디 정보변경 및 휴무일 요청", description = "하우스캐디가 정보를 변경합니다.")
+    @Operation(summary = "하우스캐디의 정보 조회", description = "하우스캐디가 본인의 정보를 조회합니다.")
+    @GetMapping("/{caddyId}")
+    public ResponseEntity<?> getHouseCaddy(@AuthenticationPrincipal User user, @PathVariable Long caddyId) {
+        HouseCaddyResponseDto.houseCaddyDetail result = houseCaddyService.getHouseCaddy(caddyId);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "하우스캐디 정보변경 및 휴무일 요청", description = "하우스캐디가 본인의 정보를 변경합니다.")
     @PutMapping("/{caddyId}")
     public ResponseEntity<?> updateHouseCaddy(@AuthenticationPrincipal User user, @PathVariable Long caddyId, @Valid @RequestBody HouseCaddyRequestDto.updateHouseCaddy dto) {
         houseCaddyService.updateHouseCaddy(caddyId, dto);

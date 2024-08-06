@@ -45,24 +45,27 @@ public class HouseCaddyService {
         if (houseCaddyList.isEmpty())
             throw new CTeamNameNotFoundException();
 
-        return houseCaddyList.stream().map(hc -> {
-            return HouseCaddyResponseDto.houseCaddyDetail.builder()
-                    .id(hc.getId())
-                    .name(hc.getName())
-                    .phoneNumber(hc.getPhoneNumber())
-                    .team(hc.getTeam())
-                    .teamRole(hc.getTeamRole())
-                    .holiday(hc.getHoliday())
-                    .changedHoliday(hc.getChangedHoliday())
-                    .offPart(hc.getOffPart())
-                    .gender(hc.getGender())
-                    .birth(hc.getBirth())
-                    .address(hc.getAddress())
-                    .addressDetail(hc.getAddressDetail())
-                    .career(hc.getCareer())
-                    .caddyType(hc.getCaddyType())
-                    .build();
-        }).toList();
+        return houseCaddyList.stream().map(hc -> toHouseCaddyDetail(hc)).toList();
+    }
+
+    private HouseCaddyResponseDto.houseCaddyDetail toHouseCaddyDetail(HouseCaddy hc) {
+        return HouseCaddyResponseDto.houseCaddyDetail.builder()
+                .id(hc.getId())
+                .golfFieldName(hc.getGolfField().getName())
+                .name(hc.getName())
+                .phoneNumber(hc.getPhoneNumber())
+                .team(hc.getTeam())
+                .teamRole(hc.getTeamRole())
+                .holiday(hc.getHoliday())
+                .changedHoliday(hc.getChangedHoliday())
+                .offPart(hc.getOffPart())
+                .gender(hc.getGender())
+                .birth(hc.getBirth())
+                .address(hc.getAddress())
+                .addressDetail(hc.getAddressDetail())
+                .career(hc.getCareer())
+                .caddyType(hc.getCaddyType())
+                .build();
     }
 
     /**
@@ -224,10 +227,21 @@ public class HouseCaddyService {
         }
     }
 
+    /**
+     * 하우스캐디 단일 정보조회: 하우스캐디의 정보를 조회합니다
+     *
+     * @param caddyId 캐디 Id
+     * @return 하우스캐디 정보 dto
+     */
+    public HouseCaddyResponseDto.houseCaddyDetail getHouseCaddy(Long caddyId) {
+        HouseCaddy hc = houseCaddyRepository.findById(caddyId)
+                .orElseThrow(CCaddyNotFoundException::new);
 
+        return toHouseCaddyDetail(hc);
+    }
 
     /**
-     * 하우스캐디가 자신의 정보를 변경합니다.
+     * 하우스캐디 정보 변경: 하우스캐디가 자신의 정보를 변경합니다.
      *
      * @param caddyId 캐디 Id
      * @param dto 변경할 정보 dto

@@ -25,7 +25,7 @@ public abstract class Caddy {
     @Column(nullable = false)
     protected String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     protected String phoneNumber;
 
     protected String password;

@@ -2,6 +2,7 @@ package com.flash21.caddycom.service.assignment;
 
 import com.flash21.caddycom.dto.PagingResponse;
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
+import com.flash21.caddycom.entity.caddy.Caddy;
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.golfField.GolfField;
@@ -92,6 +93,8 @@ public class AssignmentCaddyService {
      * -> 두 엔티티의 caddy를 null로 변경 후 다시 업데이트
      */
     private void swapCaddy(Assignment fromAssignment, Assignment toAssignment) {
+
+
         HouseCaddy fromCaddy = fromAssignment.getHouseCaddy();
         String fromCaddyName = fromAssignment.getCaddyName();
         HouseCaddy toCaddy = toAssignment.getHouseCaddy();
@@ -112,7 +115,7 @@ public class AssignmentCaddyService {
         HouseCaddy caddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 캐디입니다."));
 
-        assignment.assignCaddy(caddy);
+        assignment.assignHouseCaddy(caddy);
     }
 
     /**
@@ -164,7 +167,7 @@ public class AssignmentCaddyService {
 
                 HouseCaddy currentCaddy = findCaddies.get(currentCaddyIndex);
                 if (isAlreadyAssigned(blockedCaddyIds, currentCaddy) && isAvailable(assignment, currentCaddy, todaysDayOfWeek)) {
-                    assignment.assignCaddy(currentCaddy);
+                    assignment.assignHouseCaddy(currentCaddy);
                     isAssigned = true;
                 }
 
@@ -205,7 +208,7 @@ public class AssignmentCaddyService {
         return findAssignment.stream()
                 .filter(assignment -> assignment.getStatus() == AssignmentStatus.BLOCKED && assignment.getHouseCaddy() != null)
                 .map(Assignment::getHouseCaddy)
-                .map(HouseCaddy::getId)
+                .map(Caddy::getId)
                 .collect(Collectors.toSet());
     }
 

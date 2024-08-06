@@ -27,7 +27,7 @@ public class IntegerToStringConverter implements AttributeConverter<List<Integer
             return null;
 
         return Arrays.stream(s.split(SPLIT_CHAR))
-                .map(Integer::new)
-                .toList();
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
     }
 }

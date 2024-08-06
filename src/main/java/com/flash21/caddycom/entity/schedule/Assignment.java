@@ -70,7 +70,7 @@ public class Assignment {
         }
     }
 
-    public void assignCaddy(HouseCaddy caddy) {
+    public void assignHouseCaddy(HouseCaddy caddy) {
         this.caddyName = caddy.getName();
         this.houseCaddy = caddy;
         caddy.getAssignmentList().add(this);

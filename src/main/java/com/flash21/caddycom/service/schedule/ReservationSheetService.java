@@ -176,7 +176,7 @@ public class ReservationSheetService {
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
 
-        List<Assignment> findAssignments = assignmentRepository.findAllByGolfFieldAndCaddyAndMonth(caddyId, startDate, endDate);
+        List<Assignment> findAssignments = assignmentRepository.findByCaddyIdAndMonth(caddyId, startDate, endDate);
 
         return findAssignments.stream()
                 .map(AssignmentResponse.CaddyAssignmentInfo::new)

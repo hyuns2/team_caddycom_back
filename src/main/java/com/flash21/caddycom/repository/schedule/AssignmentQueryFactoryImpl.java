@@ -71,7 +71,7 @@ public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
     }
 
     @Override
-    public List<Assignment> findAllByGolfFieldAndCaddyAndMonth(Long caddyId, LocalDate startDate, LocalDate endDate) {
+    public List<Assignment> findByCaddyIdAndMonth(Long caddyId, LocalDate startDate, LocalDate endDate) {
         return jpaQueryFactory
                 .selectFrom(assignment)
                 .where(assignment.houseCaddy.id.eq(caddyId)

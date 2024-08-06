@@ -18,6 +18,10 @@ public class CellValueConverter {
     private final LocalDate baseDate = LocalDate.of(1900,1,1);
     private final int limitPart = 2;
 
+    protected String convertPhoneNumber(String phoneNumber) {
+        return phoneNumber.replaceAll("[^0-9]", "");
+    }
+
     protected Gender convertGender(String gender) {
         if (gender.equals("남")) {
             return Gender.MALE;

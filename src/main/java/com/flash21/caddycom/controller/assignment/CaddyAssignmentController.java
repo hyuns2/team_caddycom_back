@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "5. House Caddy Assignment", description = "하우스 캐디 측의 배정 관련 API")
-@RequestMapping("/api/house-caddy/assignment")
+@Tag(name = "6. Caddy Assignment", description = "캐디 측의 배정 관련 API(하우스, 프리 공통 사용)")
+@RequestMapping("/api/caddy/assignment")
 public class CaddyAssignmentController {
     private final AssignmentCaddyService assignmentCaddyService;
 
@@ -23,6 +23,6 @@ public class CaddyAssignmentController {
     public ResponseEntity<Message> cancelAssignment(@RequestParam Long assignmentId,
                                                     @RequestBody(required = false) AssignmentRequest.Cancel request) {
         assignmentCaddyService.requestCancelAssignment(assignmentId, request);
-        return ResponseEntity.ok().body(new Message("배정이 취소되었습니다."));
+        return ResponseEntity.ok().body(new Message("배정 취소가 요청 되었습니다."));
     }
 }

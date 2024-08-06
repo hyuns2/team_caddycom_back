@@ -5,7 +5,7 @@ import com.flash21.caddycom.dto.caddy.HouseCaddyResponseDto;
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.caddy.TeamRole;
-import com.flash21.caddycom.global.common.FileUploader;
+import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.global.exception.cException.CCaddyNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidCaddyRequestException;
 import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundException;
@@ -13,7 +13,6 @@ import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -270,7 +269,7 @@ public class HouseCaddyService {
     public void updateHouseCaddy(Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
-
-        houseCaddy.updateHouseCaddy(dto, fileUploader);
+        String profileUrl = fileUploader.upload(dto.getProfile());
+        houseCaddy.updateHouseCaddy(dto, profileUrl);
     }
 }

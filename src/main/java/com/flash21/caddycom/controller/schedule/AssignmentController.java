@@ -27,8 +27,7 @@ public class AssignmentController {
 
     @Operation(summary = "배정정보 조회", description = "골프장 관리자가 배정정보를 조회합니다.")
     @GetMapping("/{golfFieldId}/{targetDate}/{page}")
-    public ResponseEntity<Map<String, List<Object>>> getAssignments(@AuthenticationPrincipal User user,
-                                                                    @PathVariable Long golfFieldId,
+    public ResponseEntity<Map<String, List<Object>>> getAssignments(@PathVariable Long golfFieldId,
                                                                     @PathVariable LocalDate targetDate,
                                                                     @PathVariable int page
     ) {
@@ -39,8 +38,7 @@ public class AssignmentController {
 
     @Operation(summary = "블락 조회", description = "골프장 관리자가 해당 시간대의 배정 정보에 블락을 조회합니다.")
     @GetMapping("/{assignmentsId}")
-    public ResponseEntity<?> setBlock(@AuthenticationPrincipal User user,
-                                      @PathVariable Long assignmentsId
+    public ResponseEntity<AssignmentDto.BlockResponse> setBlock(@PathVariable Long assignmentsId
     ) {
         AssignmentDto.BlockResponse result = assignmentService.getBlock(assignmentsId);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -48,9 +46,8 @@ public class AssignmentController {
 
     @Operation(summary = "블락 설정", description = "골프장 관리자가 해당 시간대의 배정 정보에 블락을 설정합니다.")
     @PatchMapping("/{assignmentsId}")
-    public ResponseEntity<?> setBlock(@AuthenticationPrincipal User user,
-                                      @PathVariable Long assignmentsId,
-                                      @RequestBody AssignmentDto.BlockRequest blockRequest
+    public ResponseEntity<Void> setBlock(@PathVariable Long assignmentsId,
+                                         @RequestBody AssignmentDto.BlockRequest blockRequest
     ) {
         assignmentService.setBlock(assignmentsId, blockRequest);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -58,8 +55,7 @@ public class AssignmentController {
 
     @Operation(summary = "블락 취소", description = "골프장 관리자가 해당 시간대의 배정 정보에 블락을 취소합니다.")
     @PatchMapping("/{assignmentsId}/cancel")
-    public ResponseEntity<?> cancelBlock(@AuthenticationPrincipal User user,
-                                         @PathVariable Long assignmentsId
+    public ResponseEntity<Void> cancelBlock(@PathVariable Long assignmentsId
     ) {
         assignmentService.cancelBlock(assignmentsId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -67,10 +63,8 @@ public class AssignmentController {
 
     @Operation(summary = "캐디 선택 배정", description = "골프장 관리자가 해당 시간대의 배정 정보에 캐디를 직접 설정합니다.")
     @PatchMapping("/{assignmentsId}/{caddyId}")
-    public ResponseEntity<?> assignSeletedCaddy(@AuthenticationPrincipal User user,
-                                                @PathVariable Long assignmentsId,
+    public ResponseEntity<Void> assignSelectedCaddy(@PathVariable Long assignmentsId,
                                                 @PathVariable Long caddyId
-
     ) {
         assignmentCaddyService.assignSelectedCaddy(assignmentsId, caddyId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

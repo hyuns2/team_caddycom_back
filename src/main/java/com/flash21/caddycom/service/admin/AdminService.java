@@ -64,7 +64,7 @@ public class AdminService {
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
 
-        List<List<String>> stringData = excelReader.uploadCaddy(file);
+        List<List<String>> stringData = excelReader.readExcelToList(file);
         List<HouseCaddy> caddyList = stringData.stream()
                 .map(entityConverter::toEntity)
                 .toList();

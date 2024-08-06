@@ -23,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @DiscriminatorValue(value = "H")
-public class HouseCaddy extends Caddy{
+public class HouseCaddy extends Caddy {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn

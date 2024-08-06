@@ -14,7 +14,7 @@ import java.util.UUID;
 @Component
 @Profile("local")
 public class LocalFileUploader implements FileUploader{
-    @Value("${local.storage.path:C:/}")
+    @Value("${local.storage.path}")
     private String uploadPath;
     @Override
     public String upload(MultipartFile file) {

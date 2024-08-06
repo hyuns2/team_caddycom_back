@@ -70,19 +70,19 @@ public class HouseCaddy extends Caddy {
         this.career = dto.getCareer();
     }
 
-    public void updateHouseCaddy(HouseCaddyRequestDto.updateHouseCaddy dto, String profileUrl) {
-        if (dto.getProfile() != null)
+    public void update(String profileUrl, List<Days> changedHoliday, String birth, String address, String addressDetail, String career) {
+        if (profileUrl != null)
             this.profileUrl = profileUrl;
-        if (dto.getChangedHoliday() != null)
-            this.changedHoliday = dto.getChangedHoliday();
-        if (dto.getBirth() != null)
-            this.birth = LocalDate.parse(dto.getBirth());
-        if (dto.getAddress() != null)
-            this.address = dto.getAddress();
-        if (dto.getAddressDetail() != null)
-            this.addressDetail = dto.getAddressDetail();
-        if (dto.getCareer() != null)
-            this.career = dto.getCareer();
+        if (changedHoliday != null)
+            this.changedHoliday = changedHoliday;
+        if (birth != null && !birth.isEmpty())
+            this.birth = LocalDate.parse(birth);
+        if (address != null)
+            this.address = address;
+        if (addressDetail != null)
+            this.addressDetail = addressDetail;
+        if (career != null)
+            this.career = career;
     }
 
     public void setTeamRole(TeamRole teamRole) {

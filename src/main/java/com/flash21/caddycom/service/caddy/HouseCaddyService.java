@@ -269,7 +269,13 @@ public class HouseCaddyService {
     public void updateHouseCaddy(Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
-        String profileUrl = fileUploader.upload(dto.getProfile());
-        houseCaddy.updateHouseCaddy(dto, profileUrl);
+
+        String profileUrl = dto.getProfile() != null ? fileUploader.upload(dto.getProfile()) : null;
+        houseCaddy.update(profileUrl,
+                dto.getChangedHoliday(),
+                dto.getBirth(),
+                dto.getAddress(),
+                dto.getAddressDetail(),
+                dto.getCareer());
     }
 }

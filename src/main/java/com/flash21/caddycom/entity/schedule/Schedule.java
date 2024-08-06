@@ -40,12 +40,6 @@ public class Schedule {
     @Column(nullable = false)
     private LocalTime endTime;
 
-//    @Column(nullable = false)
-//    private LocalDateTime startDateTime;
-//
-//    @Column(nullable = false)
-//    private LocalDateTime endDateTime;
-
     @Column(nullable = false)
     private String teeOff;
 
@@ -60,6 +54,8 @@ public class Schedule {
 
     @Column(nullable = false)
     private Integer blockedCnt;
+
+    private Integer notAssignedCnt;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Assignment> assignments;
@@ -76,5 +72,10 @@ public class Schedule {
         if (this.blockedCnt >= 1) {
             this.blockedCnt--;
         }
+    }
+    public void addNotAssignedCount() {
+        if (this.notAssignedCnt == null)
+            this.notAssignedCnt = this.totalCnt - this.blockedCnt;
+        this.notAssignedCnt++;
     }
 }

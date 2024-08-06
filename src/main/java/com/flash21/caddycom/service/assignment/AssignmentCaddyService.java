@@ -1,6 +1,7 @@
 package com.flash21.caddycom.service.assignment;
 
 import com.flash21.caddycom.dto.PagingResponse;
+import com.flash21.caddycom.dto.assignment.AssignmentRequest;
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.entity.caddy.Caddy;
 import com.flash21.caddycom.entity.caddy.Days;
@@ -75,6 +76,15 @@ public class AssignmentCaddyService {
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 배정 정보가 없습니다."));
         assignment.cancel(reason);
+    }
+
+
+    @Transactional
+    public void requestCancelAssignment(Long assignmentId, AssignmentRequest.Cancel request) {
+        Assignment assignment = assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 배정 정보가 없습니다."));
+        assignment.requestCancel(request.getReason());
+        assignment.getSchedule().addNotAssignedCount();
     }
 
 

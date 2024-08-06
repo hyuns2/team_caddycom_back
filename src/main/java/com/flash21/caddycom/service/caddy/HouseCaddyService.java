@@ -66,14 +66,14 @@ public class HouseCaddyService {
     }
 
     /**
-     * 하우스캐디 정보 수정: 하우스캐디의 정보를 수정합니다.
+     * 하우스캐디 정보 수정: 관리자가 하우스캐디의 정보를 수정합니다.
      *
      * @param golfFieldId 골프장 Id
      * @param caddyId     캐디 Id
      * @param dto         수정할 정보
      */
     @Transactional
-    public void updateHouseCaddy(Long golfFieldId, Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {
+    public void updateHouseCaddyByManager(Long golfFieldId, Long caddyId, HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 
@@ -83,7 +83,7 @@ public class HouseCaddyService {
                         caddy.setTeamRole(TeamRole.MEMBER);
                     });
         }
-        houseCaddy.updateHouseCaddy(dto);
+        houseCaddy.updateHouseCaddyByManager(dto);
     }
 
     /**
@@ -222,5 +222,21 @@ public class HouseCaddyService {
         } catch (NumberFormatException e) {
             return Integer.MAX_VALUE;
         }
+    }
+
+
+
+    /**
+     * 하우스캐디가 자신의 정보를 변경합니다.
+     *
+     * @param caddyId 캐디 Id
+     * @param dto 변경할 정보 dto
+     */
+    @Transactional
+    public void updateHouseCaddy(Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {
+        HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
+                .orElseThrow(CCaddyNotFoundException::new);
+
+        houseCaddy.updateHouseCaddy(dto);
     }
 }

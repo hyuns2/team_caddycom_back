@@ -1,14 +1,12 @@
 package com.flash21.caddycom.entity.caddy;
 
 import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
-import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.caddy.converter.DayListConverter;
 import com.flash21.caddycom.entity.caddy.converter.PartListConverter;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -60,12 +58,20 @@ public class HouseCaddy extends Caddy{
         this.refreshToken = refreshToken;
     }
 
-    public void updateHouseCaddy(HouseCaddyRequestDto.updateHouseCaddy dto) {
+    public void updateHouseCaddyByManager(HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
         this.team = dto.getTeam();
         this.teamRole = dto.getTeamRole();
         this.holiday = dto.getHoliday();
         this.offPart = dto.getOffPart();
         this.gender = dto.getGender();
+        this.birth = LocalDate.parse(dto.getBirth());
+        this.address = dto.getAddress();
+        this.addressDetail = dto.getAddressDetail();
+        this.career = dto.getCareer();
+    }
+
+    public void updateHouseCaddy(HouseCaddyRequestDto.updateHouseCaddy dto) {
+        this.changedHoliday = dto.getChangedHoliday();
         this.birth = LocalDate.parse(dto.getBirth());
         this.address = dto.getAddress();
         this.addressDetail = dto.getAddressDetail();

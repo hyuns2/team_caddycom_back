@@ -39,15 +39,15 @@ public class HouseCaddyController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @Operation(summary = "하우스캐디 정보변경", description = "하우스캐디의 정보를 변경합니다.")
+    @Operation(summary = "하우스캐디 정보변경", description = "관리자가 하우스캐디의 정보를 변경합니다.")
     @PutMapping("/{golfFieldId}/{caddyId}")
-    public ResponseEntity<?> updateHouseCaddy(@AuthenticationPrincipal User user, @PathVariable Long golfFieldId, @PathVariable Long caddyId, @Valid @RequestBody HouseCaddyRequestDto.updateHouseCaddy dto) {
-        houseCaddyService.updateHouseCaddy(golfFieldId, caddyId, dto);
+    public ResponseEntity<?> updateHouseCaddyByManager(@AuthenticationPrincipal User user, @PathVariable Long golfFieldId, @PathVariable Long caddyId, @Valid @RequestBody HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
+        houseCaddyService.updateHouseCaddyByManager(golfFieldId, caddyId, dto);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "하우스캐디 휴무일 승인", description = "하우스캐디의 휴무일을 승인합니다.")
+    @Operation(summary = "하우스캐디 휴무일 승인", description = "사장님이 하우스캐디의 휴무일을 승인합니다.")
     @PostMapping("/holiday/{caddyId}")
     public ResponseEntity<?> updateHouseCaddyHoliday(@AuthenticationPrincipal User user, @PathVariable Long caddyId) {
         houseCaddyService.updateHouseCaddyHoliday(caddyId);
@@ -88,5 +88,13 @@ public class HouseCaddyController {
     public ResponseEntity<Void> updateHolidayAll(@Valid @RequestBody List<HouseCaddyRequestDto.createHoliday> request) {
         houseCaddyService.updateHolidayAll(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "하우스캐디 정보변경 및 휴무일 요청", description = "하우스캐디가 정보를 변경합니다.")
+    @PutMapping("/{caddyId}")
+    public ResponseEntity<?> updateHouseCaddy(@AuthenticationPrincipal User user, @PathVariable Long caddyId, @Valid @RequestBody HouseCaddyRequestDto.updateHouseCaddy dto) {
+        houseCaddyService.updateHouseCaddy(caddyId, dto);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

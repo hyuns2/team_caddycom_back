@@ -77,11 +77,11 @@ public class HouseCaddy extends Caddy {
             this.changedHoliday = changedHoliday;
         if (birth != null && !birth.isEmpty())
             this.birth = LocalDate.parse(birth);
-        if (address != null)
+        if (address != null && !address.isEmpty())
             this.address = address;
-        if (addressDetail != null)
+        if (addressDetail != null && !addressDetail.isEmpty())
             this.addressDetail = addressDetail;
-        if (career != null)
+        if (career != null && !career.isEmpty())
             this.career = career;
     }
 

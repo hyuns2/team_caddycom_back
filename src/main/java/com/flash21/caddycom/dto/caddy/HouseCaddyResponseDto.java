@@ -6,20 +6,25 @@ import com.flash21.caddycom.entity.caddy.Gender;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.caddy.TeamRole;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class HouseCaddyResponseDto {
     @Getter
+    @Builder
     @AllArgsConstructor
     public static class TeamHoliday {
         private String team;
         private List<HolidayInfo> info;
+
+        public static TeamHoliday from(String team, List<HolidayInfo> info) {
+            return TeamHoliday.builder()
+                    .team(team)
+                    .info(info)
+                    .build();
+        }
     }
 
     @Getter
@@ -43,12 +48,24 @@ public class HouseCaddyResponseDto {
     }
 
     @Getter
+    @Builder
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class HolidayInfo{
         private Long id;
         private String name;
         private TeamRole teamRole;
         private List<Days> holiday;
+
+
+        public static HolidayInfo from(HouseCaddy houseCaddy) {
+            return HolidayInfo.builder()
+                    .id(houseCaddy.getId())
+                    .name(houseCaddy.getName())
+                    .teamRole(houseCaddy.getTeamRole())
+                    .holiday(houseCaddy.getHoliday())
+                    .build();
+        }
     }
 
     @Data

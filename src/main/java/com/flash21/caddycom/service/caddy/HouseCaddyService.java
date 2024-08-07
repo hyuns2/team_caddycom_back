@@ -127,29 +127,27 @@ public class HouseCaddyService {
     /**
      * 골프장 내 모든 하우스캐디의 휴무일을 반환합니다.
      *
-     * @param golfFieldId 골프장 id
+     * 1. 골프장 id로 하우스캐디 리스트를 조회
+     * 2. HouseCaddy 를 조 이름을 기준으로 그룹핑(team필드가 null 인 경우 '조 없음') -> HolidayInfo 로 변환
+     * 3. Map<팀 이름, HolidayInfo 리스트> 를 TeamHoliday 로 변환후 팀 이름순으로 정렬
+     *
      * @return 조 이름과 하우스캐디 정보(하우스캐디의 id, 이름, 역할, 휴무일) 리스트로 이루어진 DTO 리스트
      */
     @Transactional(readOnly = true)
     public List<HouseCaddyResponseDto.TeamHoliday> getAllHoliday(Long golfFieldId) {
         List<HouseCaddy> houseCaddies = houseCaddyRepository.findAllByGolfFieldId(golfFieldId);
 
-        Map<String, List<HouseCaddy>> collect = houseCaddies.stream().collect(Collectors.groupingBy(HouseCaddy::getTeam));
+        Map<String, List<HouseCaddyResponseDto.HolidayInfo>> holidayInfoMap = houseCaddies.stream()
+                .collect(Collectors.groupingBy(
+                        caddy -> caddy.getTeam() != null ? caddy.getTeam() : "조 없음",
+                        Collectors.mapping(HouseCaddyResponseDto.HolidayInfo::from, Collectors.toList())
+                ));
 
-        List<HouseCaddyResponseDto.TeamHoliday> allHolidays = new ArrayList<>();
-        for (String team : collect.keySet()) {
-            List<HouseCaddyResponseDto.HolidayInfo> infos = new ArrayList<>();
-            for (HouseCaddy houseCaddy : collect.get(team)) {
-                HouseCaddyResponseDto.HolidayInfo info = new HouseCaddyResponseDto.HolidayInfo(
-                        houseCaddy.getId(),
-                        houseCaddy.getName(),
-                        houseCaddy.getTeamRole(),
-                        houseCaddy.getHoliday());
-                infos.add(info);
-            }
-            allHolidays.add(new HouseCaddyResponseDto.TeamHoliday(team, infos));
-        }
-        Collections.sort(allHolidays, Comparator.comparing(HouseCaddyResponseDto.TeamHoliday::getTeam));
+        List<HouseCaddyResponseDto.TeamHoliday> allHolidays = holidayInfoMap.entrySet().stream()
+                .map(entry -> HouseCaddyResponseDto.TeamHoliday.from(entry.getKey(), entry.getValue())) // TeamHoliday 로 변환
+                .sorted(Comparator.comparing(HouseCaddyResponseDto.TeamHoliday::getTeam)) // 조 이름 순으로 정렬
+                .collect(Collectors.toList());
+
         return allHolidays;
     }
 
@@ -201,7 +199,6 @@ public class HouseCaddyService {
 
     @Transactional
     public void saveCaddyList(Long golfFieldId, List<HouseCaddy> caddyList) {
-        //TODO: bulk insert로 변경 필요
         houseCaddyRepository.bulkInsert(caddyList, golfFieldId);
     }
 

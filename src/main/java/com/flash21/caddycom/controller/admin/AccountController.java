@@ -28,7 +28,7 @@ public class AccountController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/employee")
     public ResponseEntity<Message> createAccount(@Valid @RequestParam Long golfFieldId,
-                                                 @RequestBody List<AccountRequest.Create> request){
+                                                 @Valid @RequestBody List<AccountRequest.Create> request){
         accountService.createAccounts(golfFieldId, request);
         return ResponseEntity.ok().body(new Message("직원 계정 생성 완료"));
     }

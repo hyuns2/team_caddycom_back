@@ -43,6 +43,8 @@ public class AuthService {
                 return SigninResponse.Main.from(jwtResponse, account.getGolfField(), account.getRole(), account.getPassword());
             }
         }
+
+        // TODO: 골프장 등록 안한 사장 로그아웃 후 다시 접속했을때 duplicate phoneNumber 에러 핸들링
         // 사장님 최초 로그인
         String phoneNumber = cellValueConverter.convertPhoneNumber(request.getPhoneNumber());
         Account owner = Account.builder()

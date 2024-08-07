@@ -1,5 +1,6 @@
 package com.flash21.caddycom.dto.auth;
 
+import com.flash21.caddycom.global.validation.PhoneNumber;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,7 @@ public class SigninRequest {
     @NoArgsConstructor
     public static class First {
         @NotBlank(message = "phoneNumber는 필수값입니다.")
+        @PhoneNumber
         private String phoneNumber;
 
         public String getPhoneNumber() {
@@ -43,6 +45,7 @@ public class SigninRequest {
     @NoArgsConstructor
     public static class Login {
         @NotBlank(message = "phoneNumber는 필수값입니다.")
+        @PhoneNumber
         private String phoneNumber;
 
         @Getter
@@ -59,6 +62,7 @@ public class SigninRequest {
     @NoArgsConstructor
     public static class Password {
         @NotBlank(message = "phoneNumber는 필수값입니다.")
+        @PhoneNumber
         private String phoneNumber;
 
         @Getter
@@ -79,6 +83,7 @@ public class SigninRequest {
         private String type;
 
         @NotBlank(message = "phoneNumber는 필수값입니다.")
+        @PhoneNumber
         private String phoneNumber;
 
         @Getter

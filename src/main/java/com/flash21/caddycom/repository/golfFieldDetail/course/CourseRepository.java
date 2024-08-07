@@ -11,6 +11,7 @@ import java.util.List;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long>, CourseJdbcRepository {
+    @Query(value = "select c from Course c where c.deleted = false and c.formation.id = :formationId")
     List<Course> findAllByFormationId(Long formationId);
 
     @Modifying

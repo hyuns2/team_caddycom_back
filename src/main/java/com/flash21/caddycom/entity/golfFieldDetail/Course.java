@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @SQLDelete(sql = "UPDATE course SET deleted = true WHERE id = ?")
-@Where(clause = "deleted = false")
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

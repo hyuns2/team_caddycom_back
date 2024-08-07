@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 골프장 구성과 관련된 CRUD
@@ -138,7 +139,12 @@ public class FormationService {
             List<CourseResponse.Info> courseInfos = new ArrayList<>();
             if(!formation.getCourses().isEmpty()) {
                 courseInfos = formation.getCourses().stream()
-                        .map(course -> new CourseResponse.Info(course.getId(), course.getName(), course.getTotalHoles()))
+                        .flatMap(course -> {
+                            if(!course.isDeleted())
+                                return Stream.of(new CourseResponse.Info(course.getId(), course.getName(), course.getTotalHoles()));
+                            else
+                                return Stream.empty();
+                        })
                         .sorted(Comparator.comparingLong(CourseResponse.Info::getId))
                         .collect(Collectors.toList());
             }

@@ -14,7 +14,7 @@ import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.repository.schedule.AssignmentRepository;
-import com.flash21.caddycom.repository.schedule.ScheduleQueryFactory;
+import com.flash21.caddycom.repository.schedule.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -38,8 +38,8 @@ public class AssignmentCaddyService {
 
     private final AssignmentRepository assignmentRepository;
     private final HouseCaddyRepository houseCaddyRepository;
-    private final ScheduleQueryFactory scheduleQueryFactory;
     private final GolfFieldRepository golfFieldRepository;
+    private final ScheduleRepository scheduleRepository;
 
     /**
      * 골프장 id와 date로 assignment를 모두 조회한다.
@@ -139,7 +139,7 @@ public class AssignmentCaddyService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 골프장입니다."));
 
         //스케줄 검증
-        List<Schedule> findSchedules = scheduleQueryFactory.findAllByDateFetchJoinToAssignmentAndHouseCaddy(golfFieldId, date);
+        List<Schedule> findSchedules = scheduleRepository.findAllByDateFetchJoinToAssignmentAndHouseCaddy(golfFieldId, date);
 
         boolean invalidScheduleExists = findSchedules.stream()
                 .anyMatch(findSchedule -> findSchedule.getDateStatus() != DateStatus.SETTING);

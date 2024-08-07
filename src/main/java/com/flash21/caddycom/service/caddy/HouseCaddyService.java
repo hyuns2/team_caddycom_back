@@ -48,7 +48,7 @@ public class HouseCaddyService {
             throw new CTeamNameNotFoundException();
 
         return houseCaddyList.stream().map(hc -> {
-            return HouseCaddyResponseDto.houseCaddyDetail.builder()
+                    return HouseCaddyResponseDto.houseCaddyDetail.builder()
                             .id(hc.getId())
                             .golfFieldName(null)
                             .profileUrl(hc.getProfileUrl())
@@ -66,7 +66,7 @@ public class HouseCaddyService {
                             .career(hc.getCareer())
                             .caddyType(hc.getCaddyType())
                             .build();
-        }
+                }
         ).toList();
     }
 
@@ -157,7 +157,7 @@ public class HouseCaddyService {
      * 특정 조에 속하는 하우스캐디의 휴무일을 반환합니다.
      *
      * @param golfFieldId 골프장 id
-     * @param teamName 조 이름
+     * @param teamName    조 이름
      * @return 조 이름과 하우스캐디 정보 리스트(하우스캐디의 id, 이름, 역할, 휴무일) 로 이루어진 DTO
      */
     @Transactional(readOnly = true)
@@ -222,6 +222,7 @@ public class HouseCaddyService {
 
     private int extractTeamNumber(String team) {
         try {
+            if (team == null) return Integer.MAX_VALUE;
             String numericPart = team.replaceAll("\\D+", "");
             return numericPart.isEmpty() ? Integer.MAX_VALUE : Integer.parseInt(numericPart);
         } catch (NumberFormatException e) {
@@ -263,7 +264,7 @@ public class HouseCaddyService {
      * 하우스캐디 정보 변경: 하우스캐디가 자신의 정보를 변경합니다.
      *
      * @param caddyId 캐디 Id
-     * @param dto 변경할 정보 dto
+     * @param dto     변경할 정보 dto
      */
     @Transactional
     public void updateHouseCaddy(Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {

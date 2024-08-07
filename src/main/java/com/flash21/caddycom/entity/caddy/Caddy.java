@@ -43,4 +43,16 @@ public abstract class Caddy {
     protected Role role;
 
     protected String profileUrl;
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void encodePassword(String password){
+        this.password = password;
+    }
 }

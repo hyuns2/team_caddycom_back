@@ -153,6 +153,7 @@ public class HouseCaddyService {
 
     /**
      * 특정 조에 속하는 하우스캐디의 휴무일을 반환합니다.
+     * '조 없음'이 입력으로 들어올 경우 team이 없는 캐디를 조회 (IS NULL)
      *
      * @param golfFieldId 골프장 id
      * @param teamName 조 이름
@@ -160,18 +161,13 @@ public class HouseCaddyService {
      */
     @Transactional(readOnly = true)
     public HouseCaddyResponseDto.TeamHoliday getTeamHoliday(Long golfFieldId, String teamName) {
-        List<HouseCaddy> caddies = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, teamName);
+        String team = teamName.equals("조 없음") ? null : teamName;
+        List<HouseCaddy> caddies = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, team);
 
-        List<HouseCaddyResponseDto.HolidayInfo> infos = new ArrayList<>();
-        for (HouseCaddy houseCaddy : caddies) {
-            infos.add(new HouseCaddyResponseDto.HolidayInfo(
-                    houseCaddy.getId(),
-                    houseCaddy.getName(),
-                    houseCaddy.getTeamRole(),
-                    houseCaddy.getHoliday()));
-        }
-
-        return new HouseCaddyResponseDto.TeamHoliday(teamName, infos);
+        List<HouseCaddyResponseDto.HolidayInfo> infos = caddies.stream()
+                .map(HouseCaddyResponseDto.HolidayInfo::from)
+                .collect(Collectors.toList());
+        return HouseCaddyResponseDto.TeamHoliday.from(teamName, infos);
     }
 
     /**

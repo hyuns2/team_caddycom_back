@@ -71,7 +71,7 @@ public class HouseCaddyRequestDto {
     @AllArgsConstructor
     public static class updateHouseCaddy {
         @Schema(description = "프로필 사진파일")
-        private final MultipartFile profile = null;
+        private MultipartFile profile;
 
         @Schema(description = "변경을 희망하는 휴무일 ex) [\"MON\", \"FRI\"]")
         private List<Days> changedHoliday;

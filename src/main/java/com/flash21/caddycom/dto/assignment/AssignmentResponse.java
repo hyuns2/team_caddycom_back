@@ -107,6 +107,7 @@ public class AssignmentResponse {
         private Long assignmentId;
         private Integer part;
         private String startTime;
+        private String golfFieldName;
         @JsonIgnore
         private LocalDate date;
 
@@ -114,6 +115,7 @@ public class AssignmentResponse {
             this.assignmentId = assignment.getId();
             this.part = assignment.getSchedule().getPart();
             this.date = assignment.getSchedule().getReservationAt();
+            this.golfFieldName = assignment.getSchedule().getGolfField().getName();
             this.startTime = assignment.getStartTime().format(timeFormatter);
         }
     }

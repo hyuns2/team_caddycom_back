@@ -61,6 +61,9 @@ public class CourseService {
     public List<Long> createCourses(Formation formation, List<CourseRequest.Create> requests) {
         List<Course> courses = new ArrayList<>();
         for(CourseRequest.Create request : requests) {
+            if(request.getName() == null || request.getName().isBlank())
+                throw new IllegalArgumentException("코스의 이름은 공백일 수 없습니다.");
+
             Course course = Course.builder()
                     .name(request.getName())
                     .totalHoles(request.getTotalHoles())

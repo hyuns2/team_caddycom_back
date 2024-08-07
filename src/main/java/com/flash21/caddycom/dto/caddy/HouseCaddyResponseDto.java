@@ -40,7 +40,7 @@ public class HouseCaddyResponseDto {
 
         public Info(HouseCaddy houseCaddy) {
             this.caddyId = houseCaddy.getId();
-            this.team = houseCaddy.getTeam();
+            this.team = houseCaddy.getTeam() == null ? "조 없음" : houseCaddy.getTeam();
             this.teamRole = houseCaddy.getTeamRole();
             this.name = houseCaddy.getName();
             this.availDates = houseCaddy.getHoliday();

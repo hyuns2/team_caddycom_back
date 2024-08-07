@@ -24,8 +24,7 @@ import java.util.List;
 public class HouseCaddy extends Caddy {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false)
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private GolfField golfField;
 
     @OneToMany(mappedBy = "houseCaddy", cascade = CascadeType.ALL, orphanRemoval = true)

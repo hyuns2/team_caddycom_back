@@ -43,7 +43,8 @@ public class HouseCaddyService {
      * @return 캐디정보 리스트
      */
     public List<HouseCaddyResponseDto.houseCaddyDetail> getHouseCaddyByTeam(Long golfFieldId, String teamName) {
-        List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, teamName);
+        String team = teamName.equals("조 없음") ? null : teamName;
+        List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, team);
         if (houseCaddyList.isEmpty())
             throw new CTeamNameNotFoundException();
 
@@ -54,7 +55,7 @@ public class HouseCaddyService {
                             .profileUrl(hc.getProfileUrl())
                             .name(hc.getName())
                             .phoneNumber(hc.getPhoneNumber())
-                            .team(hc.getTeam())
+                            .team(teamName)
                             .teamRole(hc.getTeamRole())
                             .holiday(hc.getHoliday())
                             .changedHoliday(hc.getChangedHoliday())

@@ -1,6 +1,5 @@
 package com.flash21.caddycom.config;
 
-import com.flash21.caddycom.global.authentication.AuthenticationExceptionFilter;
 import com.flash21.caddycom.global.authentication.JwtAccessDeniedHandler;
 import com.flash21.caddycom.global.authentication.JwtAuthenticationEntryPoint;
 import com.flash21.caddycom.global.authentication.JwtFilter;
@@ -25,7 +24,6 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtValidator jwtValidator;
-    private final AuthenticationExceptionFilter AuthenticationExceptionFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 

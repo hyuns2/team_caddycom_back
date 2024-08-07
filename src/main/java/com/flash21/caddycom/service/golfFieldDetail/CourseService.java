@@ -115,10 +115,10 @@ public class CourseService {
      * @param ids 삭제할 코스의 id 리스트
      */
     public void deleteCourses(List<Long> ids) {
-        teeRepository.deleteAllByCourseIds(ids);
-        commentRepository.deleteAllByCourseIds(ids);
-        holeRepository.deleteAllByCourseIds(ids);
-        courseRepository.deleteAllByIdInBatch(ids);
+//        teeRepository.deleteAllByCourseIds(ids);
+//        commentRepository.deleteAllByCourseIds(ids);
+//        holeRepository.deleteAllByCourseIds(ids);
+        courseRepository.softDeleteAllByIdInBatch(ids);
     }
 
 

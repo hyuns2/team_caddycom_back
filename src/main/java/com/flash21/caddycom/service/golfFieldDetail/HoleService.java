@@ -95,8 +95,14 @@ public class HoleService {
         if(request.getHandicap() != savedHole.getHandicap())
             savedHole.updateHandicap(request.getHandicap());
 
-        if(request.getImage() != null && !request.getImage().isEmpty()) {
-            String imageUrl = uploadImage(request.getImage());
+        if(request.getImage() != null) { //이미지에 변경사항 존재
+            String imageUrl;
+            fileUploader.delete(savedHole.getImageUrl());
+            if(request.getImage().isEmpty()) // 이미지 삭제
+                imageUrl = null;
+            else // 새 이미지로 교체
+                imageUrl = uploadImage(request.getImage());
+
             savedHole.updateImage(imageUrl);
         }
 

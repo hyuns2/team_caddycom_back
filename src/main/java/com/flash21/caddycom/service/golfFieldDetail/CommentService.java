@@ -53,9 +53,17 @@ public class CommentService {
 
             for(Comment comment : savedComments) {
                 if(request.getId().equals(comment.getId())) {
-                    String imageUrl = null;
-                    if(request.getImage() != null && !request.getImage().isEmpty())
-                        imageUrl = uploadImage(request.getImage());
+                    String imageUrl;
+                    if(request.getImage() != null) {
+                        fileUploader.delete(comment.getImageUrl());
+                        if (request.getImage().isEmpty()) { // 이미지 삭제
+                            imageUrl = null;
+                        } else { // 새 이미지로 교체
+                            imageUrl = uploadImage(request.getImage());
+                        }
+                    } else {
+                        imageUrl = comment.getImageUrl();
+                    }
                     comment.update(request.getTitle(), request.getContent(), imageUrl);
                     break;
                 }

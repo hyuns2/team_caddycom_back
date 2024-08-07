@@ -45,4 +45,9 @@ public class S3FileUploader implements FileUploader{
 
         return amazonS3Client.getUrl(bucket, uniqueFilename).toString();
     }
+
+    @Override
+    public void delete(String url) {
+        //ToDo: 구현 필요
+    }
 }

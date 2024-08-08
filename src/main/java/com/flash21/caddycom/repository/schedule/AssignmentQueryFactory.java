@@ -10,7 +10,10 @@ import java.util.List;
 
 public interface AssignmentQueryFactory {
     Page<Assignment> findAllByDateAndCourseIdAndStatus(Pageable pageable, Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status);
+
     Page<Assignment> findAssignedByDateAndCourseIdAndPart(Pageable pageable, Long id, Long golfFieldId, LocalDate date, Long courseId, Integer part);
+
     List<Assignment> findByCaddyIdAndMonth(Long caddyId, LocalDate startDate, LocalDate endDate);
 
+    List<Assignment> findByIdsFetchJoinOrderByStartTime(List<Long> ids);
 }

@@ -2,6 +2,7 @@ package com.flash21.caddycom.controller.assignment;
 
 import com.flash21.caddycom.dto.Message;
 import com.flash21.caddycom.dto.assignment.AssignmentRequest;
+import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.service.assignment.AssignmentCaddyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +26,18 @@ public class CaddyAssignmentController {
     public ResponseEntity<Message> cancelAssignment(@RequestParam Long assignmentId,
                                                     @RequestBody(required = false) AssignmentRequest.Cancel request) {
         assignmentCaddyService.requestCancelAssignment(assignmentId, request);
-        return ResponseEntity.ok().body(new Message("배정 취소가 요청 되었습니다."));
+        return ResponseEntity.ok()
+                .body(new Message("배정 취소가 요청 되었습니다."));
+    }
+
+
+    @GetMapping("/detail")
+    @Operation(summary = "업무 시작 전 배정 상세 정보 확인 API", description = "공용 - 배정 상세 정보를 확인하고 캐디업무 시작 버튼을 누르는 화면")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<AssignmentResponse.CaddyAssignmentInfoDetail>> getAssignmentInfo(
+            @RequestParam List<Long> assignmentIds
+    ) {
+        return ResponseEntity.ok()
+                .body(assignmentCaddyService.getAssignmentInfo(assignmentIds));
     }
 }

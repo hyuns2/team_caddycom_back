@@ -2,13 +2,18 @@ package com.flash21.caddycom.dto.assignment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.TeamRole;
+import com.flash21.caddycom.entity.golfField.GolfField;
+import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
+import com.flash21.caddycom.entity.schedule.Schedule;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -53,6 +58,43 @@ public class AssignmentResponse {
                     .caddyId(assignment.getCaddy().getId())
                     .courseName(assignment.getSchedule().getCourse().getName())
                     .part(assignment.getSchedule().getPart())
+                    .build();
+        }
+    }
+
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Builder
+    @Getter
+    public static class CaddyAssignmentInfoDetail {
+
+        private String golfFieldName;
+        private LocalDate assignmentDate;
+        private Days days;
+        private String courseName;
+        private int part;
+        private String startTime;
+        private Long courseId;
+        private int totalHole;
+
+
+        public static CaddyAssignmentInfoDetail of(Assignment assignment) {
+
+            Schedule schedule = assignment.getSchedule();
+            GolfField golfField = schedule.getGolfField();
+            Course course = schedule.getCourse();
+
+            LocalDate reservationAt = assignment.getSchedule().getReservationAt();
+
+            return CaddyAssignmentInfoDetail.builder()
+                    .golfFieldName(golfField.getName())
+                    .assignmentDate(reservationAt)
+                    .days(getDayOfWeek(reservationAt))
+                    .courseName(course.getName())
+                    .part(schedule.getPart())
+                    .startTime(assignment.getStartTime().toString())
+                    .courseId(course.getId())
+                    .totalHole(course.getTotalHoles())
                     .build();
         }
     }
@@ -118,5 +160,23 @@ public class AssignmentResponse {
             this.golfFieldName = assignment.getSchedule().getGolfField().getName();
             this.startTime = assignment.getStartTime().format(timeFormatter);
         }
+    }
+
+    private static Days getDayOfWeek(LocalDate date) {
+        int dayOfWeek = getDayofWeekFromRequestDate(date);
+        return Days.fromNumber(String.valueOf(dayOfWeek));
+    }
+
+    private static int getDayofWeekFromRequestDate(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return switch (dayOfWeek) {
+            case MONDAY -> 1;
+            case TUESDAY -> 2;
+            case WEDNESDAY -> 3;
+            case THURSDAY -> 4;
+            case FRIDAY -> 5;
+            case SATURDAY -> 6;
+            case SUNDAY -> 7;
+        };
     }
 }

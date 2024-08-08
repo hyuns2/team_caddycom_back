@@ -129,6 +129,15 @@ public class AssignmentCaddyService {
         assignment.assignCaddy(caddy);
     }
 
+    @Transactional(readOnly = true)
+    public List<AssignmentResponse.CaddyAssignmentInfoDetail> getAssignmentInfo(List<Long> assignmentIds) {
+
+        return assignmentRepository.findByIdsFetchJoinOrderByStartTime(assignmentIds)
+                .stream()
+                .map(AssignmentResponse.CaddyAssignmentInfoDetail::of)
+                .toList();
+    }
+
     /**
      * 캐디 자동 배정
      */

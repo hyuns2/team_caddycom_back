@@ -2,10 +2,12 @@ package com.flash21.caddycom.repository.schedule;
 
 import com.flash21.caddycom.entity.schedule.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +23,12 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Sched
     List<Schedule> findAllByGolfFieldIdAndReservationAt(Long golfFieldId, LocalDate date);
 
     Optional<Schedule> findFirstByReservationSheetIdAndPart(Long reservationSheetId, int part);
+
+    List<Schedule> findAllByReservationSheetIdAndReservationAtIsAfter(Long reservationSheetId, LocalDate today);
+
+    List<Schedule> findAllByReservationSheetIdAndReservationAtAndStartTimeIsAfter(Long reservationSheetId, LocalDate today, LocalTime current);
+
+    @Modifying
+    @Query("delete from Schedule s where s.id in ?1")
+    void deleteAllByIdList(List<Long> idList);
 }

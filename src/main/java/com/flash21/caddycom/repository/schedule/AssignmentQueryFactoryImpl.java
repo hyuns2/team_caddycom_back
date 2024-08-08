@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.flash21.caddycom.entity.schedule.QAssignment.*;
+import static com.flash21.caddycom.entity.schedule.QSchedule.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -74,9 +75,10 @@ public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
     public List<Assignment> findByCaddyIdAndMonth(Long caddyId, LocalDate startDate, LocalDate endDate) {
         return jpaQueryFactory
                 .selectFrom(assignment)
-                .where(assignment.houseCaddy.id.eq(caddyId)
+                .where(assignment.caddy.id.eq(caddyId)
                         .and(assignment.schedule.reservationAt.between(startDate, endDate)))
-                .leftJoin(assignment.schedule).fetchJoin()
+                .leftJoin(assignment.schedule, schedule).fetchJoin()
+                .leftJoin(schedule.golfField).fetchJoin()
                 .orderBy(assignment.schedule.reservationAt.asc())
                 .fetch();
     }

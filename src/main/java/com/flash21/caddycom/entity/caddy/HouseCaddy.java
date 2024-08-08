@@ -24,11 +24,8 @@ import java.util.List;
 public class HouseCaddy extends Caddy {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private GolfField golfField;
-
-    @OneToMany(mappedBy = "houseCaddy", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Assignment> assignmentList;
 
     @Convert(converter = DayListConverter.class)
     private List<Days> holiday;
@@ -48,15 +45,6 @@ public class HouseCaddy extends Caddy {
     private TeamRole teamRole;
 
     private String caddyType;
-
-
-    public void updatePassword(String password) {
-        this.password = password;
-    }
-
-    public void updateToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 
     public void updateHouseCaddyByManager(HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
         this.team = dto.getTeam();
@@ -98,8 +86,4 @@ public class HouseCaddy extends Caddy {
         this.holiday = holiday;
     }
 
-    public HouseCaddy attachGolfField(GolfField golfField) {
-        this.golfField = golfField;
-        return this;
-    }
 }

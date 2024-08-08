@@ -14,7 +14,8 @@ public interface HouseCaddyRepository extends JpaRepository<HouseCaddy, Long>, H
 
     Optional<HouseCaddy> findByPhoneNumber(String phoneNumber);
 
-    @Query("select distinct h.team from HouseCaddy h where h.golfField.id = ?1")
+    @Query("select distinct COALESCE(h.team,'조 없음') from HouseCaddy h where h.golfField.id = ?1 " +
+            "ORDER BY COALESCE(h.team, '조 없음') ASC")
     List<String> findAllTeam(Long golfFieldId);
 
     List<HouseCaddy> findAllByGolfFieldIdAndTeam(Long golfFieldId, String teamName);

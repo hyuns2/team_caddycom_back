@@ -1,5 +1,6 @@
 package com.flash21.caddycom.repository.schedule;
 
+import com.flash21.caddycom.entity.caddy.Caddy;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import org.springframework.data.domain.Page;
@@ -31,8 +32,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long>, A
 
     @Modifying
     @Query("UPDATE Assignment a " +
-            "SET a.houseCaddy = :caddy, a.caddyName = :caddyName " +
+            "SET a.caddy = :caddy, a.caddyName = :caddyName " +
             "WHERE a.id = :assignmentId")
-    void switchAssignment(@Param("assignmentId") Long assignmentId, @Param("caddy") HouseCaddy caddy, @Param("caddyName") String caddyName);
+    void switchAssignment(@Param("assignmentId") Long assignmentId, @Param("caddy") Caddy caddy, @Param("caddyName") String caddyName);
 
 }

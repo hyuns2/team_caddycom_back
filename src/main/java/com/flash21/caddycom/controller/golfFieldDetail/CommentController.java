@@ -1,6 +1,6 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
-import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentDto;
+import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentResponse;
 import com.flash21.caddycom.service.golfFieldDetail.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +21,7 @@ public class CommentController {
 
     @GetMapping("/api/hole/{holeId}/tips")
     @Operation(summary = "홀의 전체 팁 정보 조회 API")
-    public ResponseEntity<List<CommentDto.Info>> getAllComments(@PathVariable Long holeId) {
+    public ResponseEntity<List<CommentResponse.Info>> getAllComments(@PathVariable Long holeId) {
         return new ResponseEntity<>(commentService.getAllComments(holeId), HttpStatus.OK);
     }
 }

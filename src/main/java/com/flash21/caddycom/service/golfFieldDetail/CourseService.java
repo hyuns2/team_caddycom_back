@@ -5,17 +5,23 @@ import com.flash21.caddycom.dto.golfFieldDetail.course.CourseRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
+import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import com.flash21.caddycom.repository.golfFieldDetail.CommentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 /**
  * 코스 정보와 관련된 CRUD
@@ -31,6 +37,8 @@ public class CourseService {
     private final TeeRepository teeRepository;
     private final CommentRepository commentRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
     private final HoleService holeService;
 
     /**
@@ -61,6 +69,9 @@ public class CourseService {
     public List<Long> createCourses(Formation formation, List<CourseRequest.Create> requests) {
         List<Course> courses = new ArrayList<>();
         for(CourseRequest.Create request : requests) {
+            if(request.getName() == null || request.getName().isBlank())
+                throw new IllegalArgumentException("코스의 이름은 공백일 수 없습니다.");
+
             Course course = Course.builder()
                     .name(request.getName())
                     .totalHoles(request.getTotalHoles())
@@ -112,10 +123,47 @@ public class CourseService {
      * @param ids 삭제할 코스의 id 리스트
      */
     public void deleteCourses(List<Long> ids) {
-        teeRepository.deleteAllByCourseIds(ids);
-        commentRepository.deleteAllByCourseIds(ids);
-        holeRepository.deleteAllByCourseIds(ids);
-        courseRepository.deleteAllByIdInBatch(ids);
+        courseRepository.softDeleteAllByIdInBatch(ids);
+        // 코스 삭제하면 Assignment, Schedule에서 내일부터의 데이터 삭제
+        LocalDate today = LocalDate.now();
+        //1. Schedule 가져오기 (reservation_at이 내일부터 + 삭제된 코스를 참조하고 있는)
+        List<Long> deleteScheduleId = entityManager.createQuery("SELECT s.id from Schedule s where s.reservationAt > :today and s.course.id in :courseIds", Long.class)
+                .setParameter("today", today)
+                .setParameter("courseIds", ids)
+                .getResultList();
+        //2. Assignment 삭제
+        //2-1. status != ASSIGNED인 Assignment 데이터 삭제
+        entityManager.createQuery("DELETE from Assignment a where a.schedule.id in :scheduleIds and a.status != :assigned")
+                .setParameter("scheduleIds", deleteScheduleId)
+                .setParameter("assigned", AssignmentStatus.ASSIGNED)
+                .executeUpdate();
+        //2-2. status == ASSIGNED인 Assignment 데이터 상태 수정 및 schedule 참조 제거
+        entityManager.createQuery("UPDATE Assignment a SET a.status = :status, a.schedule = null where a.schedule.id in :scheduleIds")
+                .setParameter("status", AssignmentStatus.DELETED)
+                .setParameter("scheduleIds", deleteScheduleId)
+                .executeUpdate();
+        //3. Schedule 삭제
+        entityManager.createQuery("DELETE from Schedule s where s.id in :scheduleIds")
+                .setParameter("scheduleIds", deleteScheduleId)
+                .executeUpdate();
+        //4. ReservationSheet에서 코스 삭제
+        //4-1. ReservationSheet 가져오기 (startDate > today + courseIdList에 삭제된 코스를 가지고 있는)
+        List<ReservationSheet> reservationSheets = entityManager.createQuery("SELECT r from ReservationSheet r where r.startDate > :today", ReservationSheet.class)
+                .setParameter("today", today)
+                .getResultList();
+        //4-2. reservationSheet의 courseIdList에서 삭제된 코스 id 삭제
+        for(ReservationSheet rs : reservationSheets) {
+            List<Long> newCourseIdList = rs.getCourseIdList().stream().flatMap(courseId -> {
+                if (ids.contains(courseId))
+                    return Stream.empty();
+                else
+                    return Stream.of(courseId);
+            }).toList();
+            entityManager.createQuery("UPDATE ReservationSheet r SET r.courseIdList = :updateCourseId where r.id = :id")
+                    .setParameter("updateCourseId", newCourseIdList)
+                    .setParameter("id", rs.getId())
+                    .executeUpdate();
+        }
     }
 
 

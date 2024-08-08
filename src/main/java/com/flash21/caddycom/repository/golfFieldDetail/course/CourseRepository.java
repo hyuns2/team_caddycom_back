@@ -20,4 +20,14 @@ public interface CourseRepository extends JpaRepository<Course, Long>, CourseJdb
 
     @Query("select c from Course c where c.formation.golfField.id = ?1")
     List<Course> findAllByGolfFieldId(Long golfFieldId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE Course c SET c.deleted = true, c.formation = null where c.id in :ids")
+    void softDeleteAllByIdInBatch(Iterable<Long> ids);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE Course c SET c.deleted = true, c.formation = null where c.formation.id in :formationIds")
+    void softDeleteAllByFormationIds(Iterable<Long> formationIds);
 }

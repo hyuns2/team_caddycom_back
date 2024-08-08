@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +14,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Getter
+@SQLDelete(sql = "UPDATE course SET deleted = true WHERE id = ?")
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +30,9 @@ public class Course {
     @ManyToOne
     @JoinColumn(name="FormationId")
     private Formation formation;
+
+    @ColumnDefault("false")
+    private boolean deleted;
 
     @Builder
     public Course(String name, int totalHoles, Formation formation) {

@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 골프장 구성과 관련된 CRUD
@@ -113,10 +114,7 @@ public class FormationService {
      * @param ids 삭제할 구성의 id 리스트
      */
     public void deleteFormations(List<Long> ids) {
-        commentRepository.deleteAllByFormationIds(ids);
-        teeRepository.deleteAllByFormationIds(ids);
-        holeRepository.deleteAllByFormationIds(ids);
-        courseRepository.deleteAllByFormationIds(ids);
+        courseRepository.softDeleteAllByFormationIds(ids);
         formationRepository.deleteAllByIdInBatch(ids);
     }
 

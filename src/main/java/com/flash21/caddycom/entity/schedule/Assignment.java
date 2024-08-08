@@ -1,6 +1,6 @@
 package com.flash21.caddycom.entity.schedule;
 
-import com.flash21.caddycom.entity.caddy.HouseCaddy;
+import com.flash21.caddycom.entity.caddy.Caddy;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +31,7 @@ public class Assignment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private HouseCaddy houseCaddy;
+    private Caddy caddy;
 
     private String caddyName;
 
@@ -52,7 +52,7 @@ public class Assignment {
 
 
     public void vacateCaddy() {
-        this.houseCaddy = null;
+        this.caddy = null;
         this.caddyName = null;
     }
 
@@ -71,14 +71,14 @@ public class Assignment {
             this.status = AssignmentStatus.NOTHING;
             this.reason = null;
             this.caddyName = null;
-            this.houseCaddy = null;
+            this.caddy = null;
             this.schedule.subBlockCount();
         }
     }
 
-    public void assignHouseCaddy(HouseCaddy caddy) {
+    public void assignCaddy(Caddy caddy) {
         this.caddyName = caddy.getName();
-        this.houseCaddy = caddy;
+        this.caddy = caddy;
         caddy.getAssignmentList().add(this);
         if (this.status == AssignmentStatus.BLOCKED) return;
         this.status = AssignmentStatus.ASSIGNED;

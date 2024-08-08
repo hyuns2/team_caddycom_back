@@ -75,7 +75,7 @@ public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
     public List<Assignment> findByCaddyIdAndMonth(Long caddyId, LocalDate startDate, LocalDate endDate) {
         return jpaQueryFactory
                 .selectFrom(assignment)
-                .where(assignment.houseCaddy.id.eq(caddyId)
+                .where(assignment.caddy.id.eq(caddyId)
                         .and(assignment.schedule.reservationAt.between(startDate, endDate)))
                 .leftJoin(assignment.schedule, schedule).fetchJoin()
                 .leftJoin(schedule.golfField).fetchJoin()

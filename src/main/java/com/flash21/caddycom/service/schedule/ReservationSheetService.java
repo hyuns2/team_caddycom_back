@@ -9,6 +9,7 @@ import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.exception.cException.*;
+import com.flash21.caddycom.repository.caddy.CaddyRepository;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
@@ -33,7 +34,7 @@ public class ReservationSheetService {
     private final CourseRepository courseRepository;
     private final ScheduleJdbcRepository scheduleJdbcRepository;
     private final AssignmentRepository assignmentRepository;
-    private final HouseCaddyRepository houseCaddyRepository;
+    private final CaddyRepository caddyRepository;
 
     /**
      * 예약시트 생성: 예약시트를 생성합니다.
@@ -205,7 +206,7 @@ public class ReservationSheetService {
 
     public Map<LocalDate, List<AssignmentResponse.CaddyAssignmentInfo>> getAssignmentResultSheet(Long caddyId, int year, int month) {
 
-        houseCaddyRepository.findById(caddyId)
+        caddyRepository.findById(caddyId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 캐디 정보입니다."));
 
         LocalDate startDate = LocalDate.of(year, month, 1);

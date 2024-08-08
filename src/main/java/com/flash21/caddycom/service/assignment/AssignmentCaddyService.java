@@ -101,13 +101,14 @@ public class AssignmentCaddyService {
     /**
      * sql batch 처리로 인해 one-to-one 관계의 엔티티를 변경 시 duplicate key 에러가 발생
      * -> 두 엔티티의 caddy를 null로 변경 후 다시 업데이트
+     * TODO: Swap caddy 불필요. 삭제 예정
      */
     private void swapCaddy(Assignment fromAssignment, Assignment toAssignment) {
 
 
-        HouseCaddy fromCaddy = fromAssignment.getHouseCaddy();
+        Caddy fromCaddy = fromAssignment.getCaddy();
         String fromCaddyName = fromAssignment.getCaddyName();
-        HouseCaddy toCaddy = toAssignment.getHouseCaddy();
+        Caddy toCaddy = toAssignment.getCaddy();
         String toCaddyName = toAssignment.getCaddyName();
 
         fromAssignment.vacateCaddy();
@@ -125,7 +126,7 @@ public class AssignmentCaddyService {
         HouseCaddy caddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 캐디입니다."));
 
-        assignment.assignHouseCaddy(caddy);
+        assignment.assignCaddy(caddy);
     }
 
     /**
@@ -177,7 +178,7 @@ public class AssignmentCaddyService {
 
                 HouseCaddy currentCaddy = findCaddies.get(currentCaddyIndex);
                 if (isAlreadyAssigned(blockedCaddyIds, currentCaddy) && isAvailable(assignment, currentCaddy, todaysDayOfWeek)) {
-                    assignment.assignHouseCaddy(currentCaddy);
+                    assignment.assignCaddy(currentCaddy);
                     isAssigned = true;
                 }
 
@@ -216,8 +217,8 @@ public class AssignmentCaddyService {
 
     private Set<Long> getBlockedHouseCaddies(List<Assignment> findAssignment) {
         return findAssignment.stream()
-                .filter(assignment -> assignment.getStatus() == AssignmentStatus.BLOCKED && assignment.getHouseCaddy() != null)
-                .map(Assignment::getHouseCaddy)
+                .filter(assignment -> assignment.getStatus() == AssignmentStatus.BLOCKED && assignment.getCaddy() != null)
+                .map(Assignment::getCaddy)
                 .map(Caddy::getId)
                 .collect(Collectors.toSet());
     }

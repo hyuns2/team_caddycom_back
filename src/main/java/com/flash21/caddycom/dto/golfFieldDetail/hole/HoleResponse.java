@@ -20,6 +20,7 @@ public class HoleResponse {
         private Integer num;
         private Integer par;
         private Integer handicap;
+        private String imageUrl;
         private List<TeeInfo> teeInfos;
         private List<CommentInfo> commentInfos;
 
@@ -29,6 +30,7 @@ public class HoleResponse {
                     .num(hole.getNum())
                     .par(hole.getPar())
                     .handicap(hole.getHandicap())
+                    .imageUrl(hole.getImageUrl())
                     .teeInfos(hole.getTees().stream()
                             .map(TeeInfo::from)
                             .toList())
@@ -64,12 +66,14 @@ public class HoleResponse {
             private Long id;
             private String title;
             private String content;
+            private String imageUrl;
 
             public static CommentInfo from(Comment comment) {
                 return CommentInfo.builder()
                         .id(comment.getId())
                         .title(comment.getTitle())
                         .content(comment.getContent())
+                        .imageUrl(comment.getImageUrl())
                         .build();
             }
         }

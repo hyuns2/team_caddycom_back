@@ -1,10 +1,13 @@
 package com.flash21.caddycom.dto.golfFieldDetail.hole;
 
+import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeDto;
-import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,6 +33,8 @@ public class HoleRequest {
 
     @Getter
     @AllArgsConstructor
+    @Setter
+    @NoArgsConstructor
     public static class CreateDetailInfo {
         @NotNull(message = "holeId는 필수값입니다.")
         private Long holeId;
@@ -37,8 +42,9 @@ public class HoleRequest {
         private Integer par;
         @NotNull(message = "handicap은 필수값입니다.")
         private Integer handicap;
+        private MultipartFile image;
         private List<TeeDto.Info> teeData;
-        private List<CommentDto.Info> commentData;
+        private List<CommentRequest.Create> commentData;
         private List<Long> deleteTeeIds;
         private List<Long> deleteCommentIds;
     }

@@ -31,7 +31,7 @@ public class CaddyAssignmentController {
     }
 
 
-    @GetMapping("/detail/{caddyId}")
+    @GetMapping("/detail")
     @Operation(summary = "업무 시작 전 배정 상세 정보 확인 API", description = "공용 - 배정 상세 정보를 확인하고 캐디업무 시작 버튼을 누르는 화면")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<AssignmentResponse.CaddyAssignmentInfoDetail>> getAssignmentInfo(

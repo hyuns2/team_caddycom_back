@@ -6,11 +6,9 @@ import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.dto.schedule.ReservationSheetDto;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.DateStatus;
+import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import com.flash21.caddycom.entity.schedule.Schedule;
-import com.flash21.caddycom.global.exception.cException.CBadReservationRequestException;
-import com.flash21.caddycom.global.exception.cException.CCourseNotFoundException;
-import com.flash21.caddycom.global.exception.cException.CGolfFieldNotFoundException;
-import com.flash21.caddycom.global.exception.cException.CInvalidPartInfoException;
+import com.flash21.caddycom.global.exception.cException.*;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
@@ -30,6 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReservationSheetService {
     private final GolfFieldRepository golfFieldRepository;
+    private final ReservationSheetRepository reservationSheetRepository;
     private final ScheduleRepository scheduleRepository;
     private final CourseRepository courseRepository;
     private final ScheduleJdbcRepository scheduleJdbcRepository;
@@ -50,11 +49,13 @@ public class ReservationSheetService {
         if (courseList.isEmpty())
             throw new CCourseNotFoundException();
 
-        validToCreateSchedules(dto, courseList);
+        validToCreateSchedules(dto);
+
+        ReservationSheet reservationSheet = reservationSheetRepository.save(dto.toEntity(golfField));
 
         List<Schedule> scheduleList = new ArrayList<>();
         for (int i = 0; i < dto.getTeeOffList().size(); i++) {
-            createSchedulesByPart(scheduleList, golfField, courseList, dto.getStartDate(), dto.getEndDate(),
+            createSchedulesByPart(reservationSheet, scheduleList, golfField, courseList, dto.getStartDate(), dto.getEndDate(),
                     LocalTime.parse(dto.getStartTimeList().get(i)), LocalTime.parse(dto.getEndTimeList().get(i)), dto.getTeeOffList().get(i), i + 1);
         }
         scheduleJdbcRepository.saveAll(scheduleList);
@@ -64,18 +65,19 @@ public class ReservationSheetService {
      * 스케쥴 생성 검증함수: 예약시트 생성요청 dto & 같은 날짜의 같은 코스 예약이 있는지 검증합니다.
      *
      * @param dto        예약시트 생성요청 dto
-     * @param courseList 요청에 속한 코스리스트
-     * @throws CInvalidPartInfoException 부(파트)에 대한 일부 정보가 빠진 경우
      */
-    private void validToCreateSchedules(ReservationSheetDto.CreateRequest dto, List<Course> courseList) {
+    private void validToCreateSchedules(ReservationSheetDto.CreateRequest dto) {
+        if (dto.getStartDate().isBefore(LocalDate.now()) || dto.getStartDate().isAfter(dto.getEndDate()))
+            throw new CInvalidDateOrderException();
+
         if (dto.getTeeOffList().size() != dto.getStartTimeList().size() ||
                 dto.getStartTimeList().size() != dto.getEndTimeList().size())
             throw new CInvalidPartInfoException();
 
-        for (Course course : courseList) {
-            if (!scheduleRepository.findAllByGolfFieldIdAndCourseIdBetweenNewDate(dto.getGolfFieldId(), course.getId(), dto.getStartDate(), dto.getEndDate()).isEmpty())
+        for (Long courseId: dto.getCourseList())
+            if (scheduleRepository.findFirstByGolfFieldIdAndCourseIdAndReservationAtBetween(dto.getGolfFieldId(), courseId, dto.getStartDate(), dto.getEndDate())
+                    .isPresent())
                 throw new CBadReservationRequestException();
-        }
     }
 
     /**
@@ -91,7 +93,7 @@ public class ReservationSheetService {
      * @param teeOff       티오프
      * @param part         몇 부인지
      */
-    private void createSchedulesByPart(List<Schedule> scheduleList, GolfField golfField, List<Course> courseList, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String teeOff, int part) {
+    private void createSchedulesByPart(ReservationSheet reservationSheet, List<Schedule> scheduleList, GolfField golfField, List<Course> courseList, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String teeOff, int part) {
         List<LocalDate> localDateList = startDate.datesUntil(endDate.plusDays(1)).toList();
         int totalCnt = getStartTimeList(startTime, endTime, teeOff).size();
 
@@ -99,6 +101,7 @@ public class ReservationSheetService {
             for (LocalDate oneDay : localDateList) {
                 scheduleList.add(Schedule.builder()
                         .golfField(golfField)
+                        .reservationSheet(reservationSheet)
                         .course(course)
                         .reservationAt(oneDay)
                         .startTime(startTime)

@@ -218,6 +218,7 @@ public class ReservationSheetService {
         }
         assignmentRepository.deleteAllByIdList(targetAssignmentIdList);
         scheduleRepository.deleteAllByIdList(targetScheduleIdList);
+        reservationSheetRepository.deleteById(reservationSheetId);
     }
 
     /**

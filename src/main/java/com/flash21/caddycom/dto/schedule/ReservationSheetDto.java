@@ -2,8 +2,8 @@ package com.flash21.caddycom.dto.schedule;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.flash21.caddycom.entity.golfField.GolfField;
-import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.schedule.DateStatus;
+import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -12,9 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ReservationSheetDto {
@@ -51,6 +49,35 @@ public class ReservationSheetDto {
         @Schema(description = "티오프 리스트")
         @NotEmpty(message = "teeOffList는 필수값입니다.")
         private List<String> teeOffList;
+
+        public ReservationSheet toEntity(GolfField golfField) {
+            return ReservationSheet.builder()
+                    .golfField(golfField)
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .courseIdList(courseList)
+                    .build();
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class GetResponse {
+        private Long id;
+        private List<Long> courseList;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private List<InfoByPart> timeSlot;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class InfoByPart {
+        private LocalTime startTime;
+        private LocalTime endTime;
+        private String teeOff;
     }
 
     @Data

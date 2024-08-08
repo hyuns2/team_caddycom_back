@@ -5,6 +5,7 @@ import com.flash21.caddycom.dto.caddy.HouseCaddyResponseDto;
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.caddy.TeamRole;
+import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.global.exception.cException.CCaddyNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidCaddyRequestException;
 import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundException;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class HouseCaddyService {
 
     private final HouseCaddyRepository houseCaddyRepository;
+    private final FileUploader fileUploader;
 
     /**
      * 조 전제조회: 골프장 Id에 해당하는 캐디의 조이름을 전부 반환합니다.
@@ -41,39 +43,43 @@ public class HouseCaddyService {
      * @return 캐디정보 리스트
      */
     public List<HouseCaddyResponseDto.houseCaddyDetail> getHouseCaddyByTeam(Long golfFieldId, String teamName) {
-        List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, teamName);
+        String team = teamName.equals("조 없음") ? null : teamName;
+        List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, team);
         if (houseCaddyList.isEmpty())
             throw new CTeamNameNotFoundException();
 
         return houseCaddyList.stream().map(hc -> {
-            return HouseCaddyResponseDto.houseCaddyDetail.builder()
-                    .id(hc.getId())
-                    .name(hc.getName())
-                    .phoneNumber(hc.getPhoneNumber())
-                    .team(hc.getTeam())
-                    .teamRole(hc.getTeamRole())
-                    .holiday(hc.getHoliday())
-                    .changedHoliday(hc.getChangedHoliday())
-                    .offPart(hc.getOffPart())
-                    .gender(hc.getGender())
-                    .birth(hc.getBirth())
-                    .address(hc.getAddress())
-                    .addressDetail(hc.getAddressDetail())
-                    .career(hc.getCareer())
-                    .caddyType(hc.getCaddyType())
-                    .build();
-        }).toList();
+                    return HouseCaddyResponseDto.houseCaddyDetail.builder()
+                            .id(hc.getId())
+                            .golfFieldName(null)
+                            .profileUrl(hc.getProfileUrl())
+                            .name(hc.getName())
+                            .phoneNumber(hc.getPhoneNumber())
+                            .team(teamName)
+                            .teamRole(hc.getTeamRole())
+                            .holiday(hc.getHoliday())
+                            .changedHoliday(hc.getChangedHoliday())
+                            .offPart(hc.getOffPart())
+                            .gender(hc.getGender())
+                            .birth(hc.getBirth())
+                            .address(hc.getAddress())
+                            .addressDetail(hc.getAddressDetail())
+                            .career(hc.getCareer())
+                            .caddyType(hc.getCaddyType())
+                            .build();
+                }
+        ).toList();
     }
 
     /**
-     * 하우스캐디 정보 수정: 하우스캐디의 정보를 수정합니다.
+     * 하우스캐디 정보 수정: 관리자가 하우스캐디의 정보를 수정합니다.
      *
      * @param golfFieldId 골프장 Id
      * @param caddyId     캐디 Id
      * @param dto         수정할 정보
      */
     @Transactional
-    public void updateHouseCaddy(Long golfFieldId, Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {
+    public void updateHouseCaddyByManager(Long golfFieldId, Long caddyId, HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 
@@ -83,7 +89,7 @@ public class HouseCaddyService {
                         caddy.setTeamRole(TeamRole.MEMBER);
                     });
         }
-        houseCaddy.updateHouseCaddy(dto);
+        houseCaddy.updateHouseCaddyByManager(dto);
     }
 
     /**
@@ -122,53 +128,47 @@ public class HouseCaddyService {
     /**
      * 골프장 내 모든 하우스캐디의 휴무일을 반환합니다.
      *
-     * @param golfFieldId 골프장 id
+     * 1. 골프장 id로 하우스캐디 리스트를 조회
+     * 2. HouseCaddy 를 조 이름을 기준으로 그룹핑(team필드가 null 인 경우 '조 없음') -> HolidayInfo 로 변환
+     * 3. Map<팀 이름, HolidayInfo 리스트> 를 TeamHoliday 로 변환후 팀 이름순으로 정렬
+     *
      * @return 조 이름과 하우스캐디 정보(하우스캐디의 id, 이름, 역할, 휴무일) 리스트로 이루어진 DTO 리스트
      */
     @Transactional(readOnly = true)
     public List<HouseCaddyResponseDto.TeamHoliday> getAllHoliday(Long golfFieldId) {
         List<HouseCaddy> houseCaddies = houseCaddyRepository.findAllByGolfFieldId(golfFieldId);
 
-        Map<String, List<HouseCaddy>> collect = houseCaddies.stream().collect(Collectors.groupingBy(HouseCaddy::getTeam));
+        Map<String, List<HouseCaddyResponseDto.HolidayInfo>> holidayInfoMap = houseCaddies.stream()
+                .collect(Collectors.groupingBy(
+                        caddy -> caddy.getTeam() != null ? caddy.getTeam() : "조 없음",
+                        Collectors.mapping(HouseCaddyResponseDto.HolidayInfo::from, Collectors.toList())
+                ));
 
-        List<HouseCaddyResponseDto.TeamHoliday> allHolidays = new ArrayList<>();
-        for (String team : collect.keySet()) {
-            List<HouseCaddyResponseDto.HolidayInfo> infos = new ArrayList<>();
-            for (HouseCaddy houseCaddy : collect.get(team)) {
-                HouseCaddyResponseDto.HolidayInfo info = new HouseCaddyResponseDto.HolidayInfo(
-                        houseCaddy.getId(),
-                        houseCaddy.getName(),
-                        houseCaddy.getTeamRole(),
-                        houseCaddy.getHoliday());
-                infos.add(info);
-            }
-            allHolidays.add(new HouseCaddyResponseDto.TeamHoliday(team, infos));
-        }
+        List<HouseCaddyResponseDto.TeamHoliday> allHolidays = holidayInfoMap.entrySet().stream()
+                .map(entry -> HouseCaddyResponseDto.TeamHoliday.from(entry.getKey(), entry.getValue())) // TeamHoliday 로 변환
+                .sorted(Comparator.comparing(HouseCaddyResponseDto.TeamHoliday::getTeam)) // 조 이름 순으로 정렬
+                .collect(Collectors.toList());
 
         return allHolidays;
     }
 
     /**
      * 특정 조에 속하는 하우스캐디의 휴무일을 반환합니다.
+     * '조 없음'이 입력으로 들어올 경우 team이 없는 캐디를 조회 (IS NULL)
      *
      * @param golfFieldId 골프장 id
-     * @param teamName 조 이름
+     * @param teamName    조 이름
      * @return 조 이름과 하우스캐디 정보 리스트(하우스캐디의 id, 이름, 역할, 휴무일) 로 이루어진 DTO
      */
     @Transactional(readOnly = true)
     public HouseCaddyResponseDto.TeamHoliday getTeamHoliday(Long golfFieldId, String teamName) {
-        List<HouseCaddy> caddies = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, teamName);
+        String team = teamName.equals("조 없음") ? null : teamName;
+        List<HouseCaddy> caddies = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, team);
 
-        List<HouseCaddyResponseDto.HolidayInfo> infos = new ArrayList<>();
-        for (HouseCaddy houseCaddy : caddies) {
-            infos.add(new HouseCaddyResponseDto.HolidayInfo(
-                    houseCaddy.getId(),
-                    houseCaddy.getName(),
-                    houseCaddy.getTeamRole(),
-                    houseCaddy.getHoliday()));
-        }
-
-        return new HouseCaddyResponseDto.TeamHoliday(teamName, infos);
+        List<HouseCaddyResponseDto.HolidayInfo> infos = caddies.stream()
+                .map(HouseCaddyResponseDto.HolidayInfo::from)
+                .collect(Collectors.toList());
+        return HouseCaddyResponseDto.TeamHoliday.from(teamName, infos);
     }
 
     /**
@@ -196,7 +196,6 @@ public class HouseCaddyService {
 
     @Transactional
     public void saveCaddyList(Long golfFieldId, List<HouseCaddy> caddyList) {
-        //TODO: bulk insert로 변경 필요
         houseCaddyRepository.bulkInsert(caddyList, golfFieldId);
     }
 
@@ -217,10 +216,61 @@ public class HouseCaddyService {
 
     private int extractTeamNumber(String team) {
         try {
+            if (team == null) return Integer.MAX_VALUE;
             String numericPart = team.replaceAll("\\D+", "");
             return numericPart.isEmpty() ? Integer.MAX_VALUE : Integer.parseInt(numericPart);
         } catch (NumberFormatException e) {
             return Integer.MAX_VALUE;
         }
+    }
+
+    /**
+     * 하우스캐디 단일 정보조회: 하우스캐디의 정보를 조회합니다
+     *
+     * @param caddyId 캐디 Id
+     * @return 하우스캐디 정보 dto
+     */
+    public HouseCaddyResponseDto.houseCaddyDetail getHouseCaddy(Long caddyId) {
+        HouseCaddy hc = houseCaddyRepository.findById(caddyId)
+                .orElseThrow(CCaddyNotFoundException::new);
+
+        return HouseCaddyResponseDto.houseCaddyDetail.builder()
+                .id(hc.getId())
+                .golfFieldName(hc.getGolfField().getName())
+                .profileUrl(hc.getProfileUrl())
+                .name(hc.getName())
+                .phoneNumber(hc.getPhoneNumber())
+                .team(hc.getTeam())
+                .teamRole(hc.getTeamRole())
+                .holiday(hc.getHoliday())
+                .changedHoliday(hc.getChangedHoliday())
+                .offPart(hc.getOffPart())
+                .gender(hc.getGender())
+                .birth(hc.getBirth())
+                .address(hc.getAddress())
+                .addressDetail(hc.getAddressDetail())
+                .career(hc.getCareer())
+                .caddyType(hc.getCaddyType())
+                .build();
+    }
+
+    /**
+     * 하우스캐디 정보 변경: 하우스캐디가 자신의 정보를 변경합니다.
+     *
+     * @param caddyId 캐디 Id
+     * @param dto     변경할 정보 dto
+     */
+    @Transactional
+    public void updateHouseCaddy(Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {
+        HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
+                .orElseThrow(CCaddyNotFoundException::new);
+
+        String profileUrl = dto.getProfile() != null ? fileUploader.upload(dto.getProfile()) : null;
+        houseCaddy.update(profileUrl,
+                dto.getChangedHoliday(),
+                dto.getBirth(),
+                dto.getAddress(),
+                dto.getAddressDetail(),
+                dto.getCareer());
     }
 }

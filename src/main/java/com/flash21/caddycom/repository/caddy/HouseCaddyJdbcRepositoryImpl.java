@@ -20,7 +20,7 @@ public class HouseCaddyJdbcRepositoryImpl implements HouseCaddyJdbcRepository{
 
     @Transactional
     public void bulkInsert(List<HouseCaddy> houseCaddyList, Long golfFieldId) {
-        String sql = "INSERT INTO caddy (golf_field_id, caddy_type, name, phone_number, gender, team, team_role, career, address, address_detail, off_part, holiday, birth, ctype) " +
+        String sql = "INSERT IGNORE INTO caddy (golf_field_id, caddy_type, name, phone_number, gender, team, team_role, career, address, address_detail, off_part, holiday, birth, ctype) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.batchUpdate(sql,

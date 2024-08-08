@@ -15,10 +15,15 @@ import java.util.List;
 public class EntityConverter {
     private final CellValueConverter cellValueConverter;
 
+    /**
+     * List<String> 형태의 input 을 HouseCaddy Entity 로 변환
+     * TODO: HouseCaddy 에 종속적이므로 디렉토리 이동 필요
+     */
+
     public HouseCaddy toEntity(List<String> tableList) {
         String type = tableList.get(0);
         String name = tableList.get(1);
-        String phoneNumber = tableList.get(2);
+        String phoneNumber = cellValueConverter.convertPhoneNumber(tableList.get(2));
         String team = tableList.get(3);
         TeamRole teamRole = cellValueConverter.convertTeamRole(tableList.get(4));
         Gender gender = cellValueConverter.convertGender(tableList.get(5));

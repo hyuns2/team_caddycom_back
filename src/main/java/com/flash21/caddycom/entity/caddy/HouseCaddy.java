@@ -1,14 +1,12 @@
 package com.flash21.caddycom.entity.caddy;
 
 import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
-import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.caddy.converter.DayListConverter;
 import com.flash21.caddycom.entity.caddy.converter.PartListConverter;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -23,14 +21,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @DiscriminatorValue(value = "H")
-public class HouseCaddy extends Caddy{
+public class HouseCaddy extends Caddy {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private GolfField golfField;
-
-    @OneToMany(mappedBy = "houseCaddy", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Assignment> assignmentList;
 
     @Convert(converter = DayListConverter.class)
     private List<Days> holiday;
@@ -51,16 +46,7 @@ public class HouseCaddy extends Caddy{
 
     private String caddyType;
 
-
-    public void updatePassword(String password) {
-        this.password = password;
-    }
-
-    public void updateToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
-    public void updateHouseCaddy(HouseCaddyRequestDto.updateHouseCaddy dto) {
+    public void updateHouseCaddyByManager(HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
         this.team = dto.getTeam();
         this.teamRole = dto.getTeamRole();
         this.holiday = dto.getHoliday();
@@ -70,6 +56,21 @@ public class HouseCaddy extends Caddy{
         this.address = dto.getAddress();
         this.addressDetail = dto.getAddressDetail();
         this.career = dto.getCareer();
+    }
+
+    public void update(String profileUrl, List<Days> changedHoliday, String birth, String address, String addressDetail, String career) {
+        if (profileUrl != null)
+            this.profileUrl = profileUrl;
+        if (changedHoliday != null)
+            this.changedHoliday = changedHoliday;
+        if (birth != null && !birth.isEmpty())
+            this.birth = LocalDate.parse(birth);
+        if (address != null && !address.isEmpty())
+            this.address = address;
+        if (addressDetail != null && !addressDetail.isEmpty())
+            this.addressDetail = addressDetail;
+        if (career != null && !career.isEmpty())
+            this.career = career;
     }
 
     public void setTeamRole(TeamRole teamRole) {
@@ -85,8 +86,4 @@ public class HouseCaddy extends Caddy{
         this.holiday = holiday;
     }
 
-    public HouseCaddy attachGolfField(GolfField golfField) {
-        this.golfField = golfField;
-        return this;
-    }
 }

@@ -91,13 +91,13 @@ public class FormationService {
             formation.updateName(name);
         }
 
-        List<CourseRequest.update> courseUpdateInfos = request.getCourseInfos();
-        List<CourseRequest.create> courseCreateInfos = new ArrayList<>();
+        List<CourseRequest.Update> courseUpdateInfos = request.getCourseInfos();
+        List<CourseRequest.Create> courseCreateInfos = new ArrayList<>();
         if(courseUpdateInfos != null) {
-            for(CourseRequest.update courseUpdateInfo : courseUpdateInfos) {
+            for(CourseRequest.Update courseUpdateInfo : courseUpdateInfos) {
                 if (courseUpdateInfo.getId() == 0)
                     courseCreateInfos.add(
-                            new CourseRequest.create(courseUpdateInfo.getName(), courseUpdateInfo.getTotalHoles())
+                            new CourseRequest.Create(courseUpdateInfo.getName(), courseUpdateInfo.getTotalHoles())
                     );
                 else
                     courseService.updateCourse(courseUpdateInfo);

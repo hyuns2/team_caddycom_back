@@ -13,10 +13,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.flash21.caddycom.entity.schedule.QAssignment.*;
+import static com.flash21.caddycom.entity.schedule.QSchedule.*;
 
 @Repository
 @RequiredArgsConstructor
-public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory{
+public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
     private final JPAQueryFactory jpaQueryFactory;
 
 
@@ -68,6 +69,18 @@ public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory{
                         .and(eqStatus(AssignmentStatus.ASSIGNED)))
                 .fetchFirst();
         return new PageImpl<>(assignments, pageable, total == null ? 0 : total);
+    }
+
+    @Override
+    public List<Assignment> findByCaddyIdAndMonth(Long caddyId, LocalDate startDate, LocalDate endDate) {
+        return jpaQueryFactory
+                .selectFrom(assignment)
+                .where(assignment.caddy.id.eq(caddyId)
+                        .and(assignment.schedule.reservationAt.between(startDate, endDate)))
+                .leftJoin(assignment.schedule, schedule).fetchJoin()
+                .leftJoin(schedule.golfField).fetchJoin()
+                .orderBy(assignment.schedule.reservationAt.asc())
+                .fetch();
     }
 
     private BooleanExpression eqPart(Integer part) {

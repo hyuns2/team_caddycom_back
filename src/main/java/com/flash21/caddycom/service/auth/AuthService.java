@@ -6,6 +6,7 @@ import com.flash21.caddycom.dto.auth.SigninRequest;
 import com.flash21.caddycom.dto.auth.SigninResponse;
 import com.flash21.caddycom.entity.account.Account;
 import com.flash21.caddycom.entity.account.Role;
+import com.flash21.caddycom.global.common.fileReader.CellValueConverter;
 import com.flash21.caddycom.global.jwt.JwtProvider;
 import com.flash21.caddycom.repository.account.AccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class AuthService {
     private final AccountRepository accountRepository;
     private final JwtProvider jwtProvider;
+    private final CellValueConverter cellValueConverter;
 
 
     /**
@@ -41,9 +43,12 @@ public class AuthService {
                 return SigninResponse.Main.from(jwtResponse, account.getGolfField(), account.getRole(), account.getPassword());
             }
         }
+
+        // TODO: 골프장 등록 안한 사장 로그아웃 후 다시 접속했을때 duplicate phoneNumber 에러 핸들링
         // 사장님 최초 로그인
+        String phoneNumber = cellValueConverter.convertPhoneNumber(request.getPhoneNumber());
         Account owner = Account.builder()
-                .phoneNumber(request.getPhoneNumber())
+                .phoneNumber(phoneNumber)
                 .role(Role.ROLE_OWNER)
                 .build();
         accountRepository.save(owner);

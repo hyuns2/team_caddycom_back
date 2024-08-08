@@ -58,9 +58,9 @@ public class CourseService {
      * @param requests 코스 생성 요청 DTO
      * @return 생성된 코스 id 리스트 <b>(mysql 사용 시 id가 아닌 null 반환됨)</b>
      */
-    public List<Long> createCourses(Formation formation, List<CourseRequest.create> requests) {
+    public List<Long> createCourses(Formation formation, List<CourseRequest.Create> requests) {
         List<Course> courses = new ArrayList<>();
-        for(CourseRequest.create request : requests) {
+        for(CourseRequest.Create request : requests) {
             Course course = Course.builder()
                     .name(request.getName())
                     .totalHoles(request.getTotalHoles())
@@ -84,7 +84,7 @@ public class CourseService {
      * @throws IllegalArgumentException
      *          코스의 이름을 공백으로 수정하려는 경우
      */
-    public void updateCourse(CourseRequest.update request) {
+    public void updateCourse(CourseRequest.Update request) {
         Course course = courseRepository.findById(request.getId())
                 .orElseThrow(() -> new NoSuchElementException("해당 코스는 존재하지 않습니다."));
 

@@ -12,9 +12,9 @@ public class TeeRequest {
     @Getter
     @AllArgsConstructor
     public static class Create {
-        @NotBlank
+        @NotBlank(message = "name은 필수값입니다.")
         private String name;
-        @NotNull
+        @NotNull(message = "distance는 필수값입니다.")
         private Integer distance;
     }
 

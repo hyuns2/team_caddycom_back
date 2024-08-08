@@ -12,7 +12,7 @@ public class FormationRequest {
     @Getter
     @AllArgsConstructor
     public static class Process {
-        @NotNull
+        @NotNull(message = "golfFieldId는 필수값입니다.")
         private Long golfFieldId;
         private List<Create> create;
         private List<Update> update;
@@ -23,14 +23,15 @@ public class FormationRequest {
     @AllArgsConstructor
     public static class Create {
         private String name;
-        @NotEmpty
-        private List<CourseRequest.create> courseInfos;
+        @NotEmpty(message = "courseInfos는 필수값입니다.")
+        private List<CourseRequest.Create> courseInfos;
     }
     @Getter
     @AllArgsConstructor
     public static class Update {
+        @NotNull(message = "formationId는 필수값입니다.")
         private Long formationId;
         private String formationName;
-        private List<CourseRequest.update> courseInfos;
+        private List<CourseRequest.Update> courseInfos;
     }
 }

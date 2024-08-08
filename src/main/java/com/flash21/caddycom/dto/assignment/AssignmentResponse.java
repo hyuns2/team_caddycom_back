@@ -1,5 +1,6 @@
 package com.flash21.caddycom.dto.assignment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.flash21.caddycom.entity.caddy.TeamRole;
 import com.flash21.caddycom.entity.schedule.Assignment;
@@ -30,7 +31,7 @@ public class AssignmentResponse {
         private String reason;
 
         public static Info from(Assignment assignment) {
-            Long caddyId = assignment.getHouseCaddy() == null ? null : assignment.getHouseCaddy().getId();
+            Long caddyId = assignment.getCaddy() == null ? null : assignment.getCaddy().getId();
 
             return Info.builder()
                     .id(assignment.getId())
@@ -49,7 +50,7 @@ public class AssignmentResponse {
                     .id(assignment.getId())
                     .startTime(assignment.getStartTime().format(timeFormatter))
                     .caddyName(assignment.getCaddyName())
-                    .caddyId(assignment.getHouseCaddy().getId())
+                    .caddyId(assignment.getCaddy().getId())
                     .courseName(assignment.getSchedule().getCourse().getName())
                     .part(assignment.getSchedule().getPart())
                     .build();
@@ -76,9 +77,9 @@ public class AssignmentResponse {
 
         public static Detail from(Assignment assignment) {
             return Detail.builder()
-                    .caddyName(assignment.getHouseCaddy().getName())
-                    .caddyPoint(assignment.getHouseCaddy().getPoint())
-                    .caddyTeamRole(convertRole(assignment.getHouseCaddy().getTeamRole()))
+                    .caddyName(assignment.getCaddy().getName())
+                    .caddyPoint(assignment.getCaddy().getPoint())
+                    .caddyTeamRole(convertRole(assignment.getCaddy().getHouseCaddy().getTeamRole()))
                     .golfFieldName(assignment.getSchedule().getGolfField().getName())
                     .date(assignment.getSchedule().getReservationAt())
                     .courseName(assignment.getSchedule().getCourse().getName())
@@ -94,6 +95,28 @@ public class AssignmentResponse {
                 return "조원";
             return "조장";
 
+        }
+    }
+
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Builder
+    @Getter
+    public static class CaddyAssignmentInfo {
+
+        private Long assignmentId;
+        private Integer part;
+        private String startTime;
+        private String golfFieldName;
+        @JsonIgnore
+        private LocalDate date;
+
+        public CaddyAssignmentInfo(Assignment assignment) {
+            this.assignmentId = assignment.getId();
+            this.part = assignment.getSchedule().getPart();
+            this.date = assignment.getSchedule().getReservationAt();
+            this.golfFieldName = assignment.getSchedule().getGolfField().getName();
+            this.startTime = assignment.getStartTime().format(timeFormatter);
         }
     }
 }

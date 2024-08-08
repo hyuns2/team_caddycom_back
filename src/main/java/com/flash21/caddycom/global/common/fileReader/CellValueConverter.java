@@ -16,7 +16,10 @@ import java.util.stream.Stream;
 @Component
 public class CellValueConverter {
     private final LocalDate baseDate = LocalDate.of(1900,1,1);
-    private final int limitPart = 2;
+
+    public String convertPhoneNumber(String phoneNumber) {
+        return phoneNumber.replaceAll("[^0-9]", "");
+    }
 
     protected Gender convertGender(String gender) {
         if (gender.equals("남")) {
@@ -55,6 +58,8 @@ public class CellValueConverter {
     }
 
     protected List<Integer> convertPart(String partString) {
+        int limitPart = 2; // 골프장의 최대 Part 개수
+
         if (partString == null || partString.isEmpty()) {
             return null;
         }

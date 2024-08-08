@@ -4,11 +4,11 @@ import com.flash21.caddycom.global.exception.ErrorCode;
 import lombok.Getter;
 
 @Getter
-public class CReservationDateNotFoundException extends RuntimeException {
+public class CScheduleNotFoundException extends RuntimeException {
     ErrorCode errorCode;
 
-    public CReservationDateNotFoundException() {
+    public CScheduleNotFoundException() {
         super();
-        this.errorCode = ErrorCode.RESERVATION_DATE_NOT_FOUND;
+        this.errorCode = ErrorCode.SCHEDULE_NOT_FOUND;
     }
 }

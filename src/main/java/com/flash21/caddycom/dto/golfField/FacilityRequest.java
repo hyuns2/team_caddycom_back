@@ -15,26 +15,26 @@ public class FacilityRequest {
     @AllArgsConstructor
     public static class Create {
         @NotBlank(message = "name은 필수값입니다.")
-        private final String name;
+        private String name;
 
-        private final String content;
+        private String content;
 
-        private final List<MultipartFile> facilityImages = new ArrayList<>();
+        private List<MultipartFile> facilityImages;
     }
 
     @Getter
     @AllArgsConstructor
     public static class Update {
         @NotNull(message = "id는 필수값입니다.")
-        private final Long facilityId;
+        private Long facilityId;
 
         @NotBlank(message = "name은 필수값입니다.")
-        private final String name;
+        private String name;
 
-        private final String content;
+        private String content;
 
-        private final List<Long> existingImageIds = new ArrayList<>();
+        private List<Long> existingImageIds;
 
-        private final List<MultipartFile> facilityImages = new ArrayList<>();
+        private List<MultipartFile> facilityImages;
     }
 }

@@ -3,6 +3,7 @@ package com.flash21.caddycom.controller.assignment;
 import com.flash21.caddycom.dto.Message;
 import com.flash21.caddycom.dto.assignment.AssignmentRequest;
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
+import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
 import com.flash21.caddycom.service.assignment.AssignmentCaddyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +22,7 @@ public class CaddyAssignmentController {
     private final AssignmentCaddyService assignmentCaddyService;
 
     @PatchMapping("/cancel")
-    @Operation(summary = "배정 취소요청 API", description = "하우스 캐디 - 취소 사유를 포함한 배정 취소 요청")
+    @Operation(summary = "배정 취소요청 API", description = "공통 - 취소 사유를 포함한 배정 취소 요청")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Message> cancelAssignment(@RequestParam Long assignmentId,
                                                     @RequestBody(required = false) AssignmentRequest.Cancel request) {
@@ -40,4 +41,13 @@ public class CaddyAssignmentController {
         return ResponseEntity.ok()
                 .body(assignmentCaddyService.getAssignmentInfo(assignmentIds));
     }
+
+
+    @GetMapping("/course")
+    @Operation(summary = "캐디 업무의 코스 상세 조회 API", description = "공통 - 캐디 업무 시작시 보여줄 코스 상세 정보 조회")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<CourseResponse.DetailMap> getCourseAssignmentInfo(@RequestParam Long courseId) {
+        return ResponseEntity.ok().body(assignmentCaddyService.getCourseDetail(courseId));
+    }
+
 }

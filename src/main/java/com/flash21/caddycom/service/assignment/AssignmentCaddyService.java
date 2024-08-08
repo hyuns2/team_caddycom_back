@@ -3,16 +3,19 @@ package com.flash21.caddycom.service.assignment;
 import com.flash21.caddycom.dto.PagingResponse;
 import com.flash21.caddycom.dto.assignment.AssignmentRequest;
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
+import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
 import com.flash21.caddycom.entity.caddy.Caddy;
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.golfField.GolfField;
+import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.schedule.AssignmentRepository;
 import com.flash21.caddycom.repository.schedule.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +43,7 @@ public class AssignmentCaddyService {
     private final HouseCaddyRepository houseCaddyRepository;
     private final GolfFieldRepository golfFieldRepository;
     private final ScheduleRepository scheduleRepository;
+    private final CourseRepository courseRepository;
 
     /**
      * 골프장 id와 date로 assignment를 모두 조회한다.
@@ -136,6 +140,16 @@ public class AssignmentCaddyService {
                 .stream()
                 .map(AssignmentResponse.CaddyAssignmentInfoDetail::of)
                 .toList();
+    }
+
+    /**
+     * 캐디 업무 시작시 보여줄 코스 상세 정보 조회
+     */
+    @Transactional(readOnly = true)
+    public CourseResponse.DetailMap getCourseDetail(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 코스입니다."));
+        return CourseResponse.DetailMap.from(course);
     }
 
     /**

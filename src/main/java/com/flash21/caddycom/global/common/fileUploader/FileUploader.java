@@ -21,4 +21,6 @@ public interface FileUploader {
     default String recover(Exception e, MultipartFile file){
         throw new RuntimeException("파일 업로드에 실패했습니다.");
     }
+
+    void delete(String url);
 }

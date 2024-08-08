@@ -31,4 +31,9 @@ public class LocalFileUploader implements FileUploader{
 
         return savedFilename;
     }
+    @Override
+    public void delete(String url) {
+         File file = new File(url);
+         file.delete();
+    }
 }

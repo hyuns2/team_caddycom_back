@@ -24,7 +24,7 @@ public class ReservationSheetController {
 
     @Operation(summary = "예약시트 등록", description = "골프장 관리자가 예약시트를 등록합니다.")
     @PostMapping
-    public ResponseEntity<Void> createReservationSheet(@Valid @RequestBody ReservationSheetDto.CreateRequest dto) {
+    public ResponseEntity<Void> createReservationSheet(@Valid @RequestBody ReservationSheetDto.CreateOrUpdateRequest dto) {
         rsService.createReservationSheet(dto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -36,6 +36,22 @@ public class ReservationSheetController {
         List<ReservationSheetDto.GetResponse> result = rsService.getReservationSheet(golfFieldId);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "예약시트 수정", description = "골프장 관리자가 특정 예약시트를 수정합니다.")
+    @PutMapping("/{reservationId}")
+    public ResponseEntity<Void> updateReservationSheet(@PathVariable Long reservationId, @Valid @RequestBody ReservationSheetDto.CreateOrUpdateRequest dto) {
+        rsService.updateReservationSheet(reservationId, dto);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "예약시트 삭제", description = "골프장 관리자가 특정 예약시트를 삭제합니다.")
+    @DeleteMapping("/{reservationId}")
+    public ResponseEntity<Void> deleteReservationSheet(@PathVariable Long reservationId) {
+        rsService.deleteReservationSheet(reservationId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "캘린더 메타정보 조회", description = "골프장 관리자가 캘린더에 표기되는 메타정보를 조회합니다.")

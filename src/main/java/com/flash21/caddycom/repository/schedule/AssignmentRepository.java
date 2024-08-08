@@ -36,4 +36,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long>, A
             "WHERE a.id = :assignmentId")
     void switchAssignment(@Param("assignmentId") Long assignmentId, @Param("caddy") Caddy caddy, @Param("caddyName") String caddyName);
 
+    @Modifying
+    @Query("delete from Assignment a where a.id in ?1")
+    void deleteAllByIdList(List<Long> idList);
 }

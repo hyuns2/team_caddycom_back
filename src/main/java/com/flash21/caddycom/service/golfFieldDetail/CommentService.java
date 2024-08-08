@@ -4,7 +4,7 @@ import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentResponse;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.entity.golfFieldDetail.Comment;
-import com.flash21.caddycom.global.common.FileUploader;
+import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.CommentRepository;
 import org.springframework.transaction.annotation.Transactional;

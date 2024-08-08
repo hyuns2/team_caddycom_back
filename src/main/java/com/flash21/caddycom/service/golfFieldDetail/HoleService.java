@@ -3,7 +3,7 @@ package com.flash21.caddycom.service.golfFieldDetail;
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
-import com.flash21.caddycom.global.common.FileUploader;
+import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.repository.golfFieldDetail.CommentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;

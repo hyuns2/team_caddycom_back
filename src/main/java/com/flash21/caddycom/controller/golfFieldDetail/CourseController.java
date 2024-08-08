@@ -21,10 +21,10 @@ import java.util.List;
 public class CourseController {
     final CourseService courseService;
 
-    @Operation(summary = "코스 전체조회", description = "모든 코스정보를 조회합니다.")
-    @GetMapping
-    public ResponseEntity<List<CourseResponse.Info>> retrieveCourseInfo() {
-        List<CourseResponse.Info> responseDtoList = courseService.retrieveCourseInfo();
+    @Operation(summary = "골프장의 모든 코스 조회", description = "해당하는 골프장의 모든 코스정보를 조회합니다.")
+    @GetMapping("/{golfFieldId}")
+    public ResponseEntity<List<CourseResponse.Info>> retrieveCourseInfo(@PathVariable Long golfFieldId) {
+        List<CourseResponse.Info> responseDtoList = courseService.retrieveCourseInfo(golfFieldId);
 
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }

@@ -1,5 +1,6 @@
 package com.flash21.caddycom.repository.schedule;
 
+import com.flash21.caddycom.entity.golfFieldDetail.QCourse;
 import com.flash21.caddycom.entity.schedule.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -41,6 +42,10 @@ public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
     public Page<Assignment> findAllByDateAndCourseIdAndStatus(Pageable pageable, Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status) {
         List<Assignment> assignments = jpaQueryFactory
                 .selectFrom(assignment)
+                .join(assignment.schedule, schedule).fetchJoin()
+                .join(schedule.golfField).fetchJoin()
+                .join(schedule.course, course).fetchJoin()
+                .join(course.formation).fetchJoin()
                 .where(assignment.schedule.golfField.id.eq(golfFieldId)
                         .and(assignment.schedule.reservationAt.eq(date))
                         .and(eqCourseId(courseId))

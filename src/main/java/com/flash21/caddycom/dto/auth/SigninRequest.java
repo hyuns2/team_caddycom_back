@@ -78,9 +78,6 @@ public class SigninRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Caddy {
-        @Getter
-        @NotBlank(message = "type은 필수값입니다.")
-        private String type;
 
         @NotBlank(message = "phoneNumber는 필수값입니다.")
         @PhoneNumber

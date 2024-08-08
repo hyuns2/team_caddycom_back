@@ -27,7 +27,7 @@ public class HouseCaddy extends Caddy {
     @JoinColumn(nullable = false)
     private GolfField golfField;
 
-    @OneToMany(mappedBy = "houseCaddy", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "caddy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Assignment> assignmentList;
 
     @Convert(converter = DayListConverter.class)

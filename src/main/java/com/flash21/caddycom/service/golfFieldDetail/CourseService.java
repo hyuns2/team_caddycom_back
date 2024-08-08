@@ -138,8 +138,8 @@ public class CourseService {
                 .setParameter("assigned", AssignmentStatus.ASSIGNED)
                 .executeUpdate();
         //2-2. status == ASSIGNED인 Assignment 데이터 상태 수정 및 schedule 참조 제거
-        entityManager.createQuery("UPDATE Assignment a SET a.status = :cancel, a.schedule = null where a.schedule.id in :scheduleIds")
-                .setParameter("cancel", AssignmentStatus.CANCELED)
+        entityManager.createQuery("UPDATE Assignment a SET a.status = :status, a.schedule = null where a.schedule.id in :scheduleIds")
+                .setParameter("status", AssignmentStatus.DELETED)
                 .setParameter("scheduleIds", deleteScheduleId)
                 .executeUpdate();
         //3. Schedule 삭제

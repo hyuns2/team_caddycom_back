@@ -97,30 +97,16 @@ public class AssignmentCaddyService {
         List<Assignment> assignments = assignmentRepository.findByIds(List.of(from, to));
         if (assignments.size() != 2)
             throw new IllegalArgumentException("해당 배정 정보가 없습니다.");
+
+        if (assignments.stream().anyMatch(assignment -> assignment.getStatus() != AssignmentStatus.ASSIGNED))
+            throw new IllegalArgumentException("이미 취소되거나 블락된 배정입니다. 변경이 불가능합니다.");
         // swap
-        swapCaddy(assignments.get(0), assignments.get(1));
+        Caddy fromCaddy = assignments.get(0).getCaddy();
+        Caddy toCaddy = assignments.get(1).getCaddy();
+        assignments.get(0).assignCaddy(toCaddy);
+        assignments.get(1).assignCaddy(fromCaddy);
     }
 
-
-    /**
-     * sql batch 처리로 인해 one-to-one 관계의 엔티티를 변경 시 duplicate key 에러가 발생
-     * -> 두 엔티티의 caddy를 null로 변경 후 다시 업데이트
-     * TODO: Swap caddy 불필요. 삭제 예정
-     */
-    private void swapCaddy(Assignment fromAssignment, Assignment toAssignment) {
-
-
-        Caddy fromCaddy = fromAssignment.getCaddy();
-        String fromCaddyName = fromAssignment.getCaddyName();
-        Caddy toCaddy = toAssignment.getCaddy();
-        String toCaddyName = toAssignment.getCaddyName();
-
-        fromAssignment.vacateCaddy();
-        toAssignment.vacateCaddy();
-
-        assignmentRepository.switchAssignment(fromAssignment.getId(), toCaddy, toCaddyName);
-        assignmentRepository.switchAssignment(toAssignment.getId(), fromCaddy, fromCaddyName);
-    }
 
 
     @Transactional

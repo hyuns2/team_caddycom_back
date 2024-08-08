@@ -10,7 +10,6 @@ import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.exception.cException.*;
 import com.flash21.caddycom.repository.caddy.CaddyRepository;
-import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.schedule.*;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -43,7 +43,7 @@ public class ReservationSheetService {
      * @throws CCourseNotFoundException Course 객체가 존재하지 않을 경우
      */
     @Transactional
-    public void createReservationSheet(ReservationSheetDto.CreateRequest dto) {
+    public void createReservationSheet(ReservationSheetDto.CreateOrUpdateRequest dto) {
         GolfField golfField = golfFieldRepository.findById(dto.getGolfFieldId())
                 .orElseThrow(CGolfFieldNotFoundException::new);
         List<Course> courseList = courseRepository.findAllById(dto.getCourseList());
@@ -67,7 +67,7 @@ public class ReservationSheetService {
      *
      * @param dto        예약시트 생성요청 dto
      */
-    private void validToCreateSchedules(ReservationSheetDto.CreateRequest dto) {
+    private void validToCreateSchedules(ReservationSheetDto.CreateOrUpdateRequest dto) {
         if (dto.getStartDate().isBefore(LocalDate.now()) || dto.getStartDate().isAfter(dto.getEndDate()))
             throw new CInvalidDateOrderException();
 
@@ -150,9 +150,11 @@ public class ReservationSheetService {
      * @return 예약시트별 dto 리스트
      */
     public List<ReservationSheetDto.GetResponse> getReservationSheet(Long golfFieldId) {
-        List<ReservationSheet> reservationSheetList = reservationSheetRepository.findAllByGolfFieldId(golfFieldId);
         List<ReservationSheetDto.GetResponse> dtoList = new ArrayList<>();
 
+        List<ReservationSheet> reservationSheetList = reservationSheetRepository.findAllByGolfFieldId(golfFieldId);
+        Map<Long, String> courseMap = courseRepository.findAllByGolfFieldId(golfFieldId)
+                .stream().collect(Collectors.toMap(Course::getId, Course::getName));
         for (ReservationSheet rs: reservationSheetList) {
             int part = 1;
             List<ReservationSheetDto.InfoByPart> detailDtoList = new ArrayList<>();
@@ -167,12 +169,55 @@ public class ReservationSheetService {
             }
             dtoList.add(ReservationSheetDto.GetResponse.builder()
                     .id(rs.getId())
-                    .courseList(rs.getCourseIdList())
+                    .courseList(rs.getCourseIdList().stream().map(current ->
+                            ReservationSheetDto.CourseInfo.builder()
+                            .id(current)
+                            .name(courseMap.get(current)).build()).toList())
                     .startDate(rs.getStartDate())
                     .endDate(rs.getEndDate())
                     .timeSlot(detailDtoList).build());
         }
-        return dtoList;
+        return dtoList.stream().sorted(new GetResponseComparator()).toList();
+    }
+
+    /**
+     * 예약시트 수정: 해당하는 예약시트를 요청한 정보로 수정합니다.
+     *
+     * @param reservationSheetId 예약시트 Id
+     * @param dto 요청한 정보
+     */
+    public void updateReservationSheet(Long reservationSheetId, ReservationSheetDto.CreateOrUpdateRequest dto) {
+
+    }
+
+    /**
+     * 예약시트 삭제: 해당하는 예약시트를 삭제합니다.
+     * 1. 과거의 데이터는 보존
+     * 2. 미래의 데이터는 캐디가 배정된 배정정보 제외 전체 삭제
+     * 3. 오늘은 현재시간 기준으로 반영
+     *
+     * @param reservationSheetId 예약시트 Id
+     */
+    @Transactional
+    public void deleteReservationSheet(Long reservationSheetId) {
+        LocalDate today = LocalDate.now();
+        LocalTime current = LocalTime.now();
+        List<Schedule> scheduleList = scheduleRepository.findAllByReservationSheetIdAndReservationAtIsAfter(reservationSheetId, today);
+        scheduleList.addAll(scheduleRepository.findAllByReservationSheetIdAndReservationAtAndStartTimeIsAfter(reservationSheetId, today, current));
+
+        List<Long> targetAssignmentIdList = new ArrayList<>();
+        List<Long> targetScheduleIdList = new ArrayList<>();
+        for (Schedule schedule: scheduleList) {
+            for (Assignment assignment: schedule.getAssignments()) {
+                if (assignment.getCaddy() != null)
+                    assignment.updateByDeletedSchedule();
+                else
+                    targetAssignmentIdList.add(assignment.getId());
+            }
+            targetScheduleIdList.add(schedule.getId());
+        }
+        assignmentRepository.deleteAllByIdList(targetAssignmentIdList);
+        scheduleRepository.deleteAllByIdList(targetScheduleIdList);
     }
 
     /**
@@ -201,7 +246,7 @@ public class ReservationSheetService {
                     availableCntSum(report.getDateStatus() != DateStatus.NOTHING ? availableCntResult : 0).build());
         }
 
-        return responseDtoList.stream().sorted(new DtoComparator()).toList();
+        return responseDtoList.stream().sorted(new MetaDataResponseComparator()).toList();
     }
 
     public Map<LocalDate, List<AssignmentResponse.CaddyAssignmentInfo>> getAssignmentResultSheet(Long caddyId, int year, int month) {
@@ -226,14 +271,29 @@ public class ReservationSheetService {
     }
 
     /**
-     * dto를 날짜 순으로 정렬하는 Comparator
+     * MetaDataResponse dto를 날짜 순으로 정렬하는 Comparator
      */
-    private static class DtoComparator implements Comparator<ReservationSheetDto.MetaDataResponse> {
+    private static class MetaDataResponseComparator implements Comparator<ReservationSheetDto.MetaDataResponse> {
         @Override
         public int compare(ReservationSheetDto.MetaDataResponse dto1, ReservationSheetDto.MetaDataResponse dto2) {
             if (dto1.getTargetDate().isAfter(dto2.getTargetDate()))
                 return 1;
             else if (dto1.getTargetDate().isBefore(dto2.getTargetDate()))
+                return -1;
+            else
+                return 0;
+        }
+    }
+
+    /**
+     * GetResponse dto를 날짜 순으로 정렬하는 Comparator
+     */
+    private static class GetResponseComparator implements Comparator<ReservationSheetDto.GetResponse> {
+        @Override
+        public int compare(ReservationSheetDto.GetResponse dto1, ReservationSheetDto.GetResponse dto2) {
+            if (dto1.getStartDate().isAfter(dto2.getStartDate()))
+                return 1;
+            else if (dto1.getStartDate().isBefore(dto2.getStartDate()))
                 return -1;
             else
                 return 0;

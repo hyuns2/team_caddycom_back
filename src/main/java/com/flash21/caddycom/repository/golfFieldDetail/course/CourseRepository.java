@@ -11,13 +11,15 @@ import java.util.List;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long>, CourseJdbcRepository {
-    @Query(value = "select c from Course c where c.formation.id = :formationId")
     List<Course> findAllByFormationId(Long formationId);
 
     @Modifying
     @Transactional
     @Query(value = "delete from Course c where c.formation.id in :formationIds")
     void deleteAllByFormationIds(Iterable<Long> formationIds);
+
+    @Query("select c from Course c where c.formation.golfField.id = ?1")
+    List<Course> findAllByGolfFieldId(Long golfFieldId);
 
     @Modifying
     @Transactional

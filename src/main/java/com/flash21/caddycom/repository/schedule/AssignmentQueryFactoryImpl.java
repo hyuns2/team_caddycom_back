@@ -12,13 +12,29 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.flash21.caddycom.entity.golfField.QGolfField.*;
+import static com.flash21.caddycom.entity.golfFieldDetail.QCourse.*;
 import static com.flash21.caddycom.entity.schedule.QAssignment.*;
 import static com.flash21.caddycom.entity.schedule.QSchedule.*;
 
 @Repository
 @RequiredArgsConstructor
 public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
+
     private final JPAQueryFactory jpaQueryFactory;
+
+    @Override
+    public List<Assignment> findByIdsFetchJoinOrderByStartTime(List<Long> ids) {
+        return jpaQueryFactory
+                .selectFrom(assignment)
+                .join(assignment.schedule, schedule).fetchJoin()
+                .join(schedule.golfField, golfField).fetchJoin()
+                .join(golfField.formations).fetchJoin()
+                .join(schedule.course, course).fetchJoin()
+                .where(assignment.id.in(ids))
+                .orderBy(assignment.startTime.asc())
+                .fetch();
+    }
 
 
     // TODO: 코스 이름은 schedule.course 에서 가져올 수 있도록 조인 작업 추가로 필요

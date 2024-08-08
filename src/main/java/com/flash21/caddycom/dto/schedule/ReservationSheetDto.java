@@ -7,7 +7,6 @@ import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,8 +17,7 @@ import java.util.List;
 public class ReservationSheetDto {
 
     @Data
-    @AllArgsConstructor
-    public static class CreateRequest {
+    public static class CreateOrUpdateRequest {
         @Schema(description = "골프장 Id")
         @NotNull(message = "golfFieldId는 필수값입니다.")
         private Long golfFieldId;
@@ -61,18 +59,23 @@ public class ReservationSheetDto {
     }
 
     @Data
-    @AllArgsConstructor
     @Builder
     public static class GetResponse {
         private Long id;
-        private List<Long> courseList;
+        private List<CourseInfo> courseList;
         private LocalDate startDate;
         private LocalDate endDate;
         private List<InfoByPart> timeSlot;
     }
 
     @Data
-    @AllArgsConstructor
+    @Builder
+    public static class CourseInfo {
+        private Long id;
+        private String name;
+    }
+
+    @Data
     @Builder
     public static class InfoByPart {
         private LocalTime startTime;
@@ -81,7 +84,6 @@ public class ReservationSheetDto {
     }
 
     @Data
-    @AllArgsConstructor
     @Builder
     public static class MetaDataResponse {
         @Schema(description = "결과 날짜 (yyyy-mm-dd)")

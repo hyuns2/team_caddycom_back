@@ -46,8 +46,8 @@ public class CourseService {
      *
      * @return 코스 정보 DTO 리스트
      */
-    public List<CourseResponse.Info> retrieveCourseInfo() {
-        List<Course> courseList = courseRepository.findAll();
+    public List<CourseResponse.Info> retrieveCourseInfo(Long golfFieldId) {
+        List<Course> courseList = courseRepository.findAllByGolfFieldId(golfFieldId);
 
         List<CourseResponse.Info> returnDtoList = new ArrayList<>();
         for (Course course: courseList) {

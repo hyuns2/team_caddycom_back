@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long>, CourseJdbcRepository {
-    @Query(value = "select c from Course c where c.deleted = false and c.formation.id = :formationId")
+    @Query(value = "select c from Course c where c.formation.id = :formationId")
     List<Course> findAllByFormationId(Long formationId);
 
     @Modifying
@@ -21,6 +21,6 @@ public interface CourseRepository extends JpaRepository<Course, Long>, CourseJdb
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Course c SET c.deleted = true where c.id in :ids")
+    @Query(value = "UPDATE Course c SET c.deleted = true, c.formation = null where c.id in :ids")
     void softDeleteAllByIdInBatch(Iterable<Long> ids);
 }

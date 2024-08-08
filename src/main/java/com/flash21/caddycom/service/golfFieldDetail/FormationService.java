@@ -139,12 +139,7 @@ public class FormationService {
             List<CourseResponse.Info> courseInfos = new ArrayList<>();
             if(!formation.getCourses().isEmpty()) {
                 courseInfos = formation.getCourses().stream()
-                        .flatMap(course -> {
-                            if(!course.isDeleted())
-                                return Stream.of(new CourseResponse.Info(course.getId(), course.getName(), course.getTotalHoles()));
-                            else
-                                return Stream.empty();
-                        })
+                        .map(course -> new CourseResponse.Info(course.getId(), course.getName(), course.getTotalHoles()))
                         .sorted(Comparator.comparingLong(CourseResponse.Info::getId))
                         .collect(Collectors.toList());
             }

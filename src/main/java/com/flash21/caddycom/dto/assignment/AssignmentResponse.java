@@ -68,14 +68,14 @@ public class AssignmentResponse {
     @Getter
     public static class CaddyAssignmentInfoDetail {
 
+        private Long courseId;
         private String golfFieldName;
         private LocalDate assignmentDate;
         private Days days;
         private String courseName;
         private int part;
-        private String startTime;
-        private Long courseId;
         private int totalHole;
+        private String startTime;
 
 
         public static CaddyAssignmentInfoDetail of(Assignment assignment) {
@@ -87,14 +87,14 @@ public class AssignmentResponse {
             LocalDate reservationAt = assignment.getSchedule().getReservationAt();
 
             return CaddyAssignmentInfoDetail.builder()
+                    .courseId(course.getId())
                     .golfFieldName(golfField.getName())
                     .assignmentDate(reservationAt)
                     .days(getDayOfWeek(reservationAt))
                     .courseName(course.getName())
                     .part(schedule.getPart())
-                    .startTime(assignment.getStartTime().toString())
-                    .courseId(course.getId())
                     .totalHole(course.getTotalHoles())
+                    .startTime(assignment.getStartTime().toString())
                     .build();
         }
     }

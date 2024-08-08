@@ -31,7 +31,7 @@ public class AssignmentResponse {
         private String reason;
 
         public static Info from(Assignment assignment) {
-            Long caddyId = assignment.getHouseCaddy() == null ? null : assignment.getHouseCaddy().getId();
+            Long caddyId = assignment.getCaddy() == null ? null : assignment.getCaddy().getId();
 
             return Info.builder()
                     .id(assignment.getId())
@@ -50,7 +50,7 @@ public class AssignmentResponse {
                     .id(assignment.getId())
                     .startTime(assignment.getStartTime().format(timeFormatter))
                     .caddyName(assignment.getCaddyName())
-                    .caddyId(assignment.getHouseCaddy().getId())
+                    .caddyId(assignment.getCaddy().getId())
                     .courseName(assignment.getSchedule().getCourse().getName())
                     .part(assignment.getSchedule().getPart())
                     .build();
@@ -77,9 +77,9 @@ public class AssignmentResponse {
 
         public static Detail from(Assignment assignment) {
             return Detail.builder()
-                    .caddyName(assignment.getHouseCaddy().getName())
-                    .caddyPoint(assignment.getHouseCaddy().getPoint())
-                    .caddyTeamRole(convertRole(assignment.getHouseCaddy().getTeamRole()))
+                    .caddyName(assignment.getCaddy().getName())
+                    .caddyPoint(assignment.getCaddy().getPoint())
+                    .caddyTeamRole(convertRole(assignment.getCaddy().getHouseCaddy().getTeamRole()))
                     .golfFieldName(assignment.getSchedule().getGolfField().getName())
                     .date(assignment.getSchedule().getReservationAt())
                     .courseName(assignment.getSchedule().getCourse().getName())

@@ -55,4 +55,18 @@ public abstract class Caddy {
     public void encodePassword(String password){
         this.password = password;
     }
+
+    public HouseCaddy getHouseCaddy() {
+        if (this instanceof HouseCaddy) {
+            return (HouseCaddy) this;
+        }
+        return null;
+    }
+
+    public FreeCaddy getFreeCaddy() {
+        if (this instanceof FreeCaddy) {
+            return (FreeCaddy) this;
+        }
+        return null;
+    }
 }

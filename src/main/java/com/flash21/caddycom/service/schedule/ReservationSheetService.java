@@ -55,7 +55,7 @@ public class ReservationSheetService {
 
         List<Schedule> scheduleList = new ArrayList<>();
         for (int i = 0; i < dto.getTeeOffList().size(); i++) {
-            createSchedulesByPart(reservationSheet, scheduleList, golfField, courseList, dto.getStartDate(), dto.getEndDate(),
+            createSchedulesByPart(scheduleList, golfField, reservationSheet, courseList, dto.getStartDate(), dto.getEndDate(),
                     LocalTime.parse(dto.getStartTimeList().get(i)), LocalTime.parse(dto.getEndTimeList().get(i)), dto.getTeeOffList().get(i), i + 1);
         }
         scheduleJdbcRepository.saveAll(scheduleList);
@@ -93,7 +93,7 @@ public class ReservationSheetService {
      * @param teeOff       티오프
      * @param part         몇 부인지
      */
-    private void createSchedulesByPart(ReservationSheet reservationSheet, List<Schedule> scheduleList, GolfField golfField, List<Course> courseList, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String teeOff, int part) {
+    private void createSchedulesByPart(List<Schedule> scheduleList, GolfField golfField, ReservationSheet reservationSheet, List<Course> courseList, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String teeOff, int part) {
         List<LocalDate> localDateList = startDate.datesUntil(endDate.plusDays(1)).toList();
         int totalCnt = getStartTimeList(startTime, endTime, teeOff).size();
 
@@ -140,6 +140,38 @@ public class ReservationSheetService {
         }
 
         return startTimeList;
+    }
+
+    /**
+     * 예약시트 전체조회: 해당하는 골프장의 모든 예약시트를 반환합니다.
+     *
+     * @param golfFieldId 골프장 Id
+     * @return 예약시트별 dto 리스트
+     */
+    public List<ReservationSheetDto.GetResponse> getReservationSheet(Long golfFieldId) {
+        List<ReservationSheet> reservationSheetList = reservationSheetRepository.findAllByGolfFieldId(golfFieldId);
+        List<ReservationSheetDto.GetResponse> dtoList = new ArrayList<>();
+
+        for (ReservationSheet rs: reservationSheetList) {
+            int part = 1;
+            List<ReservationSheetDto.InfoByPart> detailDtoList = new ArrayList<>();
+            while (true) {
+                Optional<Schedule> schedule = scheduleRepository.findFirstByReservationSheetIdAndPart(rs.getId(), part++);
+                if (schedule.isEmpty())
+                    break;
+                detailDtoList.add(ReservationSheetDto.InfoByPart.builder()
+                        .startTime(schedule.get().getStartTime())
+                        .endTime(schedule.get().getEndTime())
+                        .teeOff(schedule.get().getTeeOff()).build());
+            }
+            dtoList.add(ReservationSheetDto.GetResponse.builder()
+                    .id(rs.getId())
+                    .courseList(rs.getCourseIdList())
+                    .startDate(rs.getStartDate())
+                    .endDate(rs.getEndDate())
+                    .timeSlot(detailDtoList).build());
+        }
+        return dtoList;
     }
 
     /**

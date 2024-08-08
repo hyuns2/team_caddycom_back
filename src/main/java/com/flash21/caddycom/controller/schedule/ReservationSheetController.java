@@ -32,6 +32,14 @@ public class ReservationSheetController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @Operation(summary = "예약시트 전체조회", description = "골프장 관리자가 전체 예약시트를 조회합니다.")
+    @GetMapping("/{golfFieldId}")
+    public ResponseEntity<List<ReservationSheetDto.GetResponse>> getReservationSheet(@PathVariable Long golfFieldId) {
+        List<ReservationSheetDto.GetResponse> result = rsService.getReservationSheet(golfFieldId);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     @Operation(summary = "캘린더 메타정보 조회", description = "골프장 관리자가 캘린더에 표기되는 메타정보를 조회합니다.")
     @GetMapping("/calendar/{golfFieldId}/{year}/{month}")
     public ResponseEntity<List<ReservationSheetDto.MetaDataResponse>> getMetaData(

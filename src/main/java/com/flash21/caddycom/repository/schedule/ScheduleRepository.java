@@ -20,4 +20,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Sched
 
     List<Schedule> findAllByGolfFieldIdAndReservationAt(Long golfFieldId, LocalDate date);
 
+    Optional<Schedule> findFirstByReservationSheetIdAndPart(Long reservationSheetId, int part);
 }

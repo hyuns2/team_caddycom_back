@@ -22,7 +22,7 @@ public class AssignmentJdbcRepository {
     @Transactional
     public void saveAll(Long scheduleId, List<LocalTime> startTimeList) {
         String sql = "INSERT INTO assignment"
-                + " (schedule_id, start_time, status, house_caddy_id, caddy_name, reason)"
+                + " (schedule_id, start_time, status, caddy_id, caddy_name, reason)"
                 + " VALUES (?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.batchUpdate(new PreparedStatementCreator() {

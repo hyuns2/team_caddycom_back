@@ -103,12 +103,17 @@ public class ApiExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ExceptionDto> handlerMethodValidationException(HandlerMethodValidationException e) {
-        String message = e.getDetailMessageCode().toString();
-        System.out.println("message = " + message);
-        e.printStackTrace();
         log.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionDto.fail(HttpStatus.BAD_REQUEST, "입력값이 잘못되었습니다.: " + e.getMessage()));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ExceptionDto> classCastExceptionHandler(ClassCastException e) {
+        log.error(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ExceptionDto.fail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
 
 

@@ -29,6 +29,10 @@ public class Schedule {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
+    private ReservationSheet reservationSheet;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
     private Course course;
 
     @Column(nullable = false)

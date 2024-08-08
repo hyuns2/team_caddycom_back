@@ -69,6 +69,7 @@ public class AssignmentResponse {
     public static class CaddyAssignmentInfoDetail {
 
         private Long courseId;
+        private Long assignmentId;
         private String golfFieldName;
         private LocalDate assignmentDate;
         private Days days;
@@ -88,6 +89,7 @@ public class AssignmentResponse {
 
             return CaddyAssignmentInfoDetail.builder()
                     .courseId(course.getId())
+                    .assignmentId(assignment.getId())
                     .golfFieldName(golfField.getName())
                     .assignmentDate(reservationAt)
                     .days(getDayOfWeek(reservationAt))

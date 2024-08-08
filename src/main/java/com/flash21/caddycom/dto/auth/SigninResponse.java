@@ -2,6 +2,7 @@ package com.flash21.caddycom.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.flash21.caddycom.entity.account.Role;
+import com.flash21.caddycom.entity.caddy.Caddy;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.golfField.ApprovalStatus;
 import com.flash21.caddycom.entity.golfField.GolfField;
@@ -121,32 +122,34 @@ public class SigninResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Builder
     @Getter
-    public static class Caddy {
+    public static class CaddyMain {
         private String accessToken;
         private String refreshToken;
         private Long caddyId;
+        private String caddyName;
         private Long golfFieldId;
-        private String name;
         private String team;
         private String teamRole;
         private Long point;
         private boolean isSetup;
         private String role;
 
-        public static Caddy from(JwtResponse jwtResponse, HouseCaddy caddy, Role role){
-            return Caddy.builder()
+        public static CaddyMain from(JwtResponse jwtResponse, Caddy caddy) {
+            CaddyMain.CaddyMainBuilder builder = CaddyMain.builder()
                     .accessToken(jwtResponse.getAccessToken())
                     .refreshToken(jwtResponse.getRefreshToken())
                     .caddyId(caddy.getId())
-                    .golfFieldId(caddy.getGolfField().getId())
-                    .name(caddy.getName())
-                    .team(caddy.getTeam())
-                    .teamRole(caddy.getTeamRole().name())
+                    .caddyName(caddy.getName() == null ? "사용자" : caddy.getName())
                     .point(caddy.getPoint())
-                    .role(role.toString().substring(5))
-                    .isSetup(caddy.getPassword() != null)
-                    .build();
+                    .role(caddy.getType().toString().substring(5))
+                    .isSetup(caddy.getPassword() != null);
+
+            if (caddy instanceof HouseCaddy houseCaddy)
+                builder.golfFieldId(houseCaddy.getGolfField().getId())
+                        .team(houseCaddy.getTeam() == null ? "조 없음" : houseCaddy.getTeam())
+                        .teamRole(houseCaddy.getTeamRole() == null ? "" : houseCaddy.getTeamRole().name());
+
+            return builder.build();
         }
     }
-
 }

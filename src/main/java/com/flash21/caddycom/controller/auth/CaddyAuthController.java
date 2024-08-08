@@ -21,25 +21,25 @@ public class CaddyAuthController {
 
     private final CaddyAuthService caddyAuthService;
 
-    @Operation(summary="하우스 캐디 첫번째 로그인 API",
-            description="하우스 캐디의 최초 로그인/회원가입 시 사용 \n 골프장 등록 후 캐디 등록 (즉, waiting 상태가 없다.) ")
+    @Operation(summary="캐디 첫번째 로그인 API",
+            description="캐디의 최초 로그인/회원가입 시 사용 \n 골프장 등록 후 캐디 등록 (즉, waiting 상태가 없다.) ")
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in/first")
-    public ResponseEntity<SigninResponse.Caddy> firstSignin(@Valid @RequestBody SigninRequest.First request){
-        SigninResponse.Caddy response = caddyAuthService.firstLogin(request);
+    public ResponseEntity<SigninResponse.CaddyMain> firstSignin(@Valid @RequestBody SigninRequest.First request){
+        SigninResponse.CaddyMain response = caddyAuthService.firstLogin(request);
         return ResponseEntity.ok().body(response);
     }
 
-    @Operation(summary="하우스 캐디 이후 로그인 API", description="하우스 캐디의 최초 이후 로그인/회원가입 시 사용")
+    @Operation(summary="캐디 이후 로그인 API", description="캐디의 최초 이후 로그인/회원가입 시 사용")
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in")
-    public ResponseEntity<SigninResponse.Caddy> signin(@Valid @RequestBody SigninRequest.Caddy request){
-        SigninResponse.Caddy response = caddyAuthService.afterLogin(request);
+    public ResponseEntity<SigninResponse.CaddyMain> signin(@Valid @RequestBody SigninRequest.Caddy request){
+        SigninResponse.CaddyMain response = caddyAuthService.afterLogin(request);
         return ResponseEntity.ok().body(response);
     }
 
 
-    @Operation(summary="하우스 캐디 비밀번호 설정 API", description="하우스 캐디 비밀번호 설정")
+    @Operation(summary="캐디 비밀번호 설정 API", description="캐디 비밀번호 설정")
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in/password")
     public ResponseEntity<Message> setPassword(@Valid @RequestBody SigninRequest.Password request){

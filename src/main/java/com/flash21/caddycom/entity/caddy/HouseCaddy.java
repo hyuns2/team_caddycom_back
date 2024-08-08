@@ -24,7 +24,7 @@ import java.util.List;
 public class HouseCaddy extends Caddy {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn
     private GolfField golfField;
 
     @Convert(converter = DayListConverter.class)

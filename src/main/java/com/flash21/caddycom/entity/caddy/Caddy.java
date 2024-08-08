@@ -24,7 +24,6 @@ public abstract class Caddy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-    @Column(nullable = false)
     protected String name;
 
     @Column(nullable = false, unique = true)
@@ -71,6 +70,16 @@ public abstract class Caddy {
     public FreeCaddy getFreeCaddy() {
         if (this instanceof FreeCaddy) {
             return (FreeCaddy) this;
+        }
+        return null;
+    }
+
+    public Role getType() {
+        if (this instanceof HouseCaddy) {
+            return Role.ROLE_HOUSE_CADDY;
+        }
+        else if (this instanceof FreeCaddy) {
+            return Role.ROLE_FREE_CADDY;
         }
         return null;
     }

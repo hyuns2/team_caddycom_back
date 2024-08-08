@@ -12,7 +12,6 @@ import java.util.Optional;
 @Repository
 public interface HouseCaddyRepository extends JpaRepository<HouseCaddy, Long>, HouseCaddyJdbcRepository, HouseCaddyQueryFactory {
 
-    Optional<HouseCaddy> findByPhoneNumber(String phoneNumber);
 
     @Query("select distinct COALESCE(h.team,'조 없음') from HouseCaddy h where h.golfField.id = ?1 " +
             "ORDER BY COALESCE(h.team, '조 없음') ASC")

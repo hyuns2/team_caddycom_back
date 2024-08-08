@@ -83,4 +83,8 @@ public class Assignment {
         if (this.status == AssignmentStatus.BLOCKED) return;
         this.status = AssignmentStatus.ASSIGNED;
     }
+
+    public void updateByDeletedSchedule() {
+        this.schedule = null;
+    }
 }

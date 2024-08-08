@@ -4,15 +4,16 @@ import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.dto.schedule.ReservationSheetDto;
+import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.exception.cException.*;
 import com.flash21.caddycom.repository.caddy.CaddyRepository;
-import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.formation.FormationRepository;
 import com.flash21.caddycom.repository.schedule.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -150,9 +151,11 @@ public class ReservationSheetService {
      * @return 예약시트별 dto 리스트
      */
     public List<ReservationSheetDto.GetResponse> getReservationSheet(Long golfFieldId) {
-        List<ReservationSheet> reservationSheetList = reservationSheetRepository.findAllByGolfFieldId(golfFieldId);
         List<ReservationSheetDto.GetResponse> dtoList = new ArrayList<>();
 
+        List<ReservationSheet> reservationSheetList = reservationSheetRepository.findAllByGolfFieldId(golfFieldId);
+        Map<Long, String> courseMap = courseRepository.findAllByGolfFieldId(golfFieldId)
+                .stream().collect(Collectors.toMap(Course::getId, Course::getName));
         for (ReservationSheet rs: reservationSheetList) {
             int part = 1;
             List<ReservationSheetDto.InfoByPart> detailDtoList = new ArrayList<>();
@@ -167,12 +170,15 @@ public class ReservationSheetService {
             }
             dtoList.add(ReservationSheetDto.GetResponse.builder()
                     .id(rs.getId())
-                    .courseList(rs.getCourseIdList())
+                    .courseList(rs.getCourseIdList().stream().map(current ->
+                            ReservationSheetDto.CourseInfo.builder()
+                            .id(current)
+                            .name(courseMap.get(current)).build()).toList())
                     .startDate(rs.getStartDate())
                     .endDate(rs.getEndDate())
                     .timeSlot(detailDtoList).build());
         }
-        return dtoList;
+        return dtoList.stream().sorted(new GetResponseComparator()).toList();
     }
 
     /**
@@ -201,7 +207,7 @@ public class ReservationSheetService {
                     availableCntSum(report.getDateStatus() != DateStatus.NOTHING ? availableCntResult : 0).build());
         }
 
-        return responseDtoList.stream().sorted(new DtoComparator()).toList();
+        return responseDtoList.stream().sorted(new MetaDataResponseComparator()).toList();
     }
 
     public Map<LocalDate, List<AssignmentResponse.CaddyAssignmentInfo>> getAssignmentResultSheet(Long caddyId, int year, int month) {
@@ -226,14 +232,29 @@ public class ReservationSheetService {
     }
 
     /**
-     * dto를 날짜 순으로 정렬하는 Comparator
+     * MetaDataResponse dto를 날짜 순으로 정렬하는 Comparator
      */
-    private static class DtoComparator implements Comparator<ReservationSheetDto.MetaDataResponse> {
+    private static class MetaDataResponseComparator implements Comparator<ReservationSheetDto.MetaDataResponse> {
         @Override
         public int compare(ReservationSheetDto.MetaDataResponse dto1, ReservationSheetDto.MetaDataResponse dto2) {
             if (dto1.getTargetDate().isAfter(dto2.getTargetDate()))
                 return 1;
             else if (dto1.getTargetDate().isBefore(dto2.getTargetDate()))
+                return -1;
+            else
+                return 0;
+        }
+    }
+
+    /**
+     * GetResponse dto를 날짜 순으로 정렬하는 Comparator
+     */
+    private static class GetResponseComparator implements Comparator<ReservationSheetDto.GetResponse> {
+        @Override
+        public int compare(ReservationSheetDto.GetResponse dto1, ReservationSheetDto.GetResponse dto2) {
+            if (dto1.getStartDate().isAfter(dto2.getStartDate()))
+                return 1;
+            else if (dto1.getStartDate().isBefore(dto2.getStartDate()))
                 return -1;
             else
                 return 0;

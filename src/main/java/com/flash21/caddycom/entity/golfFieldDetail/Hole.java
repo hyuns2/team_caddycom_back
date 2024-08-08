@@ -3,6 +3,7 @@ package com.flash21.caddycom.entity.golfFieldDetail;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class Hole {
     @JoinColumn(name="courseId")
     private Course course;
 
+    @ColumnDefault("null")
     private String imageUrl;
 
     public Hole(Integer num, Course course) {

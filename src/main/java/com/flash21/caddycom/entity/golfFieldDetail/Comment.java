@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -18,6 +19,7 @@ public class Comment {
 
     private String content;
 
+    @ColumnDefault("null")
     private String imageUrl;
 
     @ManyToOne

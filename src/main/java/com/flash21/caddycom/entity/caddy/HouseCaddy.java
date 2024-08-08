@@ -27,9 +27,6 @@ public class HouseCaddy extends Caddy {
     @JoinColumn(nullable = false)
     private GolfField golfField;
 
-    @OneToMany(mappedBy = "caddy", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Assignment> assignmentList;
-
     @Convert(converter = DayListConverter.class)
     private List<Days> holiday;
 
@@ -48,9 +45,6 @@ public class HouseCaddy extends Caddy {
     private TeamRole teamRole;
 
     private String caddyType;
-
-
-
 
     public void updateHouseCaddyByManager(HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
         this.team = dto.getTeam();

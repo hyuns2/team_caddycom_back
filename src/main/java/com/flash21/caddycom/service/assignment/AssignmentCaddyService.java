@@ -48,7 +48,7 @@ public class AssignmentCaddyService {
     public PagingResponse<AssignmentResponse.Info> getAssignments(Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status, int page) {
         Pageable pageable = PageRequest.of(page, 30);
         Page<Assignment> assignmentPage =
-                assignmentRepository.findAllByDateAndCourseIdAndStatus(pageable, golfFieldId, date, courseId, status);
+                assignmentRepository.findAllByDateAndCourseIdAndStatus(pageable, golfFieldId, date, courseId, status); //fetch
         return PagingResponse.from(assignmentPage, AssignmentResponse.Info::from);
     }
 

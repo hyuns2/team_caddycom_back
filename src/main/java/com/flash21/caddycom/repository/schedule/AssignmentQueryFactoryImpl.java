@@ -29,6 +29,7 @@ public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
                         .and(assignment.schedule.reservationAt.eq(date))
                         .and(eqCourseId(courseId))
                         .and(eqStatus(status)))
+                //fetch join
                 .orderBy(assignment.startTime.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

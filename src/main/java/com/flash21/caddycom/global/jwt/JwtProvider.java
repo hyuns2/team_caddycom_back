@@ -3,9 +3,9 @@ package com.flash21.caddycom.global.jwt;
 import com.flash21.caddycom.dto.auth.JwtResponse;
 import com.flash21.caddycom.entity.account.Account;
 import com.flash21.caddycom.entity.account.Role;
-import com.flash21.caddycom.entity.caddy.HouseCaddy;
+import com.flash21.caddycom.entity.caddy.Caddy;
 import com.flash21.caddycom.repository.account.AccountRepository;
-import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
+import com.flash21.caddycom.repository.caddy.CaddyRepository;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Component
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class JwtProvider {
     private final long REFRESH_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7일
 
     private final AccountRepository accountRepository;
-    private final HouseCaddyRepository houseCaddyRepository;
+    private final CaddyRepository caddyRepository;
     private final JwtValidator jwtValidator;
 
     public JwtResponse issueTokens(Role role, String phoneNumber, Long id) {
@@ -60,11 +61,13 @@ public class JwtProvider {
 
     private void saveRefreshToken(Role role, Long id, String refreshToken) {
         if (role == Role.ROLE_EMPLOYEE || role == Role.ROLE_OWNER) {
-            Account account = accountRepository.findById(id).orElseThrow();
+            Account account = accountRepository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException("사라진 사용자 계정입니다."));
             account.updateToken(refreshToken);
         }
-        else if (role == Role.ROLE_HOUSE_CADDY) {
-            HouseCaddy caddy = houseCaddyRepository.findById(id).orElseThrow();
+        else if (role == Role.ROLE_HOUSE_CADDY || role == Role.ROLE_FREE_CADDY) {
+            Caddy caddy = caddyRepository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException("사라진 사용자 계정입니다."));
             caddy.updateToken(refreshToken);
         }
 

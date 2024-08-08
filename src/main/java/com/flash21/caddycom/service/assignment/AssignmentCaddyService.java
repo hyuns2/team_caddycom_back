@@ -126,7 +126,7 @@ public class AssignmentCaddyService {
         HouseCaddy caddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 캐디입니다."));
 
-        assignment.assignHouseCaddy(caddy);
+        assignment.assignCaddy(caddy);
     }
 
     /**
@@ -178,7 +178,7 @@ public class AssignmentCaddyService {
 
                 HouseCaddy currentCaddy = findCaddies.get(currentCaddyIndex);
                 if (isAlreadyAssigned(blockedCaddyIds, currentCaddy) && isAvailable(assignment, currentCaddy, todaysDayOfWeek)) {
-                    assignment.assignHouseCaddy(currentCaddy);
+                    assignment.assignCaddy(currentCaddy);
                     isAssigned = true;
                 }
 

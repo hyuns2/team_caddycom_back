@@ -1,7 +1,6 @@
 package com.flash21.caddycom.entity.schedule;
 
 import com.flash21.caddycom.entity.caddy.Caddy;
-import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -77,7 +76,7 @@ public class Assignment {
         }
     }
 
-    public void assignHouseCaddy(HouseCaddy caddy) {
+    public void assignCaddy(Caddy caddy) {
         this.caddyName = caddy.getName();
         this.caddy = caddy;
         caddy.getAssignmentList().add(this);

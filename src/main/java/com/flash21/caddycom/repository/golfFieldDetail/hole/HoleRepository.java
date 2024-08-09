@@ -18,12 +18,12 @@ public interface HoleRepository extends JpaRepository<Hole, Long>, HoleJdbcRepos
     @Query("select distinct h from Hole h join fetch h.tees where h.course.id = :courseId")
     List<Hole> findAllByCourseIdFetchJoinTee(Long courseId);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Transactional
     @Query("delete from Hole h where h.course.formation.id in :formationIds")
     void deleteAllByFormationIds(Iterable<Long> formationIds);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Transactional
     @Query("delete from Hole h where h.course.id in :courseIds")
     void deleteAllByCourseIds(Iterable<Long> courseIds);

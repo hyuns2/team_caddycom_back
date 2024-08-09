@@ -8,22 +8,22 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface TeeRepository extends JpaRepository<Tee, Long>, TeeJdbcRepository {
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Transactional
     @Query(value = "delete from Tee t where t.hole.course.id = :courseId ")
     void deleteAllByCourseId(Long courseId);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Transactional
     @Query(value = "delete from Tee t where t.hole in :holes")
     void deleteAllByHoles(Iterable<Hole> holes);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Transactional
     @Query(value = "delete from Tee t where t.hole.course.formation.id in :formationIds")
     void deleteAllByFormationIds(Iterable<Long> formationIds);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Transactional
     @Query(value = "delete from Tee t where t.hole.course.id in :courseIds")
     void deleteAllByCourseIds(Iterable<Long> courseIds);

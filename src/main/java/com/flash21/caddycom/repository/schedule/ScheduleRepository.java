@@ -28,7 +28,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Sched
 
     List<Schedule> findAllByReservationSheetIdAndReservationAtAndStartTimeIsAfter(Long reservationSheetId, LocalDate today, LocalTime current);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("delete from Schedule s where s.id in ?1")
     void deleteAllByIdList(List<Long> idList);
 }

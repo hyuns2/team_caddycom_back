@@ -30,13 +30,13 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long>, A
     List<Assignment> findByIds(@Param("ids") List<Long> ids);
 
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE Assignment a " +
             "SET a.caddy = :caddy, a.caddyName = :caddyName " +
             "WHERE a.id = :assignmentId")
     void switchAssignment(@Param("assignmentId") Long assignmentId, @Param("caddy") Caddy caddy, @Param("caddyName") String caddyName);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("delete from Assignment a where a.id in ?1")
     void deleteAllByIdList(List<Long> idList);
 }

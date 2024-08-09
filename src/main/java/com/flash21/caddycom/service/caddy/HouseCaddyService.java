@@ -37,6 +37,28 @@ public class HouseCaddyService {
     }
 
     /**
+     * 전체 조회: 해당하는 골프장에 속하는 캐디들의 정보를 조별로 반환합니다.
+     *
+     * @param golfFieldId 골프장 Id
+     * @return 조이름, 캐디정보 리스트 맵핑결과
+     */
+    public Map<String, List<HouseCaddyResponseDto.houseCaddyDetail>> getHouseCaddies(Long golfFieldId) {
+        List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByGolfFieldIdOrderByTeamAndTeamRole(golfFieldId);
+
+        Map<String, List<HouseCaddyResponseDto.houseCaddyDetail>> result = new TreeMap<>();
+        for (HouseCaddy hc: houseCaddyList) {
+            if (result.containsKey(hc.getTeam()))
+                (result.get(hc.getTeam())).add(toHouseCaddyDetailDto(hc));
+            else {
+                List<HouseCaddyResponseDto.houseCaddyDetail> dtoList = new ArrayList<>();
+                dtoList.add(toHouseCaddyDetailDto(hc));
+                result.put(hc.getTeam(), dtoList);
+            }
+        }
+        return result;
+    }
+
+    /**
      * 조별 조회: 해당하는 골프장과 조이름에 속하는 캐디들의 정보를 반환합니다.
      *
      * @param golfFieldId 골프장 Id
@@ -49,27 +71,28 @@ public class HouseCaddyService {
         if (houseCaddyList.isEmpty())
             throw new CTeamNameNotFoundException();
 
-        return houseCaddyList.stream().map(hc -> {
-                    return HouseCaddyResponseDto.houseCaddyDetail.builder()
-                            .id(hc.getId())
-                            .golfFieldName(null)
-                            .profileUrl(hc.getProfileUrl())
-                            .name(hc.getName())
-                            .phoneNumber(hc.getPhoneNumber())
-                            .team(teamName)
-                            .teamRole(hc.getTeamRole())
-                            .holiday(hc.getHoliday())
-                            .changedHoliday(hc.getChangedHoliday())
-                            .offPart(hc.getOffPart())
-                            .gender(hc.getGender())
-                            .birth(hc.getBirth())
-                            .address(hc.getAddress())
-                            .addressDetail(hc.getAddressDetail())
-                            .career(hc.getCareer())
-                            .caddyType(hc.getCaddyType())
-                            .build();
-                }
-        ).toList();
+        return houseCaddyList.stream().map(this::toHouseCaddyDetailDto).toList();
+    }
+
+    private HouseCaddyResponseDto.houseCaddyDetail toHouseCaddyDetailDto(HouseCaddy hc) {
+        return HouseCaddyResponseDto.houseCaddyDetail.builder()
+                .id(hc.getId())
+                .golfFieldName(null)
+                .profileUrl(hc.getProfileUrl())
+                .name(hc.getName())
+                .phoneNumber(hc.getPhoneNumber())
+                .team(hc.getTeam())
+                .teamRole(hc.getTeamRole())
+                .holiday(hc.getHoliday())
+                .changedHoliday(hc.getChangedHoliday())
+                .offPart(hc.getOffPart())
+                .gender(hc.getGender())
+                .birth(hc.getBirth())
+                .address(hc.getAddress())
+                .addressDetail(hc.getAddressDetail())
+                .career(hc.getCareer())
+                .caddyType(hc.getCaddyType())
+                .build();
     }
 
     /**

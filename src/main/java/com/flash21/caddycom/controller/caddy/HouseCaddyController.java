@@ -33,7 +33,15 @@ public class HouseCaddyController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @Operation(summary = "조별 조회", description = "해당하는 조에 속해있는 하우스 캐디들을 조회합니다.")
+    @Operation(summary = "하우스캐디 정보 일괄조회", description = "해당하는 조에 속해있는 하우스 캐디들의 정보를 조회합니다.")
+    @GetMapping("/{golfFieldId}/all")
+    public ResponseEntity<Map<String, List<HouseCaddyResponseDto.houseCaddyDetail>>> getHouseCaddies(@PathVariable Long golfFieldId) {
+        Map<String, List<HouseCaddyResponseDto.houseCaddyDetail>> result = houseCaddyService.getHouseCaddies(golfFieldId);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "하우스캐디 정보 조별조회", description = "해당하는 조에 속해있는 하우스 캐디들의 정보를 조회합니다.")
     @GetMapping("/{golfFieldId}/{teamName}")
     public ResponseEntity<List<HouseCaddyResponseDto.houseCaddyDetail>> getHouseCaddyByTeam(@PathVariable Long golfFieldId, @PathVariable String teamName) {
         List<HouseCaddyResponseDto.houseCaddyDetail> result = houseCaddyService.getHouseCaddyByTeam(golfFieldId, teamName);

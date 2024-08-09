@@ -1,7 +1,6 @@
 package com.flash21.caddycom.repository.schedule;
 
 import com.flash21.caddycom.entity.caddy.Caddy;
-import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

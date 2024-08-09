@@ -69,7 +69,7 @@ public class AssignmentCaddyService {
     // TODO: CANCELED, ASSIGNED 상태일때만 조회 가능하도록 예외처리 추가 필요
     @Transactional(readOnly = true)
     public AssignmentResponse.Detail getAssignmentDetail(Long assignmentId) {
-        Assignment assignment = assignmentRepository.findById(assignmentId)
+        Assignment assignment = assignmentRepository.findByIdWithFetchJoin(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 배정 정보가 없습니다."));
         return AssignmentResponse.Detail.from(assignment);
     }

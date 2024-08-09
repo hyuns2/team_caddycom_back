@@ -1,6 +1,5 @@
 package com.flash21.caddycom.repository.schedule;
 
-import com.flash21.caddycom.entity.golfFieldDetail.QCourse;
 import com.flash21.caddycom.entity.schedule.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static com.flash21.caddycom.entity.golfField.QGolfField.*;
 import static com.flash21.caddycom.entity.golfFieldDetail.QCourse.*;
@@ -37,6 +37,19 @@ public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
                 .fetch();
     }
 
+    @Override
+    public Optional<Assignment> findByIdWithFetchJoin(Long assignmentId) {
+        return Optional.ofNullable(
+                jpaQueryFactory
+                        .selectFrom(assignment)
+                        .join(assignment.caddy).fetchJoin()
+                        .join(assignment.schedule, schedule).fetchJoin()
+                        .join(schedule.golfField, golfField).fetchJoin()
+                        .join(schedule.course, course).fetchJoin()
+                        .join(course.formation).fetchJoin()
+                        .where(assignment.id.eq(assignmentId))
+                        .fetchFirst());
+    }
 
     // TODO: 코스 이름은 schedule.course 에서 가져올 수 있도록 조인 작업 추가로 필요 -> 완료
     public Page<Assignment> findAllByDateAndCourseIdAndStatus(Pageable pageable, Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status) {

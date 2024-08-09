@@ -3,6 +3,7 @@ package com.flash21.caddycom.repository.schedule;
 import com.flash21.caddycom.entity.caddy.Caddy;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.schedule.Assignment;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,5 +43,5 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long>, A
     @Query("delete from Assignment a where a.id in ?1")
     void deleteAllByIdList(List<Long> idList);
 
-    Optional<Assignment> findFirstByScheduleIsIn(List<Schedule> scheduleList);
+    Optional<Assignment> findFirstByStatusIsInAndScheduleIsIn(List<AssignmentStatus> assignmentStatusList, List<Schedule> scheduleList);
 }

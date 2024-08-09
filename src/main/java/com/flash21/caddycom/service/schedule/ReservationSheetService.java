@@ -4,10 +4,7 @@ import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.dto.schedule.ReservationSheetDto;
-import com.flash21.caddycom.entity.schedule.Assignment;
-import com.flash21.caddycom.entity.schedule.DateStatus;
-import com.flash21.caddycom.entity.schedule.ReservationSheet;
-import com.flash21.caddycom.entity.schedule.Schedule;
+import com.flash21.caddycom.entity.schedule.*;
 import com.flash21.caddycom.global.exception.cException.*;
 import com.flash21.caddycom.repository.caddy.CaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
@@ -16,6 +13,7 @@ import com.flash21.caddycom.repository.schedule.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -188,9 +186,12 @@ public class ReservationSheetService {
      * @param reservationSheetId 예약시트 Id
      * @param dto 요청한 정보
      */
+    @Transactional
     public void updateReservationSheet(Long reservationSheetId, ReservationSheetDto.CreateOrUpdateRequest dto) {
         List<Schedule> scheduleList = scheduleRepository.findAllByReservationSheetId(reservationSheetId);
-        if (assignmentRepository.findFirstByScheduleIsIn(scheduleList).isPresent())
+        if (assignmentRepository.findFirstByStatusIsInAndScheduleIsIn(
+                Arrays.asList(AssignmentStatus.BLOCKED, AssignmentStatus.REQUESTED, AssignmentStatus.ASSIGNED), scheduleList
+            ).isPresent())
             throw new CInvalidModifyingRequestException();
 
         deleteReservationSheet(reservationSheetId);

@@ -37,6 +37,9 @@ public class Assignment {
 
     private String reason;
 
+    private LocalTime startedTime;
+
+    private LocalTime endedTime;
 
     public void cancel(String reason) {
         if (reason != null && !reason.isEmpty())
@@ -86,5 +89,9 @@ public class Assignment {
 
     public void updateByDeletedSchedule() {
         this.schedule = null;
+    }
+
+    public void terminate(LocalTime endedTime) {
+        this.endedTime = endedTime;
     }
 }

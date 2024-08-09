@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReservationSheetService {
     private final GolfFieldRepository golfFieldRepository;
     private final ReservationSheetRepository reservationSheetRepository;
@@ -65,7 +66,7 @@ public class ReservationSheetService {
     /**
      * 스케쥴 생성 검증함수: 예약시트 생성요청 dto & 같은 날짜의 같은 코스 예약이 있는지 검증합니다.
      *
-     * @param dto        예약시트 생성요청 dto
+     * @param dto 예약시트 생성요청 dto
      */
     private void validToCreateSchedules(ReservationSheetDto.CreateOrUpdateRequest dto) {
         if (dto.getStartDate().isBefore(LocalDate.now()) || dto.getStartDate().isAfter(dto.getEndDate()))
@@ -75,7 +76,7 @@ public class ReservationSheetService {
                 dto.getStartTimeList().size() != dto.getEndTimeList().size())
             throw new CInvalidPartInfoException();
 
-        for (Long courseId: dto.getCourseList())
+        for (Long courseId : dto.getCourseList())
             if (scheduleRepository.findFirstByGolfFieldIdAndCourseIdAndReservationAtBetween(dto.getGolfFieldId(), courseId, dto.getStartDate(), dto.getEndDate())
                     .isPresent())
                 throw new CBadReservationRequestException();
@@ -155,7 +156,7 @@ public class ReservationSheetService {
         List<ReservationSheet> reservationSheetList = reservationSheetRepository.findAllByGolfFieldId(golfFieldId);
         Map<Long, String> courseMap = courseRepository.findAllByGolfFieldId(golfFieldId)
                 .stream().collect(Collectors.toMap(Course::getId, Course::getName));
-        for (ReservationSheet rs: reservationSheetList) {
+        for (ReservationSheet rs : reservationSheetList) {
             int part = 1;
             List<ReservationSheetDto.InfoByPart> detailDtoList = new ArrayList<>();
             while (true) {
@@ -171,8 +172,8 @@ public class ReservationSheetService {
                     .id(rs.getId())
                     .courseList(rs.getCourseIdList().stream().map(current ->
                             ReservationSheetDto.CourseInfo.builder()
-                            .id(current)
-                            .name(courseMap.get(current)).build()).toList())
+                                    .id(current)
+                                    .name(courseMap.get(current)).build()).toList())
                     .startDate(rs.getStartDate())
                     .endDate(rs.getEndDate())
                     .timeSlot(detailDtoList).build());
@@ -184,8 +185,9 @@ public class ReservationSheetService {
      * 예약시트 수정: 해당하는 예약시트를 요청한 정보로 수정합니다.
      *
      * @param reservationSheetId 예약시트 Id
-     * @param dto 요청한 정보
+     * @param dto                요청한 정보
      */
+    @Transactional
     public void updateReservationSheet(Long reservationSheetId, ReservationSheetDto.CreateOrUpdateRequest dto) {
 
     }
@@ -207,8 +209,8 @@ public class ReservationSheetService {
 
         List<Long> targetAssignmentIdList = new ArrayList<>();
         List<Long> targetScheduleIdList = new ArrayList<>();
-        for (Schedule schedule: scheduleList) {
-            for (Assignment assignment: schedule.getAssignments()) {
+        for (Schedule schedule : scheduleList) {
+            for (Assignment assignment : schedule.getAssignments()) {
                 if (assignment.getCaddy() != null)
                     assignment.updateByDeletedSchedule();
                 else

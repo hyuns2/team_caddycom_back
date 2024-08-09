@@ -15,11 +15,11 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AccountService {
     private final AccountRepository accountRepository;
     private final GolfFieldRepository golfFieldRepository;
 
-    @Transactional(readOnly = true)
     public List<AccountResponse.Info> getAccounts(Long id) {
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("골프장이 존재하지 않습니다."));

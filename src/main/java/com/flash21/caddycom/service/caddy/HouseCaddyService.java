@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class HouseCaddyService {
 
     private final HouseCaddyRepository houseCaddyRepository;
@@ -134,7 +135,6 @@ public class HouseCaddyService {
      *
      * @return 조 이름과 하우스캐디 정보(하우스캐디의 id, 이름, 역할, 휴무일) 리스트로 이루어진 DTO 리스트
      */
-    @Transactional(readOnly = true)
     public List<HouseCaddyResponseDto.TeamHoliday> getAllHoliday(Long golfFieldId) {
         List<HouseCaddy> houseCaddies = houseCaddyRepository.findAllByGolfFieldId(golfFieldId);
 
@@ -160,7 +160,6 @@ public class HouseCaddyService {
      * @param teamName    조 이름
      * @return 조 이름과 하우스캐디 정보 리스트(하우스캐디의 id, 이름, 역할, 휴무일) 로 이루어진 DTO
      */
-    @Transactional(readOnly = true)
     public HouseCaddyResponseDto.TeamHoliday getTeamHoliday(Long golfFieldId, String teamName) {
         String team = teamName.equals("조 없음") ? null : teamName;
         List<HouseCaddy> caddies = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, team);

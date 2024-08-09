@@ -23,6 +23,7 @@ import java.util.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AssignmentService {
     final ReservationSheetService rsService;
     final ScheduleRepository scheduleRepository;

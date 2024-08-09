@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class CourseService {
     private final CourseRepository courseRepository;
     private final HoleRepository holeRepository;
@@ -50,7 +50,7 @@ public class CourseService {
         List<Course> courseList = courseRepository.findAllByGolfFieldId(golfFieldId);
 
         List<CourseResponse.Info> returnDtoList = new ArrayList<>();
-        for (Course course: courseList) {
+        for (Course course : courseList) {
             returnDtoList.add(CourseResponse.Info.builder().
                     id(course.getId())
                     .name(course.getName())
@@ -63,13 +63,14 @@ public class CourseService {
      * 코스 정보를 생성한다.
      *
      * @param formation 코스가 포함되는 구성
-     * @param requests 코스 생성 요청 DTO
+     * @param requests  코스 생성 요청 DTO
      * @return 생성된 코스 id 리스트 <b>(mysql 사용 시 id가 아닌 null 반환됨)</b>
      */
+    @Transactional
     public List<Long> createCourses(Formation formation, List<CourseRequest.Create> requests) {
         List<Course> courses = new ArrayList<>();
-        for(CourseRequest.Create request : requests) {
-            if(request.getName() == null || request.getName().isBlank())
+        for (CourseRequest.Create request : requests) {
+            if (request.getName() == null || request.getName().isBlank())
                 throw new IllegalArgumentException("코스의 이름은 공백일 수 없습니다.");
 
             Course course = Course.builder()
@@ -90,18 +91,17 @@ public class CourseService {
      * 코스의 홀 수가 줄어들 경우 - 홀 정보 삭제
      *
      * @param request 코스 수정 요청 DTO
-     * @throws NoSuchElementException
-     *          수정하려는 코스가 없는 경우
-     * @throws IllegalArgumentException
-     *          코스의 이름을 공백으로 수정하려는 경우
+     * @throws NoSuchElementException   수정하려는 코스가 없는 경우
+     * @throws IllegalArgumentException 코스의 이름을 공백으로 수정하려는 경우
      */
+    @Transactional
     public void updateCourse(CourseRequest.Update request) {
         Course course = courseRepository.findById(request.getId())
                 .orElseThrow(() -> new NoSuchElementException("해당 코스는 존재하지 않습니다."));
 
         String name = request.getName();
-        if(name != null) {
-            if(name.isBlank())
+        if (name != null) {
+            if (name.isBlank())
                 throw new IllegalArgumentException("코스의 이름은 공백일 수 없습니다.");
             course.updateName(name);
         }
@@ -122,6 +122,7 @@ public class CourseService {
      *
      * @param ids 삭제할 코스의 id 리스트
      */
+    @Transactional
     public void deleteCourses(List<Long> ids) {
         courseRepository.softDeleteAllByIdInBatch(ids);
         // 코스 삭제하면 Assignment, Schedule에서 내일부터의 데이터 삭제
@@ -152,7 +153,7 @@ public class CourseService {
                 .setParameter("today", today)
                 .getResultList();
         //4-2. reservationSheet의 courseIdList에서 삭제된 코스 id 삭제
-        for(ReservationSheet rs : reservationSheets) {
+        for (ReservationSheet rs : reservationSheets) {
             List<Long> newCourseIdList = rs.getCourseIdList().stream().flatMap(courseId -> {
                 if (ids.contains(courseId))
                     return Stream.empty();
@@ -173,7 +174,6 @@ public class CourseService {
      * @param formationId 구성 id
      * @return 코스 상세 정보 리스트
      */
-    @Transactional(readOnly = true)
     public List<CourseResponse.Detail> getHoles(Long formationId) {
         List<Course> courses = courseRepository.findAllByFormationId(formationId);
         return courses.stream().map(CourseResponse.Detail::from).toList();

@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FacilityService {
     private final GolfFieldRepository golfFieldRepository;
     private final FacilityRepository facilityRepository;
@@ -53,14 +54,12 @@ public class FacilityService {
     }
 
 
-
     /**
      * 골프장 시설 정보를 조회한다.
      * @param id 조회할 골프장 id, null이 될 수 없다.
      * @return FacilityResponse 시설 정보 DTO
      * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
-    @Transactional(readOnly = true)
     public FacilityResponse getFacility(Long id) {
         GolfField golfField = golfFieldRepository.getUserById(id);
         return FacilityResponse.from(golfField.getFacilities());

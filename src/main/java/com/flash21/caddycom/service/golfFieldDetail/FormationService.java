@@ -22,7 +22,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 골프장 구성과 관련된 CRUD
@@ -31,7 +30,7 @@ import java.util.stream.Stream;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class FormationService {
     private final FormationRepository formationRepository;
     private final CourseRepository courseRepository;
@@ -49,6 +48,7 @@ public class FormationService {
      * @param golfField 구성을 추가할 골프장의 id. null일 수 없다.
      * @param request 구성 생성 요청 DTO
      */
+    @Transactional
     public void createFormation(GolfField golfField, FormationRequest.Create request) {
         Formation formation;
         if(request.getName() == null || request.getName().isBlank())
@@ -81,6 +81,7 @@ public class FormationService {
      * @throws IllegalArgumentException
      *          구성의 이름을 공백으로 수정하려는 경우
      */
+    @Transactional
     public void updateFormation(FormationRequest.Update request) {
         Formation formation = formationRepository.findById(request.getFormationId())
                 .orElseThrow(() -> new NoSuchElementException("해당 구성은 존재하지 않습니다."));
@@ -113,6 +114,7 @@ public class FormationService {
      *
      * @param ids 삭제할 구성의 id 리스트
      */
+    @Transactional
     public void deleteFormations(List<Long> ids) {
         courseRepository.softDeleteAllByFormationIds(ids);
         formationRepository.deleteAllByIdInBatch(ids);

@@ -18,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthService {
     private final AccountRepository accountRepository;
     private final JwtProvider jwtProvider;

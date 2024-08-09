@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AssignmentCaddyService {
 
     private final AssignmentRepository assignmentRepository;
@@ -48,7 +49,6 @@ public class AssignmentCaddyService {
     /**
      * 골프장 id와 date로 assignment를 모두 조회한다.
      */
-    @Transactional(readOnly = true)
     public PagingResponse<AssignmentResponse.Info> getAssignments(Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status, int page) {
         Pageable pageable = PageRequest.of(page, 30);
         Page<Assignment> assignmentPage =
@@ -56,8 +56,6 @@ public class AssignmentCaddyService {
         return PagingResponse.from(assignmentPage, AssignmentResponse.Info::from);
     }
 
-
-    @Transactional(readOnly = true)
     public PagingResponse<AssignmentResponse.Info> getSwitchingCaddy(Long golfFieldId, LocalDate date, Long id, Long courseId, Integer part, int page) {
         Pageable pageable = PageRequest.of(page, 30);
         Page<Assignment> assignmentPage =
@@ -65,9 +63,7 @@ public class AssignmentCaddyService {
         return PagingResponse.from(assignmentPage, AssignmentResponse.Info::fromSwitchable);
     }
 
-
     // TODO: CANCELED, ASSIGNED 상태일때만 조회 가능하도록 예외처리 추가 필요
-    @Transactional(readOnly = true)
     public AssignmentResponse.Detail getAssignmentDetail(Long assignmentId) {
         Assignment assignment = assignmentRepository.findByIdWithFetchJoin(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 배정 정보가 없습니다."));
@@ -108,7 +104,6 @@ public class AssignmentCaddyService {
     }
 
 
-
     @Transactional
     public void assignSelectedCaddy(Long assignmentId, Long caddyId) {
         Assignment assignment = assignmentRepository.findById(assignmentId)
@@ -119,7 +114,6 @@ public class AssignmentCaddyService {
         assignment.assignCaddy(caddy);
     }
 
-    @Transactional(readOnly = true)
     public List<AssignmentResponse.CaddyAssignmentInfoDetail> getAssignmentInfo(List<Long> assignmentIds) {
 
         return assignmentRepository.findByIdsFetchJoinOrderByStartTime(assignmentIds)
@@ -131,7 +125,6 @@ public class AssignmentCaddyService {
     /**
      * 캐디 업무 시작시 보여줄 코스 상세 정보 조회
      */
-    @Transactional(readOnly = true)
     public CourseResponse.DetailMap getCourseDetail(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 코스입니다."));

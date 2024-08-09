@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class WebAuthService {
 
     private final JwtProvider jwtProvider;
@@ -40,7 +41,6 @@ public class WebAuthService {
      * @return SigninResponse (aceessToken, refreshToken)
      * @throws IllegalArgumentException 비밀번호가 일치하지 않는 경우, 골프장이 존재하지 않는 경우
      */
-    @Transactional(readOnly = true)
     public SigninResponse.Web login(SigninRequest.Web request){
         if (request.getKey().equals("관리자")){
             JwtResponse jwtPair = adminLogin(request.getPassword());

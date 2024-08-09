@@ -23,6 +23,7 @@ import java.util.NoSuchElementException;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AdminService {
     private final GolfFieldRepository golfFieldRepository;
     private final HouseCaddyService houseCaddyService;
@@ -60,6 +61,7 @@ public class AdminService {
         golfField.reject();
     }
 
+    @Transactional
     public void uploadCaddy(Long id, MultipartFile file) {
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));

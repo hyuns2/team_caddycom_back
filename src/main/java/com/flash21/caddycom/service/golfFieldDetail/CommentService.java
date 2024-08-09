@@ -23,6 +23,7 @@ import java.util.NoSuchElementException;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CommentService {
     private final FileUploader fileUploader;
     private final CommentRepository commentRepository;
@@ -31,10 +32,9 @@ public class CommentService {
     /**
      * 멘트 정보를 생성하거나 수정한다.
      *
-     * @param holeId 멘트가 포함되는 홀의 id
+     * @param holeId       멘트가 포함되는 홀의 id
      * @param commentInfos 설정한 멘트 정보 DTO
-     * @throws NoSuchElementException
-     *          멘트 정보를 설정할 홀이 존재하지 않는 경우
+     * @throws NoSuchElementException 멘트 정보를 설정할 홀이 존재하지 않는 경우
      */
     @Transactional
     public void createAndUpdateComments(Long holeId, List<CommentRequest.Create> commentInfos) {
@@ -42,19 +42,19 @@ public class CommentService {
 
         List<Comment> savedComments = hole.getComments();
         List<Comment> newComments = new ArrayList<>();
-        for(CommentRequest.Create request : commentInfos) {
-            if(request.getId() == 0) {
+        for (CommentRequest.Create request : commentInfos) {
+            if (request.getId() == 0) {
                 String imageUrl = null;
-                if(request.getImage() != null && !request.getImage().isEmpty())
+                if (request.getImage() != null && !request.getImage().isEmpty())
                     imageUrl = uploadImage(request.getImage());
                 newComments.add(new Comment(null, request.getTitle(), request.getContent(), imageUrl, hole));
                 break;
             }
 
-            for(Comment comment : savedComments) {
-                if(request.getId().equals(comment.getId())) {
+            for (Comment comment : savedComments) {
+                if (request.getId().equals(comment.getId())) {
                     String imageUrl;
-                    if(request.getImage() != null) {
+                    if (request.getImage() != null) {
                         fileUploader.delete(comment.getImageUrl());
                         if (request.getImage().isEmpty()) { // 이미지 삭제
                             imageUrl = null;
@@ -89,13 +89,12 @@ public class CommentService {
      * @param holeId 멘트 정보를 조회할 홀의 id
      * @return 멘트 정보 DTO 리스트
      */
-    @Transactional(readOnly = true)
     public List<CommentResponse.Info> getAllComments(Long holeId) {
         List<Comment> comments = commentRepository.findAllByHoleId(holeId);
 
         List<CommentResponse.Info> Infos = new ArrayList<>();
         comments.forEach(comment ->
-            Infos.add(new CommentResponse.Info(comment.getId(), comment.getTitle(), comment.getContent(), comment.getImageUrl()))
+                Infos.add(new CommentResponse.Info(comment.getId(), comment.getTitle(), comment.getContent(), comment.getImageUrl()))
         );
 
         return Infos;

@@ -23,6 +23,7 @@ import java.util.NoSuchElementException;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class HoleService {
     private final HoleRepository holeRepository;
     private final TeeService teeService;

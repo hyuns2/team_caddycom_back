@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -191,6 +192,21 @@ public class AssignmentCaddyService {
         //다음에 맨 처음으로 배정되어야 할 캐디의 ID를 Cursor로 세팅
         findGolfField.changeCaddyAssignCursor(findCaddies.get(currentCaddyIndex).getId());
         findSchedules.forEach(fs -> fs.changeDateStatus(DateStatus.ASSIGNED));
+    }
+
+    @Transactional
+    public void terminateAssignment(Long assignmentId, LocalTime endedTime) {
+
+        Assignment findAssignment = assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
+
+        if (findAssignment.getStartedTime() == null ||
+                findAssignment.getStatus() != AssignmentStatus.ASSIGNED ||
+                findAssignment.getStatus() != AssignmentStatus.BLOCKED) {
+            throw new IllegalStateException("업무가 시작하지 않은 상태이거나 배정되지 않은 상태입니다.");
+        }
+
+        findAssignment.terminate(endedTime);
     }
 
     private int getStartIndex(GolfField findGolfField, int caddySize, List<HouseCaddy> findCaddies) {

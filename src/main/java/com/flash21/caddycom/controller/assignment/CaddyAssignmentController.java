@@ -50,4 +50,15 @@ public class CaddyAssignmentController {
         return ResponseEntity.ok().body(assignmentCaddyService.getCourseDetail(courseId));
     }
 
+    @PatchMapping("/{assignmentId}")
+    @Operation(summary = "캐디 업무 종료 API", description = "공통 - 캐디 업무 종료 시 누르는 버튼")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> assignmentFinishRequest(
+            @PathVariable("assignmentId") Long assignmentId,
+            @RequestBody AssignmentRequest.End endRequest
+    ) {
+        assignmentCaddyService.terminateAssignment(assignmentId, endRequest.getEndedTime());
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -43,19 +43,20 @@ public class CaddyAssignmentController {
     }
 
 
-    @GetMapping("/course")
-    @Operation(summary = "캐디 업무의 코스 상세 조회 API", description = "공통 - 캐디 업무 시작시 보여줄 코스 상세 정보 조회")
+    @PostMapping("/{assignmentId}")
+    @Operation(summary = "캐디 업무의 코스 상세 조회 API", description = "공통 - 캐디 업무 시작 시 보여줄 코스 상세 정보 조회")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CourseResponse.DetailMap> getCourseAssignmentInfo(@RequestParam Long courseId) {
-        return ResponseEntity.ok().body(assignmentCaddyService.getCourseDetail(courseId));
+    public ResponseEntity<CourseResponse.DetailMap> getCourseAssignmentInfo(@PathVariable("assignmentId") Long assignmentId,
+                                                                            @RequestBody AssignmentRequest.Start startRequest) {
+        return ResponseEntity.ok()
+                .body(assignmentCaddyService.startAssignment(startRequest.getCourseId(), assignmentId, startRequest.getStartedTime()));
     }
 
     @PatchMapping("/{assignmentId}")
-    @Operation(summary = "캐디 업무 종료 API", description = "공통 - 캐디 업무 종료 시 누르는 버튼")
+    @Operation(summary = "캐디 업무 종료 API", description = "공통 - 캐디 업무 종료 시")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Void> assignmentFinishRequest(
-            @PathVariable("assignmentId") Long assignmentId,
-            @RequestBody AssignmentRequest.End endRequest
+    public ResponseEntity<Void> assignmentFinishRequest(@PathVariable("assignmentId") Long assignmentId,
+                                                        @RequestBody AssignmentRequest.End endRequest
     ) {
         assignmentCaddyService.terminateAssignment(assignmentId, endRequest.getEndedTime());
         return ResponseEntity.noContent().build();

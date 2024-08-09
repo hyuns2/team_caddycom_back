@@ -3,6 +3,7 @@ package com.flash21.caddycom.dto.assignment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
 
@@ -17,6 +18,23 @@ public class AssignmentRequest {
     @Getter
     @Builder
     @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Start {
+        private Long courseId;
+        private LocalTime startedTime;
+
+        public static Start from(Long courseId, LocalTime startedTime) {
+            return Start.builder()
+                    .courseId(courseId)
+                    .startedTime(startedTime)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class End {
         private LocalTime endedTime;
 
@@ -26,4 +44,5 @@ public class AssignmentRequest {
                     .build();
         }
     }
+
 }

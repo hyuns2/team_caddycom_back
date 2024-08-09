@@ -124,15 +124,6 @@ public class AssignmentCaddyService {
     }
 
     /**
-     * 캐디 업무 시작시 보여줄 코스 상세 정보 조회
-     */
-    public CourseResponse.DetailMap getCourseDetail(Long courseId) {
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 코스입니다."));
-        return CourseResponse.DetailMap.from(course);
-    }
-
-    /**
      * 캐디 자동 배정
      */
     @Transactional
@@ -194,6 +185,32 @@ public class AssignmentCaddyService {
         findSchedules.forEach(fs -> fs.changeDateStatus(DateStatus.ASSIGNED));
     }
 
+    /**
+     * 캐디 업무 시작 시 시작 설정, 보여줄 코스 상세 정보 조회
+     */
+    @Transactional
+    public CourseResponse.DetailMap startAssignment(Long courseId, Long assignmentId, LocalTime startedTime) {
+
+        Assignment assignment = assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 코스입니다."));
+
+        if (assignment.getEndedTime() != null ||
+                assignment.getStatus() != AssignmentStatus.ASSIGNED ||
+                assignment.getStatus() != AssignmentStatus.BLOCKED) {
+            throw new IllegalStateException("업무가 끝난 상태이거나 배정되지 않은 상태입니다.");
+        }
+
+        assignment.start(startedTime);
+
+        return CourseResponse.DetailMap.from(course);
+    }
+
+    /**
+     * 캐디 업무 종료 시 종료 설정
+     */
     @Transactional
     public void terminateAssignment(Long assignmentId, LocalTime endedTime) {
 

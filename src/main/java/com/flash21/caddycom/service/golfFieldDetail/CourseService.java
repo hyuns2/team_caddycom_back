@@ -141,7 +141,7 @@ public class CourseService {
                 .setParameter("scheduleId", deleteScheduleIds)
                 .setParameter("assigned", AssignmentStatus.ASSIGNED)
                 .setParameter("blocked", AssignmentStatus.BLOCKED)
-                .setFirstResult(0)
+                .setMaxResults(1)
                 .getResultList();
 
         if(!exist.isEmpty()) {

@@ -39,7 +39,7 @@ public class ReservationSheetController {
     }
 
     @Operation(summary = "예약시트 수정", description = "골프장 관리자가 특정 예약시트를 수정합니다.")
-    @PutMapping("/{reservationId}")
+    @PatchMapping("/{reservationId}")
     public ResponseEntity<Void> updateReservationSheet(@PathVariable Long reservationId, @Valid @RequestBody ReservationSheetDto.CreateOrUpdateRequest dto) {
         rsService.updateReservationSheet(reservationId, dto);
 

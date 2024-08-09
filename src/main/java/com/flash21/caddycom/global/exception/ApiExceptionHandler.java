@@ -203,4 +203,12 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(ExceptionDto.fail(errorCode));
     }
+
+    @ExceptionHandler(CInvalidModifyingRequestException.class)
+    protected ResponseEntity<ExceptionDto> handle(CInvalidModifyingRequestException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        e.printStackTrace();
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(ExceptionDto.fail(errorCode));
+    }
 }

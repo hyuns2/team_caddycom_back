@@ -182,12 +182,19 @@ public class ReservationSheetService {
 
     /**
      * 예약시트 수정: 해당하는 예약시트를 요청한 정보로 수정합니다.
+     * 1. 요청된 예약시트의 모든 배정정보 상태가 NOTHING 또는 CANCELED인지 확인
+     * 2. 기존 예약시트를 삭제한 후, 요청된 정보로 생성
      *
      * @param reservationSheetId 예약시트 Id
      * @param dto 요청한 정보
      */
     public void updateReservationSheet(Long reservationSheetId, ReservationSheetDto.CreateOrUpdateRequest dto) {
+        List<Schedule> scheduleList = scheduleRepository.findAllByReservationSheetId(reservationSheetId);
+        if (assignmentRepository.findFirstByScheduleIsIn(scheduleList).isPresent())
+            throw new CInvalidModifyingRequestException();
 
+        deleteReservationSheet(reservationSheetId);
+        createReservationSheet(dto);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.flash21.caddycom.repository.schedule;
 import com.flash21.caddycom.entity.caddy.Caddy;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.schedule.Assignment;
+import com.flash21.caddycom.entity.schedule.Schedule;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AssignmentRepository extends JpaRepository<Assignment, Long>, AssignmentQueryFactory {
@@ -39,4 +41,6 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long>, A
     @Modifying(clearAutomatically = true)
     @Query("delete from Assignment a where a.id in ?1")
     void deleteAllByIdList(List<Long> idList);
+
+    Optional<Assignment> findFirstByScheduleIsIn(List<Schedule> scheduleList);
 }

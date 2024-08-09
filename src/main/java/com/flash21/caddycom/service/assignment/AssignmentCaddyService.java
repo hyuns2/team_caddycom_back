@@ -166,7 +166,7 @@ public class AssignmentCaddyService {
             boolean isAssigned = false;
 
             AssignmentStatus status = assignment.getStatus();
-            if (assignment.getStatus() == AssignmentStatus.BLOCKED || status == AssignmentStatus.ASSIGNED) continue;
+            if (status == AssignmentStatus.BLOCKED || status == AssignmentStatus.ASSIGNED) continue;
 
             while (!isAssigned) {
 

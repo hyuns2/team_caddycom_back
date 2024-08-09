@@ -1,5 +1,6 @@
 package com.flash21.caddycom.dto.assignment;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +21,9 @@ public class AssignmentRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Start {
+        @NotNull
         private Long courseId;
+        @NotNull
         private LocalTime startedTime;
 
         public static Start from(Long courseId, LocalTime startedTime) {
@@ -36,6 +39,7 @@ public class AssignmentRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class End {
+        @NotNull
         private LocalTime endedTime;
 
         public static End from(LocalTime endedTime) {

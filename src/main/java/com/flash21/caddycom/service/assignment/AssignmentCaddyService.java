@@ -197,8 +197,8 @@ public class AssignmentCaddyService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 코스입니다."));
 
-        if (assignment.getEndedTime() != null ||
-                assignment.getStatus() != AssignmentStatus.ASSIGNED ||
+        if (assignment.getEndedTime() != null &&
+                assignment.getStatus() != AssignmentStatus.ASSIGNED &&
                 assignment.getStatus() != AssignmentStatus.BLOCKED) {
             throw new IllegalStateException("업무가 끝난 상태이거나 배정되지 않은 상태입니다.");
         }
@@ -217,8 +217,8 @@ public class AssignmentCaddyService {
         Assignment findAssignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
 
-        if (findAssignment.getStartedTime() == null ||
-                findAssignment.getStatus() != AssignmentStatus.ASSIGNED ||
+        if (findAssignment.getStartedTime() == null &&
+                findAssignment.getStatus() != AssignmentStatus.ASSIGNED &&
                 findAssignment.getStatus() != AssignmentStatus.BLOCKED) {
             throw new IllegalStateException("업무가 시작하지 않은 상태이거나 배정되지 않은 상태입니다.");
         }

@@ -80,9 +80,7 @@ public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
         List<Assignment> assignments = jpaQueryFactory
                 .selectFrom(assignment)
                 .join(assignment.schedule, schedule).fetchJoin()
-                .join(schedule.golfField).fetchJoin()
                 .join(schedule.course, course).fetchJoin()
-                .join(course.formation).fetchJoin()
                 .where(assignment.schedule.golfField.id.eq(golfFieldId)
                         .and(assignment.id.ne(id))
                         .and(assignment.schedule.reservationAt.eq(date))

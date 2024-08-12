@@ -15,7 +15,7 @@ public interface FileUploader {
             recover = "recover",
             retryFor = {IOException.class, RuntimeException.class}
     )
-    String upload(MultipartFile file);
+    String upload(MultipartFile file, String directory);
 
     @Recover
     default String recover(Exception e, MultipartFile file){

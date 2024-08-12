@@ -64,10 +64,14 @@ public class AssignmentCaddyService {
         return PagingResponse.from(assignmentPage, AssignmentResponse.Info::fromSwitchable);
     }
 
-    // TODO: CANCELED, ASSIGNED 상태일때만 조회 가능하도록 예외처리 추가 필요
+
     public AssignmentResponse.Detail getAssignmentDetail(Long assignmentId) {
         Assignment assignment = assignmentRepository.findByIdWithFetchJoin(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 배정 정보가 없습니다."));
+
+        if (assignment.getStatus() != AssignmentStatus.CANCELED && assignment.getStatus() != AssignmentStatus.ASSIGNED) {
+            throw new IllegalArgumentException("배정되거나 취소된 상태에서만 조회 가능합니다.");
+        }
         return AssignmentResponse.Detail.from(assignment);
     }
 

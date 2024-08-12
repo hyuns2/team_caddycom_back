@@ -17,7 +17,7 @@ public class LocalFileUploader implements FileUploader{
     @Value("${local.storage.path:C:/}")
     private String uploadPath;
     @Override
-    public String upload(MultipartFile file) {
+    public String upload(MultipartFile file, String directory) {
         String originalFilename = file.getOriginalFilename();
 
         String savedFilename = uploadPath + UUID.randomUUID() + "_" + originalFilename;

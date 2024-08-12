@@ -287,7 +287,7 @@ public class HouseCaddyService {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 
-        String profileUrl = dto.getProfile() != null ? fileUploader.upload(dto.getProfile()) : null;
+        String profileUrl = dto.getProfile() != null ? fileUploader.upload(dto.getProfile(), "/caddy") : null;
         houseCaddy.update(profileUrl,
                 dto.getChangedHoliday(),
                 dto.getBirth(),

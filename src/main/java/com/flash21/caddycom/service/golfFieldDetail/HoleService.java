@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * 홀 정보와 관련된 CRUD
@@ -91,9 +92,9 @@ public class HoleService {
     public void createDetailInfo(HoleRequest.CreateDetailInfo request) {
         Hole savedHole = holeRepository.findById(request.getHoleId()).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
-        if(request.getPar() != savedHole.getPar())
+        if(!Objects.equals(request.getPar(), savedHole.getPar()))
             savedHole.updatePar(request.getPar());
-        if(request.getHandicap() != savedHole.getHandicap())
+        if(!Objects.equals(request.getHandicap(), savedHole.getHandicap()))
             savedHole.updateHandicap(request.getHandicap());
 
         if(request.getImage() != null) { //이미지에 변경사항 존재

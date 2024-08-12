@@ -45,7 +45,6 @@ public class FreeCaddyResponse {
     }
 
 
-    //TODO: 상세정보 구체화되면 추가 필요
     @Getter
     @Builder
     @AllArgsConstructor

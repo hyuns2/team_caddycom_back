@@ -29,6 +29,9 @@ public class FreeCaddyService {
         FreeCaddy freeCaddy = freeCaddyRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new IllegalArgumentException("앞서 전화번호 인증이 되지 않아 로그인이 제대로 이뤄지지 않았습니다."));
 
+        if (freeCaddy.getMatchedFreeCaddyList() == null || !freeCaddy.getMatchedFreeCaddyList().isEmpty())
+            throw new IllegalArgumentException("지정골프장은 최소 1개 이상이어야 합니다.");
+
         List<GolfField> golfFieldList = golfFieldRepository.findByIds(request.getGolfFieldIdList());
         if (golfFieldList.size() != request.getGolfFieldIdList().size())
             throw new IllegalArgumentException("존재하지 않는 골프장이 포함되어 있습니다.");

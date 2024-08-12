@@ -212,7 +212,7 @@ public class GolfFieldService {
      */
     private List<String> uploadFiles(List<MultipartFile> files) {
         return files.stream()
-                .map(fileUploader::upload)
+                .map(file -> fileUploader.upload(file, "credentials/"))
                 .collect(Collectors.toList());
     }
 }

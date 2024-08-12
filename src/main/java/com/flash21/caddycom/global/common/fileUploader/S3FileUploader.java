@@ -26,13 +26,13 @@ public class S3FileUploader implements FileUploader{
     private String bucket;
 
     @Override
-    public String upload(MultipartFile file) {
+    public String upload(MultipartFile file, String directory) {
         // 원본의 확장자만 추출하여 고유한 파일 이름 설정
         String filename = file.getOriginalFilename();
         String extension =
                 filename != null ? filename.substring(filename.lastIndexOf("."))
                         : "";
-        String uniqueFilename = UUID.randomUUID() + extension;
+        String uniqueFilename = directory + UUID.randomUUID() + extension;
 
         // 파일의 InputStream을 가져와 업로드
         try (InputStream inputStream = file.getInputStream()) {

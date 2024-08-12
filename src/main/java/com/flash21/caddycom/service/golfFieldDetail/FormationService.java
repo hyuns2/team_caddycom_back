@@ -13,6 +13,8 @@ import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.formation.FormationRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,9 @@ public class FormationService {
     private final CourseService courseService;
     private final HoleService holeService;
     private final TeeService teeService;
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     /**
      * 구성 정보를 생성하면서 코스, 홀, 티의 정보를 같이 생성한다.
@@ -116,7 +121,10 @@ public class FormationService {
      */
     @Transactional
     public void deleteFormations(List<Long> ids) {
-        courseRepository.softDeleteAllByFormationIds(ids);
+        List<Long> courseIds = entityManager.createQuery("SELECT c.id from Course c where c.formation.id in :formationIds", Long.class)
+                        .setParameter("formationIds", ids)
+                        .getResultList();
+        courseService.deleteCourses(courseIds);
         formationRepository.deleteAllByIdInBatch(ids);
     }
 

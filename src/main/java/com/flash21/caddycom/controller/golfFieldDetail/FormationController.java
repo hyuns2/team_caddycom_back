@@ -12,10 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -42,11 +39,6 @@ public class FormationController {
             for(FormationRequest.Update updateRequest : request.getUpdate())
                 formationService.updateFormation(updateRequest);
 
-        if(!request.getDeleteFormations().isEmpty())
-            formationService.deleteFormations(request.getDeleteFormations());
-        if(!request.getDeleteCourses().isEmpty())
-            courseService.deleteCourses(request.getDeleteCourses());
-
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -58,4 +50,11 @@ public class FormationController {
         return new ResponseEntity<>(formationInfos, HttpStatus.OK);
     }
 
+    @DeleteMapping("/api/formations")
+    @Operation(summary = "골프장 구성 정보 삭제 API")
+    public ResponseEntity<Void> deleteFormations(@Valid @RequestBody FormationRequest.Delete request) {
+
+        formationService.deleteFormations(request.getDeleteFormations());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

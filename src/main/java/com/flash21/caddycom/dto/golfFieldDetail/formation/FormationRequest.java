@@ -16,8 +16,6 @@ public class FormationRequest {
         private Long golfFieldId;
         private List<Create> create;
         private List<Update> update;
-        private List<Long> deleteFormations;
-        private List<Long> deleteCourses;
     }
     @Getter
     @AllArgsConstructor
@@ -33,5 +31,9 @@ public class FormationRequest {
         private Long formationId;
         private String formationName;
         private List<CourseRequest.Update> courseInfos;
+    }
+    @Getter
+    public static class Delete {
+        private List<Long> deleteFormations;
     }
 }

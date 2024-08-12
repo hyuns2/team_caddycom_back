@@ -1,6 +1,7 @@
 package com.flash21.caddycom.service.caddy;
 
 import com.flash21.caddycom.dto.caddy.FreeCaddyRequest;
+import com.flash21.caddycom.dto.caddy.FreeCaddyResponse;
 import com.flash21.caddycom.entity.caddy.FreeCaddy;
 import com.flash21.caddycom.entity.caddy.MatchedFreeCaddy;
 import com.flash21.caddycom.entity.golfField.GolfField;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
@@ -47,5 +49,13 @@ public class FreeCaddyService {
                         request.getIntro(),
                         matchedFreeCaddyList,
                         profileUrl);
+    }
+
+
+    @Transactional(readOnly = true)
+    public FreeCaddyResponse.Info getFreeCaddy(Long id) {
+        FreeCaddy freeCaddy = freeCaddyRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 프리캐디입니다."));
+        return FreeCaddyResponse.Info.from(freeCaddy);
     }
 }

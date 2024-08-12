@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -23,14 +24,16 @@ public class FreeCaddyService {
     private final FileUploader fileUploader;
 
     //TODO: 이미지 업로드 트랜젝션 밖에서 하도록 수정 필요
-    //TODO: 지정 골프장 중복 제거
     @Transactional
     public void saveFreeCaddy(FreeCaddyRequest.Create request) {
         FreeCaddy freeCaddy = freeCaddyRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new IllegalArgumentException("앞서 전화번호 인증이 되지 않아 로그인이 제대로 이뤄지지 않았습니다."));
 
-        if (freeCaddy.getMatchedFreeCaddyList() == null || !freeCaddy.getMatchedFreeCaddyList().isEmpty())
+        if (freeCaddy.getMatchedFreeCaddyList() == null || freeCaddy.getMatchedFreeCaddyList().isEmpty())
             throw new IllegalArgumentException("지정골프장은 최소 1개 이상이어야 합니다.");
+
+        HashSet<GolfField> golfFieldIdSet
+                = new HashSet<>(freeCaddy.getMatchedFreeCaddyList().stream().map(MatchedFreeCaddy::getGolfField).toList());
 
         List<GolfField> golfFieldList = golfFieldRepository.findByIds(request.getGolfFieldIdList());
         if (golfFieldList.size() != request.getGolfFieldIdList().size())
@@ -40,6 +43,7 @@ public class FreeCaddyService {
                 ? fileUploader.upload(request.getProfileUrl(), "caddy") : null;
 
         List<MatchedFreeCaddy> matchedFreeCaddyList = golfFieldList.stream()
+                .filter(golfField -> !golfFieldIdSet.contains(golfField))
                 .map(golfField -> MatchedFreeCaddy.of(freeCaddy, golfField))
                 .toList();
 

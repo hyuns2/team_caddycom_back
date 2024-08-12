@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -63,10 +64,14 @@ public class AssignmentCaddyService {
         return PagingResponse.from(assignmentPage, AssignmentResponse.Info::fromSwitchable);
     }
 
-    // TODO: CANCELED, ASSIGNED 상태일때만 조회 가능하도록 예외처리 추가 필요
+
     public AssignmentResponse.Detail getAssignmentDetail(Long assignmentId) {
         Assignment assignment = assignmentRepository.findByIdWithFetchJoin(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 배정 정보가 없습니다."));
+
+        if (assignment.getStatus() != AssignmentStatus.CANCELED && assignment.getStatus() != AssignmentStatus.ASSIGNED) {
+            throw new IllegalArgumentException("배정되거나 취소된 상태에서만 조회 가능합니다.");
+        }
         return AssignmentResponse.Detail.from(assignment);
     }
 
@@ -123,15 +128,6 @@ public class AssignmentCaddyService {
     }
 
     /**
-     * 캐디 업무 시작시 보여줄 코스 상세 정보 조회
-     */
-    public CourseResponse.DetailMap getCourseDetail(Long courseId) {
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 코스입니다."));
-        return CourseResponse.DetailMap.from(course);
-    }
-
-    /**
      * 캐디 자동 배정
      */
     @Transactional
@@ -174,7 +170,7 @@ public class AssignmentCaddyService {
             boolean isAssigned = false;
 
             AssignmentStatus status = assignment.getStatus();
-            if (assignment.getStatus() == AssignmentStatus.BLOCKED || status == AssignmentStatus.ASSIGNED) continue;
+            if (status == AssignmentStatus.BLOCKED || status == AssignmentStatus.ASSIGNED) continue;
 
             while (!isAssigned) {
 
@@ -191,6 +187,47 @@ public class AssignmentCaddyService {
         //다음에 맨 처음으로 배정되어야 할 캐디의 ID를 Cursor로 세팅
         findGolfField.changeCaddyAssignCursor(findCaddies.get(currentCaddyIndex).getId());
         findSchedules.forEach(fs -> fs.changeDateStatus(DateStatus.ASSIGNED));
+    }
+
+    /**
+     * 캐디 업무 시작 시 시작 설정, 보여줄 코스 상세 정보 조회
+     */
+    @Transactional
+    public CourseResponse.DetailMap startAssignment(Long courseId, Long assignmentId, LocalTime startedTime) {
+
+        Assignment assignment = assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 코스입니다."));
+
+        if (assignment.getEndedTime() != null &&
+                assignment.getStatus() != AssignmentStatus.ASSIGNED &&
+                assignment.getStatus() != AssignmentStatus.BLOCKED) {
+            throw new IllegalStateException("업무가 끝난 상태이거나 배정되지 않은 상태입니다.");
+        }
+
+        assignment.start(startedTime);
+
+        return CourseResponse.DetailMap.from(course);
+    }
+
+    /**
+     * 캐디 업무 종료 시 종료 설정
+     */
+    @Transactional
+    public void terminateAssignment(Long assignmentId, LocalTime endedTime) {
+
+        Assignment findAssignment = assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
+
+        if (findAssignment.getStartedTime() == null &&
+                findAssignment.getStatus() != AssignmentStatus.ASSIGNED &&
+                findAssignment.getStatus() != AssignmentStatus.BLOCKED) {
+            throw new IllegalStateException("업무가 시작하지 않은 상태이거나 배정되지 않은 상태입니다.");
+        }
+
+        findAssignment.terminate(endedTime);
     }
 
     private int getStartIndex(GolfField findGolfField, int caddySize, List<HouseCaddy> findCaddies) {

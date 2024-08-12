@@ -51,14 +51,11 @@ public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
                         .fetchFirst());
     }
 
-    // TODO: 코스 이름은 schedule.course 에서 가져올 수 있도록 조인 작업 추가로 필요 -> 완료
     public Page<Assignment> findAllByDateAndCourseIdAndStatus(Pageable pageable, Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status) {
         List<Assignment> assignments = jpaQueryFactory
                 .selectFrom(assignment)
                 .join(assignment.schedule, schedule).fetchJoin()
-                .join(schedule.golfField).fetchJoin()
                 .join(schedule.course, course).fetchJoin()
-                .join(course.formation).fetchJoin()
                 .where(assignment.schedule.golfField.id.eq(golfFieldId)
                         .and(assignment.schedule.reservationAt.eq(date))
                         .and(eqCourseId(courseId))
@@ -83,9 +80,7 @@ public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
         List<Assignment> assignments = jpaQueryFactory
                 .selectFrom(assignment)
                 .join(assignment.schedule, schedule).fetchJoin()
-                .join(schedule.golfField).fetchJoin()
                 .join(schedule.course, course).fetchJoin()
-                .join(course.formation).fetchJoin()
                 .where(assignment.schedule.golfField.id.eq(golfFieldId)
                         .and(assignment.id.ne(id))
                         .and(assignment.schedule.reservationAt.eq(date))

@@ -27,6 +27,7 @@ public enum ErrorCode {
     // AssignmentService
     RESERVATION_SHEET_NOT_FOUND(840, "해당하는 예약 시트를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
     SCHEDULE_NOT_FOUND(850, "해당하는 예약 시트의 스케줄을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
+    INVALID_MODIFYING_REQUEST(860, "블락 또는 배정된 시간이 존재하여 수정할 수 없습니다.", HttpStatus.BAD_REQUEST),
 
     // HouseCaddyService
     CADDY_NOT_FOUND(910, "해당하는 캐디를 찾을 수 없습니다.",HttpStatus.BAD_REQUEST),

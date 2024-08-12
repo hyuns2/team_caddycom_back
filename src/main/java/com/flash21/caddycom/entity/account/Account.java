@@ -55,4 +55,10 @@ public class Account {
     public void linkGolfField(GolfField golfField){
         this.golfField = golfField;
     }
+
+    @Builder
+    public Account(String phoneNumber, Role role){
+        this.phoneNumber = phoneNumber.replaceAll("[^0-9]", "");
+        this.role = role;
+    }
 }

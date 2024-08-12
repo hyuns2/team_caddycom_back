@@ -215,10 +215,3 @@ insert into `caddycom`.`tee` (id, hole_id, name, distance) values
                                                                (133, 27, "WHILE", 270),
                                                                (134, 27, "RED", 250),
                                                                (135, 27, "GREEN", 230);
-
-
-insert into `caddycom`.`caddy` (id, name, phone_number, golf_field_id, ctype, password)
-value (1, '더미캐디', '01011111111', 1, 'H', '111111');
-
-insert into `caddycom`.`caddy` (id, name, phone_number, ctype, password)
-value (2, '프리캐디', '01055555555', 'F', '111111');

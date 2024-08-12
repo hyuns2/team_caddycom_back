@@ -37,6 +37,9 @@ public class Assignment {
 
     private String reason;
 
+    private LocalTime startedTime;
+
+    private LocalTime endedTime;
 
     public void cancel(String reason) {
         if (reason != null && !reason.isEmpty())
@@ -86,5 +89,15 @@ public class Assignment {
 
     public void updateByDeletedSchedule() {
         this.schedule = null;
+    }
+
+    public void start(LocalTime startedTime) {
+        if (this.startedTime != null) throw new IllegalStateException("이미 시작된 배정 정보입니다.");
+        this.startedTime = startedTime;
+    }
+
+    public void terminate(LocalTime endedTime) {
+        if (this.endedTime != null) throw new IllegalStateException("이미 종료된 배정 정보입니다.");
+        this.endedTime = endedTime;
     }
 }

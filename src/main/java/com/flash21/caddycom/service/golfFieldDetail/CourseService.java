@@ -128,24 +128,33 @@ public class CourseService {
         // 코스 삭제하면 Assignment, Schedule에서 내일부터의 데이터 삭제
         LocalDate today = LocalDate.now();
         //1. Schedule 가져오기 (reservation_at이 내일부터 + 삭제된 코스를 참조하고 있는)
-        List<Long> deleteScheduleId = entityManager.createQuery("SELECT s.id from Schedule s where s.reservationAt > :today and s.course.id in :courseIds", Long.class)
+        List<Long> deleteScheduleIds = entityManager.createQuery("SELECT s.id from Schedule s where s.reservationAt > :today and s.course.id in :courseIds", Long.class)
                 .setParameter("today", today)
                 .setParameter("courseIds", ids)
                 .getResultList();
         //2. Assignment 삭제
-        //2-1. status != ASSIGNED인 Assignment 데이터 삭제
-        entityManager.createQuery("DELETE from Assignment a where a.schedule.id in :scheduleIds and a.status != :assigned")
-                .setParameter("scheduleIds", deleteScheduleId)
+        //2-1. Assignment 검사
+        List<Long> exist = entityManager.createQuery("SELECT a.id from Assignment a " +
+                "where a.schedule.id in :scheduleId " +
+                "and a.status = :assigned " +
+                "or a.status = :blocked", Long.class)
+                .setParameter("scheduleId", deleteScheduleIds)
                 .setParameter("assigned", AssignmentStatus.ASSIGNED)
-                .executeUpdate();
-        //2-2. status == ASSIGNED인 Assignment 데이터 상태 수정 및 schedule 참조 제거
-        entityManager.createQuery("UPDATE Assignment a SET a.status = :status, a.schedule = null where a.schedule.id in :scheduleIds")
-                .setParameter("status", AssignmentStatus.DELETED)
-                .setParameter("scheduleIds", deleteScheduleId)
-                .executeUpdate();
+                .setParameter("blocked", AssignmentStatus.BLOCKED)
+                .setMaxResults(1)
+                .getResultList();
+
+        if(!exist.isEmpty()) {
+           throw new IllegalArgumentException("블락되었거나 캐디가 배정된 일정이 있는 코스는 삭제할 수 없습니다.");
+        }
+
+        //2-2. Assignment 삭제
+        entityManager.createQuery("DELETE from Assignment a where a.schedule.id in :scheduleIds")
+                        .setParameter("scheduleIds", deleteScheduleIds);
+
         //3. Schedule 삭제
         entityManager.createQuery("DELETE from Schedule s where s.id in :scheduleIds")
-                .setParameter("scheduleIds", deleteScheduleId)
+                .setParameter("scheduleIds", deleteScheduleIds)
                 .executeUpdate();
         //4. ReservationSheet에서 코스 삭제
         //4-1. ReservationSheet 가져오기 (startDate > today + courseIdList에 삭제된 코스를 가지고 있는)

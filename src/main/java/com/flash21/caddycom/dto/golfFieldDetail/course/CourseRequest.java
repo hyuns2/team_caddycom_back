@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 public class CourseRequest {
     @Getter
     @AllArgsConstructor
@@ -24,5 +26,10 @@ public class CourseRequest {
         private final String name;
         @NotNull(message = "totalHoles은 필수값입니다.")
         private final Integer totalHoles;
+    }
+
+    @Getter
+    public static class Delete {
+        private List<Long> deleteCourses;
     }
 }

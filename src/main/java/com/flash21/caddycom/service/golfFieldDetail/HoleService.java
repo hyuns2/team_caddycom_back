@@ -145,6 +145,6 @@ public class HoleService {
      * @return 저장된 파일 url
      */
     private String uploadImage(MultipartFile image) {
-        return fileUploader.upload(image);
+        return fileUploader.upload(image,"hole/");
     }
 }

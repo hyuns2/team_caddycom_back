@@ -25,9 +25,4 @@ public interface CourseRepository extends JpaRepository<Course, Long>, CourseJdb
     @Transactional
     @Query(value = "UPDATE Course c SET c.deleted = true, c.formation = null where c.id in :ids")
     void softDeleteAllByIdInBatch(Iterable<Long> ids);
-
-    @Modifying(clearAutomatically = true)
-    @Transactional
-    @Query(value = "UPDATE Course c SET c.deleted = true, c.formation = null where c.formation.id in :formationIds")
-    void softDeleteAllByFormationIds(Iterable<Long> formationIds);
 }

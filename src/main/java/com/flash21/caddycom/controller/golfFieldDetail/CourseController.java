@@ -1,16 +1,15 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
+import com.flash21.caddycom.dto.golfFieldDetail.course.CourseRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
 import com.flash21.caddycom.service.golfFieldDetail.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,5 +33,12 @@ public class CourseController {
     public ResponseEntity<List<CourseResponse.Detail>> getHoles(@PathVariable Long formationId) {
         List<CourseResponse.Detail> holeInfos = courseService.getHoles(formationId);
         return new ResponseEntity<>(holeInfos, HttpStatus.OK);
+    }
+
+    @DeleteMapping
+    @Operation(summary = "코스 삭제 API")
+    public ResponseEntity<Void> deleteCourse(@Valid @RequestBody CourseRequest.Delete request) {
+        courseService.deleteCourses(request.getDeleteCourses());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

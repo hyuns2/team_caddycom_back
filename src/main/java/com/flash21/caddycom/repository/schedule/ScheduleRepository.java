@@ -1,6 +1,7 @@
 package com.flash21.caddycom.repository.schedule;
 
 import com.flash21.caddycom.entity.schedule.Schedule;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +21,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Sched
             + " and s.golfField.id = ?3 group by s.reservationAt, s.dateStatus")
     List<MetaDataReport> countAllMetaDataByDate(LocalDate startDate, LocalDate endDate, Long golfFieldId);
 
+    @EntityGraph(attributePaths = "course")
     List<Schedule> findAllByGolfFieldIdAndReservationAt(Long golfFieldId, LocalDate date);
 
     Optional<Schedule> findFirstByReservationSheetIdAndPart(Long reservationSheetId, int part);

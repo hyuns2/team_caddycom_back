@@ -22,7 +22,6 @@ import java.util.Optional;
 public class AuthService {
     private final AccountRepository accountRepository;
     private final JwtProvider jwtProvider;
-    private final CellValueConverter cellValueConverter;
 
 
     /**
@@ -47,9 +46,8 @@ public class AuthService {
 
         // TODO: 골프장 등록 안한 사장 로그아웃 후 다시 접속했을때 duplicate phoneNumber 에러 핸들링
         // 사장님 최초 로그인
-        String phoneNumber = cellValueConverter.convertPhoneNumber(request.getPhoneNumber());
         Account owner = Account.builder()
-                .phoneNumber(phoneNumber)
+                .phoneNumber(request.getPhoneNumber())
                 .role(Role.ROLE_OWNER)
                 .build();
         accountRepository.save(owner);

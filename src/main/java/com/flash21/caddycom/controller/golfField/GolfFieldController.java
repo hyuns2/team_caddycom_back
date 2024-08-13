@@ -1,11 +1,7 @@
 package com.flash21.caddycom.controller.golfField;
 
 import com.flash21.caddycom.dto.Message;
-import com.flash21.caddycom.dto.golfField.FacilityRequest;
-import com.flash21.caddycom.dto.golfField.FacilityResponse;
 import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
-import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
-import com.flash21.caddycom.service.golfField.FacilityService;
 import com.flash21.caddycom.service.golfField.GolfFieldService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

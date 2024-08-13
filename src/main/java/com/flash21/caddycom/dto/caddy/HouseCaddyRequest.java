@@ -4,18 +4,16 @@ import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.Gender;
 import com.flash21.caddycom.entity.caddy.TeamRole;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-public class HouseCaddyRequestDto {
+public class HouseCaddyRequest {
     @Getter
     @AllArgsConstructor
-    public static class createHoliday {
+    public static class CreateHoliday {
         @NotNull(message = "id는 필수값입니다.")
         private Long id;
         private List<Days> holidays;
@@ -23,13 +21,12 @@ public class HouseCaddyRequestDto {
 
     @Data
     public static class CaddySearchCond {
-
         private String team;
         private String name;
     }
 
     @Data
-    public static class updateHouseCaddyByManager {
+    public static class UpdateByManager {
         @NotNull(message = "team는 필수값입니다.")
         @Schema(description = "조 이름")
         private String team;
@@ -69,7 +66,7 @@ public class HouseCaddyRequestDto {
 
     @Data
     @AllArgsConstructor
-    public static class updateHouseCaddy {
+    public static class UpdateByCaddy {
         @Schema(description = "프로필 사진파일")
         private MultipartFile profile;
 

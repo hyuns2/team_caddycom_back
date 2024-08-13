@@ -1,8 +1,8 @@
 package com.flash21.caddycom.controller.caddy;
 
 
-import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
-import com.flash21.caddycom.dto.caddy.HouseCaddyResponseDto;
+import com.flash21.caddycom.dto.caddy.HouseCaddyRequest;
+import com.flash21.caddycom.dto.caddy.HouseCaddyResponse;
 import com.flash21.caddycom.service.caddy.HouseCaddyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,16 +34,16 @@ public class CaddyManagementController {
 
     @Operation(summary = "하우스캐디 정보 일괄조회", description = "해당하는 조에 속해있는 하우스 캐디들의 정보를 조회합니다.")
     @GetMapping("/{golfFieldId}/all")
-    public ResponseEntity<Map<String, List<HouseCaddyResponseDto.houseCaddyDetail>>> getHouseCaddies(@PathVariable Long golfFieldId) {
-        Map<String, List<HouseCaddyResponseDto.houseCaddyDetail>> result = houseCaddyService.getHouseCaddies(golfFieldId);
+    public ResponseEntity<Map<String, List<HouseCaddyResponse.Detail>>> getHouseCaddies(@PathVariable Long golfFieldId) {
+        Map<String, List<HouseCaddyResponse.Detail>> result = houseCaddyService.getHouseCaddies(golfFieldId);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Operation(summary = "하우스캐디 정보 조별조회", description = "해당하는 조에 속해있는 하우스 캐디들의 정보를 조회합니다.")
     @GetMapping("/{golfFieldId}/{teamName}")
-    public ResponseEntity<List<HouseCaddyResponseDto.houseCaddyDetail>> getHouseCaddyByTeam(@PathVariable Long golfFieldId, @PathVariable String teamName) {
-        List<HouseCaddyResponseDto.houseCaddyDetail> result = houseCaddyService.getHouseCaddyByTeam(golfFieldId, teamName);
+    public ResponseEntity<List<HouseCaddyResponse.Detail>> getHouseCaddyByTeam(@PathVariable Long golfFieldId, @PathVariable String teamName) {
+        List<HouseCaddyResponse.Detail> result = houseCaddyService.getHouseCaddyByTeam(golfFieldId, teamName);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -52,7 +52,7 @@ public class CaddyManagementController {
     @PutMapping("/{golfFieldId}/{caddyId}")
     public ResponseEntity<Void> updateHouseCaddyByManager(@PathVariable Long golfFieldId,
                                                           @PathVariable Long caddyId,
-                                                          @Valid @RequestBody HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
+                                                          @Valid @RequestBody HouseCaddyRequest.UpdateByManager dto) {
         houseCaddyService.updateHouseCaddyByManager(golfFieldId, caddyId, dto);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -60,11 +60,11 @@ public class CaddyManagementController {
 
     @Operation(summary = "캐디 목록 전체 조회", description = "골프장에 속해있는 모든 하우스 캐디들을 모두 조회합니다.")
     @GetMapping("/all/{golfFieldId}")
-    public ResponseEntity<Map<String, List<HouseCaddyResponseDto.Info>>> getAllHouseCaddies(
+    public ResponseEntity<Map<String, List<HouseCaddyResponse.Info>>> getAllHouseCaddies(
             @PathVariable("golfFieldId") Long golfFieldId,
-            @ModelAttribute HouseCaddyRequestDto.CaddySearchCond searchCond
+            @ModelAttribute HouseCaddyRequest.CaddySearchCond searchCond
     ) {
-        Map<String, List<HouseCaddyResponseDto.Info>> result =
+        Map<String, List<HouseCaddyResponse.Info>> result =
                 houseCaddyService.getAllHouseCaddy(golfFieldId, searchCond);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -72,23 +72,23 @@ public class CaddyManagementController {
 
     @Operation(summary = "캐디 휴무일 전체 조회", description = "골프장에 속해있는 모든 하우스 캐디의 휴무일을 조회합니다.")
     @GetMapping("/holiday/{golfFieldId}")
-    public ResponseEntity<List<HouseCaddyResponseDto.TeamHoliday>> getAllHolidayInfo(@PathVariable("golfFieldId") Long golfFieldId) {
-        List<HouseCaddyResponseDto.TeamHoliday> allHoliday = houseCaddyService.getAllHoliday(golfFieldId);
+    public ResponseEntity<List<HouseCaddyResponse.TeamHoliday>> getAllHolidayInfo(@PathVariable("golfFieldId") Long golfFieldId) {
+        List<HouseCaddyResponse.TeamHoliday> allHoliday = houseCaddyService.getAllHoliday(golfFieldId);
 
         return ResponseEntity.ok(allHoliday);
     }
 
     @Operation(summary = "캐디 휴무일 조별 조회", description = "특정 조의 전체 인원의 휴무일을 조회합니다.")
     @GetMapping("/holiday/{golfFieldId}/team")
-    public ResponseEntity<HouseCaddyResponseDto.TeamHoliday> getTeamHolidayInfo(@PathVariable("golfFieldId") Long golfFieldId, String name) {
-        HouseCaddyResponseDto.TeamHoliday holiday = houseCaddyService.getTeamHoliday(golfFieldId, name);
+    public ResponseEntity<HouseCaddyResponse.TeamHoliday> getTeamHolidayInfo(@PathVariable("golfFieldId") Long golfFieldId, String name) {
+        HouseCaddyResponse.TeamHoliday holiday = houseCaddyService.getTeamHoliday(golfFieldId, name);
 
         return ResponseEntity.ok(holiday);
     }
 
     @Operation(summary = "캐디 휴무일 일괄 변경", description = "하우스 캐디의 휴무일을 일괄적으로 변경합니다.")
     @PostMapping("/holiday")
-    public ResponseEntity<Void> updateHolidayAll(@Valid @RequestBody List<HouseCaddyRequestDto.createHoliday> request) {
+    public ResponseEntity<Void> updateHolidayAll(@Valid @RequestBody List<HouseCaddyRequest.CreateHoliday> request) {
         houseCaddyService.updateHolidayAll(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

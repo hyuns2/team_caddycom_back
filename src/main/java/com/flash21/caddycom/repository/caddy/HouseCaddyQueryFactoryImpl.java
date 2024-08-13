@@ -1,6 +1,6 @@
 package com.flash21.caddycom.repository.caddy;
 
-import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
+import com.flash21.caddycom.dto.caddy.HouseCaddyRequest;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,7 +17,7 @@ public class HouseCaddyQueryFactoryImpl implements HouseCaddyQueryFactory {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<HouseCaddy> findAllByGolfFieldIdAndSearchCond(Long golfFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
+    public List<HouseCaddy> findAllByGolfFieldIdAndSearchCond(Long golfFieldId, HouseCaddyRequest.CaddySearchCond searchCond) {
         return queryFactory
                 .selectFrom(houseCaddy)
                 .where(houseCaddy.golfField.id.eq(golfFieldId),
@@ -26,12 +26,12 @@ public class HouseCaddyQueryFactoryImpl implements HouseCaddyQueryFactory {
                 .fetch();
     }
 
-    private BooleanExpression caddyNamePart(HouseCaddyRequestDto.CaddySearchCond searchCond) {
+    private BooleanExpression caddyNamePart(HouseCaddyRequest.CaddySearchCond searchCond) {
         return searchCond.getName() != null && !searchCond.getName().isEmpty()
                 ? houseCaddy.name.containsIgnoreCase(searchCond.getName()) : null;
     }
 
-    private BooleanExpression teamNamePart(HouseCaddyRequestDto.CaddySearchCond searchCond) {
+    private BooleanExpression teamNamePart(HouseCaddyRequest.CaddySearchCond searchCond) {
         return searchCond.getTeam() != null && !searchCond.getTeam().isEmpty()
                 ? houseCaddy.team.eq(searchCond.getTeam()) : null;
 

@@ -11,7 +11,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
 
-public class HouseCaddyResponseDto {
+public class HouseCaddyResponse {
     @Getter
     @Builder
     @AllArgsConstructor
@@ -71,7 +71,7 @@ public class HouseCaddyResponseDto {
     @Data
     @AllArgsConstructor
     @Builder
-    public static class houseCaddyDetail {
+    public static class Detail {
         @Schema(description = "캐디 Id")
         private Long id;
 

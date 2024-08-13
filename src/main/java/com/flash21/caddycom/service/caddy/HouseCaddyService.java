@@ -1,7 +1,7 @@
 package com.flash21.caddycom.service.caddy;
 
-import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
-import com.flash21.caddycom.dto.caddy.HouseCaddyResponseDto;
+import com.flash21.caddycom.dto.caddy.HouseCaddyRequest;
+import com.flash21.caddycom.dto.caddy.HouseCaddyResponse;
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.caddy.TeamRole;
@@ -42,15 +42,15 @@ public class HouseCaddyService {
      * @param golfFieldId 골프장 Id
      * @return 조이름, 캐디정보 리스트 맵핑결과
      */
-    public Map<String, List<HouseCaddyResponseDto.houseCaddyDetail>> getHouseCaddies(Long golfFieldId) {
+    public Map<String, List<HouseCaddyResponse.Detail>> getHouseCaddies(Long golfFieldId) {
         List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByGolfFieldIdOrderByTeamAndTeamRole(golfFieldId);
 
-        Map<String, List<HouseCaddyResponseDto.houseCaddyDetail>> result = new TreeMap<>();
+        Map<String, List<HouseCaddyResponse.Detail>> result = new TreeMap<>();
         for (HouseCaddy hc: houseCaddyList) {
             if (result.containsKey(hc.getTeam()))
                 (result.get(hc.getTeam())).add(toHouseCaddyDetailDto(hc));
             else {
-                List<HouseCaddyResponseDto.houseCaddyDetail> dtoList = new ArrayList<>();
+                List<HouseCaddyResponse.Detail> dtoList = new ArrayList<>();
                 dtoList.add(toHouseCaddyDetailDto(hc));
                 result.put(hc.getTeam(), dtoList);
             }
@@ -65,7 +65,7 @@ public class HouseCaddyService {
      * @param teamName    조 이름
      * @return 캐디정보 리스트
      */
-    public List<HouseCaddyResponseDto.houseCaddyDetail> getHouseCaddyByTeam(Long golfFieldId, String teamName) {
+    public List<HouseCaddyResponse.Detail> getHouseCaddyByTeam(Long golfFieldId, String teamName) {
         String team = teamName.equals("조 없음") ? null : teamName;
         List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, team);
         if (houseCaddyList.isEmpty())
@@ -74,8 +74,8 @@ public class HouseCaddyService {
         return houseCaddyList.stream().map(this::toHouseCaddyDetailDto).toList();
     }
 
-    private HouseCaddyResponseDto.houseCaddyDetail toHouseCaddyDetailDto(HouseCaddy hc) {
-        return HouseCaddyResponseDto.houseCaddyDetail.builder()
+    private HouseCaddyResponse.Detail toHouseCaddyDetailDto(HouseCaddy hc) {
+        return HouseCaddyResponse.Detail.builder()
                 .id(hc.getId())
                 .golfFieldName(null)
                 .profileUrl(hc.getProfileUrl())
@@ -103,7 +103,7 @@ public class HouseCaddyService {
      * @param dto         수정할 정보
      */
     @Transactional
-    public void updateHouseCaddyByManager(Long golfFieldId, Long caddyId, HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
+    public void updateHouseCaddyByManager(Long golfFieldId, Long caddyId, HouseCaddyRequest.UpdateByManager dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 
@@ -132,18 +132,18 @@ public class HouseCaddyService {
         houseCaddy.updateHoliday();
     }
 
-    public Map<String, List<HouseCaddyResponseDto.Info>> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequestDto.CaddySearchCond searchCond) {
+    public Map<String, List<HouseCaddyResponse.Info>> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequest.CaddySearchCond searchCond) {
 
-        List<HouseCaddyResponseDto.Info> findHouseCaddies =
+        List<HouseCaddyResponse.Info> findHouseCaddies =
                 houseCaddyRepository.findAllByGolfFieldIdAndSearchCond(golfFieldId, searchCond)
                         .stream()
-                        .map(HouseCaddyResponseDto.Info::new)
+                        .map(HouseCaddyResponse.Info::new)
                         .sorted(this::comparing)
                         .toList();
 
         return findHouseCaddies.stream()
                 .collect(Collectors.groupingBy(
-                        HouseCaddyResponseDto.Info::getTeam,
+                        HouseCaddyResponse.Info::getTeam,
                         LinkedHashMap::new,
                         Collectors.toList()
                 ));
@@ -158,18 +158,18 @@ public class HouseCaddyService {
      *
      * @return 조 이름과 하우스캐디 정보(하우스캐디의 id, 이름, 역할, 휴무일) 리스트로 이루어진 DTO 리스트
      */
-    public List<HouseCaddyResponseDto.TeamHoliday> getAllHoliday(Long golfFieldId) {
+    public List<HouseCaddyResponse.TeamHoliday> getAllHoliday(Long golfFieldId) {
         List<HouseCaddy> houseCaddies = houseCaddyRepository.findAllByGolfFieldId(golfFieldId);
 
-        Map<String, List<HouseCaddyResponseDto.HolidayInfo>> holidayInfoMap = houseCaddies.stream()
+        Map<String, List<HouseCaddyResponse.HolidayInfo>> holidayInfoMap = houseCaddies.stream()
                 .collect(Collectors.groupingBy(
                         caddy -> caddy.getTeam() != null ? caddy.getTeam() : "조 없음",
-                        Collectors.mapping(HouseCaddyResponseDto.HolidayInfo::from, Collectors.toList())
+                        Collectors.mapping(HouseCaddyResponse.HolidayInfo::from, Collectors.toList())
                 ));
 
-        List<HouseCaddyResponseDto.TeamHoliday> allHolidays = holidayInfoMap.entrySet().stream()
-                .map(entry -> HouseCaddyResponseDto.TeamHoliday.from(entry.getKey(), entry.getValue())) // TeamHoliday 로 변환
-                .sorted(Comparator.comparing(HouseCaddyResponseDto.TeamHoliday::getTeam)) // 조 이름 순으로 정렬
+        List<HouseCaddyResponse.TeamHoliday> allHolidays = holidayInfoMap.entrySet().stream()
+                .map(entry -> HouseCaddyResponse.TeamHoliday.from(entry.getKey(), entry.getValue())) // TeamHoliday 로 변환
+                .sorted(Comparator.comparing(HouseCaddyResponse.TeamHoliday::getTeam)) // 조 이름 순으로 정렬
                 .collect(Collectors.toList());
 
         return allHolidays;
@@ -183,14 +183,14 @@ public class HouseCaddyService {
      * @param teamName    조 이름
      * @return 조 이름과 하우스캐디 정보 리스트(하우스캐디의 id, 이름, 역할, 휴무일) 로 이루어진 DTO
      */
-    public HouseCaddyResponseDto.TeamHoliday getTeamHoliday(Long golfFieldId, String teamName) {
+    public HouseCaddyResponse.TeamHoliday getTeamHoliday(Long golfFieldId, String teamName) {
         String team = teamName.equals("조 없음") ? null : teamName;
         List<HouseCaddy> caddies = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, team);
 
-        List<HouseCaddyResponseDto.HolidayInfo> infos = caddies.stream()
-                .map(HouseCaddyResponseDto.HolidayInfo::from)
+        List<HouseCaddyResponse.HolidayInfo> infos = caddies.stream()
+                .map(HouseCaddyResponse.HolidayInfo::from)
                 .collect(Collectors.toList());
-        return HouseCaddyResponseDto.TeamHoliday.from(teamName, infos);
+        return HouseCaddyResponse.TeamHoliday.from(teamName, infos);
     }
 
     /**
@@ -199,13 +199,13 @@ public class HouseCaddyService {
      * @param request 휴무일 수정 요청 DTO
      */
     @Transactional
-    public void updateHolidayAll(List<HouseCaddyRequestDto.createHoliday> request) {
+    public void updateHolidayAll(List<HouseCaddyRequest.CreateHoliday> request) {
         List<Long> ids = request.stream()
-                .map(HouseCaddyRequestDto.createHoliday::getId)
+                .map(HouseCaddyRequest.CreateHoliday::getId)
                 .toList();
 
         Map<Long, List<Days>> requestMap = request.stream()
-                .collect(Collectors.toMap(HouseCaddyRequestDto.createHoliday::getId, HouseCaddyRequestDto.createHoliday::getHolidays
+                .collect(Collectors.toMap(HouseCaddyRequest.CreateHoliday::getId, HouseCaddyRequest.CreateHoliday::getHolidays
                         , (oldValue, newValue) -> oldValue, HashMap::new));
 
         List<HouseCaddy> caddies = houseCaddyRepository.findAllByIdIn(ids);
@@ -222,7 +222,7 @@ public class HouseCaddyService {
     }
 
 
-    private int comparing(HouseCaddyResponseDto.Info hc1, HouseCaddyResponseDto.Info hc2) {
+    private int comparing(HouseCaddyResponse.Info hc1, HouseCaddyResponse.Info hc2) {
         int teamNumber1 = extractTeamNumber(hc1.getTeam());
         int teamNumber2 = extractTeamNumber(hc2.getTeam());
         if (teamNumber1 != teamNumber2) {
@@ -252,11 +252,11 @@ public class HouseCaddyService {
      * @param caddyId 캐디 Id
      * @return 하우스캐디 정보 dto
      */
-    public HouseCaddyResponseDto.houseCaddyDetail getHouseCaddy(Long caddyId) {
+    public HouseCaddyResponse.Detail getHouseCaddy(Long caddyId) {
         HouseCaddy hc = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 
-        return HouseCaddyResponseDto.houseCaddyDetail.builder()
+        return HouseCaddyResponse.Detail.builder()
                 .id(hc.getId())
                 .golfFieldName(hc.getGolfField().getName())
                 .profileUrl(hc.getProfileUrl())
@@ -283,7 +283,7 @@ public class HouseCaddyService {
      * @param dto     변경할 정보 dto
      */
     @Transactional
-    public void updateHouseCaddy(Long caddyId, HouseCaddyRequestDto.updateHouseCaddy dto) {
+    public void updateHouseCaddy(Long caddyId, HouseCaddyRequest.UpdateByCaddy dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 

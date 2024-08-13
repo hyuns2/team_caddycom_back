@@ -1,4 +1,4 @@
-package com.flash21.caddycom.repository.schedule;
+package com.flash21.caddycom.repository.assignment;
 
 import com.flash21.caddycom.entity.caddy.Caddy;
 import com.flash21.caddycom.entity.schedule.Assignment;

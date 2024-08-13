@@ -16,7 +16,7 @@ import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "5. Assignment Caddy", description = "배정정보 API")
+@Tag(name = "5-2. Assignment Caddy", description = "배정정보 (배정 후) API")
 @RequestMapping("/api/assignments/caddy")
 public class AssignmentCaddyController {
     private final AssignmentCaddyService assignmentCaddyService;
@@ -83,6 +83,16 @@ public class AssignmentCaddyController {
     ) {
         assignmentCaddyService.assignCaddyAutomatically(golfFieldId, date);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @Operation(summary = "캐디 선택 배정", description = "골프장 관리자가 해당 시간대의 배정 정보에 캐디를 직접 설정합니다.")
+    @PatchMapping("/{assignmentsId}/{caddyId}")
+    public ResponseEntity<Void> assignSelectedCaddy(@PathVariable Long assignmentsId,
+                                                    @PathVariable Long caddyId
+    ) {
+        assignmentCaddyService.assignSelectedCaddy(assignmentsId, caddyId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

@@ -21,7 +21,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "4-2. Reservation Sheet Schedule", description = "예약시트 스케줄(캘린더) API")
-@RequestMapping("/api/assignments")
+@RequestMapping("/api/reservation-sheet")
 public class ScheduleController {
 
     private final ReservationSheetService rsService;

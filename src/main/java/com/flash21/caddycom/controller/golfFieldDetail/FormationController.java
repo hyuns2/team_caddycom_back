@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@Tag(name = "2-1. Formation", description = "골프장 구성 설정 관련 API")
+@Tag(name = "2-1. Course", description = "골프장 코스 정보(구성, 코스) 관련 API")
 @RestController
 @RequiredArgsConstructor
 public class FormationController {
     private final FormationService formationService;
     private final GolfFieldRepository golfFieldRepository;
-    private final CourseService courseService;
 
+    //TODO: 서비스 레이어에 메소드 추가 필요
     @PostMapping("/api/formations")
     @Operation(summary = "골프장 구성 정보 생성 API")
     public ResponseEntity<Void> createFormation(@Valid @RequestBody FormationRequest.Process request) {

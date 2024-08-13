@@ -44,15 +44,4 @@ public class AdminController {
     public ResponseEntity<List<GolfFieldResponse.Overview>> getAll(){
         return ResponseEntity.ok().body(golfFieldService.getAll());
     }
-
-
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping(value = "/house-caddy",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "하우스 캐디 엑셀파일로 저장 API", description="하우스 캐디 엑셀 파일 일괄 업로드")
-    public ResponseEntity<Message> uploadCaddy(@RequestParam Long golfFieldId, @RequestPart MultipartFile file) {
-        adminService.uploadCaddy(golfFieldId, file);
-        return ResponseEntity.ok().body(new Message("하우스 캐디 엑셀 파일 저장 완료"));
-    }
-
 }

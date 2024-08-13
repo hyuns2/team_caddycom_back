@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "2-4. Tee", description = "티 정보 관련 API")
+@Tag(name = "2-2. GolfField Detail", description = "골프장 코스 상세 정보(홀,티) 관련 API")
 @RestController
 @RequiredArgsConstructor
 public class TeeController {

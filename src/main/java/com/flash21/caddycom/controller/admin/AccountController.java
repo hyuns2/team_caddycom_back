@@ -7,22 +7,26 @@ import com.flash21.caddycom.dto.account.AccountResponse;
 import com.flash21.caddycom.dto.auth.SigninRequest;
 import com.flash21.caddycom.dto.auth.SigninResponse;
 import com.flash21.caddycom.service.account.AccountService;
+import com.flash21.caddycom.service.admin.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Tag(name = "0-0. Account", description = "골프장 관리자(직원) 계정 관련 API")
+@Tag(name = "0-0. GolfStaff", description = "골프장 관리자(직원) 계정 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/account")
+@RequestMapping("/api/golf-staff")
 public class AccountController {
     private final AccountService accountService;
+    private final AdminService adminService;
 
     @Operation(summary="직원 계정 생성 API", description="전체 시스템 관리자 or 골프장 관리자는 직원 데이터를 만들 수 있다.")
     @ResponseStatus(HttpStatus.OK)
@@ -38,5 +42,16 @@ public class AccountController {
     @GetMapping("/employee")
     public ResponseEntity<List<AccountResponse.Info>> getAccount(@Valid @RequestParam Long golfFieldId){
         return ResponseEntity.ok().body(accountService.getAccounts(golfFieldId));
+    }
+
+
+    //TODO: 서비스 레이어 메소드 이동 필요
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(value = "/house-caddy",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "하우스 캐디 엑셀파일로 저장 API", description="하우스 캐디 엑셀 파일 일괄 업로드")
+    public ResponseEntity<Message> uploadCaddy(@RequestParam Long golfFieldId, @RequestPart MultipartFile file) {
+        adminService.uploadCaddy(golfFieldId, file);
+        return ResponseEntity.ok().body(new Message("하우스 캐디 엑셀 파일 저장 완료"));
     }
 }

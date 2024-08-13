@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name="2-3. Hole", description = "홀 정보 관련 API")
+@Tag(name = "2-2. GolfField Detail", description = "골프장 코스 상세 정보(홀,티) 관련 API")
 @RestController
 @RequiredArgsConstructor
 public class HoleController {

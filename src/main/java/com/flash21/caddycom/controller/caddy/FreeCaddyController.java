@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "5. Free Caddy", description = "프리캐디 API")
+@Tag(name = "3-3. Free Caddy", description = "프리캐디 API")
 @RequestMapping("/api/free-caddy")
 public class FreeCaddyController {
     private final FreeCaddyService freeCaddyService;

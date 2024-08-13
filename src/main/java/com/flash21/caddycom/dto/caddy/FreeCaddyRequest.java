@@ -43,7 +43,7 @@ public class FreeCaddyRequest {
         private String intro;
 
         @NotNull(message = "지정골프장은 1개 이상이어야 합니다.")
-        private List<Long> golfFieldIdList;
+        private List<Long> golfFieldIds;
 
         private MultipartFile profileUrl;
 

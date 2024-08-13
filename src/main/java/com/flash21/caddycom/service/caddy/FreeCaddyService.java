@@ -9,12 +9,14 @@ import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.repository.caddy.FreeCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -22,40 +24,65 @@ public class FreeCaddyService {
     private final FreeCaddyRepository freeCaddyRepository;
     private final GolfFieldRepository golfFieldRepository;
     private final FileUploader fileUploader;
+    private final ApplicationContext applicationContext;
 
     //TODO: 이미지 업로드 트랜젝션 밖에서 하도록 수정 필요
-    @Transactional
     public void saveFreeCaddy(FreeCaddyRequest.Create request) {
         FreeCaddy freeCaddy = freeCaddyRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new IllegalArgumentException("앞서 전화번호 인증이 되지 않아 로그인이 제대로 이뤄지지 않았습니다."));
 
-        if (freeCaddy.getMatchedFreeCaddyList() == null || freeCaddy.getMatchedFreeCaddyList().isEmpty())
+        String profileUrl = getProfileUrl(request);
+        List<MatchedFreeCaddy> matchedFreeCaddyList = getDistinctGolfField(freeCaddy, request.getGolfFieldIds());
+
+        FreeCaddyService self = applicationContext.getBean(FreeCaddyService.class);
+        self.saveEntity(request, freeCaddy, matchedFreeCaddyList, profileUrl);
+    }
+
+    @Transactional
+    protected void saveEntity(FreeCaddyRequest.Create request,
+                              FreeCaddy freeCaddy,
+                              List<MatchedFreeCaddy> matchedFreeCaddyList,
+                              String profileUrl) {
+        freeCaddy.create(request.getName(),
+                request.getPhoneNumber(),
+                request.getRegions(),
+                request.getGender(),
+                request.getBirth(),
+                request.getCareer(),
+                request.getIntro(),
+                matchedFreeCaddyList,
+                profileUrl);
+    }
+
+
+    private String getProfileUrl(FreeCaddyRequest.Create request) {
+        return request.getProfileUrl() != null
+                ? fileUploader.upload(request.getProfileUrl(), "caddy") : null;
+    }
+
+
+    /**
+     * 지정 골프장 중 중복되지 않은 골프장을 반환한다.
+     * 지정 골프장을 등록하지 않았다면 IllegalArgumentException 을 발생시킨다.
+     */
+    protected List<MatchedFreeCaddy> getDistinctGolfField(FreeCaddy freeCaddy, List<Long> golfFieldIds) {
+        if (golfFieldIds == null || golfFieldIds.isEmpty())
             throw new IllegalArgumentException("지정골프장은 최소 1개 이상이어야 합니다.");
 
-        HashSet<GolfField> golfFieldIdSet
-                = new HashSet<>(freeCaddy.getMatchedFreeCaddyList().stream().map(MatchedFreeCaddy::getGolfField).toList());
+        Set<Long> existingGolfFieldSet = freeCaddy.getMatchedFreeCaddyList().stream()
+                .map(matchedFreeCaddy -> matchedFreeCaddy.getGolfField().getId())
+                .collect(Collectors.toSet());
 
-        List<GolfField> golfFieldList = golfFieldRepository.findByIds(request.getGolfFieldIdList());
-        if (golfFieldList.size() != request.getGolfFieldIdList().size())
+        List<GolfField> golfFieldList = golfFieldRepository.findByIds(golfFieldIds);
+        if (golfFieldList.size() != golfFieldIds.size())
             throw new IllegalArgumentException("존재하지 않는 골프장이 포함되어 있습니다.");
 
-        String profileUrl = request.getProfileUrl() != null
-                ? fileUploader.upload(request.getProfileUrl(), "caddy") : null;
-
         List<MatchedFreeCaddy> matchedFreeCaddyList = golfFieldList.stream()
-                .filter(golfField -> !golfFieldIdSet.contains(golfField))
+                .filter(golfField -> !existingGolfFieldSet.contains(golfField.getId()))
                 .map(golfField -> MatchedFreeCaddy.of(freeCaddy, golfField))
                 .toList();
 
-        freeCaddy.create(request.getName(),
-                        request.getPhoneNumber(),
-                        request.getRegions(),
-                        request.getGender(),
-                        request.getBirth(),
-                        request.getCareer(),
-                        request.getIntro(),
-                        matchedFreeCaddyList,
-                        profileUrl);
+        return matchedFreeCaddyList;
     }
 
 

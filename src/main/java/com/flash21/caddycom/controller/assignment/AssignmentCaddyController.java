@@ -16,7 +16,7 @@ import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "4. Assignment Caddy", description = "배정정보 API")
+@Tag(name = "5. Assignment Caddy", description = "배정정보 API")
 @RequestMapping("/api/assignments/caddy")
 public class AssignmentCaddyController {
     private final AssignmentCaddyService assignmentCaddyService;

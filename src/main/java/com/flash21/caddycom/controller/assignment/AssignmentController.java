@@ -1,4 +1,4 @@
-package com.flash21.caddycom.controller.schedule;
+package com.flash21.caddycom.controller.assignment;
 
 import com.flash21.caddycom.dto.schedule.AssignmentDto;
 import com.flash21.caddycom.service.assignment.AssignmentCaddyService;
@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "3-2. Reservation Sheet Assignment", description = "예약시트 배정정보 API")
+@Tag(name = "4-3. Reservation Sheet Assignment", description = "예약시트 배정정보 API")
 @RequestMapping("/api/assignments")
 public class AssignmentController {
 

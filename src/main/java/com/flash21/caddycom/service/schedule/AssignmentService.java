@@ -1,6 +1,7 @@
 package com.flash21.caddycom.service.schedule;
 
-import com.flash21.caddycom.dto.schedule.AssignmentDto;
+import com.flash21.caddycom.dto.assignment.AssignmentRequest;
+import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
@@ -63,8 +64,8 @@ public class AssignmentService {
      * @param page page 페이지 번호 (데이터 10개)
      * @return 시간, 코스별 dto 형태의 map 반환
      */
-    private Map<String, Map<String, AssignmentDto.AssignmentsResponse>> findAndGetAssignmentsByTime(List<String> courseNameList, LocalDate date, int page) {
-        Map<String, Map<String, AssignmentDto.AssignmentsResponse>> result = new TreeMap<>();
+    private Map<String, Map<String, AssignmentResponse.Assigned>> findAndGetAssignmentsByTime(List<String> courseNameList, LocalDate date, int page) {
+        Map<String, Map<String, AssignmentResponse.Assigned>> result = new TreeMap<>();
 
         getResultFromRepo(result, date, page);
 
@@ -85,7 +86,7 @@ public class AssignmentService {
      * @param date   대상 날짜
      * @param page   page 페이지 번호 (데이터 10개)
      */
-    private void getResultFromRepo(Map<String, Map<String, AssignmentDto.AssignmentsResponse>> result, LocalDate date, int page) {
+    private void getResultFromRepo(Map<String, Map<String, AssignmentResponse.Assigned>> result, LocalDate date, int page) {
         int pageSize = 10;
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<LocalTime> resultTimePage = assignmentRepository.findTimesByReservationAt(date, pageable);
@@ -95,14 +96,15 @@ public class AssignmentService {
         for (Assignment assignment : assignmentList) {
             String startTime = assignment.getStartTime().toString();
             String courseName = assignment.getSchedule().getCourse().getName();
-            AssignmentDto.AssignmentsResponse dto = AssignmentDto.AssignmentsResponse.builder()
+            AssignmentResponse.Assigned dto = AssignmentResponse.Assigned.builder()
                     .id(assignment.getId())
-                    .status(assignment.getStatus()).build();
+                    .status(assignment.getStatus())
+                    .build();
 
             if (result.containsKey(startTime))
                 result.get(startTime).put(courseName, dto);
             else {
-                Map<String, AssignmentDto.AssignmentsResponse> dtoMap = new WeakHashMap<>();
+                Map<String, AssignmentResponse.Assigned> dtoMap = new WeakHashMap<>();
                 dtoMap.put(courseName, dto);
                 result.put(startTime, dtoMap);
             }
@@ -128,7 +130,7 @@ public class AssignmentService {
      * @param dtoMap         코스, dto 구조의 map
      * @return 요구되는 api response
      */
-    private Map<String, List<Object>> makeResponse(List<String> courseNameList, Map<String, Map<String, AssignmentDto.AssignmentsResponse>> dtoMap) {
+    private Map<String, List<Object>> makeResponse(List<String> courseNameList, Map<String, Map<String, AssignmentResponse.Assigned>> dtoMap) {
         Map<String, List<Object>> response = new WeakHashMap<>();
         List<String> timeList = new ArrayList<>();
 
@@ -138,9 +140,7 @@ public class AssignmentService {
 
         dtoMap.forEach((time, courseInfo) -> {
             timeList.add(time);
-            courseInfo.forEach((courseName, dto) -> {
-                response.get(courseName).add(dto);
-            });
+            courseInfo.forEach((courseName, dto) -> response.get(courseName).add(dto));
         });
 
         response.put("courseList", Arrays.asList(courseNameList.toArray()));
@@ -149,7 +149,7 @@ public class AssignmentService {
     }
 
     @Transactional
-    public void setBlock(Long assignmentsId, AssignmentDto.BlockRequest blockRequest) {
+    public void setBlock(Long assignmentsId, AssignmentRequest.Block blockRequest) {
         Assignment findAssignment = assignmentRepository.findById(assignmentsId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
 
@@ -166,7 +166,7 @@ public class AssignmentService {
 
     }
 
-    public AssignmentDto.BlockResponse getBlock(Long assignmentsId) {
+    public AssignmentResponse.Block getBlock(Long assignmentsId) {
         Assignment findAssignment = assignmentRepository.findById(assignmentsId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
 
@@ -174,6 +174,6 @@ public class AssignmentService {
             throw new IllegalStateException("블락상태가 아닌 배정 정보입니다.");
         }
 
-        return new AssignmentDto.BlockResponse(findAssignment);
+        return new AssignmentResponse.Block(findAssignment);
     }
 }

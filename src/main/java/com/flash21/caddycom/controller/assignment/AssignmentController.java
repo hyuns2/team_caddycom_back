@@ -1,6 +1,7 @@
 package com.flash21.caddycom.controller.assignment;
 
-import com.flash21.caddycom.dto.schedule.AssignmentDto;
+import com.flash21.caddycom.dto.assignment.AssignmentRequest;
+import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.service.schedule.AssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,16 +36,16 @@ public class AssignmentController {
 
     @Operation(summary = "블락 조회", description = "골프장 관리자가 해당 시간대의 배정 정보에 블락을 조회합니다.")
     @GetMapping("/{assignmentsId}")
-    public ResponseEntity<AssignmentDto.BlockResponse> setBlock(@PathVariable Long assignmentsId
+    public ResponseEntity<AssignmentResponse.Block> setBlock(@PathVariable Long assignmentsId
     ) {
-        AssignmentDto.BlockResponse result = assignmentService.getBlock(assignmentsId);
+        AssignmentResponse.Block result = assignmentService.getBlock(assignmentsId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Operation(summary = "블락 설정", description = "골프장 관리자가 해당 시간대의 배정 정보에 블락을 설정합니다.")
     @PatchMapping("/{assignmentsId}")
     public ResponseEntity<Void> setBlock(@PathVariable Long assignmentsId,
-                                         @RequestBody AssignmentDto.BlockRequest blockRequest
+                                         @RequestBody AssignmentRequest.Block blockRequest
     ) {
         assignmentService.setBlock(assignmentsId, blockRequest);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

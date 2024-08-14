@@ -24,7 +24,6 @@ import java.util.List;
 @RequestMapping("/api/golf-staff")
 public class GolfStaffController {
     private final GolfStaffService golfStaffService;
-    private final AdminService adminService;
 
     @Operation(summary="직원 계정 생성 API", description="전체 시스템 관리자 or 골프장 관리자는 직원 데이터를 만들 수 있다.")
     @ResponseStatus(HttpStatus.OK)
@@ -43,13 +42,4 @@ public class GolfStaffController {
     }
 
 
-    //TODO: 서비스 레이어 메소드 이동 필요
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping(value = "/house-caddy",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "하우스 캐디 엑셀파일로 저장 API", description="하우스 캐디 엑셀 파일 일괄 업로드")
-    public ResponseEntity<Message> uploadCaddy(@RequestParam Long golfFieldId, @RequestPart MultipartFile file) {
-        adminService.uploadCaddy(golfFieldId, file);
-        return ResponseEntity.ok().body(new Message("하우스 캐디 엑셀 파일 저장 완료"));
-    }
 }

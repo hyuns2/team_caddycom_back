@@ -1,6 +1,7 @@
 package com.flash21.caddycom.controller.caddy;
 
 
+import com.flash21.caddycom.dto.Message;
 import com.flash21.caddycom.dto.caddy.HouseCaddyRequest;
 import com.flash21.caddycom.dto.caddy.HouseCaddyResponse;
 import com.flash21.caddycom.service.caddy.HouseCaddyService;
@@ -9,8 +10,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -99,5 +102,15 @@ public class CaddyManagementController {
         houseCaddyService.updateHouseCaddyHoliday(caddyId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(value = "/house-caddy",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "하우스 캐디 엑셀파일로 저장 API", description="하우스 캐디 엑셀 파일 일괄 업로드")
+    public ResponseEntity<Message> uploadCaddy(@RequestParam Long golfFieldId, @RequestPart MultipartFile file) {
+        houseCaddyService.uploadCaddy(golfFieldId, file);
+        return ResponseEntity.ok().body(new Message("하우스 캐디 엑셀 파일 저장 완료"));
     }
 }

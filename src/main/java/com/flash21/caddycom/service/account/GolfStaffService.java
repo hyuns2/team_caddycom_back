@@ -1,10 +1,10 @@
 package com.flash21.caddycom.service.account;
 
-import com.flash21.caddycom.dto.account.AccountRequest;
-import com.flash21.caddycom.dto.account.AccountResponse;
-import com.flash21.caddycom.entity.account.Account;
+import com.flash21.caddycom.dto.golfStaff.GolfStaffRequest;
+import com.flash21.caddycom.dto.golfStaff.GolfStaffResponse;
+import com.flash21.caddycom.entity.account.GolfStaff;
 import com.flash21.caddycom.entity.golfField.GolfField;
-import com.flash21.caddycom.repository.account.AccountRepository;
+import com.flash21.caddycom.repository.account.GolfStaffRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,29 +16,29 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AccountService {
-    private final AccountRepository accountRepository;
+public class GolfStaffService {
+    private final GolfStaffRepository golfStaffRepository;
     private final GolfFieldRepository golfFieldRepository;
 
-    public List<AccountResponse.Info> getAccounts(Long id) {
+    public List<GolfStaffResponse.Info> getGolfStaff(Long id) {
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("골프장이 존재하지 않습니다."));
 
-        List<Account> accounts = accountRepository.findAllByGolfField(golfField);
-        return accounts.stream()
-                .map(AccountResponse.Info::from)
+        List<GolfStaff> golfStaffs = golfStaffRepository.findAllByGolfField(golfField);
+        return golfStaffs.stream()
+                .map(GolfStaffResponse.Info::from)
                 .toList();
     }
 
     @Transactional
-    public void createAccounts(Long id, List<AccountRequest.Create> requestList) {
+    public void createGolfStaff(Long id, List<GolfStaffRequest.Create> requestList) {
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("골프장이 존재하지 않습니다."));
 
-        List<Account> accounts = requestList.stream()
-                .map(AccountRequest.Create::toEntity)
+        List<GolfStaff> golfStaffs = requestList.stream()
+                .map(GolfStaffRequest.Create::toEntity)
                 .peek(account -> account.linkGolfField(golfField))
                 .toList();
-        accountRepository.saveAll(accounts);
+        golfStaffRepository.saveAll(golfStaffs);
     }
 }

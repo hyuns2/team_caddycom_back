@@ -4,7 +4,6 @@ import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
-import com.flash21.caddycom.service.golfFieldDetail.CourseService;
 import com.flash21.caddycom.service.golfFieldDetail.FormationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

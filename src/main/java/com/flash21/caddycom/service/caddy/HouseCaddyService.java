@@ -5,14 +5,19 @@ import com.flash21.caddycom.dto.caddy.HouseCaddyResponse;
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import com.flash21.caddycom.entity.caddy.TeamRole;
+import com.flash21.caddycom.entity.golfField.GolfField;
+import com.flash21.caddycom.global.common.fileReader.EntityConverter;
+import com.flash21.caddycom.global.common.fileReader.ExcelReader;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.global.exception.cException.CCaddyNotFoundException;
 import com.flash21.caddycom.global.exception.cException.CInvalidCaddyRequestException;
 import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundException;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
+import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,7 +29,10 @@ import java.util.stream.Collectors;
 public class HouseCaddyService {
 
     private final HouseCaddyRepository houseCaddyRepository;
+    private final GolfFieldRepository golfFieldRepository;
     private final FileUploader fileUploader;
+    private final EntityConverter entityConverter;
+    private final ExcelReader excelReader;
 
     /**
      * 조 전제조회: 골프장 Id에 해당하는 캐디의 조이름을 전부 반환합니다.
@@ -282,6 +290,7 @@ public class HouseCaddyService {
      * @param caddyId 캐디 Id
      * @param dto     변경할 정보 dto
      */
+    //TODO: 이미지 업로드 트랜젝션 밖에서
     @Transactional
     public void updateHouseCaddy(Long caddyId, HouseCaddyRequest.UpdateByCaddy dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
@@ -294,5 +303,20 @@ public class HouseCaddyService {
                 dto.getAddress(),
                 dto.getAddressDetail(),
                 dto.getCareer());
+    }
+
+
+    //TODO: 엑셀 읽기 트랜젝션 밖에서
+    @Transactional
+    public void uploadCaddy(Long id, MultipartFile file) {
+        GolfField golfField = golfFieldRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
+
+        List<List<String>> stringData = excelReader.readExcelToList(file);
+        List<HouseCaddy> caddyList = stringData.stream()
+                .map(entityConverter::toEntity)
+                .toList();
+
+        saveCaddyList(golfField.getId(), caddyList);
     }
 }

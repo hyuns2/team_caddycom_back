@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "2-2. GolfField Detail", description = "골프장 코스 상세 정보(홀,티) 관련 API")
+@Tag(name = "2-2. Course Detail", description = "골프장 코스 상세 정보(홀,티) 관련 API")
 @RestController
 @RequiredArgsConstructor
 public class CommentController {

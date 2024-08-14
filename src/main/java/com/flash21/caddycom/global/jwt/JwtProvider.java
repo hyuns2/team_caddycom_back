@@ -1,10 +1,10 @@
 package com.flash21.caddycom.global.jwt;
 
 import com.flash21.caddycom.dto.auth.JwtResponse;
-import com.flash21.caddycom.entity.account.Account;
+import com.flash21.caddycom.entity.account.GolfStaff;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.caddy.Caddy;
-import com.flash21.caddycom.repository.account.AccountRepository;
+import com.flash21.caddycom.repository.account.GolfStaffRepository;
 import com.flash21.caddycom.repository.caddy.CaddyRepository;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.xml.bind.DatatypeConverter;
@@ -29,7 +29,7 @@ public class JwtProvider {
     private final long ACCESS_EXPIRAION = 1000 * 60 * 60 * 1; // 1시간
     private final long REFRESH_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7일
 
-    private final AccountRepository accountRepository;
+    private final GolfStaffRepository golfStaffRepository;
     private final CaddyRepository caddyRepository;
     private final JwtValidator jwtValidator;
 
@@ -61,9 +61,9 @@ public class JwtProvider {
 
     private void saveRefreshToken(Role role, Long id, String refreshToken) {
         if (role == Role.ROLE_EMPLOYEE || role == Role.ROLE_OWNER) {
-            Account account = accountRepository.findById(id)
+            GolfStaff golfStaff = golfStaffRepository.findById(id)
                     .orElseThrow(() -> new NoSuchElementException("사라진 사용자 계정입니다."));
-            account.updateToken(refreshToken);
+            golfStaff.updateToken(refreshToken);
         }
         else if (role == Role.ROLE_HOUSE_CADDY || role == Role.ROLE_FREE_CADDY) {
             Caddy caddy = caddyRepository.findById(id)

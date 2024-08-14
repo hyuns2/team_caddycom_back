@@ -122,10 +122,8 @@ public class AssignmentCaddyService {
     }
 
     public List<AssignmentResponse.CaddyAssignmentInfoDetail> getAssignmentInfo(List<Long> assignmentIds) {
-
-        return assignmentRepository.findByIdsFetchJoinOrderByStartTime(assignmentIds)
-                .stream()
-                .map(AssignmentResponse.CaddyAssignmentInfoDetail::of)
+        return assignmentRepository.findByIdsFetchJoinOrderByStartTime(assignmentIds).stream()
+                .map(AssignmentResponse.CaddyAssignmentInfoDetail::from)
                 .toList();
     }
 
@@ -229,14 +227,15 @@ public class AssignmentCaddyService {
             throw new IllegalStateException("업무가 시작하지 않은 상태이거나 배정되지 않은 상태입니다.");
         }
 
-        findAssignment.terminate(endedTime);
+        findAssignment.finish(endedTime);
     }
 
     private int getStartIndex(GolfField findGolfField, int caddySize, List<HouseCaddy> findCaddies) {
         Long cursor = findGolfField.getCaddyAssignCursor();
         if (cursor != null) {
             for (int i = 0; i < caddySize; i++) {
-                if (findCaddies.get(i).getId().equals(cursor) || findCaddies.get(i).getId() > cursor) {
+                Long caddyId = findCaddies.get(i).getId();
+                if (caddyId.equals(cursor) || caddyId > cursor) {
                     return i;
                 }
             }

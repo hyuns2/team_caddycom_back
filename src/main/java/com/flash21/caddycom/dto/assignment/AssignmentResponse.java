@@ -9,9 +9,9 @@ import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -180,5 +180,31 @@ public class AssignmentResponse {
             case SATURDAY -> 6;
             case SUNDAY -> 7;
         };
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Block {
+        private String caddyName;
+        private String reason;
+
+        public Block(Assignment assignment) {
+            this.reason = assignment.getReason() != null ? assignment.getReason() : "사용자의 요청으로 블락된 상태입니다.";
+            this.caddyName = assignment.getCaddyName() != null ? assignment.getCaddyName() : "블락 상태에서 캐디가 배정되지 않았습니다.";
+        }
+
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class Assigned {
+        @NotNull(message = "id는 필수값입니다.")
+        @Schema(description = "배정정보 id")
+        private Long id;
+
+        @Schema(description = "상태")
+        private AssignmentStatus status;
     }
 }

@@ -21,30 +21,19 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class FormationController {
     private final FormationService formationService;
-    private final GolfFieldRepository golfFieldRepository;
 
-    //TODO: 서비스 레이어에 메소드 추가 필요
     @PostMapping("/api/formations")
     @Operation(summary = "골프장 구성 정보 생성 API")
     public ResponseEntity<Void> createFormation(@Valid @RequestBody FormationRequest.Process request) {
-        GolfField golfField = golfFieldRepository.findById(request.getGolfFieldId())
-                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
-
-        if(request.getCreate() != null)
-            for(FormationRequest.Create createRequest : request.getCreate())
-                formationService.createFormation(golfField, createRequest);
-
-        if(request.getUpdate() != null)
-            for(FormationRequest.Update updateRequest : request.getUpdate())
-                formationService.updateFormation(updateRequest);
+        formationService.processCreate(request);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/api/formations")
     @Operation(summary = "골프장 구성 정보 반환 API")
-    public ResponseEntity<List<FormationResponse.Create>> getFormations(Long golfFieldId) {
-        List<FormationResponse.Create> formationInfos = formationService.getAllFormations(golfFieldId);
+    public ResponseEntity<List<FormationResponse.Info>> getFormations(Long golfFieldId) {
+        List<FormationResponse.Info> formationInfos = formationService.getAllFormations(golfFieldId);
 
         return new ResponseEntity<>(formationInfos, HttpStatus.OK);
     }

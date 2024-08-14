@@ -44,8 +44,8 @@ public class FormationController {
 
     @GetMapping("/api/formations")
     @Operation(summary = "골프장 구성 정보 반환 API")
-    public ResponseEntity<List<FormationResponse.Create>> getFormations(Long golfFieldId) {
-        List<FormationResponse.Create> formationInfos = formationService.getAllFormations(golfFieldId);
+    public ResponseEntity<List<FormationResponse.Info>> getFormations(Long golfFieldId) {
+        List<FormationResponse.Info> formationInfos = formationService.getAllFormations(golfFieldId);
 
         return new ResponseEntity<>(formationInfos, HttpStatus.OK);
     }

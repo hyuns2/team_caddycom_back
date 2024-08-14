@@ -136,12 +136,12 @@ public class FormationService {
      * @throws NoSuchElementException
      *          골프장에 구성이 존재하지 않는 경우
      */
-    public List<FormationResponse.Create> getAllFormations(Long golfFieldId) {
+    public List<FormationResponse.Info> getAllFormations(Long golfFieldId) {
         List<Formation> formations = formationRepository.findAllByGolfFieldId(golfFieldId);
         if(formations.isEmpty())
             throw new NoSuchElementException("골프장에 구성이 존재하지 않습니다.");
 
-        List<FormationResponse.Create> response = new ArrayList<>();
+        List<FormationResponse.Info> response = new ArrayList<>();
         for(Formation formation : formations) {
             List<CourseResponse.Info> courseInfos = new ArrayList<>();
             if(!formation.getCourses().isEmpty()) {
@@ -150,7 +150,7 @@ public class FormationService {
                         .sorted(Comparator.comparingLong(CourseResponse.Info::getId))
                         .collect(Collectors.toList());
             }
-            response.add(new FormationResponse.Create(formation.getId(), formation.getName(), courseInfos));
+            response.add(new FormationResponse.Info(formation.getId(), formation.getName(), courseInfos));
         }
         return response;
     }

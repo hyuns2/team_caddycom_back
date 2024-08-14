@@ -3,7 +3,7 @@ package com.flash21.caddycom.dto.golfFieldDetail.tee;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-public class TeeDto {
+public class TeeResponse {
     @Getter
     @AllArgsConstructor
     public static class Info {

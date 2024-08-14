@@ -24,6 +24,7 @@ public class CommentController {
     @GetMapping("/api/hole/{holeId}/tips")
     @Operation(summary = "홀의 전체 팁 정보 조회 API")
     public ResponseEntity<List<CommentResponse.Info>> getAllComments(@PathVariable Long holeId) {
-        return new ResponseEntity<>(commentService.getAllComments(holeId), HttpStatus.OK);
+        return ResponseEntity.ok()
+                .body(commentService.getAllComments(holeId));
     }
 }

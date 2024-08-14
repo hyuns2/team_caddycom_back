@@ -94,12 +94,9 @@ public class CommentService {
     public List<CommentResponse.Info> getAllComments(Long holeId) {
         List<Comment> comments = commentRepository.findAllByHoleId(holeId);
 
-        List<CommentResponse.Info> Infos = new ArrayList<>();
-        comments.forEach(comment ->
-                Infos.add(new CommentResponse.Info(comment.getId(), comment.getTitle(), comment.getContent(), comment.getImageUrl()))
-        );
-
-        return Infos;
+        return comments.stream()
+                .map(CommentResponse.Info::of)
+                .toList();
     }
 
     /**
@@ -109,6 +106,6 @@ public class CommentService {
      * @return 저장된 파일 url
      */
     private String uploadImage(MultipartFile image) {
-        return fileUploader.upload(image,"hole-detail/");
+        return fileUploader.upload(image, "hole-detail/");
     }
 }

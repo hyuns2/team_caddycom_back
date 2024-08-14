@@ -1,10 +1,7 @@
 package com.flash21.caddycom.controller.auth;
 
 import com.flash21.caddycom.dto.Message;
-import com.flash21.caddycom.dto.auth.JwtRequest;
-import com.flash21.caddycom.dto.auth.JwtResponse;
-import com.flash21.caddycom.dto.auth.SigninResponse;
-import com.flash21.caddycom.dto.auth.SigninRequest;
+import com.flash21.caddycom.dto.auth.*;
 import com.flash21.caddycom.service.auth.WebAuthService;
 import com.flash21.caddycom.service.auth.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,7 +31,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in/first")
     public ResponseEntity<SigninResponse.Main> firstSignin(@Valid @RequestBody SigninRequest.First request){
-        SigninResponse.Main response = authService.firstLogin(request);
+        SigninResponse.Main response = authService.firstLogin(SigninCommand.First.from(request));
         return ResponseEntity.ok().body(response);
     }
 
@@ -42,7 +39,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in")
     public ResponseEntity<SigninResponse.Main> signin(@Valid @RequestBody SigninRequest.Login request){
-        SigninResponse.Main response = authService.afterLogin(request);
+        SigninResponse.Main response = authService.afterLogin(SigninCommand.Login.from(request));
         return ResponseEntity.ok().body(response);
     }
 
@@ -51,7 +48,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in/password")
     public ResponseEntity<Message> setPassword(@Valid @RequestBody SigninRequest.Password request){
-        authService.setPassword(request);
+        authService.setPassword(SigninCommand.Password.from(request));
         return ResponseEntity.ok().body(new Message("비밀번호가 설정되었습니다."));
     }
 

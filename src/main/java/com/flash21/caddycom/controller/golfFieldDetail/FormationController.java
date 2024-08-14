@@ -28,16 +28,7 @@ public class FormationController {
     @PostMapping("/api/formations")
     @Operation(summary = "골프장 구성 정보 생성 API")
     public ResponseEntity<Void> createFormation(@Valid @RequestBody FormationRequest.Process request) {
-        GolfField golfField = golfFieldRepository.findById(request.getGolfFieldId())
-                .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
-
-        if(request.getCreate() != null)
-            for(FormationRequest.Create createRequest : request.getCreate())
-                formationService.createFormation(golfField, createRequest);
-
-        if(request.getUpdate() != null)
-            for(FormationRequest.Update updateRequest : request.getUpdate())
-                formationService.updateFormation(updateRequest);
+        formationService.processCreate(request);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

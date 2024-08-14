@@ -8,6 +8,7 @@ import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
+import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.CommentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.formation.FormationRepository;
@@ -39,6 +40,7 @@ public class FormationService {
     private final HoleRepository holeRepository;
     private final TeeRepository teeRepository;
     private final CommentRepository commentRepository;
+    private final GolfFieldRepository golfFieldRepository;
 
     private final CourseService courseService;
     private final HoleService holeService;
@@ -47,6 +49,19 @@ public class FormationService {
     @PersistenceContext
     EntityManager entityManager;
 
+    public void processCreate(FormationRequest.Process request) {
+        GolfField golfField = golfFieldRepository.findById(request.getGolfFieldId())
+                .orElseThrow(() -> new NoSuchElementException("해당 골프장이 존재하지 않습니다."));
+
+        if(request.getCreate() != null)
+            for(FormationRequest.Create create : request.getCreate())
+                createFormation(golfField, create);
+
+        if(request.getUpdate() != null)
+            for(FormationRequest.Update update : request.getUpdate())
+                updateFormation(update);
+
+    }
     /**
      * 구성 정보를 생성하면서 코스, 홀, 티의 정보를 같이 생성한다.
      *

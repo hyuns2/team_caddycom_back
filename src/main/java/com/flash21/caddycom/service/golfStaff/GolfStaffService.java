@@ -1,10 +1,10 @@
-package com.flash21.caddycom.service.account;
+package com.flash21.caddycom.service.golfStaff;
 
 import com.flash21.caddycom.dto.golfStaff.GolfStaffCommand;
 import com.flash21.caddycom.dto.golfStaff.GolfStaffResponse;
 import com.flash21.caddycom.entity.account.GolfStaff;
 import com.flash21.caddycom.entity.golfField.GolfField;
-import com.flash21.caddycom.repository.account.GolfStaffRepository;
+import com.flash21.caddycom.repository.golfStaff.GolfStaffRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class GolfStaffService {
 
         List<GolfStaff> golfStaffs = requestList.stream()
                 .map(GolfStaffCommand.Create::toEntity)
-                .peek(account -> account.linkGolfField(golfField))
+                .peek(staff -> staff.linkGolfField(golfField))
                 .toList();
         golfStaffRepository.saveAll(golfStaffs);
     }

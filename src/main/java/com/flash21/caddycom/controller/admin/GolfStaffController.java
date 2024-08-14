@@ -5,7 +5,7 @@ import com.flash21.caddycom.dto.Message;
 import com.flash21.caddycom.dto.golfStaff.GolfStaffCommand;
 import com.flash21.caddycom.dto.golfStaff.GolfStaffRequest;
 import com.flash21.caddycom.dto.golfStaff.GolfStaffResponse;
-import com.flash21.caddycom.service.account.GolfStaffService;
+import com.flash21.caddycom.service.golfStaff.GolfStaffService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

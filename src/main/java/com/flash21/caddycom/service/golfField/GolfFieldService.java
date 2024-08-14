@@ -6,7 +6,7 @@ import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
-import com.flash21.caddycom.repository.account.GolfStaffRepository;
+import com.flash21.caddycom.repository.golfStaff.GolfStaffRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;

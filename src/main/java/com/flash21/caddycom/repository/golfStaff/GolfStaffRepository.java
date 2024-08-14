@@ -1,4 +1,4 @@
-package com.flash21.caddycom.repository.account;
+package com.flash21.caddycom.repository.golfStaff;
 
 import com.flash21.caddycom.entity.account.GolfStaff;
 import com.flash21.caddycom.entity.golfField.GolfField;

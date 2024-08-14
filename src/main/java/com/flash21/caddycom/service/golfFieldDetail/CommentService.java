@@ -95,7 +95,7 @@ public class CommentService {
         List<Comment> comments = commentRepository.findAllByHoleId(holeId);
 
         return comments.stream()
-                .map(CommentResponse.Info::of)
+                .map(CommentResponse.Info::from)
                 .toList();
     }
 

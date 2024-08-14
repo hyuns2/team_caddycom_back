@@ -16,7 +16,7 @@ public class CommentResponse {
         private String content;
         private String imageUrl;
 
-        public static CommentResponse.Info of(Comment comment) {
+        public static CommentResponse.Info from(Comment comment) {
             return Info.builder()
                     .id(comment.getId())
                     .title(comment.getTitle())

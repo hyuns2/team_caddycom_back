@@ -71,7 +71,7 @@ public class GolfField {
     @OneToMany(mappedBy = "golfField", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchedFreeCaddy> matchedFreeCaddyList;
 
-    private Long caddyAssignCursor;
+    private Long caddyAssignCursor = 0L;
 
     public void approve() {
         this.status = ApprovalStatus.APPROVED;

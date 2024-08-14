@@ -79,7 +79,7 @@ public class AssignmentResponse {
         private String startTime;
 
 
-        public static CaddyAssignmentInfoDetail of(Assignment assignment) {
+        public static CaddyAssignmentInfoDetail from(Assignment assignment) {
 
             Schedule schedule = assignment.getSchedule();
             GolfField golfField = schedule.getGolfField();

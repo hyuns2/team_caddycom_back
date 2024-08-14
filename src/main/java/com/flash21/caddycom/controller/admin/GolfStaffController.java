@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Tag(name = "0-0. GolfStaff", description = "골프장 관리자(직원) 계정 관련 API")
+@Tag(name = "0-0. Golf Staff", description = "골프장 관리자(직원) 계정 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/golf-staff")

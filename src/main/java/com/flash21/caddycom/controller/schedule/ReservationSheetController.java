@@ -1,6 +1,5 @@
 package com.flash21.caddycom.controller.schedule;
 
-import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.dto.schedule.ReservationSheetDto;
 import com.flash21.caddycom.service.schedule.ReservationSheetService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,9 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor

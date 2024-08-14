@@ -6,7 +6,7 @@ import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
-import com.flash21.caddycom.repository.account.AccountRepository;
+import com.flash21.caddycom.repository.account.GolfStaffRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,7 +36,7 @@ public class GolfFieldService {
     private final FileUploader fileUploader;
     private final GolfFieldRepository golfFieldRepository;
     private final FacilityService facilityService;
-    private final AccountRepository accountRepository;
+    private final GolfStaffRepository golfStaffRepository;
 
     /**
      * 골프장을 생성
@@ -51,7 +51,7 @@ public class GolfFieldService {
 
         GolfField golfField = request.toEntity(fileUrls.get(0), fileUrls.get(1), fileUrls.get(2));
         golfFieldRepository.save(golfField);
-        accountRepository.findByPhoneNumber(request.getContact())
+        golfStaffRepository.findByPhoneNumber(request.getContact())
                 .ifPresent(account -> account.linkGolfField(golfField));
     }
 

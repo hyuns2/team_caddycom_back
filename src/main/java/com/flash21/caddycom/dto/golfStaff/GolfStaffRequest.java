@@ -1,6 +1,6 @@
-package com.flash21.caddycom.dto.account;
+package com.flash21.caddycom.dto.golfStaff;
 
-import com.flash21.caddycom.entity.account.Account;
+import com.flash21.caddycom.entity.account.GolfStaff;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +8,7 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
-public class AccountRequest {
+public class GolfStaffRequest {
     @AllArgsConstructor
     @Builder
     @Getter
@@ -29,8 +29,8 @@ public class AccountRequest {
             return phoneNumber.replaceAll("[^0-9]", "");
         }
 
-        public Account toEntity() {
-            return Account.builder()
+        public GolfStaff toEntity() {
+            return GolfStaff.builder()
                     .enteringDate(enteringDate)
                     .position(position)
                     .name(name)

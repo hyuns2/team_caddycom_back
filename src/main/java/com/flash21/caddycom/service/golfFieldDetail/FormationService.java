@@ -9,7 +9,6 @@ import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
-import com.flash21.caddycom.repository.golfFieldDetail.CommentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.comment.CommentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.formation.FormationRepository;

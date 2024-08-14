@@ -30,6 +30,6 @@ public class HoleController {
     @PostMapping(value="/api/hole/detail", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "홀의 상세 정보 설정 API")
     public void createDetailInfo(@Valid @ModelAttribute HoleRequest.CreateDetailInfo request) {
-        holeService.createDetailInfo(request);
+        holeService.processDetailInfo(request);
     }
 }

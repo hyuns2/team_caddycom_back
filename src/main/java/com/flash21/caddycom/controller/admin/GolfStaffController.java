@@ -2,19 +2,17 @@ package com.flash21.caddycom.controller.admin;
 
 
 import com.flash21.caddycom.dto.Message;
+import com.flash21.caddycom.dto.golfStaff.GolfStaffCommand;
 import com.flash21.caddycom.dto.golfStaff.GolfStaffRequest;
 import com.flash21.caddycom.dto.golfStaff.GolfStaffResponse;
 import com.flash21.caddycom.service.account.GolfStaffService;
-import com.flash21.caddycom.service.admin.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,7 +28,7 @@ public class GolfStaffController {
     @PostMapping("/employee")
     public ResponseEntity<Message> createGolfStaff(@Valid @RequestParam Long golfFieldId,
                                                    @Valid @RequestBody List<GolfStaffRequest.Create> request){
-        golfStaffService.createGolfStaff(golfFieldId, request);
+        golfStaffService.createGolfStaff(golfFieldId, request.stream().map(GolfStaffCommand.Create::from).toList());
         return ResponseEntity.ok().body(new Message("직원 계정 생성 완료"));
     }
 
@@ -40,6 +38,4 @@ public class GolfStaffController {
     public ResponseEntity<List<GolfStaffResponse.Info>> getGolfStaff(@Valid @RequestParam Long golfFieldId){
         return ResponseEntity.ok().body(golfStaffService.getGolfStaff(golfFieldId));
     }
-
-
 }

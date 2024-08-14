@@ -1,6 +1,6 @@
 package com.flash21.caddycom.service.account;
 
-import com.flash21.caddycom.dto.golfStaff.GolfStaffRequest;
+import com.flash21.caddycom.dto.golfStaff.GolfStaffCommand;
 import com.flash21.caddycom.dto.golfStaff.GolfStaffResponse;
 import com.flash21.caddycom.entity.account.GolfStaff;
 import com.flash21.caddycom.entity.golfField.GolfField;
@@ -31,12 +31,12 @@ public class GolfStaffService {
     }
 
     @Transactional
-    public void createGolfStaff(Long id, List<GolfStaffRequest.Create> requestList) {
+    public void createGolfStaff(Long id, List<GolfStaffCommand.Create> requestList) {
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("골프장이 존재하지 않습니다."));
 
         List<GolfStaff> golfStaffs = requestList.stream()
-                .map(GolfStaffRequest.Create::toEntity)
+                .map(GolfStaffCommand.Create::toEntity)
                 .peek(account -> account.linkGolfField(golfField))
                 .toList();
         golfStaffRepository.saveAll(golfStaffs);

@@ -37,26 +37,25 @@ public class ReservationSheetService {
     /**
      * 예약시트 생성: 예약시트를 생성합니다.
      *
-     * @param dto 예약시트 생성요청 dto
+     * @param requestDto 예약시트 생성요청 dto
      * @throws CCourseNotFoundException Course 객체가 존재하지 않을 경우
      */
     @Transactional
-    public void createReservationSheet(ReservationSheetDto.CreateOrUpdateRequest dto) {
-        GolfField golfField = golfFieldRepository.findById(dto.getGolfFieldId())
+    public void createReservationSheet(ReservationSheetDto.CreateOrUpdateRequest requestDto) {
+
+        GolfField golfField = golfFieldRepository.findById(requestDto.getGolfFieldId())
                 .orElseThrow(CGolfFieldNotFoundException::new);
-        List<Course> courseList = courseRepository.findAllById(dto.getCourseList());
-        if (courseList.isEmpty())
+
+        List<Course> courseList = courseRepository.findAllById(requestDto.getCourseList());
+        if (courseList.isEmpty()) {
             throw new CCourseNotFoundException();
-
-        validToCreateSchedules(dto);
-
-        ReservationSheet reservationSheet = reservationSheetRepository.save(dto.toEntity(golfField));
-
-        List<Schedule> scheduleList = new ArrayList<>();
-        for (int i = 0; i < dto.getTeeOffList().size(); i++) {
-            createSchedulesByPart(scheduleList, golfField, reservationSheet, courseList, dto.getStartDate(), dto.getEndDate(),
-                    LocalTime.parse(dto.getStartTimeList().get(i)), LocalTime.parse(dto.getEndTimeList().get(i)), dto.getTeeOffList().get(i), i + 1);
         }
+
+        validToCreateSchedules(requestDto);
+
+        ReservationSheet reservationSheet = reservationSheetRepository.save(requestDto.toEntity(golfField));
+        List<Schedule> scheduleList = createSchedules(golfField, courseList, reservationSheet, requestDto);
+
         scheduleJdbcRepository.saveAll(scheduleList);
     }
 
@@ -79,26 +78,31 @@ public class ReservationSheetService {
                 throw new CBadReservationRequestException();
     }
 
-    /**
-     * 스케쥴 생성함수: 일별, 코스별, 부별 스케쥴을 생성합니다.
-     *
-     * @param scheduleList 저장할 스케쥴 객체리스트
-     * @param golfField    골프장 객체
-     * @param courseList   코스 리스트
-     * @param startDate    시작날짜
-     * @param endDate      종료날짜
-     * @param startTime    시작시간
-     * @param endTime      종료시간
-     * @param teeOff       티오프
-     * @param part         몇 부인지
-     */
-    private void createSchedulesByPart(List<Schedule> scheduleList, GolfField golfField, ReservationSheet reservationSheet, List<Course> courseList, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String teeOff, int part) {
-        List<LocalDate> localDateList = startDate.datesUntil(endDate.plusDays(1)).toList();
+    private List<Schedule> createSchedules(GolfField golfField, List<Course> courseList, ReservationSheet reservationSheet, ReservationSheetDto.CreateOrUpdateRequest dto) {
+
+        List<Schedule> scheduleList = new ArrayList<>();
+        List<LocalDate> localDateList = getLocalDateList(dto);
+
+        for (int i = 0; i < dto.getTeeOffList().size(); i++) {
+            LocalTime startTime = LocalTime.parse(dto.getStartTimeList().get(i));
+            LocalTime endTime = LocalTime.parse(dto.getEndTimeList().get(i));
+            String teeOff = dto.getTeeOffList().get(i);
+            int part = i + 1;
+
+            addSchedules(scheduleList, golfField, courseList, reservationSheet, localDateList, startTime, endTime, teeOff, part);
+        }
+
+        return scheduleList;
+    }
+
+    private void addSchedules(List<Schedule> scheduleList, GolfField golfField, List<Course> courseList, ReservationSheet reservationSheet, List<LocalDate> localDateList, LocalTime startTime, LocalTime endTime, String teeOff, int part) {
+
         int totalCnt = getStartTimeList(startTime, endTime, teeOff).size();
 
         for (Course course : courseList) {
             for (LocalDate oneDay : localDateList) {
-                scheduleList.add(Schedule.builder()
+
+                Schedule newSchedule = Schedule.builder()
                         .golfField(golfField)
                         .reservationSheet(reservationSheet)
                         .course(course)
@@ -109,9 +113,18 @@ public class ReservationSheetService {
                         .part(part)
                         .dateStatus(DateStatus.NOTHING)
                         .totalCnt(totalCnt)
-                        .blockedCnt(0).build());
+                        .blockedCnt(0)
+                        .build();
+
+                scheduleList.add(newSchedule);
             }
         }
+    }
+
+    private List<LocalDate> getLocalDateList(ReservationSheetDto.CreateOrUpdateRequest dto) {
+        LocalDate startDate = dto.getStartDate();
+        LocalDate endDate = dto.getEndDate();
+        return startDate.datesUntil(endDate.plusDays(1)).toList();
     }
 
     /**
@@ -191,7 +204,7 @@ public class ReservationSheetService {
         List<Schedule> scheduleList = scheduleRepository.findAllByReservationSheetId(reservationSheetId);
         if (assignmentRepository.findFirstByStatusIsInAndScheduleIsIn(
                 Arrays.asList(AssignmentStatus.BLOCKED, AssignmentStatus.REQUESTED, AssignmentStatus.ASSIGNED), scheduleList
-            ).isPresent())
+        ).isPresent())
             throw new CInvalidModifyingRequestException();
 
         deleteReservationSheet(reservationSheetId);

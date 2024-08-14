@@ -1,7 +1,7 @@
 package com.flash21.caddycom.service.auth;
 
 import com.flash21.caddycom.dto.auth.JwtResponse;
-import com.flash21.caddycom.dto.auth.SigninRequest;
+import com.flash21.caddycom.dto.auth.SigninCommand;
 import com.flash21.caddycom.dto.auth.SigninResponse;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.caddy.Caddy;
@@ -23,7 +23,7 @@ public class CaddyAuthService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public void setPassword(SigninRequest.Password request) {
+    public void setPassword(SigninCommand.Password request) {
         Caddy caddy = caddyRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 캐디입니다."));
         caddy.updatePassword(request.getPassword());
@@ -33,7 +33,7 @@ public class CaddyAuthService {
      * 전화번호와 비밀번호를 이용해 캐디를 확인하고 , jwt와 유저 정보를 담은 응답을 반환한다.
      */
     @Transactional
-    public SigninResponse.CaddyMain afterLogin(SigninRequest.Caddy request) {
+    public SigninResponse.CaddyMain afterLogin(SigninCommand.Caddy request) {
         Caddy caddy = caddyRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 캐디입니다."));
         if (caddy.getPassword() == null) {
@@ -52,7 +52,7 @@ public class CaddyAuthService {
      * 3. jwt와 유저 정보를 담은 응답을 반환한다.
      */
     @Transactional
-    public SigninResponse.CaddyMain firstLogin(SigninRequest.First request) {
+    public SigninResponse.CaddyMain firstLogin(SigninCommand.First request) {
         Caddy caddy = caddyRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseGet(() -> createFreeCaddy(request.getPhoneNumber()));
         return generateTokenAndResponse(caddy);

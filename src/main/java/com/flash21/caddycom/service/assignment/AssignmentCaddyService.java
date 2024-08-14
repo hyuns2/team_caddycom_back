@@ -35,6 +35,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.flash21.caddycom.entity.schedule.AssignmentStatus.*;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -69,7 +71,7 @@ public class AssignmentCaddyService {
         Assignment assignment = assignmentRepository.findByIdWithFetchJoin(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 배정 정보가 없습니다."));
 
-        if (assignment.getStatus() != AssignmentStatus.CANCELED && assignment.getStatus() != AssignmentStatus.ASSIGNED) {
+        if (assignment.getStatus() != CANCELED && assignment.getStatus() != ASSIGNED) {
             throw new IllegalArgumentException("배정되거나 취소된 상태에서만 조회 가능합니다.");
         }
         return AssignmentResponse.Detail.from(assignment);
@@ -99,7 +101,7 @@ public class AssignmentCaddyService {
         if (assignments.size() != 2)
             throw new IllegalArgumentException("해당 배정 정보가 없습니다.");
 
-        if (assignments.stream().anyMatch(assignment -> assignment.getStatus() != AssignmentStatus.ASSIGNED))
+        if (assignments.stream().anyMatch(assignment -> assignment.getStatus() != ASSIGNED))
             throw new IllegalArgumentException("이미 취소되거나 블락된 배정입니다. 변경이 불가능합니다.");
         // swap
         Caddy fromCaddy = assignments.get(0).getCaddy();
@@ -170,7 +172,7 @@ public class AssignmentCaddyService {
             boolean isAssigned = false;
 
             AssignmentStatus status = assignment.getStatus();
-            if (status == AssignmentStatus.BLOCKED || status == AssignmentStatus.ASSIGNED) continue;
+            if (status == BLOCKED || status == ASSIGNED) continue;
 
             while (!isAssigned) {
 
@@ -202,8 +204,8 @@ public class AssignmentCaddyService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 코스입니다."));
 
         if (assignment.getEndedTime() != null &&
-                assignment.getStatus() != AssignmentStatus.ASSIGNED &&
-                assignment.getStatus() != AssignmentStatus.BLOCKED) {
+                assignment.getStatus() != ASSIGNED &&
+                assignment.getStatus() != BLOCKED) {
             throw new IllegalStateException("업무가 끝난 상태이거나 배정되지 않은 상태입니다.");
         }
 
@@ -222,8 +224,8 @@ public class AssignmentCaddyService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
 
         if (findAssignment.getStartedTime() == null &&
-                findAssignment.getStatus() != AssignmentStatus.ASSIGNED &&
-                findAssignment.getStatus() != AssignmentStatus.BLOCKED) {
+                findAssignment.getStatus() != ASSIGNED &&
+                findAssignment.getStatus() != BLOCKED) {
             throw new IllegalStateException("업무가 시작하지 않은 상태이거나 배정되지 않은 상태입니다.");
         }
 
@@ -249,14 +251,14 @@ public class AssignmentCaddyService {
     private List<Assignment> getAllAssignmentsSortByTime(List<Schedule> findSchedules) {
         return findSchedules.stream()
                 .flatMap(schedule -> schedule.getAssignments().stream())
-                .filter(assignment -> assignment.getStatus() == AssignmentStatus.NOTHING || assignment.getStatus() == AssignmentStatus.BLOCKED)
+                .filter(assignment -> assignment.getStatus() == NOTHING || assignment.getStatus() == BLOCKED)
                 .sorted(Comparator.comparing(Assignment::getStartTime))
                 .collect(Collectors.toList());
     }
 
     private Set<Long> getBlockedHouseCaddies(List<Assignment> findAssignment) {
         return findAssignment.stream()
-                .filter(assignment -> assignment.getStatus() == AssignmentStatus.BLOCKED && assignment.getCaddy() != null)
+                .filter(assignment -> assignment.getStatus() == BLOCKED && assignment.getCaddy() != null)
                 .map(Assignment::getCaddy)
                 .map(Caddy::getId)
                 .collect(Collectors.toSet());

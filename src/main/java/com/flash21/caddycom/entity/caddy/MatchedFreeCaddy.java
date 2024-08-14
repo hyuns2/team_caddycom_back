@@ -30,4 +30,8 @@ public class MatchedFreeCaddy {
                 .golfField(golfField)
                 .build();
     }
+
+    public void setFreeCaddy(FreeCaddy freeCaddy) {
+        this.freeCaddy = freeCaddy;
+    }
 }

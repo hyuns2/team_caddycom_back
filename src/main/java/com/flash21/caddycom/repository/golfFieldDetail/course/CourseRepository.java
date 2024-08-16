@@ -28,4 +28,7 @@ public interface CourseRepository extends JpaRepository<Course, Long>, CourseJdb
 
     @Query("select c.id from Course c where c.formation.id in :formationIds")
     List<Long> findAllIdByFormationIds(Iterable<Long> formationIds);
+
+    @Query("select c from Course c where c.formation.id = :formationId and c.holes is empty")
+    List<Course> findAllByFormationIdAndHolesIsEmpty(Long formationId);
 }

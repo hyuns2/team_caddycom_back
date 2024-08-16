@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class FormationService {
     private final FormationRepository formationRepository;
     private final CourseRepository courseRepository;
@@ -45,9 +45,6 @@ public class FormationService {
     private final CourseService courseService;
     private final HoleService holeService;
     private final TeeService teeService;
-
-    @PersistenceContext
-    EntityManager entityManager;
 
     public void processCreate(FormationRequest.Process request) {
         GolfField golfField = golfFieldRepository.findById(request.getGolfFieldId()).orElseThrow(() -> new NoSuchElementException("해당 골프장이 존재하지 않습니다."));
@@ -114,7 +111,19 @@ public class FormationService {
                     courseCreateInfos.add(new CourseRequest.Create(courseUpdateInfo.getName(), courseUpdateInfo.getTotalHoles()));
                 else courseService.updateCourse(courseUpdateInfo);
             }
-            if (!courseCreateInfos.isEmpty()) courseService.createCourses(formation, courseCreateInfos);
+            if (!courseCreateInfos.isEmpty()) {
+                courseService.createCourses(formation, courseCreateInfos);
+                List<Course> courses = courseRepository.findAllByFormationIdAndHolesIsEmpty(request.getFormationId());
+                holeService.createHoles(courses);
+
+                List<Long> courseIds = new ArrayList<>();
+                for(Course course : courses)
+                    courseIds.add(course.getId());
+
+                List<Hole> holes = holeRepository.findAllByCourseIdsAndTeesIsEmpty(courseIds);
+
+                teeService.createTees(holes);
+            }
         }
     }
 
@@ -141,6 +150,7 @@ public class FormationService {
      * @return 골프장의 모든 구성 정보
      * @throws NoSuchElementException 골프장에 구성이 존재하지 않는 경우
      */
+    @Transactional(readOnly = true)
     public List<FormationResponse.Info> getAllFormations(Long golfFieldId) {
         List<Formation> formations = formationRepository.findAllByGolfFieldId(golfFieldId);
         if (formations.isEmpty()) throw new NoSuchElementException("골프장에 구성이 존재하지 않습니다.");

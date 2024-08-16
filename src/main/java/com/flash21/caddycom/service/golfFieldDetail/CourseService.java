@@ -29,7 +29,7 @@ import java.util.NoSuchElementException;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class CourseService {
     private final CourseRepository courseRepository;
     private final ScheduleRepository scheduleRepository;
@@ -43,6 +43,7 @@ public class CourseService {
      *
      * @return 코스 정보 DTO 리스트
      */
+    @Transactional(readOnly = true)
     public List<CourseResponse.Info> retrieveCourseInfo(Long golfFieldId) {
         List<Course> courseList = courseRepository.findAllByGolfFieldId(golfFieldId);
 
@@ -152,6 +153,7 @@ public class CourseService {
      * @param formationId 구성 id
      * @return 코스 상세 정보 리스트
      */
+    @Transactional(readOnly = true)
     public List<CourseResponse.Detail> getHoles(Long formationId) {
         List<Course> courses = courseRepository.findAllByFormationId(formationId);
         return courses.stream().map(CourseResponse.Detail::from).toList();

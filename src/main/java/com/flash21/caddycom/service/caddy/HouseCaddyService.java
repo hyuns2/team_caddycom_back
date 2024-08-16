@@ -15,6 +15,7 @@ import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundExcepti
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class HouseCaddyService {
 
     private final HouseCaddyRepository houseCaddyRepository;
@@ -33,6 +33,7 @@ public class HouseCaddyService {
     private final FileUploader fileUploader;
     private final EntityConverter entityConverter;
     private final ExcelReader excelReader;
+    private final ApplicationContext applicationContext;
 
     /**
      * 조 전제조회: 골프장 Id에 해당하는 캐디의 조이름을 전부 반환합니다.
@@ -40,6 +41,7 @@ public class HouseCaddyService {
      * @param golfFieldId 골프장 Id
      * @return 조이름 리스트
      */
+    @Transactional(readOnly = true)
     public List<String> getHouseCaddyTeam(Long golfFieldId) {
         return houseCaddyRepository.findAllTeam(golfFieldId);
     }
@@ -50,6 +52,7 @@ public class HouseCaddyService {
      * @param golfFieldId 골프장 Id
      * @return 조이름, 캐디정보 리스트 맵핑결과
      */
+    @Transactional(readOnly = true)
     public Map<String, List<HouseCaddyResponse.Detail>> getHouseCaddies(Long golfFieldId) {
         List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByGolfFieldIdOrderByTeamAndTeamRole(golfFieldId);
 
@@ -73,6 +76,7 @@ public class HouseCaddyService {
      * @param teamName    조 이름
      * @return 캐디정보 리스트
      */
+    @Transactional(readOnly = true)
     public List<HouseCaddyResponse.Detail> getHouseCaddyByTeam(Long golfFieldId, String teamName) {
         String team = teamName.equals("조 없음") ? null : teamName;
         List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, team);
@@ -140,6 +144,7 @@ public class HouseCaddyService {
         houseCaddy.updateHoliday();
     }
 
+    @Transactional(readOnly = true)
     public Map<String, List<HouseCaddyResponse.Info>> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequest.CaddySearchCond searchCond) {
 
         List<HouseCaddyResponse.Info> findHouseCaddies =
@@ -166,6 +171,7 @@ public class HouseCaddyService {
      *
      * @return 조 이름과 하우스캐디 정보(하우스캐디의 id, 이름, 역할, 휴무일) 리스트로 이루어진 DTO 리스트
      */
+    @Transactional(readOnly = true)
     public List<HouseCaddyResponse.TeamHoliday> getAllHoliday(Long golfFieldId) {
         List<HouseCaddy> houseCaddies = houseCaddyRepository.findAllByGolfFieldId(golfFieldId);
 
@@ -191,6 +197,7 @@ public class HouseCaddyService {
      * @param teamName    조 이름
      * @return 조 이름과 하우스캐디 정보 리스트(하우스캐디의 id, 이름, 역할, 휴무일) 로 이루어진 DTO
      */
+    @Transactional(readOnly = true)
     public HouseCaddyResponse.TeamHoliday getTeamHoliday(Long golfFieldId, String teamName) {
         String team = teamName.equals("조 없음") ? null : teamName;
         List<HouseCaddy> caddies = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, team);
@@ -260,6 +267,7 @@ public class HouseCaddyService {
      * @param caddyId 캐디 Id
      * @return 하우스캐디 정보 dto
      */
+    @Transactional(readOnly = true)
     public HouseCaddyResponse.Detail getHouseCaddy(Long caddyId) {
         HouseCaddy hc = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
@@ -307,7 +315,6 @@ public class HouseCaddyService {
 
 
     //TODO: 엑셀 읽기 트랜젝션 밖에서
-    @Transactional
     public void uploadCaddy(Long id, MultipartFile file) {
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
@@ -317,6 +324,9 @@ public class HouseCaddyService {
                 .map(entityConverter::toEntity)
                 .toList();
 
-        saveCaddyList(golfField.getId(), caddyList);
+        HouseCaddyService self = applicationContext.getBean(HouseCaddyService.class);
+        self.saveCaddyList(golfField.getId(), caddyList);
     }
+
+
 }

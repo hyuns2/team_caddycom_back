@@ -35,4 +35,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Sched
     void deleteAllByIdList(List<Long> idList);
 
     List<Schedule> findAllByReservationSheetId(Long reservationSheetId);
+
+    @Query("select s from Schedule s where s.reservationAt > :date and s.course.id in :courseIds")
+    List<Schedule> findAllByCourseIdsAfterDate(Iterable<Long> courseIds, LocalDate date);
 }

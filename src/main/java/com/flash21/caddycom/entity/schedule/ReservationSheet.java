@@ -33,4 +33,12 @@ public class ReservationSheet {
 
     @Convert(converter = IdListConverter.class)
     private List<Long> courseIdList;
+
+    public void removeCourse(List<Long> deleteCourseIds) {
+        for(Long courseId : courseIdList) {
+            if(deleteCourseIds.contains(courseId)) {
+                courseIdList.remove(courseId);
+            }
+        }
+    }
 }

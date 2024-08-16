@@ -43,4 +43,11 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long>, A
     void deleteAllByIdList(List<Long> idList);
 
     Optional<Assignment> findFirstByStatusIsInAndScheduleIsIn(List<AssignmentStatus> assignmentStatusList, List<Schedule> scheduleList);
+
+    @Query("select a from Assignment a where a.schedule in :schedules and (a.status = :assigned or a.status = :blocked)")
+    Page<Assignment> findByStatusAndSchedule(List<Schedule> schedules, AssignmentStatus assigned, AssignmentStatus blocked, Pageable pageable);
+
+    @Modifying(clearAutomatically = true)
+    @Query("delete from Assignment a where a.schedule in :schedules")
+    void deleteAllBySchedules(Iterable<Schedule> schedules);
 }

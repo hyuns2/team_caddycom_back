@@ -125,8 +125,12 @@ public class FormationService {
      */
     @Transactional
     public void deleteFormations(List<Long> ids) {
-        List<Long> courseIds = entityManager.createQuery("SELECT c.id from Course c where c.formation.id in :formationIds", Long.class).setParameter("formationIds", ids).getResultList();
-        courseService.deleteCourses(courseIds);
+        List<Long> courseIds = courseRepository.findAllIdByFormationIds(ids);
+        try {
+            courseService.deleteCourses(courseIds);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("블락되었거나 캐디가 배정된 일정이 있는 코스가 포함된 구성은 삭제할 수 없습니다.");
+        }
         formationRepository.deleteAllByIdInBatch(ids);
     }
 

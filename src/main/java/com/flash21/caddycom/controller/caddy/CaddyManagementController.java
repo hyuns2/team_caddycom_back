@@ -23,8 +23,6 @@ import java.util.Map;
 @Tag(name = "3-1. House Caddy Management", description = "하우스 캐디 관리 API")
 @RequestMapping("/api/house-caddy")
 public class CaddyManagementController {
-    //TODO: 캐디 엑셀 업로드 추가 필요
-
     private final HouseCaddyService houseCaddyService;
 
     @Operation(summary = "조 전체조회", description = "골프장에 속해있는 하우스 캐디의 모든 조를 조회합니다.")

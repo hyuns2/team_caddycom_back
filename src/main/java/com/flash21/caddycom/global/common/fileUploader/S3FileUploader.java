@@ -56,6 +56,10 @@ public class S3FileUploader implements FileUploader{
 
     @Override
     public void delete(String url) {
-        //ToDo: 구현 필요
+        try {
+            amazonS3Client.deleteObject(bucket, url);
+        } catch (Exception e) {
+            log.error("파일 삭제에 실패했습니다.");
+        }
     }
 }

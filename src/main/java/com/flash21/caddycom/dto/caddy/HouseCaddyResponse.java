@@ -119,5 +119,27 @@ public class HouseCaddyResponse {
 
         @Schema(description = "캐디 분류")
         private String caddyType;
+
+
+        public static Detail from(HouseCaddy houseCaddy, String golfFieldName) {
+            return Detail.builder()
+                    .id(houseCaddy.getId())
+                    .golfFieldName(golfFieldName)
+                    .profileUrl(houseCaddy.getProfileUrl())
+                    .name(houseCaddy.getName())
+                    .phoneNumber(houseCaddy.getPhoneNumber())
+                    .team(houseCaddy.getTeam())
+                    .teamRole(houseCaddy.getTeamRole())
+                    .holiday(houseCaddy.getHoliday())
+                    .changedHoliday(houseCaddy.getChangedHoliday())
+                    .offPart(houseCaddy.getOffPart())
+                    .gender(houseCaddy.getGender())
+                    .birth(houseCaddy.getBirth())
+                    .address(houseCaddy.getAddress())
+                    .addressDetail(houseCaddy.getAddressDetail())
+                    .career(houseCaddy.getCareer())
+                    .caddyType(houseCaddy.getCaddyType())
+                    .build();
+        }
     }
 }

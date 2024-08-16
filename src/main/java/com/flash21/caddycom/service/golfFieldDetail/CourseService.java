@@ -126,22 +126,26 @@ public class CourseService {
         LocalDate today = LocalDate.now();
         //1. Schedule 가져오기 (reservation_at이 내일부터 + 삭제된 코스를 참조하고 있는)
         List<Schedule> deleteSchedule = scheduleRepository.findAllByCourseIdsAfterDate(ids, today);
-        //2. Assignment 삭제
-        //2-1. Assignment 검사
-        if(!assignmentRepository.findByStatusAndSchedule(deleteSchedule, AssignmentStatus.ASSIGNED, AssignmentStatus.BLOCKED, PageRequest.of(0, 1)).isEmpty()) {
-           throw new IllegalArgumentException("블락되었거나 캐디가 배정된 일정이 있는 코스는 삭제할 수 없습니다.");
-        }
-        //2-2. Assignment 삭제
-        assignmentRepository.deleteAllBySchedules(deleteSchedule);
+        if(!deleteSchedule.isEmpty()) {
+            //2. Assignment 삭제
+            //2-1. Assignment 검사
+            if (!assignmentRepository.findByStatusAndSchedule(deleteSchedule, AssignmentStatus.ASSIGNED, AssignmentStatus.BLOCKED, PageRequest.of(0, 1)).isEmpty()) {
+                throw new IllegalArgumentException("블락되었거나 캐디가 배정된 일정이 있는 코스는 삭제할 수 없습니다.");
+            }
+            //2-2. Assignment 삭제
+            assignmentRepository.deleteAllBySchedules(deleteSchedule);
 
-        //3. Schedule 삭제
-        scheduleRepository.deleteAllInBatch(deleteSchedule);
+            //3. Schedule 삭제
+            scheduleRepository.deleteAllInBatch(deleteSchedule);
+        }
         //4. ReservationSheet에서 코스 삭제
         //4-1. ReservationSheet 가져오기 (startDate > today + courseIdList에 삭제된 코스를 가지고 있는)
         List<ReservationSheet> reservationSheets = reservationSheetRepository.findAllByAfterDate(today);
-        //4-2. reservationSheet의 courseIdList에서 삭제된 코스 id 삭제
-        for (ReservationSheet rs : reservationSheets)
-            rs.removeCourse(ids);
+        if(!reservationSheets.isEmpty()) {
+            //4-2. reservationSheet의 courseIdList에서 삭제된 코스 id 삭제
+            for (ReservationSheet rs : reservationSheets)
+                rs.removeCourse(ids);
+        }
 
     }
 

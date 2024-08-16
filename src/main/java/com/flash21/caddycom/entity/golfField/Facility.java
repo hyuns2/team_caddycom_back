@@ -31,20 +31,28 @@ public class Facility {
     private GolfField golfField;
 
     @Builder
-    public Facility(GolfField golfField, String name, String content){
+    public Facility(GolfField golfField, String name, String content) {
         this.golfField = golfField;
         this.name = name;
         this.content = content;
 
         /** FacilityImage에서 fk를 가지고 저장하도록 수정됨.
-        this.facilityImages = images.stream()
-                .map(url -> new FacilityImage(url, this))
-                .toList(); */
+         this.facilityImages = images.stream()
+         .map(url -> new FacilityImage(url, this))
+         .toList(); */
     }
 
-    public void update(String name, String content){
+    public void update(String name, String content) {
         this.name = name;
         this.content = content;
     }
 
+
+    public static Facility create(GolfField golfField, String name, String content) {
+        return Facility.builder()
+                .golfField(golfField)
+                .name(name)
+                .content(content)
+                .build();
+    }
 }

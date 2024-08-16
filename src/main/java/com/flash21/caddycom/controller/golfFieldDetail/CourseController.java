@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "2-2. Course", description = "코스 API")
+@Tag(name = "2-1. Course", description = "골프장 코스 정보(구성, 코스) 관련 API")
 @RequestMapping("/api/course")
 public class CourseController {
     final CourseService courseService;

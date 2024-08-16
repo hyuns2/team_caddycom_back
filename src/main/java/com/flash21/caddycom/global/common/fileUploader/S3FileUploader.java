@@ -27,6 +27,9 @@ public class S3FileUploader implements FileUploader{
 
     @Override
     public String upload(MultipartFile file, String directory) {
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
         // 원본의 확장자만 추출하여 고유한 파일 이름 설정
         String filename = file.getOriginalFilename();
         String extension =
@@ -53,6 +56,10 @@ public class S3FileUploader implements FileUploader{
 
     @Override
     public void delete(String url) {
-        //ToDo: 구현 필요
+        try {
+            amazonS3Client.deleteObject(bucket, url);
+        } catch (Exception e) {
+            log.error("파일 삭제에 실패했습니다.");
+        }
     }
 }

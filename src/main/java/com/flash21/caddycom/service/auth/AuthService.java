@@ -1,13 +1,10 @@
 package com.flash21.caddycom.service.auth;
 
-import  com.flash21.caddycom.dto.auth.JwtRequest;
-import com.flash21.caddycom.dto.auth.JwtResponse;
-import com.flash21.caddycom.dto.auth.SigninRequest;
-import com.flash21.caddycom.dto.auth.SigninResponse;
-import com.flash21.caddycom.entity.account.Account;
+import com.flash21.caddycom.dto.auth.*;
+import com.flash21.caddycom.entity.account.GolfStaff;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.global.jwt.JwtProvider;
-import com.flash21.caddycom.repository.account.AccountRepository;
+import com.flash21.caddycom.repository.golfStaff.GolfStaffRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService {
-    private final AccountRepository accountRepository;
+    private final GolfStaffRepository golfStaffRepository;
     private final JwtProvider jwtProvider;
 
 
@@ -30,26 +27,26 @@ public class AuthService {
      * 4. 계정이 존재하지 않으면 골프장 등록을 하지 않은 사장님으로 간주함.
      */
     @Transactional
-    public SigninResponse.Main firstLogin(SigninRequest.First request) {
-        Optional<Account> accountOpt = accountRepository.findByPhoneNumber(request.getPhoneNumber());
+    public SigninResponse.Main firstLogin(SigninCommand.First request) {
+        Optional<GolfStaff> golfStaffOpt = golfStaffRepository.findByPhoneNumber(request.getPhoneNumber());
 
-        if (accountOpt.isPresent()) {
-            Account account = accountOpt.get();
-            JwtResponse jwtResponse = jwtProvider.issueTokens(account.getRole(), account.getPhoneNumber(), account.getId());
+        if (golfStaffOpt.isPresent()) {
+            GolfStaff golfStaff = golfStaffOpt.get();
+            JwtResponse jwtResponse = jwtProvider.issueTokens(golfStaff.getRole(), golfStaff.getPhoneNumber(), golfStaff.getId());
 
-            if (account.getRole() == Role.ROLE_EMPLOYEE ||
-                    (account.getRole() == Role.ROLE_OWNER && account.getGolfField() != null)) {
-                return SigninResponse.Main.from(jwtResponse, account.getGolfField(), account.getRole(), account.getPassword());
+            if (golfStaff.getRole() == Role.ROLE_EMPLOYEE ||
+                    (golfStaff.getRole() == Role.ROLE_OWNER && golfStaff.getGolfField() != null)) {
+                return SigninResponse.Main.from(jwtResponse, golfStaff.getGolfField(), golfStaff.getRole(), golfStaff.getPassword());
             }
         }
 
         // 사장님 최초 로그인
-        if (accountOpt.isEmpty()){
-            Account owner = Account.builder()
+        if (golfStaffOpt.isEmpty()){
+            GolfStaff owner = GolfStaff.builder()
                     .phoneNumber(request.getPhoneNumber())
                     .role(Role.ROLE_OWNER)
                     .build();
-            accountRepository.save(owner);
+            golfStaffRepository.save(owner);
         }
         return SigninResponse.Main.first();
     }
@@ -62,19 +59,19 @@ public class AuthService {
      * 3. 비밀번호가 일치하는 경우 jwt 토큰을 발급해주고, 해당 사람이 속한 골프장 정보를 같이 반환함.
      */
     @Transactional
-    public SigninResponse.Main afterLogin(SigninRequest.Login request) {
-        Account account = accountRepository.findByPhoneNumber(request.getPhoneNumber()).
+    public SigninResponse.Main afterLogin(SigninCommand.Login request) {
+        GolfStaff golfStaff = golfStaffRepository.findByPhoneNumber(request.getPhoneNumber()).
                 orElseThrow(() -> new NoSuchElementException("해당 전화번호의 직원/사장은 존재하지 않습니다."));
 
-        if (account.getPassword() == null)
+        if (golfStaff.getPassword() == null)
             throw new IllegalArgumentException("비밀번호가 아직 설정되지 않았습니다.");
 
         //TODO: 인코딩 된 비밀번호 match 검사하도록 수정 필요
-        if (!account.getPassword().equals(request.getPassword()))
+        if (!golfStaff.getPassword().equals(request.getPassword()))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
 
-        JwtResponse jwtResponse = jwtProvider.issueTokens(account.getRole(), account.getPhoneNumber(), account.getId());
-        return SigninResponse.Main.from(jwtResponse, account.getGolfField(), account.getRole(), account.getPassword());
+        JwtResponse jwtResponse = jwtProvider.issueTokens(golfStaff.getRole(), golfStaff.getPhoneNumber(), golfStaff.getId());
+        return SigninResponse.Main.from(jwtResponse, golfStaff.getGolfField(), golfStaff.getRole(), golfStaff.getPassword());
     }
 
 
@@ -84,14 +81,14 @@ public class AuthService {
      * 2. 계정이 존재하는 경우 비밀번호를 변경 ( 변경 시 유효한 비밀번호인지 확인, 인코딩하여 저장)
      */
     @Transactional
-    public void setPassword(SigninRequest.Password request) {
-        Account account = accountRepository.findByPhoneNumber(request.getPhoneNumber())
+    public void setPassword(SigninCommand.Password request) {
+        GolfStaff golfStaff = golfStaffRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new NoSuchElementException("해당 전화번호의 직원은 존재하지 않습니다."));
 
         //TODO: 비밀번호 인코딩하여 저장
         if (!isPasswordValid(request.getPassword()))
             throw new IllegalArgumentException("비밀번호는 6자리 숫자로 입력해주세요.");
-        account.updatePassword(request.getPassword());
+        golfStaff.updatePassword(request.getPassword());
     }
 
 

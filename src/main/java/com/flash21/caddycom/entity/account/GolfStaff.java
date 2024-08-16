@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Account {
+public class GolfStaff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -57,7 +57,7 @@ public class Account {
     }
 
     @Builder
-    public Account(String phoneNumber, Role role){
+    public GolfStaff(String phoneNumber, Role role){
         this.phoneNumber = phoneNumber.replaceAll("[^0-9]", "");
         this.role = role;
     }

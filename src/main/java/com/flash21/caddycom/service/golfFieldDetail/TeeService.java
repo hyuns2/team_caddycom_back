@@ -1,6 +1,6 @@
 package com.flash21.caddycom.service.golfFieldDetail;
 
-import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeDto;
+import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeResponse;
 import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeRequest;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.entity.golfFieldDetail.Tee;
@@ -61,12 +61,12 @@ public class TeeService {
      * @param requestTees 설정할 티 정보
      */
     @Transactional
-    public void createAndUpdateTees(Long holeId, List<TeeDto.Info> requestTees) {
+    public void createAndUpdateTees(Long holeId, List<TeeResponse.Info> requestTees) {
         Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
         List<Tee> savedTees = hole.getTees();
         List<Tee> newTees = new ArrayList<>();
-        for(TeeDto.Info teeInfo: requestTees) {
+        for(TeeResponse.Info teeInfo: requestTees) {
             if(teeInfo.getId() == 0) {
                 newTees.add(new Tee(null, teeInfo.getName(), teeInfo.getDistance(), hole));
                 break;

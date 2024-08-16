@@ -96,7 +96,7 @@ public class Assignment {
         this.startedTime = startedTime;
     }
 
-    public void terminate(LocalTime endedTime) {
+    public void finish(LocalTime endedTime) {
         if (this.endedTime != null) throw new IllegalStateException("이미 종료된 배정 정보입니다.");
         this.endedTime = endedTime;
     }

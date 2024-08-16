@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-public class TeeDto {
+public class TeeResponse {
     @Getter
     @AllArgsConstructor
     @Setter

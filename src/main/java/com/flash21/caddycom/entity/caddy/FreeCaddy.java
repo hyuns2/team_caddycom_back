@@ -3,6 +3,7 @@ package com.flash21.caddycom.entity.caddy;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -23,6 +24,7 @@ public class FreeCaddy extends Caddy{
 
     private String regions;
 
+    @Builder.Default
     @OneToMany(mappedBy = "freeCaddy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchedFreeCaddy> matchedFreeCaddyList = new ArrayList<>();
 

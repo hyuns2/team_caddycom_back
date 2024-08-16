@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name="2-3. Hole", description = "홀 정보 관련 API")
+@Tag(name = "2-2. Course Detail", description = "골프장 코스 상세 정보(홀,티) 관련 API")
 @RestController
 @RequiredArgsConstructor
 public class HoleController {
@@ -30,6 +30,6 @@ public class HoleController {
     @PostMapping(value="/api/hole/detail", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "홀의 상세 정보 설정 API")
     public void createDetailInfo(@Valid @ModelAttribute HoleRequest.CreateDetailInfo request) {
-        holeService.createDetailInfo(request);
+        holeService.processDetailInfo(request);
     }
 }

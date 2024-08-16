@@ -1,4 +1,4 @@
-package com.flash21.caddycom.repository.golfFieldDetail;
+package com.flash21.caddycom.repository.golfFieldDetail.comment;
 
 import com.flash21.caddycom.entity.golfFieldDetail.Comment;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;

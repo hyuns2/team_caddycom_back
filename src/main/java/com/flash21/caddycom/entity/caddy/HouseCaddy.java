@@ -1,10 +1,9 @@
 package com.flash21.caddycom.entity.caddy;
 
-import com.flash21.caddycom.dto.caddy.HouseCaddyRequestDto;
+import com.flash21.caddycom.dto.caddy.HouseCaddyRequest;
 import com.flash21.caddycom.entity.caddy.converter.DayListConverter;
 import com.flash21.caddycom.entity.caddy.converter.PartListConverter;
 import com.flash21.caddycom.entity.golfField.GolfField;
-import com.flash21.caddycom.entity.schedule.Assignment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,7 +45,7 @@ public class HouseCaddy extends Caddy {
 
     private String caddyType;
 
-    public void updateHouseCaddyByManager(HouseCaddyRequestDto.updateHouseCaddyByManager dto) {
+    public void updateHouseCaddyByManager(HouseCaddyRequest.UpdateByManager dto) {
         this.team = dto.getTeam();
         this.teamRole = dto.getTeamRole();
         this.holiday = dto.getHoliday();

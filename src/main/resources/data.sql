@@ -20,11 +20,11 @@ insert into `caddycom`.`facility_image` (id, facility_id, image_url) values
             ('16', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+1.jpg'), ('17', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+2.jpg'), ('18', '6', 'https://caddycom.s3.ap-northeast-2.amazonaws.com/sample/%EC%88%98%EC%98%81%EC%9E%A5+3.jpg');
 
 
-insert into `caddycom`.`account` (id, name, phone_number, golf_field_id, role, password) values
-         (1, '김매니저', '01000000000', 1, 2, 111111),
-         (2, '김매니저', '00000000000', 1, 3, 111111),
-         (3, '김매니저', '02000000000', 2, 2, null),
-         (4, '김매니저', '02100000000', 2, 3, null);
+insert into `caddycom`.`golf_staff` (id, name, phone_number, golf_field_id, role, password) values
+         (1, '김매니저', '01000000000', 1, 1, 111111),
+         (2, '김매니저', '00000000000', 1, 2, 111111),
+         (3, '김매니저', '02000000000', 2, 1, null),
+         (4, '김매니저', '02100000000', 2, 2, null);
 
 insert into `caddycom`.`formation` (`id`, `name`, `golf_field_id`)
 values ('1', '구성1','1'), ('2', '구성2','1');

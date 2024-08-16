@@ -1,15 +1,13 @@
 package com.flash21.caddycom.dto.assignment;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalTime;
 
 
 public class AssignmentRequest {
+
     @Getter
     @AllArgsConstructor
     public static class Cancel {
@@ -49,4 +47,10 @@ public class AssignmentRequest {
         }
     }
 
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Block {
+        private String reason;
+    }
 }

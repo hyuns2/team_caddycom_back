@@ -1,7 +1,7 @@
 package com.flash21.caddycom.dto.golfFieldDetail.hole;
 
 import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentRequest;
-import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeDto;
+import com.flash21.caddycom.dto.golfFieldDetail.tee.TeeResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,7 +43,7 @@ public class HoleRequest {
         @NotNull(message = "handicap은 필수값입니다.")
         private Integer handicap;
         private MultipartFile image;
-        private List<TeeDto.Info> teeData;
+        private List<TeeResponse.Info> teeData;
         private List<CommentRequest.Create> commentData;
         private List<Long> deleteTeeIds;
         private List<Long> deleteCommentIds;

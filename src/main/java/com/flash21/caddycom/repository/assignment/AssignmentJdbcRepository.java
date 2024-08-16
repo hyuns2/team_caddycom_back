@@ -1,4 +1,4 @@
-package com.flash21.caddycom.repository.schedule;
+package com.flash21.caddycom.repository.assignment;
 
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import jakarta.transaction.Transactional;
@@ -38,7 +38,7 @@ public class AssignmentJdbcRepository {
                 LocalTime targetTime = startTimeList.get(i);
                 ps.setLong(1, scheduleId);
                 ps.setTime(2, Time.valueOf(targetTime));
-                ps.setInt(3, AssignmentStatus.NOTHING.ordinal());
+                ps.setInt(3, AssignmentStatus.NOTHING.getNumber());
                 ps.setNull(4, Types.LONGVARBINARY);
                 ps.setString(5, null);
                 ps.setString(6, null);

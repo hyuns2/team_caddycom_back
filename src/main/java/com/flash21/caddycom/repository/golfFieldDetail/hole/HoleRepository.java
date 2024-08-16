@@ -27,4 +27,7 @@ public interface HoleRepository extends JpaRepository<Hole, Long>, HoleJdbcRepos
     @Transactional
     @Query("delete from Hole h where h.course.id in :courseIds")
     void deleteAllByCourseIds(Iterable<Long> courseIds);
+
+    @Query("select h from Hole h where h.course.id in :courseIds and h.tees is empty")
+    List<Hole> findAllByCourseIdsAndTeesIsEmpty(Iterable<Long> courseIds);
 }

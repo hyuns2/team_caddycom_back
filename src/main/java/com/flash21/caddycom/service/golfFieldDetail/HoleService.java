@@ -1,12 +1,17 @@
 package com.flash21.caddycom.service.golfFieldDetail;
 
+import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentCommand;
+import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentRequest;
+import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleCommand;
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
-import com.flash21.caddycom.repository.golfFieldDetail.CommentRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.comment.CommentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,9 +29,9 @@ import java.util.Objects;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class HoleService {
     private final HoleRepository holeRepository;
+    private final ObjectProvider<HoleService> holeServiceProvider;
     private final TeeService teeService;
     private final CommentService commentService;
     private final TeeRepository teeRepository;
@@ -89,7 +94,7 @@ public class HoleService {
      * @param request 홀 상세 정보 설정 DTO
      */
     @Transactional
-    public void createDetailInfo(HoleRequest.CreateDetailInfo request) {
+    public void createDetailInfo(HoleCommand.CreateDetailInfo request) {
         Hole savedHole = holeRepository.findById(request.getHoleId()).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
         if(!Objects.equals(request.getPar(), savedHole.getPar()))
@@ -98,25 +103,8 @@ public class HoleService {
             savedHole.updateHandicap(request.getHandicap());
 
         if(request.getImage() != null) { //이미지에 변경사항 존재
-            String imageUrl;
-            fileUploader.delete(savedHole.getImageUrl());
-            if(request.getImage().isEmpty()) // 이미지 삭제
-                imageUrl = null;
-            else // 새 이미지로 교체
-                imageUrl = uploadImage(request.getImage());
-
-            savedHole.updateImage(imageUrl);
+            savedHole.updateImage(request.getImage());
         }
-
-        if(request.getTeeData() != null)
-            teeService.createAndUpdateTees(request.getHoleId(), request.getTeeData());
-        if(!request.getDeleteTeeIds().isEmpty())
-            teeService.deleteTees(request.getDeleteTeeIds());
-
-        if(request.getCommentData() != null)
-            commentService.createAndUpdateComments(request.getHoleId(), request.getCommentData());
-        if(!request.getDeleteCommentIds().isEmpty())
-            commentService.deleteComments(request.getDeleteCommentIds());
     }
 
     /**
@@ -146,5 +134,26 @@ public class HoleService {
      */
     private String uploadImage(MultipartFile image) {
         return fileUploader.upload(image,"hole/");
+    }
+
+    public void processDetailInfo(HoleRequest.CreateDetailInfo request) {
+        String imageUrl = uploadImage(request.getImage());
+
+        final HoleService holeService = holeServiceProvider.getObject();
+        holeService.createDetailInfo(HoleCommand.CreateDetailInfo.from(request, imageUrl));
+
+        List<CommentCommand.Create> newCommentData = new ArrayList<>();
+        if(request.getCommentData() != null) {
+            for (CommentRequest.Create create : request.getCommentData())
+                newCommentData.add(commentService.toServiceDto(create));
+            commentService.createAndUpdateComments(request.getHoleId(), newCommentData);
+        }
+
+        if(request.getTeeData() != null)
+            teeService.createAndUpdateTees(request.getHoleId(), request.getTeeData());
+        if(!request.getDeleteTeeIds().isEmpty())
+            teeService.deleteTees(request.getDeleteTeeIds());
+        if(!request.getDeleteCommentIds().isEmpty())
+            commentService.deleteComments(request.getDeleteCommentIds());
     }
 }

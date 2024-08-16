@@ -1,10 +1,10 @@
 package com.flash21.caddycom.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flash21.caddycom.entity.account.Account;
+import com.flash21.caddycom.entity.account.GolfStaff;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
-import com.flash21.caddycom.repository.account.AccountRepository;
+import com.flash21.caddycom.repository.golfStaff.GolfStaffRepository;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import io.jsonwebtoken.*;
 import jakarta.xml.bind.DatatypeConverter;
@@ -22,7 +22,7 @@ public class JwtValidator {
 
     @Value("${jwt.secret}")
     private String jwtSecret;
-    private final AccountRepository accountRepository;
+    private final GolfStaffRepository golfStaffRepository;
     private final HouseCaddyRepository houseCaddyRepository;
 
     /**
@@ -65,9 +65,9 @@ public class JwtValidator {
         JwtClaims jwtClaims = mapper.convertValue(claims.get("jwtClaims"), JwtClaims.class);
 
         if (jwtClaims.getRole() == Role.ROLE_EMPLOYEE || jwtClaims.getRole() == Role.ROLE_OWNER) {
-            Account account = accountRepository.findById(jwtClaims.getId())
+            GolfStaff golfStaff = golfStaffRepository.findById(jwtClaims.getId())
                     .orElseThrow(() -> new JwtException("올바르지 않은 사용자 정보를 담은 리프레시 토큰입니다."));
-            if (!account.getRefreshToken().equals(refreshToken))
+            if (!golfStaff.getRefreshToken().equals(refreshToken))
                 throw new JwtException("리프레시 토큰이 일치하지 않습니다.");
 
         } else if (jwtClaims.getRole() == Role.ROLE_HOUSE_CADDY) {

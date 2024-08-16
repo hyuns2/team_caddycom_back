@@ -1,11 +1,7 @@
 package com.flash21.caddycom.controller.golfField;
 
 import com.flash21.caddycom.dto.Message;
-import com.flash21.caddycom.dto.golfField.FacilityRequest;
-import com.flash21.caddycom.dto.golfField.FacilityResponse;
 import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
-import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
-import com.flash21.caddycom.service.golfField.FacilityService;
 import com.flash21.caddycom.service.golfField.GolfFieldService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "1-1. GolfField", description = "골프장 API")
@@ -28,8 +25,11 @@ public class GolfFieldController {
                 produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary="골프장 등록 API", description = "골프장 관리자 or 전체 시스템 관리자는 골프장을 등록한다.")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Message> create(@Valid @ModelAttribute GolfFieldRequest.Create request){
-        golfFieldService.createGolfField(request);
+    public ResponseEntity<Message> create(Authentication authentication,
+                                          @Valid @ModelAttribute GolfFieldRequest.Create request){
+        //TODO: 인증/인가 처리 활성화 후 삭제
+        String phoneNumber = authentication == null ? "01099999999" : authentication.getName();
+        golfFieldService.createGolfField(phoneNumber, request);
         return ResponseEntity.ok().body(new Message("골프장이 등록되었습니다."));
     }
 

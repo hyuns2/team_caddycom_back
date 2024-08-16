@@ -2,6 +2,7 @@ package com.flash21.caddycom.controller.auth;
 
 
 import com.flash21.caddycom.dto.Message;
+import com.flash21.caddycom.dto.auth.SigninCommand;
 import com.flash21.caddycom.dto.auth.SigninRequest;
 import com.flash21.caddycom.dto.auth.SigninResponse;
 import com.flash21.caddycom.service.auth.CaddyAuthService;
@@ -26,7 +27,7 @@ public class CaddyAuthController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in/first")
     public ResponseEntity<SigninResponse.CaddyMain> firstSignin(@Valid @RequestBody SigninRequest.First request){
-        SigninResponse.CaddyMain response = caddyAuthService.firstLogin(request);
+        SigninResponse.CaddyMain response = caddyAuthService.firstLogin(SigninCommand.First.from(request));
         return ResponseEntity.ok().body(response);
     }
 
@@ -34,7 +35,7 @@ public class CaddyAuthController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in")
     public ResponseEntity<SigninResponse.CaddyMain> signin(@Valid @RequestBody SigninRequest.Caddy request){
-        SigninResponse.CaddyMain response = caddyAuthService.afterLogin(request);
+        SigninResponse.CaddyMain response = caddyAuthService.afterLogin(SigninCommand.Caddy.from(request));
         return ResponseEntity.ok().body(response);
     }
 
@@ -43,7 +44,7 @@ public class CaddyAuthController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in/password")
     public ResponseEntity<Message> setPassword(@Valid @RequestBody SigninRequest.Password request){
-        caddyAuthService.setPassword(request);
+        caddyAuthService.setPassword(SigninCommand.Password.from(request));
         return ResponseEntity.ok().body(new Message("비밀번호가 설정되었습니다."));
     }
 }

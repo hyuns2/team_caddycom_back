@@ -95,9 +95,7 @@ public class CommentService {
     }
 
     public CommentCommand.Create toServiceDto(CommentRequest.Create request) {
-        String imageUrl = null;
-        if(request.getImage() != null && !request.getImage().isEmpty())
-            imageUrl = uploadImage(request.getImage());
+        String imageUrl = uploadImage(request.getImage());
         return CommentCommand.Create.from(request, imageUrl);
     }
 }

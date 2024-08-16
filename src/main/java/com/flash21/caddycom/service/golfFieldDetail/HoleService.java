@@ -135,11 +135,8 @@ public class HoleService {
     }
 
     public void processDetailInfo(HoleRequest.CreateDetailInfo request) {
-        String imageUrl = null;
-        if(request.getImage() != null) {
-            if(!request.getImage().isEmpty())
-                imageUrl = uploadImage(request.getImage());
-        }
+        String imageUrl = uploadImage(request.getImage());
+
         createDetailInfo(HoleCommand.CreateDetailInfo.from(request, imageUrl));
 
         List<CommentCommand.Create> newCommentData = new ArrayList<>();

@@ -29,7 +29,6 @@ import java.util.NoSuchElementException;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CourseService {
     private final CourseRepository courseRepository;
     private final ScheduleRepository scheduleRepository;

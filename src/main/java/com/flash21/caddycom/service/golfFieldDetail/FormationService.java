@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class FormationService {
     private final FormationRepository formationRepository;
     private final CourseRepository courseRepository;
@@ -42,6 +41,7 @@ public class FormationService {
     private final CommentRepository commentRepository;
     private final GolfFieldRepository golfFieldRepository;
 
+    private final FormationService formationService;
     private final CourseService courseService;
     private final HoleService holeService;
     private final TeeService teeService;

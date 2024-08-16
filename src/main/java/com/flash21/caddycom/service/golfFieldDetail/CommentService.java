@@ -24,7 +24,6 @@ import java.util.NoSuchElementException;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CommentService {
     private final FileUploader fileUploader;
     private final CommentRepository commentRepository;
@@ -76,6 +75,7 @@ public class CommentService {
      * @param holeId 멘트 정보를 조회할 홀의 id
      * @return 멘트 정보 DTO 리스트
      */
+    @Transactional(readOnly = true)
     public List<CommentResponse.Info> getAllComments(Long holeId) {
         List<Comment> comments = commentRepository.findAllByHoleId(holeId);
 

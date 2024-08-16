@@ -27,7 +27,6 @@ import java.util.Objects;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class HoleService {
     private final HoleRepository holeRepository;
     private final TeeService teeService;

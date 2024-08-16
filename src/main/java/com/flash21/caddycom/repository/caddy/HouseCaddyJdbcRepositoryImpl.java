@@ -1,5 +1,6 @@
 package com.flash21.caddycom.repository.caddy;
 
+import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
 import jakarta.transaction.Transactional;
@@ -20,8 +21,8 @@ public class HouseCaddyJdbcRepositoryImpl implements HouseCaddyJdbcRepository{
 
     @Transactional
     public void bulkInsert(List<HouseCaddy> houseCaddyList, Long golfFieldId) {
-        String sql = "INSERT IGNORE INTO caddy (golf_field_id, caddy_type, name, phone_number, gender, team, team_role, career, address, address_detail, off_part, holiday, birth, ctype) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT IGNORE INTO caddy (golf_field_id, caddy_type, name, phone_number, gender, team, team_role, career, address, address_detail, off_part, holiday, birth, ctype, role) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.batchUpdate(sql,
             new BatchPreparedStatementSetter() {
@@ -42,6 +43,7 @@ public class HouseCaddyJdbcRepositoryImpl implements HouseCaddyJdbcRepository{
                     ps.setString(12, convertHoliday(houseCaddy.getHoliday()));
                     ps.setDate(13, java.sql.Date.valueOf(houseCaddy.getBirth()));
                     ps.setString(14, "H");
+                    ps.setInt(15, Role.ROLE_HOUSE_CADDY.getNumber());
                 }
 
                 @Override

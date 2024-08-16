@@ -203,7 +203,7 @@ public class ReservationSheetService {
     public void updateReservationSheet(Long reservationSheetId, ReservationSheetDto.CreateOrUpdateRequest dto) {
         List<Schedule> scheduleList = scheduleRepository.findAllByReservationSheetId(reservationSheetId);
         if (assignmentRepository.findFirstByStatusIsInAndScheduleIsIn(
-                Arrays.asList(AssignmentStatus.BLOCKED, AssignmentStatus.REQUESTED, AssignmentStatus.ASSIGNED), scheduleList
+                Arrays.asList(AssignmentStatus.BLOCKED, AssignmentStatus.CANCEL_REQUESTED, AssignmentStatus.ASSIGNED), scheduleList
         ).isPresent())
             throw new CInvalidModifyingRequestException();
 

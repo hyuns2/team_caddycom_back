@@ -50,7 +50,7 @@ public class Assignment {
     public void requestCancel(String reason) {
         if (reason != null && !reason.isEmpty())
             this.reason = reason;
-        this.status = AssignmentStatus.REQUESTED;
+        this.status = AssignmentStatus.CANCEL_REQUESTED;
     }
 
 

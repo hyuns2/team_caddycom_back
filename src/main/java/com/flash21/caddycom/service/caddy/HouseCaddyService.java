@@ -264,7 +264,7 @@ public class HouseCaddyService {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 
-        String profileUrl = fileUploader.upload(dto.getProfile(), "/caddy");
+        String profileUrl = fileUploader.upload(dto.getProfile(), "caddy/");
 
         TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.execute(status -> {
@@ -276,6 +276,7 @@ public class HouseCaddyService {
                     dto.getCareer());
             return null;
         });
+
     }
 
 

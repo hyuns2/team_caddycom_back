@@ -38,18 +38,19 @@ public class FreeCaddyController {
         return ResponseEntity.ok().body(freeCaddyService.getFreeCaddy(caddyId));
     }
 
-    @GetMapping
+    @GetMapping("/matched-golf-field")
     @Operation(summary = "프리 캐디 지정골프장 조회", description = "프리 캐디의 지정골프장을 조회한다.")
     public ResponseEntity<List<GolfFieldResponse.WithFreeCaddy>> getMatchedGolfField(@RequestParam Long caddyId) {
         return ResponseEntity.ok().body(freeCaddyService.getMatchedGolfField(caddyId));
     }
 
-    @GetMapping
-    @Operation(summary = "프리 캐디 지정골프장 하나의 미배정 목록 조회", description = "프리 캐디의 지정골프장 하나에 대한 한달동안의 날짜별 미배정 목록을 조회한다.")
-    public ResponseEntity<List<ScheduleResponse.NotAssignedMap>> getMatchedGolfFieldAssignments(@RequestParam Long caddyId,
-                                                                                   @RequestParam Long golfFieldId,
-                                                                                   @RequestParam Integer year,
-                                                                                   @RequestParam Integer month) {
-        return ResponseEntity.ok().body(freeCaddyService.getMatchedGolfFieldSchedule(caddyId, golfFieldId, year, month));
+    @GetMapping("/matched-golf-field/assignments")
+    @Operation(summary = "프리 캐디 지정골프장의 미배정 목록 조회", description = "프리 캐디의 지정골프장 하나에 대한 한달동안의 날짜별 미배정 목록을 조회한다.")
+    public ResponseEntity<List<ScheduleResponse.NotAssigned>> getMatchedGolfFieldAssignments(
+            @RequestParam Long golfFieldId,
+            @RequestParam Integer year,
+            @RequestParam Integer month
+    ) {
+        return ResponseEntity.ok().body(freeCaddyService.getMatchedGolfFieldSchedule(golfFieldId, year, month));
     }
 }

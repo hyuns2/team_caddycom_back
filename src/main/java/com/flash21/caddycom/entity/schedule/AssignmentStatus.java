@@ -10,8 +10,9 @@ public enum AssignmentStatus {
     BLOCKED(1),
     CANCELED(2),
     ASSIGNED(3),
-    REQUESTED(4),
-    DELETED(5);
+    CANCEL_REQUESTED(4),
+    DELETED(5),
+    ASSIGN_REQUESTED(6);
 
     private final int number;
 }

@@ -7,16 +7,19 @@ import com.flash21.caddycom.dto.schedule.ScheduleResponse;
 import com.flash21.caddycom.entity.caddy.FreeCaddy;
 import com.flash21.caddycom.entity.caddy.MatchedFreeCaddy;
 import com.flash21.caddycom.entity.golfField.GolfField;
+import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.repository.caddy.FreeCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
+import com.flash21.caddycom.repository.schedule.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,6 +30,7 @@ public class FreeCaddyService {
     private final GolfFieldRepository golfFieldRepository;
     private final FileUploader fileUploader;
     private final PlatformTransactionManager transactionManager;
+    private final ScheduleRepository scheduleRepository;
 
 
     /**
@@ -107,7 +111,7 @@ public class FreeCaddyService {
     }
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<GolfFieldResponse.WithFreeCaddy> getMatchedGolfField(Long caddyId) {
         FreeCaddy freeCaddy = freeCaddyRepository.findById(caddyId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 프리캐디입니다."));
@@ -117,4 +121,33 @@ public class FreeCaddyService {
                 .toList();
     }
 
+    /**
+     * 프리캐디 지정골프장의 미배정 목록 조회
+     *
+     * 1. 지정골프장의 스케줄을 조회한다.
+     * 2. 스케줄을 날짜별로 그룹핑한다.
+     * 2-1. assignmentMap (key: 날짜, value: 미배정 목록)
+     * 2-2. countMap (key: 날짜, value: 미배정 수)
+     * 3. List< 날짜 , 미배정 수, List<미배정 Item> > 형태를 반환한다.
+     */
+
+    @Transactional(readOnly = true)
+    public List<ScheduleResponse.NotAssigned> getMatchedGolfFieldSchedule(Long golfFieldId, Integer year, Integer month) {
+        List<Schedule> scheduleList = scheduleRepository.findAllByGolfFieldAndDate(golfFieldId, year, month);
+
+        Map<LocalDate, List<Assignment>> assignmentMap = new HashMap<>();
+        Map<LocalDate, Integer> countMap = new HashMap<>();
+        for (Schedule schedule : scheduleList) {
+            LocalDate date = schedule.getReservationAt();
+            assignmentMap.putIfAbsent(date, new ArrayList<>());
+            //TODO: assignment의 status가 ASSIGN_REQUESTED 인 경우만 포함하도록 수정
+            assignmentMap.get(date).addAll(schedule.getAssignments());
+            countMap.put(date, countMap.getOrDefault(date, 0) + schedule.getNotAssignedCnt());
+        }
+
+        return assignmentMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(entry -> ScheduleResponse.NotAssigned.of(entry.getKey(), countMap.get(entry.getKey()), entry.getValue()))
+                .toList();
+    }
 }

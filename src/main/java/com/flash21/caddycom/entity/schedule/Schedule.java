@@ -59,7 +59,8 @@ public class Schedule {
     @Column(nullable = false)
     private Integer blockedCnt;
 
-    private Integer notAssignedCnt;
+    @Builder.Default
+    private Integer notAssignedCnt = 0;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Assignment> assignments;

@@ -38,4 +38,13 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Sched
 
     @Query("select s from Schedule s where s.reservationAt > :date and s.course.id in :courseIds")
     List<Schedule> findAllByCourseIdsAfterDate(Iterable<Long> courseIds, LocalDate date);
+
+
+    @Query("SELECT s FROM Schedule s " +
+            "JOIN FETCH s.golfField g " +
+            "WHERE g.id = :golfFieldId " +
+            "AND YEAR(s.reservationAt) = :year " +
+            "AND MONTH(s.reservationAt) = :month")
+    List<Schedule> findAllByGolfFieldAndDate(Long golfFieldId, int year, int month);
+
 }

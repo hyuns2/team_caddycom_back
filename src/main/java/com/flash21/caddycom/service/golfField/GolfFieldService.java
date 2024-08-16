@@ -6,10 +6,8 @@ import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
-import com.flash21.caddycom.repository.golfStaff.GolfStaffRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +34,7 @@ public class GolfFieldService {
     private final FileUploader fileUploader;
     private final GolfFieldRepository golfFieldRepository;
     private final FacilityService facilityService;
-    private final GolfStaffRepository golfStaffRepository;
-    private final ApplicationContext applicationContext;
+    private final GolfFieldContentService golfFieldContentService;
 
     /**
      * 골프장을 생성
@@ -51,16 +48,10 @@ public class GolfFieldService {
 
         GolfField golfField = request.toEntity(fileUrls.get(0), fileUrls.get(1), fileUrls.get(2));
 
-        GolfFieldService self = applicationContext.getBean(GolfFieldService.class);
-        self.saveFieldAndSetStaff(golfField, phoneNumber);
+        golfFieldContentService.saveFieldAndSetStaff(golfField, phoneNumber);
     }
 
-    @Transactional
-    protected void saveFieldAndSetStaff(GolfField golfField, String phoneNumber) {
-        golfFieldRepository.save(golfField);
-        golfStaffRepository.findByPhoneNumber(phoneNumber)
-                .ifPresent(staff -> staff.linkGolfField(golfField));
-    }
+
 
     /**
      * 골프장 전체 조회
@@ -85,14 +76,14 @@ public class GolfFieldService {
         GolfField golfField = golfFieldRepository.getGolfFieldById(id);
 
         golfField.update(request.getName(),
-                request.getAddress(),
-                request.getAddressDetail(),
-                request.getContact(),
-                request.getFax(),
-                request.getArea(),
-                request.getOpeningDate(),
-                request.getCartInfo(),
-                request.getAmenities());
+                         request.getAddress(),
+                         request.getAddressDetail(),
+                         request.getContact(),
+                         request.getFax(),
+                         request.getArea(),
+                         request.getOpeningDate(),
+                         request.getCartInfo(),
+                         request.getAmenities());
     }
 
     /**
@@ -120,12 +111,10 @@ public class GolfFieldService {
         GolfField golfField = golfFieldRepository.getGolfFieldById(id);
 
         golfField.addInfo(request.getFax(),
-                request.getArea(),
-                request.getOpeningDate(),
-                request.getCartInfo(),
-                request.getAmenities());
-
-        golfFieldRepository.save(golfField);
+                          request.getArea(),
+                          request.getOpeningDate(),
+                          request.getCartInfo(),
+                          request.getAmenities());
     }
 
     /**
@@ -153,8 +142,6 @@ public class GolfFieldService {
     public void createDirectionInfo(Long id, GolfFieldRequest.DirectionsInfo request) {
         GolfField golfField = golfFieldRepository.getGolfFieldById(id);
         golfField.addDirectionInfo(request.getPublicTransportGuide(), request.getCarGuide());
-
-        golfFieldRepository.save(golfField);
     }
 
     /**
@@ -178,7 +165,6 @@ public class GolfFieldService {
      * @param request 시설 정보 입력 요청 DTO
      * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
-    @Transactional
     public void createFacility(Long id, FacilityRequest.Create request) {
         GolfField golfField = golfFieldRepository.getGolfFieldById(id);
 
@@ -197,7 +183,6 @@ public class GolfFieldService {
      * @param request 시설 정보 입력 요청 DTO
      * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
-    @Transactional
     public void updateFacility(Long id, FacilityRequest.Update request) {
         golfFieldRepository.getGolfFieldById(id);
 
@@ -206,10 +191,10 @@ public class GolfFieldService {
                 : uploadFiles(request.getFacilityImages());
 
         facilityService.updateFacilityInfo(request.getFacilityId(),
-                request.getName(),
-                request.getContent(),
-                request.getExistingImageIds(),
-                facilityImages);
+                                           request.getName(),
+                                           request.getContent(),
+                                           request.getExistingImageIds(),
+                                           facilityImages);
     }
 
 

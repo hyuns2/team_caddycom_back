@@ -15,7 +15,6 @@ import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundExcepti
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,7 +32,6 @@ public class HouseCaddyService {
     private final FileUploader fileUploader;
     private final EntityConverter entityConverter;
     private final ExcelReader excelReader;
-    private final ApplicationContext applicationContext;
 
     /**
      * 조 전제조회: 골프장 Id에 해당하는 캐디의 조이름을 전부 반환합니다.
@@ -59,10 +57,10 @@ public class HouseCaddyService {
         Map<String, List<HouseCaddyResponse.Detail>> result = new TreeMap<>();
         for (HouseCaddy hc: houseCaddyList) {
             if (result.containsKey(hc.getTeam()))
-                (result.get(hc.getTeam())).add(toHouseCaddyDetailDto(hc));
+                (result.get(hc.getTeam())).add(HouseCaddyResponse.Detail.from(hc, null));
             else {
                 List<HouseCaddyResponse.Detail> dtoList = new ArrayList<>();
-                dtoList.add(toHouseCaddyDetailDto(hc));
+                dtoList.add(HouseCaddyResponse.Detail.from(hc,null));
                 result.put(hc.getTeam(), dtoList);
             }
         }
@@ -83,29 +81,11 @@ public class HouseCaddyService {
         if (houseCaddyList.isEmpty())
             throw new CTeamNameNotFoundException();
 
-        return houseCaddyList.stream().map(this::toHouseCaddyDetailDto).toList();
+        return houseCaddyList.stream()
+                .map(houseCaddy -> HouseCaddyResponse.Detail.from(houseCaddy,null))
+                .toList();
     }
 
-    private HouseCaddyResponse.Detail toHouseCaddyDetailDto(HouseCaddy hc) {
-        return HouseCaddyResponse.Detail.builder()
-                .id(hc.getId())
-                .golfFieldName(null)
-                .profileUrl(hc.getProfileUrl())
-                .name(hc.getName())
-                .phoneNumber(hc.getPhoneNumber())
-                .team(hc.getTeam())
-                .teamRole(hc.getTeamRole())
-                .holiday(hc.getHoliday())
-                .changedHoliday(hc.getChangedHoliday())
-                .offPart(hc.getOffPart())
-                .gender(hc.getGender())
-                .birth(hc.getBirth())
-                .address(hc.getAddress())
-                .addressDetail(hc.getAddressDetail())
-                .career(hc.getCareer())
-                .caddyType(hc.getCaddyType())
-                .build();
-    }
 
     /**
      * 하우스캐디 정보 수정: 관리자가 하우스캐디의 정보를 수정합니다.
@@ -231,11 +211,6 @@ public class HouseCaddyService {
 
     }
 
-    @Transactional
-    public void saveCaddyList(Long golfFieldId, List<HouseCaddy> caddyList) {
-        houseCaddyRepository.bulkInsert(caddyList, golfFieldId);
-    }
-
 
     private int comparing(HouseCaddyResponse.Info hc1, HouseCaddyResponse.Info hc2) {
         int teamNumber1 = extractTeamNumber(hc1.getTeam());
@@ -272,24 +247,7 @@ public class HouseCaddyService {
         HouseCaddy hc = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 
-        return HouseCaddyResponse.Detail.builder()
-                .id(hc.getId())
-                .golfFieldName(hc.getGolfField().getName())
-                .profileUrl(hc.getProfileUrl())
-                .name(hc.getName())
-                .phoneNumber(hc.getPhoneNumber())
-                .team(hc.getTeam())
-                .teamRole(hc.getTeamRole())
-                .holiday(hc.getHoliday())
-                .changedHoliday(hc.getChangedHoliday())
-                .offPart(hc.getOffPart())
-                .gender(hc.getGender())
-                .birth(hc.getBirth())
-                .address(hc.getAddress())
-                .addressDetail(hc.getAddressDetail())
-                .career(hc.getCareer())
-                .caddyType(hc.getCaddyType())
-                .build();
+        return HouseCaddyResponse.Detail.from(hc, hc.getGolfField().getName());
     }
 
     /**
@@ -314,7 +272,6 @@ public class HouseCaddyService {
     }
 
 
-    //TODO: 엑셀 읽기 트랜젝션 밖에서
     public void uploadCaddy(Long id, MultipartFile file) {
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
@@ -324,8 +281,7 @@ public class HouseCaddyService {
                 .map(entityConverter::toEntity)
                 .toList();
 
-        HouseCaddyService self = applicationContext.getBean(HouseCaddyService.class);
-        self.saveCaddyList(golfField.getId(), caddyList);
+        houseCaddyRepository.bulkInsert(caddyList, golfField.getId());
     }
 
 

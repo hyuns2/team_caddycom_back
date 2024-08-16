@@ -7,10 +7,13 @@ import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
+import com.flash21.caddycom.repository.golfStaff.GolfStaffRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
@@ -34,7 +37,8 @@ public class GolfFieldService {
     private final FileUploader fileUploader;
     private final GolfFieldRepository golfFieldRepository;
     private final FacilityService facilityService;
-    private final GolfFieldContentService golfFieldContentService;
+    private final GolfStaffRepository golfStaffRepository;
+    private final PlatformTransactionManager transactionManager;
 
     /**
      * 골프장을 생성
@@ -48,9 +52,19 @@ public class GolfFieldService {
 
         GolfField golfField = request.toEntity(fileUrls.get(0), fileUrls.get(1), fileUrls.get(2));
 
-        golfFieldContentService.saveFieldAndSetStaff(golfField, phoneNumber);
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.execute(status -> {
+            saveFieldAndSetStaff(golfField, phoneNumber);
+            return null;
+        });
     }
 
+
+    protected void saveFieldAndSetStaff(GolfField golfField, String phoneNumber) {
+        golfFieldRepository.save(golfField);
+        golfStaffRepository.findByPhoneNumber(phoneNumber)
+                .ifPresent(staff -> staff.linkGolfField(golfField));
+    }
 
 
     /**

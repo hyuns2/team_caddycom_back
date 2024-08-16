@@ -39,7 +39,7 @@ public class ScheduleJdbcRepository {
                 ps.setTime(5, Time.valueOf(target.getEndTime()));
                 ps.setString(6, target.getTeeOff());
                 ps.setInt(7, target.getPart());
-                ps.setInt(8, target.getDateStatus().ordinal());
+                ps.setInt(8, target.getDateStatus().getNumber());
                 ps.setInt(9, target.getTotalCnt());
                 ps.setInt(10, target.getBlockedCnt());
                 ps.setLong(11, target.getReservationSheet().getId());

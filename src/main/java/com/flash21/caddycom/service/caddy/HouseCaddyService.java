@@ -16,7 +16,9 @@ import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -32,6 +34,7 @@ public class HouseCaddyService {
     private final FileUploader fileUploader;
     private final EntityConverter entityConverter;
     private final ExcelReader excelReader;
+    private final PlatformTransactionManager transactionManager;
 
     /**
      * 조 전제조회: 골프장 Id에 해당하는 캐디의 조이름을 전부 반환합니다.
@@ -256,19 +259,23 @@ public class HouseCaddyService {
      * @param caddyId 캐디 Id
      * @param dto     변경할 정보 dto
      */
-    //TODO: 이미지 업로드 트랜젝션 밖에서
     @Transactional
     public void updateHouseCaddy(Long caddyId, HouseCaddyRequest.UpdateByCaddy dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
                 .orElseThrow(CCaddyNotFoundException::new);
 
         String profileUrl = fileUploader.upload(dto.getProfile(), "/caddy");
-        houseCaddy.update(profileUrl,
-                dto.getChangedHoliday(),
-                dto.getBirth(),
-                dto.getAddress(),
-                dto.getAddressDetail(),
-                dto.getCareer());
+
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.execute(status -> {
+            houseCaddy.update(profileUrl,
+                    dto.getChangedHoliday(),
+                    dto.getBirth(),
+                    dto.getAddress(),
+                    dto.getAddressDetail(),
+                    dto.getCareer());
+            return null;
+        });
     }
 
 

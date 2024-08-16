@@ -10,7 +10,9 @@ import com.flash21.caddycom.repository.caddy.FreeCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -23,28 +25,50 @@ public class FreeCaddyService {
     private final FreeCaddyRepository freeCaddyRepository;
     private final GolfFieldRepository golfFieldRepository;
     private final FileUploader fileUploader;
-    private final FreeCaddyContentService freeCaddyContentService;
+    private final PlatformTransactionManager transactionManager;
 
 
     /**
      * 1. 전화번호로 FreeCaddy를 찾는다.
-     * 2. 프로필 이미지를 업로드 한다.
-     * 3. 요청된 지정 골프장 중 추가될 것만 추출한다.
+     * 2. 요청된 지정 골프장 중 추가될 것만 추출한다.
+     * 3. 프로필 이미지를 업로드 한다.
      * 4. 요청값으로 FreeCaddy를 저장한다.
      */
     public void saveFreeCaddy(FreeCaddyCommand.Create command) {
         FreeCaddy freeCaddy = freeCaddyRepository.findByPhoneNumber(command.getPhoneNumber())
                 .orElseThrow(() -> new IllegalArgumentException("앞서 전화번호 인증이 되지 않아 로그인이 제대로 이뤄지지 않았습니다."));
 
-        String profileUrl = fileUploader.upload(command.getProfileUrl(), "caddy");
         List<MatchedFreeCaddy> matchedFreeCaddyList = getDistinctGolfField(freeCaddy, command.getGolfFieldIds());
+        String profileUrl = fileUploader.upload(command.getProfileUrl(), "caddy");
 
-        freeCaddyContentService.saveEntity(command, freeCaddy, matchedFreeCaddyList, profileUrl);
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.execute(status -> {
+            saveEntity(command, freeCaddy, matchedFreeCaddyList, profileUrl);
+            return null;
+        });
+    }
+
+    protected void saveEntity(FreeCaddyCommand.Create request,
+                              FreeCaddy freeCaddy,
+                              List<MatchedFreeCaddy> matchedFreeCaddyList,
+                              String profileUrl)
+    {
+        freeCaddy.create(request.getName(),
+                request.getPhoneNumber(),
+                request.getRegions(),
+                request.getGender(),
+                request.getBirth(),
+                request.getCareer(),
+                request.getIntro(),
+                matchedFreeCaddyList,
+                profileUrl);
     }
 
 
 
     /**
+     * 프리캐디 등록 시 지정골프장을 추가하기 위함. (중복 제외)
+     *
      * 1. 요청된 지정 골프장이 1개 이상인지 확인한다.
      * 2. 요청된 지정 골프장 중 존재하지 않는것이 있는지 확인한다.
      * 3. 요청된 것중 이미 매칭된 골프장은 제외한다.
@@ -71,6 +95,9 @@ public class FreeCaddyService {
     }
 
 
+    /**
+     * 프리캐디 상세 조회
+     */
     @Transactional(readOnly = true)
     public FreeCaddyResponse.Info getFreeCaddy(Long id) {
         FreeCaddy freeCaddy = freeCaddyRepository.findById(id)

@@ -5,11 +5,13 @@ import com.flash21.caddycom.dto.golfFieldDetail.course.CourseRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
+import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.repository.assignment.AssignmentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
+import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.schedule.ReservationSheetRepository;
 import com.flash21.caddycom.repository.schedule.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,8 @@ public class CourseService {
     private final ReservationSheetRepository reservationSheetRepository;
 
     private final HoleService holeService;
+    private final HoleRepository holeRepository;
+    private final TeeService teeService;
 
     /**
      * 모든 코스 정보를 반환한다.
@@ -79,6 +83,17 @@ public class CourseService {
         }
 
         List<Long> courseIds = courseRepository.saveAllInBatch(courses);
+        List<Course> createdCourses = courseRepository.findAllByFormationIdAndHolesIsEmpty(formation.getId());
+        holeService.createHoles(createdCourses);
+
+        List<Long> createdCourseIds = new ArrayList<>();
+        for(Course course : createdCourses)
+            createdCourseIds.add(course.getId());
+
+        List<Hole> holes = holeRepository.findAllByCourseIdsAndTeesIsEmpty(createdCourseIds);
+
+        teeService.createTees(holes);
+
         return courseIds;
     }
 

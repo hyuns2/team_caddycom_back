@@ -76,17 +76,6 @@ public class FormationService {
         formationRepository.save(formation);
 
         courseService.createCourses(formation, request.getCourseInfos());
-        List<Course> courses = courseRepository.findAllByFormationId(formation.getId());
-
-        holeService.createHoles(courses);
-
-        List<Long> courseIds = new ArrayList<>();
-        for (Course course : courses)
-            courseIds.add(course.getId());
-
-        List<Hole> holes = holeRepository.findAllByCourseIds(courseIds);
-
-        teeService.createTees(holes);
     }
 
     /**
@@ -116,16 +105,6 @@ public class FormationService {
             }
             if (!courseCreateInfos.isEmpty()) {
                 courseService.createCourses(formation, courseCreateInfos);
-                List<Course> courses = courseRepository.findAllByFormationIdAndHolesIsEmpty(request.getFormationId());
-                holeService.createHoles(courses);
-
-                List<Long> courseIds = new ArrayList<>();
-                for(Course course : courses)
-                    courseIds.add(course.getId());
-
-                List<Hole> holes = holeRepository.findAllByCourseIdsAndTeesIsEmpty(courseIds);
-
-                teeService.createTees(holes);
             }
         }
     }

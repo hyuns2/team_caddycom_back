@@ -2,9 +2,12 @@ package com.flash21.caddycom.service.caddy;
 
 import com.flash21.caddycom.dto.caddy.FreeCaddyCommand;
 import com.flash21.caddycom.dto.caddy.FreeCaddyResponse;
+import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
+import com.flash21.caddycom.dto.schedule.ScheduleResponse;
 import com.flash21.caddycom.entity.caddy.FreeCaddy;
 import com.flash21.caddycom.entity.caddy.MatchedFreeCaddy;
 import com.flash21.caddycom.entity.golfField.GolfField;
+import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.repository.caddy.FreeCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
@@ -14,9 +17,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -104,4 +105,16 @@ public class FreeCaddyService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 프리캐디입니다."));
         return FreeCaddyResponse.Info.from(freeCaddy);
     }
+
+
+    @Transactional
+    public List<GolfFieldResponse.WithFreeCaddy> getMatchedGolfField(Long caddyId) {
+        FreeCaddy freeCaddy = freeCaddyRepository.findById(caddyId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 프리캐디입니다."));
+
+        return freeCaddy.getMatchedFreeCaddyList().stream()
+                .map(GolfFieldResponse.WithFreeCaddy::from)
+                .toList();
+    }
+
 }

@@ -9,10 +9,8 @@ import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.repository.caddy.FreeCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -21,12 +19,11 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
 public class FreeCaddyService {
     private final FreeCaddyRepository freeCaddyRepository;
     private final GolfFieldRepository golfFieldRepository;
     private final FileUploader fileUploader;
-    private final ApplicationContext applicationContext;
+    private final FreeCaddyContentService freeCaddyContentService;
 
 
     /**
@@ -39,39 +36,12 @@ public class FreeCaddyService {
         FreeCaddy freeCaddy = freeCaddyRepository.findByPhoneNumber(command.getPhoneNumber())
                 .orElseThrow(() -> new IllegalArgumentException("앞서 전화번호 인증이 되지 않아 로그인이 제대로 이뤄지지 않았습니다."));
 
-        String profileUrl = getProfileUrl(command.getProfileUrl());
+        String profileUrl = fileUploader.upload(command.getProfileUrl(), "caddy");
         List<MatchedFreeCaddy> matchedFreeCaddyList = getDistinctGolfField(freeCaddy, command.getGolfFieldIds());
 
-        // transaction self invocation 을 피하기 위해 applicationContext를 통해 자신의 메소드를 이용한다.
-        FreeCaddyService self = applicationContext.getBean(FreeCaddyService.class);
-        self.saveEntity(command, freeCaddy, matchedFreeCaddyList, profileUrl);
+        freeCaddyContentService.saveEntity(command, freeCaddy, matchedFreeCaddyList, profileUrl);
     }
 
-
-    @Transactional
-    protected void saveEntity(FreeCaddyCommand.Create request,
-                              FreeCaddy freeCaddy,
-                              List<MatchedFreeCaddy> matchedFreeCaddyList,
-                              String profileUrl)
-    {
-        freeCaddy.create(request.getName(),
-                         request.getPhoneNumber(),
-                         request.getRegions(),
-                         request.getGender(),
-                         request.getBirth(),
-                         request.getCareer(),
-                         request.getIntro(),
-                         matchedFreeCaddyList,
-                         profileUrl);
-    }
-
-
-    /**
-     * 프로필 이미지를 업로드하고 업로드된 이미지 URL을 반환한다. (없으면 null을 반환)
-     */
-    private String getProfileUrl(MultipartFile image) {
-        return fileUploader.upload(image, "caddy");
-    }
 
 
     /**
@@ -80,7 +50,7 @@ public class FreeCaddyService {
      * 3. 요청된 것중 이미 매칭된 골프장은 제외한다.
      * 4. MatchedFreeCaddy 목록을 반환한다.
      */
-    protected List<MatchedFreeCaddy> getDistinctGolfField(FreeCaddy freeCaddy, List<Long> golfFieldIds) {
+    private List<MatchedFreeCaddy> getDistinctGolfField(FreeCaddy freeCaddy, List<Long> golfFieldIds) {
         if (golfFieldIds == null || golfFieldIds.isEmpty())
             throw new IllegalArgumentException("지정골프장은 최소 1개 이상이어야 합니다.");
 

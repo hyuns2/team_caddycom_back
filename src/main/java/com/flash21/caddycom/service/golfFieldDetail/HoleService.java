@@ -10,6 +10,8 @@ import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.repository.golfFieldDetail.comment.CommentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class HoleService {
     private final HoleRepository holeRepository;
+    private final ObjectProvider<HoleService> holeServiceProvider;
     private final TeeService teeService;
     private final CommentService commentService;
     private final TeeRepository teeRepository;
@@ -136,7 +139,8 @@ public class HoleService {
     public void processDetailInfo(HoleRequest.CreateDetailInfo request) {
         String imageUrl = uploadImage(request.getImage());
 
-        createDetailInfo(HoleCommand.CreateDetailInfo.from(request, imageUrl));
+        final HoleService holeService = holeServiceProvider.getObject();
+        holeService.createDetailInfo(HoleCommand.CreateDetailInfo.from(request, imageUrl));
 
         List<CommentCommand.Create> newCommentData = new ArrayList<>();
         if(request.getCommentData() != null) {

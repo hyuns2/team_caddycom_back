@@ -16,6 +16,8 @@ import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,7 +43,7 @@ public class FormationService {
     private final CommentRepository commentRepository;
     private final GolfFieldRepository golfFieldRepository;
 
-    private final FormationService formationService;
+    private final ObjectProvider<FormationService> formationServiceProvider;
     private final CourseService courseService;
     private final HoleService holeService;
     private final TeeService teeService;
@@ -49,11 +51,12 @@ public class FormationService {
     public void processCreate(FormationRequest.Process request) {
         GolfField golfField = golfFieldRepository.findById(request.getGolfFieldId()).orElseThrow(() -> new NoSuchElementException("해당 골프장이 존재하지 않습니다."));
 
+        final FormationService formationService = formationServiceProvider.getObject();
         if (request.getCreate() != null) for (FormationRequest.Create create : request.getCreate())
-            createFormation(golfField, create);
+            formationService.createFormation(golfField, create);
 
         if (request.getUpdate() != null) for (FormationRequest.Update update : request.getUpdate())
-            updateFormation(update);
+            formationService.updateFormation(update);
 
     }
 

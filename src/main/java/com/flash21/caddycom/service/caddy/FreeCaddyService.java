@@ -1,6 +1,6 @@
 package com.flash21.caddycom.service.caddy;
 
-import com.flash21.caddycom.dto.caddy.FreeCaddyRequest;
+import com.flash21.caddycom.dto.caddy.FreeCaddyCommand;
 import com.flash21.caddycom.dto.caddy.FreeCaddyResponse;
 import com.flash21.caddycom.entity.caddy.FreeCaddy;
 import com.flash21.caddycom.entity.caddy.MatchedFreeCaddy;
@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class FreeCaddyService {
     private final FreeCaddyRepository freeCaddyRepository;
     private final GolfFieldRepository golfFieldRepository;
@@ -33,42 +35,42 @@ public class FreeCaddyService {
      * 3. 요청된 지정 골프장 중 추가될 것만 추출한다.
      * 4. 요청값으로 FreeCaddy를 저장한다.
      */
-    public void saveFreeCaddy(FreeCaddyRequest.Create request) {
-        FreeCaddy freeCaddy = freeCaddyRepository.findByPhoneNumber(request.getPhoneNumber())
+    public void saveFreeCaddy(FreeCaddyCommand.Create command) {
+        FreeCaddy freeCaddy = freeCaddyRepository.findByPhoneNumber(command.getPhoneNumber())
                 .orElseThrow(() -> new IllegalArgumentException("앞서 전화번호 인증이 되지 않아 로그인이 제대로 이뤄지지 않았습니다."));
 
-        String profileUrl = getProfileUrl(request);
-        List<MatchedFreeCaddy> matchedFreeCaddyList = getDistinctGolfField(freeCaddy, request.getGolfFieldIds());
+        String profileUrl = getProfileUrl(command.getProfileUrl());
+        List<MatchedFreeCaddy> matchedFreeCaddyList = getDistinctGolfField(freeCaddy, command.getGolfFieldIds());
 
         // transaction self invocation 을 피하기 위해 applicationContext를 통해 자신의 메소드를 이용한다.
         FreeCaddyService self = applicationContext.getBean(FreeCaddyService.class);
-        self.saveEntity(request, freeCaddy, matchedFreeCaddyList, profileUrl);
+        self.saveEntity(command, freeCaddy, matchedFreeCaddyList, profileUrl);
     }
 
 
     @Transactional
-    protected void saveEntity(FreeCaddyRequest.Create request,
+    protected void saveEntity(FreeCaddyCommand.Create request,
                               FreeCaddy freeCaddy,
                               List<MatchedFreeCaddy> matchedFreeCaddyList,
-                              String profileUrl) {
+                              String profileUrl)
+    {
         freeCaddy.create(request.getName(),
-                request.getPhoneNumber(),
-                request.getRegions(),
-                request.getGender(),
-                request.getBirth(),
-                request.getCareer(),
-                request.getIntro(),
-                matchedFreeCaddyList,
-                profileUrl);
+                         request.getPhoneNumber(),
+                         request.getRegions(),
+                         request.getGender(),
+                         request.getBirth(),
+                         request.getCareer(),
+                         request.getIntro(),
+                         matchedFreeCaddyList,
+                         profileUrl);
     }
 
 
     /**
      * 프로필 이미지를 업로드하고 업로드된 이미지 URL을 반환한다. (없으면 null을 반환)
      */
-    private String getProfileUrl(FreeCaddyRequest.Create request) {
-        return request.getProfileUrl() != null
-                ? fileUploader.upload(request.getProfileUrl(), "caddy") : null;
+    private String getProfileUrl(MultipartFile image) {
+        return image != null ? fileUploader.upload(image, "caddy") : null;
     }
 
 

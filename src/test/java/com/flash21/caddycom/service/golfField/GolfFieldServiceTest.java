@@ -1,7 +1,7 @@
 package com.flash21.caddycom.service.golfField;
 
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
-import com.flash21.caddycom.repository.account.GolfStaffRepository;
+import com.flash21.caddycom.repository.golfStaff.GolfStaffRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

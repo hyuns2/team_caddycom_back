@@ -60,7 +60,7 @@ public class FacilityService {
      * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
     public FacilityResponse getFacility(Long id) {
-        GolfField golfField = golfFieldRepository.getUserById(id);
+        GolfField golfField = golfFieldRepository.getGolfFieldById(id);
         return FacilityResponse.from(golfField.getFacilities());
     }
 

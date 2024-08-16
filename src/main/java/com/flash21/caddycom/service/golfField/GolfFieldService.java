@@ -6,9 +6,10 @@ import com.flash21.caddycom.dto.golfField.GolfFieldRequest;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
-import com.flash21.caddycom.repository.account.GolfStaffRepository;
+import com.flash21.caddycom.repository.golfStaff.GolfStaffRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,28 +32,34 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class GolfFieldService {
     private final FileUploader fileUploader;
     private final GolfFieldRepository golfFieldRepository;
     private final FacilityService facilityService;
     private final GolfStaffRepository golfStaffRepository;
+    private final ApplicationContext applicationContext;
 
     /**
      * 골프장을 생성
      *
      * @param request 골프장 생성 요청 DTO
      */
-    @Transactional
-    public void createGolfField(GolfFieldRequest.Create request) {
+    public void createGolfField(String phoneNumber, GolfFieldRequest.Create request) {
         List<String> fileUrls = uploadFiles(List.of(request.getImage(),
-                request.getBusinessLicense(),
-                request.getEmploymentLicense()));
+                                                    request.getBusinessLicense(),
+                                                    request.getEmploymentLicense()));
 
         GolfField golfField = request.toEntity(fileUrls.get(0), fileUrls.get(1), fileUrls.get(2));
+
+        GolfFieldService self = applicationContext.getBean(GolfFieldService.class);
+        self.saveFieldAndSetStaff(golfField, phoneNumber);
+    }
+
+    @Transactional
+    protected void saveFieldAndSetStaff(GolfField golfField, String phoneNumber) {
         golfFieldRepository.save(golfField);
-        golfStaffRepository.findByPhoneNumber(request.getContact())
-                .ifPresent(account -> account.linkGolfField(golfField));
+        golfStaffRepository.findByPhoneNumber(phoneNumber)
+                .ifPresent(staff -> staff.linkGolfField(golfField));
     }
 
     /**
@@ -60,6 +67,7 @@ public class GolfFieldService {
      *
      * @return 골프장 전체 조회 응답 DTO 리스트
      */
+    @Transactional(readOnly = true)
     public List<GolfFieldResponse.Overview> getAll() {
         return golfFieldRepository.findAll().stream()
                 .map(GolfFieldResponse.Overview::from)
@@ -74,7 +82,7 @@ public class GolfFieldService {
      */
     @Transactional
     public void updateGolfField(Long id, GolfFieldRequest.Update request) {
-        GolfField golfField = golfFieldRepository.getUserById(id);
+        GolfField golfField = golfFieldRepository.getGolfFieldById(id);
 
         golfField.update(request.getName(),
                 request.getAddress(),
@@ -95,7 +103,7 @@ public class GolfFieldService {
      */
     @Transactional
     public void deleteGolfField(Long id) {
-        GolfField golfField = golfFieldRepository.getUserById(id);
+        GolfField golfField = golfFieldRepository.getGolfFieldById(id);
         golfFieldRepository.delete(golfField);
     }
 
@@ -109,7 +117,7 @@ public class GolfFieldService {
      */
     @Transactional
     public void createDetailInfo(Long id, GolfFieldRequest.AdditionalInfo request) {
-        GolfField golfField = golfFieldRepository.getUserById(id);
+        GolfField golfField = golfFieldRepository.getGolfFieldById(id);
 
         golfField.addInfo(request.getFax(),
                 request.getArea(),
@@ -127,8 +135,9 @@ public class GolfFieldService {
      * @return GolfFieldResponse.Info 골프장 상세 조회 응답 DTO
      * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
+    @Transactional(readOnly = true)
     public GolfFieldResponse.Info getDetailInfo(Long id) {
-        GolfField golfField = golfFieldRepository.getUserById(id);
+        GolfField golfField = golfFieldRepository.getGolfFieldById(id);
         return GolfFieldResponse.Info.from(golfField);
     }
 
@@ -142,7 +151,7 @@ public class GolfFieldService {
      */
     @Transactional
     public void createDirectionInfo(Long id, GolfFieldRequest.DirectionsInfo request) {
-        GolfField golfField = golfFieldRepository.getUserById(id);
+        GolfField golfField = golfFieldRepository.getGolfFieldById(id);
         golfField.addDirectionInfo(request.getPublicTransportGuide(), request.getCarGuide());
 
         golfFieldRepository.save(golfField);
@@ -155,8 +164,9 @@ public class GolfFieldService {
      * @return GolfFieldResponse.DirectionInfo 골프장 오는길 정보 조회 응답 DTO
      * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
+    @Transactional(readOnly = true)
     public GolfFieldResponse.DirectionInfo getDirectionInfo(Long id) {
-        GolfField golfField = golfFieldRepository.getUserById(id);
+        GolfField golfField = golfFieldRepository.getGolfFieldById(id);
         return GolfFieldResponse.DirectionInfo.from(golfField);
     }
 
@@ -170,7 +180,7 @@ public class GolfFieldService {
      */
     @Transactional
     public void createFacility(Long id, FacilityRequest.Create request) {
-        GolfField golfField = golfFieldRepository.getUserById(id);
+        GolfField golfField = golfFieldRepository.getGolfFieldById(id);
 
         List<String> facilityImages = (CollectionUtils.isNullOrEmpty(request.getFacilityImages()))
                 ? Collections.emptyList()
@@ -189,7 +199,7 @@ public class GolfFieldService {
      */
     @Transactional
     public void updateFacility(Long id, FacilityRequest.Update request) {
-        golfFieldRepository.getUserById(id);
+        golfFieldRepository.getGolfFieldById(id);
 
         List<String> facilityImages = (CollectionUtils.isNullOrEmpty(request.getFacilityImages()))
                 ? Collections.emptyList()

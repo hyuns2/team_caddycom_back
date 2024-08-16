@@ -1,6 +1,6 @@
 package com.flash21.caddycom.dto.golfStaff;
 
-import com.flash21.caddycom.entity.account.GolfStaff;
+import com.flash21.caddycom.global.validation.PhoneNumber;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,23 +20,9 @@ public class GolfStaffRequest {
         private final String name;
 
         @NotBlank(message = "phoneNumber 는 필수값입니다.")
+        @PhoneNumber
         private final String phoneNumber;
 
         private final String address;
-
-        //TODO: 전화번호 파싱 정규식 공통 메서드 추출 필요
-        private String formatPhoneNumber(String phoneNumber) {
-            return phoneNumber.replaceAll("[^0-9]", "");
-        }
-
-        public GolfStaff toEntity() {
-            return GolfStaff.builder()
-                    .enteringDate(enteringDate)
-                    .position(position)
-                    .name(name)
-                    .phoneNumber(formatPhoneNumber(phoneNumber))
-                    .address(address)
-                    .build();
-        }
     }
 }

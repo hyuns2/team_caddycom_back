@@ -10,11 +10,6 @@ import lombok.NoArgsConstructor;
 
 public class SigninRequest {
 
-    //TODO: 전화번호 파싱 정규식 공통 메서드 추출 필요
-    private static String formatPhoneNumber(String phoneNumber) {
-        return phoneNumber.replaceAll("[^0-9]", "");
-    }
-
     @Getter
     @AllArgsConstructor
     public static class Web {
@@ -30,66 +25,51 @@ public class SigninRequest {
 
     @AllArgsConstructor
     @NoArgsConstructor
+    @Getter
     public static class First {
         @NotBlank(message = "phoneNumber는 필수값입니다.")
         @PhoneNumber
         private String phoneNumber;
-
-        public String getPhoneNumber() {
-            return formatPhoneNumber(phoneNumber);
-        }
     }
 
 
     @AllArgsConstructor
     @NoArgsConstructor
+    @Getter
     public static class Login {
         @NotBlank(message = "phoneNumber는 필수값입니다.")
         @PhoneNumber
         private String phoneNumber;
 
-        @Getter
         @NotBlank(message = "password는 필수값입니다.")
         private String password;
-
-        public String getPhoneNumber() {
-            return formatPhoneNumber(phoneNumber);
-        }
     }
 
 
     @AllArgsConstructor
     @NoArgsConstructor
+    @Getter
     public static class Password {
         @NotBlank(message = "phoneNumber는 필수값입니다.")
         @PhoneNumber
         private String phoneNumber;
 
-        @Getter
         @NotBlank(message = "password는 필수값입니다.")
         public String password;
-
-        public String getPhoneNumber() {
-            return formatPhoneNumber(phoneNumber);
-        }
     }
 
 
     @AllArgsConstructor
     @NoArgsConstructor
+    @Getter
     public static class Caddy {
 
         @NotBlank(message = "phoneNumber는 필수값입니다.")
         @PhoneNumber
         private String phoneNumber;
 
-        @Getter
         @NotBlank(message = "password는 필수값입니다.")
         private String password;
-
-        public String getPhoneNumber() {
-            return formatPhoneNumber(phoneNumber);
-        }
     }
 
 }

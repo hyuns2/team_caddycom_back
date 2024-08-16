@@ -1,6 +1,7 @@
 package com.flash21.caddycom.dto.caddy;
 
 import com.flash21.caddycom.entity.caddy.Gender;
+import com.flash21.caddycom.global.validation.PhoneNumber;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,6 +24,7 @@ public class FreeCaddyRequest {
 
         @NotBlank(message = "phoneNumber은 필수입니다.")
         @Schema(example = "전화번호(010-5555-5555)")
+        @PhoneNumber
         private String phoneNumber;
 
         @NotBlank(message = "regions은 필수입니다.")
@@ -46,10 +48,6 @@ public class FreeCaddyRequest {
         private List<Long> golfFieldIds;
 
         private MultipartFile profileUrl;
-
-        public String getPhoneNumber() {
-            return phoneNumber.replaceAll("[^0-9]", "");
-        }
 
     }
 }

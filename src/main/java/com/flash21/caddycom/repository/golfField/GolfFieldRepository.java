@@ -14,7 +14,7 @@ public interface GolfFieldRepository extends JpaRepository<GolfField, Long> {
     @Query("SELECT g FROM GolfField g WHERE g.id IN :ids")
     List<GolfField> findByIds(List<Long> ids);
 
-    default GolfField getUserById(Long id) {
+    default GolfField getGolfFieldById(Long id) {
         return this.findById(id).orElseThrow(
                 () -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));
     }

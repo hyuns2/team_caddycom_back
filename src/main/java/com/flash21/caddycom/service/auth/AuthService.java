@@ -1,13 +1,10 @@
 package com.flash21.caddycom.service.auth;
 
-import  com.flash21.caddycom.dto.auth.JwtRequest;
-import com.flash21.caddycom.dto.auth.JwtResponse;
-import com.flash21.caddycom.dto.auth.SigninRequest;
-import com.flash21.caddycom.dto.auth.SigninResponse;
+import com.flash21.caddycom.dto.auth.*;
 import com.flash21.caddycom.entity.account.GolfStaff;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.global.jwt.JwtProvider;
-import com.flash21.caddycom.repository.account.GolfStaffRepository;
+import com.flash21.caddycom.repository.golfStaff.GolfStaffRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +27,7 @@ public class AuthService {
      * 4. 계정이 존재하지 않으면 골프장 등록을 하지 않은 사장님으로 간주함.
      */
     @Transactional
-    public SigninResponse.Main firstLogin(SigninRequest.First request) {
+    public SigninResponse.Main firstLogin(SigninCommand.First request) {
         Optional<GolfStaff> golfStaffOpt = golfStaffRepository.findByPhoneNumber(request.getPhoneNumber());
 
         if (golfStaffOpt.isPresent()) {
@@ -62,7 +59,7 @@ public class AuthService {
      * 3. 비밀번호가 일치하는 경우 jwt 토큰을 발급해주고, 해당 사람이 속한 골프장 정보를 같이 반환함.
      */
     @Transactional
-    public SigninResponse.Main afterLogin(SigninRequest.Login request) {
+    public SigninResponse.Main afterLogin(SigninCommand.Login request) {
         GolfStaff golfStaff = golfStaffRepository.findByPhoneNumber(request.getPhoneNumber()).
                 orElseThrow(() -> new NoSuchElementException("해당 전화번호의 직원/사장은 존재하지 않습니다."));
 
@@ -84,7 +81,7 @@ public class AuthService {
      * 2. 계정이 존재하는 경우 비밀번호를 변경 ( 변경 시 유효한 비밀번호인지 확인, 인코딩하여 저장)
      */
     @Transactional
-    public void setPassword(SigninRequest.Password request) {
+    public void setPassword(SigninCommand.Password request) {
         GolfStaff golfStaff = golfStaffRepository.findByPhoneNumber(request.getPhoneNumber())
                 .orElseThrow(() -> new NoSuchElementException("해당 전화번호의 직원은 존재하지 않습니다."));
 

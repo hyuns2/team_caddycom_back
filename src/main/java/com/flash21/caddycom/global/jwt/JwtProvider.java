@@ -4,7 +4,7 @@ import com.flash21.caddycom.dto.auth.JwtResponse;
 import com.flash21.caddycom.entity.account.GolfStaff;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.caddy.Caddy;
-import com.flash21.caddycom.repository.account.GolfStaffRepository;
+import com.flash21.caddycom.repository.golfStaff.GolfStaffRepository;
 import com.flash21.caddycom.repository.caddy.CaddyRepository;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.xml.bind.DatatypeConverter;

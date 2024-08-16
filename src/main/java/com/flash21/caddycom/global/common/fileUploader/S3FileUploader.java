@@ -27,6 +27,9 @@ public class S3FileUploader implements FileUploader{
 
     @Override
     public String upload(MultipartFile file, String directory) {
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
         // 원본의 확장자만 추출하여 고유한 파일 이름 설정
         String filename = file.getOriginalFilename();
         String extension =

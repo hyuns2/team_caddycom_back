@@ -70,7 +70,7 @@ public class FreeCaddyService {
      * 프로필 이미지를 업로드하고 업로드된 이미지 URL을 반환한다. (없으면 null을 반환)
      */
     private String getProfileUrl(MultipartFile image) {
-        return image != null ? fileUploader.upload(image, "caddy") : null;
+        return fileUploader.upload(image, "caddy");
     }
 
 

@@ -160,7 +160,7 @@ public class AssignmentCaddyService {
         //블락된 캐디 확인용 Set
         Set<Long> blockedCaddyIds = getBlockedHouseCaddies(findAssignments);
         //오늘의 요일 변환
-        Days todaysDayOfWeek = getDays(date);
+        Days todaysDayOfWeek = Days.fromNumber(date.getDayOfWeek().getValue());
 
         int caddySize = findCaddies.size();
         int currentCaddyIndex = getStartIndex(findGolfField, caddySize, findCaddies);
@@ -268,22 +268,4 @@ public class AssignmentCaddyService {
         return isWorkDay && isOffPart;
     }
 
-
-    private Days getDays(LocalDate date) {
-        int dayOfWeek = getDayofWeekFromRequestDate(date);
-        return Days.fromNumber(String.valueOf(dayOfWeek));
-    }
-
-    private int getDayofWeekFromRequestDate(LocalDate date) {
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-        return switch (dayOfWeek) {
-            case MONDAY -> 1;
-            case TUESDAY -> 2;
-            case WEDNESDAY -> 3;
-            case THURSDAY -> 4;
-            case FRIDAY -> 5;
-            case SATURDAY -> 6;
-            case SUNDAY -> 7;
-        };
-    }
 }

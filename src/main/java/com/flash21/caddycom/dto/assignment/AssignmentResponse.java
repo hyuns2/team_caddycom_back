@@ -183,11 +183,17 @@ public class AssignmentResponse {
     @AllArgsConstructor
     @Builder
     public static class Assigned {
-        @NotNull(message = "id는 필수값입니다.")
         @Schema(description = "배정정보 id")
         private Long id;
 
         @Schema(description = "상태")
         private AssignmentStatus status;
+
+        public static Assigned from(Assignment assignment) {
+            return Assigned.builder()
+                    .id(assignment.getId())
+                    .status(assignment.getStatus())
+                    .build();
+        }
     }
 }

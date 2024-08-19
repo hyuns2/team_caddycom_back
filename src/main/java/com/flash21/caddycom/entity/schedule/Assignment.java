@@ -53,12 +53,6 @@ public class Assignment {
         this.status = AssignmentStatus.CANCEL_REQUESTED;
     }
 
-
-    public void vacateCaddy() {
-        this.caddy = null;
-        this.caddyName = null;
-    }
-
     public void blockAssignment(String reason) {
         if (this.status != AssignmentStatus.BLOCKED) {
             this.status = AssignmentStatus.BLOCKED;
@@ -85,12 +79,14 @@ public class Assignment {
         caddy.getAssignmentList().add(this);
         if (this.status == AssignmentStatus.BLOCKED) return;
         this.status = AssignmentStatus.ASSIGNED;
+        this.schedule.subNotAssignedCount();
     }
 
     public void updateByDeletedSchedule() {
         this.schedule = null;
     }
 
+    //TODO: 예외처리 서비스 레이어 이동 필요
     public void start(LocalTime startedTime) {
         if (this.startedTime != null) throw new IllegalStateException("이미 시작된 배정 정보입니다.");
         this.startedTime = startedTime;

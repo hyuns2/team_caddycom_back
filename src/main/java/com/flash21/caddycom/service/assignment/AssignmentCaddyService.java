@@ -91,7 +91,6 @@ public class AssignmentCaddyService {
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 배정 정보가 없습니다."));
         assignment.requestCancel(request.getReason());
-        assignment.getSchedule().addNotAssignedCount();
     }
 
 

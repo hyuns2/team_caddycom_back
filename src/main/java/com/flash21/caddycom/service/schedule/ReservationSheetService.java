@@ -113,6 +113,7 @@ public class ReservationSheetService {
                         .part(part)
                         .dateStatus(DateStatus.NOTHING)
                         .totalCnt(totalCnt)
+                        .notAssignedCnt(0)
                         .blockedCnt(0)
                         .build();
 

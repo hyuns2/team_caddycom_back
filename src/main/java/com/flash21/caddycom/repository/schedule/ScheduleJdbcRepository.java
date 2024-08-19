@@ -19,8 +19,8 @@ public class ScheduleJdbcRepository {
     @Transactional
     public void saveAll(List<Schedule> scheduleList) {
         String sql = "INSERT INTO schedule"
-                + " (golf_field_id, course_id, reservation_at, start_time, end_time, tee_off, part, date_status, total_cnt, blocked_cnt, reservation_sheet_id)"
-                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + " (golf_field_id, course_id, reservation_at, start_time, end_time, tee_off, part, date_status, total_cnt, blocked_cnt, not_assigned_cnt, reservation_sheet_id)"
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         jdbcTemplate.batchUpdate(new PreparedStatementCreator() {
             @Override
@@ -42,7 +42,8 @@ public class ScheduleJdbcRepository {
                 ps.setInt(8, target.getDateStatus().getNumber());
                 ps.setInt(9, target.getTotalCnt());
                 ps.setInt(10, target.getBlockedCnt());
-                ps.setLong(11, target.getReservationSheet().getId());
+                ps.setInt(11, target.getNotAssignedCnt());
+                ps.setLong(12, target.getReservationSheet().getId());
             }
 
             @Override

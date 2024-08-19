@@ -80,7 +80,8 @@ public class Schedule {
     }
     //외부캐디 요청을 했을때 미배정 개수를 증가시키는 메소드
     public void addNotAssignedCount() {
-        this.notAssignedCnt++;
+        if (this.notAssignedCnt < this.totalCnt)
+            this.notAssignedCnt++;
     }
 
     public void subNotAssignedCount() {

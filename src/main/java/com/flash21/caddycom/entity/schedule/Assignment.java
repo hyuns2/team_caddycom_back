@@ -86,6 +86,12 @@ public class Assignment {
         this.schedule = null;
     }
 
+    public void requestFreeCaddy() {
+        this.status = AssignmentStatus.ASSIGN_REQUESTED;
+        this.schedule.addNotAssignedCount();
+    }
+
+
     //TODO: 예외처리 서비스 레이어 이동 필요
     public void start(LocalTime startedTime) {
         if (this.startedTime != null) throw new IllegalStateException("이미 시작된 배정 정보입니다.");

@@ -1,5 +1,6 @@
 package com.flash21.caddycom.controller.assignment;
 
+import com.flash21.caddycom.dto.Message;
 import com.flash21.caddycom.dto.assignment.AssignmentRequest;
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.service.schedule.AssignmentService;
@@ -57,5 +58,12 @@ public class AssignmentController {
     ) {
         assignmentService.cancelBlock(assignmentsId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping("/free-caddy")
+    @Operation(summary = "외부 캐디 요청", description = "골프장 관리자가 해당 시간대의 배정 정보에 외부 캐디를 요청합니다.")
+    public ResponseEntity<Message> requestFreeCaddy(@RequestParam Long assignmentId) {
+        assignmentService.requestFreeCaddy(assignmentId);
+        return ResponseEntity.ok().body(new Message("외부 캐디 요청이 완료되었습니다."));
     }
 }

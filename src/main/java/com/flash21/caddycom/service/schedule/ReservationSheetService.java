@@ -284,6 +284,8 @@ public class ReservationSheetService {
 
         return findAssignments.stream()
                 .map(AssignmentResponse.CaddyAssignmentInfo::new)
+                .sorted(Comparator.comparing(AssignmentResponse.CaddyAssignmentInfo::getDate)
+                        .thenComparing(AssignmentResponse.CaddyAssignmentInfo::getStartTime))
                 .collect(
                         Collectors.groupingBy(
                                 AssignmentResponse.CaddyAssignmentInfo::getDate,

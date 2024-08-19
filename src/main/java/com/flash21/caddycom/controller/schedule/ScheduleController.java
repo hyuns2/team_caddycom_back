@@ -2,7 +2,7 @@ package com.flash21.caddycom.controller.schedule;
 
 
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
-import com.flash21.caddycom.dto.schedule.ReservationSheetDto;
+import com.flash21.caddycom.dto.schedule.ReservationSheetResponse;
 import com.flash21.caddycom.service.schedule.ReservationSheetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,12 +28,12 @@ public class ScheduleController {
 
     @Operation(summary = "캘린더 메타정보 조회", description = "골프장 관리자가 캘린더에 표기되는 메타정보를 조회합니다.")
     @GetMapping("/calendar/{golfFieldId}/{year}/{month}")
-    public ResponseEntity<List<ReservationSheetDto.MetaDataResponse>> getMetaData(
+    public ResponseEntity<List<ReservationSheetResponse.MetaData>> getMetaData(
             @PathVariable Long golfFieldId,
             @PathVariable int year,
             @PathVariable int month)
     {
-        List<ReservationSheetDto.MetaDataResponse> responseDtoList = rsService.getMetaData(golfFieldId, year, month);
+        List<ReservationSheetResponse.MetaData> responseDtoList = rsService.getMetaData(golfFieldId, year, month);
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
 

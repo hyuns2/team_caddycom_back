@@ -4,6 +4,7 @@ import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentCommand;
 import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleCommand;
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
+import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleResponse;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
@@ -94,7 +95,7 @@ public class HoleService {
      * @param request 홀 상세 정보 설정 DTO
      */
     @Transactional
-    public void createDetailInfo(HoleCommand.CreateDetailInfo request) {
+    public Hole createDetailInfo(HoleCommand.CreateDetailInfo request) {
         Hole savedHole = holeRepository.findById(request.getHoleId()).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
         if(!Objects.equals(request.getPar(), savedHole.getPar()))
@@ -105,6 +106,8 @@ public class HoleService {
         if(request.getImage() != null) { //이미지에 변경사항 존재
             savedHole.updateImage(request.getImage());
         }
+
+        return savedHole;
     }
 
     /**
@@ -136,11 +139,11 @@ public class HoleService {
         return fileUploader.upload(image,"hole/");
     }
 
-    public void processDetailInfo(HoleRequest.CreateDetailInfo request) {
+    public HoleResponse.HoleInfo processDetailInfo(HoleRequest.CreateDetailInfo request) {
         String imageUrl = uploadImage(request.getImage());
 
         final HoleService holeService = holeServiceProvider.getObject();
-        holeService.createDetailInfo(HoleCommand.CreateDetailInfo.from(request, imageUrl));
+        Hole hole = holeService.createDetailInfo(HoleCommand.CreateDetailInfo.from(request, imageUrl));
 
         List<CommentCommand.Create> newCommentData = new ArrayList<>();
         if(request.getCommentData() != null) {
@@ -155,5 +158,7 @@ public class HoleService {
             teeService.deleteTees(request.getDeleteTeeIds());
         if(!request.getDeleteCommentIds().isEmpty())
             commentService.deleteComments(request.getDeleteCommentIds());
+
+        return HoleResponse.HoleInfo.from(hole);
     }
 }

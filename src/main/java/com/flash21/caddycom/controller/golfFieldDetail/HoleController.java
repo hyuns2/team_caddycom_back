@@ -1,12 +1,15 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
+import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleResponse;
 import com.flash21.caddycom.service.golfFieldDetail.HoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "2-2. Course Detail", description = "골프장 코스 상세 정보(홀,티) 관련 API")
@@ -29,7 +32,7 @@ public class HoleController {
 
     @PostMapping(value="/api/hole/detail", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "홀의 상세 정보 설정 API")
-    public void createDetailInfo(@Valid @ModelAttribute HoleRequest.CreateDetailInfo request) {
-        holeService.processDetailInfo(request);
+    public ResponseEntity<HoleResponse.HoleInfo> createDetailInfo(@Valid @ModelAttribute HoleRequest.CreateDetailInfo request) {
+        return new ResponseEntity<>(holeService.processDetailInfo(request), HttpStatus.OK);
     }
 }

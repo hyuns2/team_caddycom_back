@@ -8,6 +8,7 @@ import com.flash21.caddycom.entity.caddy.FreeCaddy;
 import com.flash21.caddycom.entity.caddy.MatchedFreeCaddy;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.schedule.Assignment;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.repository.caddy.FreeCaddyRepository;
@@ -126,7 +127,7 @@ public class FreeCaddyService {
      *
      * 1. 지정골프장의 스케줄을 조회한다.
      * 2. 스케줄을 날짜별로 그룹핑한다.
-     * 2-1. assignmentMap (key: 날짜, value: 미배정 목록)
+     * 2-1. assignmentMap (key: 날짜, value: 미배정 목록 - ASSIGN_REQUESTED만 포함)
      * 2-2. countMap (key: 날짜, value: 미배정 수)
      * 3. List< 날짜 , 미배정 수, List<미배정 Item> > 형태를 반환한다.
      */
@@ -140,8 +141,12 @@ public class FreeCaddyService {
         for (Schedule schedule : scheduleList) {
             LocalDate date = schedule.getReservationAt();
             assignmentMap.putIfAbsent(date, new ArrayList<>());
-            //TODO: assignment의 status가 ASSIGN_REQUESTED 인 경우만 포함하도록 수정
-            assignmentMap.get(date).addAll(schedule.getAssignments());
+
+            List<Assignment> requestedAssignments = schedule.getAssignments().stream()
+                    .filter(assignment -> assignment.getStatus() == AssignmentStatus.ASSIGN_REQUESTED)
+                    .toList();
+            assignmentMap.get(date).addAll(requestedAssignments);
+
             countMap.put(date, countMap.getOrDefault(date, 0) + schedule.getNotAssignedCnt());
         }
 

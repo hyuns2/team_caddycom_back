@@ -2,21 +2,26 @@ package com.flash21.caddycom.service.caddy;
 
 import com.flash21.caddycom.dto.caddy.FreeCaddyCommand;
 import com.flash21.caddycom.dto.caddy.FreeCaddyResponse;
+import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
+import com.flash21.caddycom.dto.schedule.ScheduleResponse;
 import com.flash21.caddycom.entity.caddy.FreeCaddy;
 import com.flash21.caddycom.entity.caddy.MatchedFreeCaddy;
 import com.flash21.caddycom.entity.golfField.GolfField;
+import com.flash21.caddycom.entity.schedule.Assignment;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
+import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.repository.caddy.FreeCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
+import com.flash21.caddycom.repository.schedule.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -26,6 +31,7 @@ public class FreeCaddyService {
     private final GolfFieldRepository golfFieldRepository;
     private final FileUploader fileUploader;
     private final PlatformTransactionManager transactionManager;
+    private final ScheduleRepository scheduleRepository;
 
 
     /**
@@ -103,5 +109,50 @@ public class FreeCaddyService {
         FreeCaddy freeCaddy = freeCaddyRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 프리캐디입니다."));
         return FreeCaddyResponse.Info.from(freeCaddy);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<GolfFieldResponse.WithFreeCaddy> getMatchedGolfField(Long caddyId) {
+        FreeCaddy freeCaddy = freeCaddyRepository.findById(caddyId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 프리캐디입니다."));
+
+        return freeCaddy.getMatchedFreeCaddyList().stream()
+                .map(GolfFieldResponse.WithFreeCaddy::from)
+                .toList();
+    }
+
+    /**
+     * 프리캐디 지정골프장의 미배정 목록 조회
+     *
+     * 1. 지정골프장의 스케줄을 조회한다.
+     * 2. 스케줄을 날짜별로 그룹핑한다.
+     * 2-1. assignmentMap (key: 날짜, value: 미배정 목록 - ASSIGN_REQUESTED만 포함)
+     * 2-2. countMap (key: 날짜, value: 미배정 수)
+     * 3. List< 날짜 , 미배정 수, List<미배정 Item> > 형태를 반환한다.
+     */
+
+    @Transactional(readOnly = true)
+    public List<ScheduleResponse.NotAssigned> getMatchedGolfFieldSchedule(Long golfFieldId, Integer year, Integer month) {
+        List<Schedule> scheduleList = scheduleRepository.findAllByGolfFieldAndDate(golfFieldId, year, month);
+
+        Map<LocalDate, List<Assignment>> assignmentMap = new HashMap<>();
+        Map<LocalDate, Integer> countMap = new HashMap<>();
+        for (Schedule schedule : scheduleList) {
+            LocalDate date = schedule.getReservationAt();
+            assignmentMap.putIfAbsent(date, new ArrayList<>());
+
+            List<Assignment> requestedAssignments = schedule.getAssignments().stream()
+                    .filter(assignment -> assignment.getStatus() == AssignmentStatus.ASSIGN_REQUESTED)
+                    .toList();
+            assignmentMap.get(date).addAll(requestedAssignments);
+
+            countMap.put(date, countMap.getOrDefault(date, 0) + schedule.getNotAssignedCnt());
+        }
+
+        return assignmentMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(entry -> ScheduleResponse.NotAssigned.of(entry.getKey(), countMap.get(entry.getKey()), entry.getValue()))
+                .toList();
     }
 }

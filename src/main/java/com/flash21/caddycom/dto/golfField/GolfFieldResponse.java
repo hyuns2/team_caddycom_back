@@ -1,8 +1,10 @@
 package com.flash21.caddycom.dto.golfField;
 
+import com.flash21.caddycom.entity.caddy.MatchedFreeCaddy;
 import com.flash21.caddycom.entity.golfField.CaddyType;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
+import com.flash21.caddycom.entity.schedule.Schedule;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -104,6 +106,29 @@ public class GolfFieldResponse {
                     .contact(golfField.getContact())
                     .publicTransportGuide(golfField.getPublicTransportGuide())
                     .carGuide(golfField.getCarGuide())
+                    .build();
+        }
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @Builder
+    public static class WithFreeCaddy {
+        private Long golfFieldId;
+        private Long matchedId;
+        private String name;
+        private String imageUrl;
+        private int notAssignedCnt;
+
+        public static WithFreeCaddy from(MatchedFreeCaddy matchedFreeCaddy){
+            return WithFreeCaddy.builder()
+                    .golfFieldId(matchedFreeCaddy.getFreeCaddy().getId())
+                    .matchedId(matchedFreeCaddy.getId())
+                    .name(matchedFreeCaddy.getGolfField().getName())
+                    .imageUrl(matchedFreeCaddy.getGolfField().getImageUrl())
+                    .notAssignedCnt(matchedFreeCaddy.getGolfField().getScheduleList().stream()
+                            .mapToInt(Schedule::getNotAssignedCnt)
+                            .sum())
                     .build();
         }
     }

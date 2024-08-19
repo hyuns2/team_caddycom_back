@@ -3,6 +3,7 @@ package com.flash21.caddycom.entity.golfField;
 import com.flash21.caddycom.entity.account.Role;
 import com.flash21.caddycom.entity.caddy.MatchedFreeCaddy;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
+import com.flash21.caddycom.entity.schedule.Schedule;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -70,6 +71,9 @@ public class GolfField {
 
     @OneToMany(mappedBy = "golfField", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchedFreeCaddy> matchedFreeCaddyList;
+
+    @OneToMany(mappedBy = "golfField", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Schedule> scheduleList;
 
     private Long caddyAssignCursor = 0L;
 

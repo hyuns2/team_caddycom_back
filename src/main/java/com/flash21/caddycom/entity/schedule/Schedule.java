@@ -59,6 +59,7 @@ public class Schedule {
     @Column(nullable = false)
     private Integer blockedCnt;
 
+    @Column(nullable = false)
     private Integer notAssignedCnt;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -77,9 +78,15 @@ public class Schedule {
             this.blockedCnt--;
         }
     }
+    //외부캐디 요청을 했을때 미배정 개수를 증가시키는 메소드
     public void addNotAssignedCount() {
-        if (this.notAssignedCnt == null)
-            this.notAssignedCnt = this.totalCnt - this.blockedCnt;
-        this.notAssignedCnt++;
+        if (this.notAssignedCnt < this.totalCnt)
+            this.notAssignedCnt++;
+    }
+
+    public void subNotAssignedCount() {
+        if (this.notAssignedCnt >= 1) {
+            this.notAssignedCnt--;
+        }
     }
 }

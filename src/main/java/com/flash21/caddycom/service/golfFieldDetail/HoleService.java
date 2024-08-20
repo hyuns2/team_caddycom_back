@@ -144,12 +144,9 @@ public class HoleService {
 
         commentService.processComments(hole, request.getCommentData());
 
-        if(request.getTeeData() != null)
-            teeService.createAndUpdateTees(request.getHoleId(), request.getTeeData());
-        if(!request.getDeleteTeeIds().isEmpty())
-            teeService.deleteTees(request.getDeleteTeeIds());
-        if(!request.getDeleteCommentIds().isEmpty())
-            commentService.deleteComments(request.getDeleteCommentIds());
+        teeService.createAndUpdateTees(request.getHoleId(), request.getTeeData());
+        teeService.deleteTees(request.getDeleteTeeIds());
+        commentService.deleteComments(request.getDeleteCommentIds());
 
         return HoleResponse.HoleInfo.from(hole);
     }

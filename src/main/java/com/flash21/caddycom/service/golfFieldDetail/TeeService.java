@@ -62,6 +62,8 @@ public class TeeService {
      */
     @Transactional
     public void createAndUpdateTees(Long holeId, List<TeeResponse.Info> requestTees) {
+        if (requestTees == null || requestTees.isEmpty()) return;
+
         Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
         List<Tee> savedTees = hole.getTees();
@@ -112,6 +114,7 @@ public class TeeService {
      */
     @Transactional
     public void deleteTees(List<Long> teeIds) {
+        if(teeIds == null || teeIds.isEmpty()) return;
         teeRepository.deleteAllByIdInBatch(teeIds);
     }
 }

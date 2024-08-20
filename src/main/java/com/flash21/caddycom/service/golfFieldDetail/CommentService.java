@@ -63,6 +63,7 @@ public class CommentService {
      */
     @Transactional
     public void deleteComments(List<Long> commentIds) {
+        if(commentIds == null || commentIds.isEmpty()) return;
         commentRepository.deleteAllByIdInBatch(commentIds);
     }
 

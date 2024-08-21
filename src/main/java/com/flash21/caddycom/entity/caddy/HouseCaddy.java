@@ -45,16 +45,24 @@ public class HouseCaddy extends Caddy {
 
     private String caddyType;
 
-    public void updateHouseCaddyByManager(HouseCaddyRequest.UpdateByManager dto) {
-        this.team = dto.getTeam();
-        this.teamRole = dto.getTeamRole();
-        this.holiday = dto.getHoliday();
-        this.offPart = dto.getOffPart();
-        this.gender = dto.getGender();
-        this.birth = LocalDate.parse(dto.getBirth());
-        this.address = dto.getAddress();
-        this.addressDetail = dto.getAddressDetail();
-        this.career = dto.getCareer();
+    public void updateHouseCaddyByManager(String team,
+                                          TeamRole teamRole,
+                                          List<Days> holiday,
+                                          List<Integer> offPart,
+                                          Gender gender,
+                                          String birth,
+                                          String address,
+                                          String addressDetail,
+                                          String career) {
+        this.team = team;
+        this.teamRole = teamRole;
+        this.holiday = holiday;
+        this.offPart = offPart;
+        this.gender = gender;
+        this.birth = LocalDate.parse(birth);
+        this.address = address;
+        this.addressDetail = addressDetail;
+        this.career = career;
     }
 
     public void update(String profileUrl, List<Days> changedHoliday, String birth, String address, String addressDetail, String career) {

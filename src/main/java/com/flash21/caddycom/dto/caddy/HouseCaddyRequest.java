@@ -19,13 +19,15 @@ public class HouseCaddyRequest {
         private List<Days> holidays;
     }
 
-    @Data
+    @Getter
+    @AllArgsConstructor
     public static class CaddySearchCond {
         private String team;
         private String name;
     }
 
-    @Data
+    @Getter
+    @AllArgsConstructor
     public static class UpdateByManager {
         @NotNull(message = "team는 필수값입니다.")
         @Schema(description = "조 이름")
@@ -64,7 +66,7 @@ public class HouseCaddyRequest {
         private String career;
     }
 
-    @Data
+    @Getter
     @AllArgsConstructor
     public static class UpdateByCaddy {
         @Schema(description = "프로필 사진파일")

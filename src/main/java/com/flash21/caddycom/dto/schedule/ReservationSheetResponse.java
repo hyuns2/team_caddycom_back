@@ -1,32 +1,42 @@
 package com.flash21.caddycom.dto.schedule;
 
 import com.flash21.caddycom.entity.schedule.DateStatus;
+import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.repository.schedule.MetaDataReport;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
 public class ReservationSheetResponse {
-    @Data
     @Builder
     @AllArgsConstructor
+    @Getter
     public static class Get {
         private Long id;
         private List<CourseInfo> courseList;
         private LocalDate startDate;
         private LocalDate endDate;
         private List<InfoByPart> timeSlot;
+
+        public static Get from(ReservationSheet rs, List<CourseInfo> courseList, List<InfoByPart> timeSlot) {
+            return Get.builder()
+                    .id(rs.getId())
+                    .courseList(courseList)
+                    .startDate(rs.getStartDate())
+                    .endDate(rs.getEndDate())
+                    .timeSlot(timeSlot).build();
+        }
     }
 
-    @Data
     @Builder
     @AllArgsConstructor
+    @Getter
     public static class MetaData {
         @Schema(description = "결과 날짜 (yyyy-mm-dd)")
         private LocalDate targetDate;
@@ -55,16 +65,23 @@ public class ReservationSheetResponse {
         }
     }
 
-    @Data
     @Builder
+    @AllArgsConstructor
+    @Getter
     public static class CourseInfo {
         private Long id;
         private String name;
+
+        public static CourseInfo from(Long id, String name) {
+            return CourseInfo.builder()
+                    .id(id)
+                    .name(name).build();
+        }
     }
 
-    @Data
     @Builder
     @AllArgsConstructor
+    @Getter
     public static class InfoByPart {
         private LocalTime startTime;
         private LocalTime endTime;

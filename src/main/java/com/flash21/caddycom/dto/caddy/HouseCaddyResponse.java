@@ -68,9 +68,9 @@ public class HouseCaddyResponse {
         }
     }
 
-    @Data
     @AllArgsConstructor
     @Builder
+    @Getter
     public static class Detail {
         @Schema(description = "캐디 Id")
         private Long id;

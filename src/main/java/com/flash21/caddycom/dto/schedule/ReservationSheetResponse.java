@@ -67,6 +67,7 @@ public class ReservationSheetResponse {
 
     @Builder
     @AllArgsConstructor
+    @Getter
     public static class CourseInfo {
         private Long id;
         private String name;
@@ -80,6 +81,7 @@ public class ReservationSheetResponse {
 
     @Builder
     @AllArgsConstructor
+    @Getter
     public static class InfoByPart {
         private LocalTime startTime;
         private LocalTime endTime;

@@ -35,10 +35,9 @@ public class HouseCaddyService {
     private final PlatformTransactionManager transactionManager;
 
     /**
-     * 조 전제조회: 골프장 Id에 해당하는 캐디의 조이름을 전부 반환합니다.
+     * 조 전체조회: 골프장 Id에 해당하는 캐디의 조이름을 전부 반환합니다.
      *
-     * @param golfFieldId 골프장 Id
-     * @return 조이름 리스트
+     * @return 골프장 Id에 해당하는 조이름 리스트
      */
     @Transactional(readOnly = true)
     public List<String> getHouseCaddyTeam(Long golfFieldId) {
@@ -46,9 +45,8 @@ public class HouseCaddyService {
     }
 
     /**
-     * 전체 조회: 해당하는 골프장에 속하는 캐디들의 정보를 조별로 반환합니다.
+     * 조별 전체조회: 해당하는 골프장에 속하는 캐디들의 정보를 조별로 반환합니다.
      *
-     * @param golfFieldId 골프장 Id
      * @return 조이름, 캐디정보 리스트 맵핑결과
      */
     @Transactional(readOnly = true)
@@ -70,10 +68,6 @@ public class HouseCaddyService {
 
     /**
      * 조별 조회: 해당하는 골프장과 조이름에 속하는 캐디들의 정보를 반환합니다.
-     *
-     * @param golfFieldId 골프장 Id
-     * @param teamName    조 이름
-     * @return 캐디정보 리스트
      */
     @Transactional(readOnly = true)
     public List<HouseCaddyResponse.Detail> getHouseCaddyByTeam(Long golfFieldId, String teamName) {
@@ -90,10 +84,6 @@ public class HouseCaddyService {
 
     /**
      * 하우스캐디 정보 수정: 관리자가 하우스캐디의 정보를 수정합니다.
-     *
-     * @param golfFieldId 골프장 Id
-     * @param caddyId     캐디 Id
-     * @param dto         수정할 정보
      */
     @Transactional
     public void updateHouseCaddyByManager(Long golfFieldId, Long caddyId, HouseCaddyRequest.UpdateByManager dto) {
@@ -108,8 +98,6 @@ public class HouseCaddyService {
         }
         houseCaddy.updateHouseCaddyByManager(dto);
     }
-
-
 
     @Transactional(readOnly = true)
     public Map<String, List<HouseCaddyResponse.Info>> getAllHouseCaddy(Long golfFieldId, HouseCaddyRequest.CaddySearchCond searchCond) {

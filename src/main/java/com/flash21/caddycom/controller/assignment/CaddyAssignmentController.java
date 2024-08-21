@@ -33,7 +33,8 @@ public class CaddyAssignmentController {
 
 
     @GetMapping("/detail")
-    @Operation(summary = "업무 시작 전 배정 상세 정보 확인 API", description = "공용 - 배정 상세 정보를 확인하고 캐디업무 시작 버튼을 누르는 화면")
+    @Operation(summary = "업무 시작 전 배정 상세 정보 확인 API", description = "공용 - 배정 상세 정보를 확인하고 캐디업무 시작 버튼을 누르는 화면" +
+            "\n배정 상세 정보에서 업무 시작이 가능함")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<AssignmentResponse.CaddyAssignmentInfoDetail>> getAssignmentInfo(
             @RequestParam List<Long> assignmentIds
@@ -44,7 +45,8 @@ public class CaddyAssignmentController {
 
 
     @PostMapping("/{assignmentId}")
-    @Operation(summary = "캐디 업무의 코스 상세 조회 API", description = "공통 - 캐디 업무 시작 시 보여줄 코스 상세 정보 조회")
+    @Operation(summary = "캐디 업무의 코스 상세 조회 API", description = "공통 - 캐디 업무 시작 시 보여줄 코스 상세 정보 조회" +
+            "\n시작 버튼을 누르면 업무 시작 시간을 기입함")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CourseResponse.DetailMap> getCourseAssignmentInfo(@PathVariable("assignmentId") Long assignmentId,
                                                                             @RequestBody AssignmentRequest.Start startRequest) {
@@ -53,7 +55,8 @@ public class CaddyAssignmentController {
     }
 
     @PatchMapping("/{assignmentId}")
-    @Operation(summary = "캐디 업무 종료 API", description = "공통 - 캐디 업무 종료 시")
+    @Operation(summary = "캐디 업무 종료 API", description = "공통 - 캐디 업무 종료 시" +
+            "\n종료 버튼을 누르면 종료 시간을 기입함")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> assignmentFinishRequest(@PathVariable("assignmentId") Long assignmentId,
                                                         @RequestBody AssignmentRequest.End endRequest

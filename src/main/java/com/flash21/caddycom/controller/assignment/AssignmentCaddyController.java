@@ -78,7 +78,9 @@ public class AssignmentCaddyController {
     }
 
     @PostMapping("{golfFieldId}/{date}")
-    @Operation(summary = "캐디 자동 배정", description = "해당 날짜의 스케줄들에 캐디를 배정한다")
+    @Operation(summary = "캐디 자동 배정", description = "해당 날짜의 스케줄들에 캐디를 배정한다" +
+            "\n골프장에 소속된 하우스 캐디들을 조회하고, 휴일과 오프 파트를 체크하며 배정한다." +
+            "마지막으로 배정된 캐디의 다음 사람을 골프장 필드에 ID로 기입, 다음 자동 배정에 그 캐디부터 자동 배정을 시작하도록 함")
     public ResponseEntity<Void> assignCaddyToSchedule(
             @PathVariable("golfFieldId") Long golfFieldId,
             @PathVariable("date") LocalDate date

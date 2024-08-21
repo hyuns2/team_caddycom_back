@@ -37,7 +37,8 @@ public class ScheduleController {
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
 
-    @Operation(summary = "캐디 캘린더 배정 정보 조회", description = "캐디가 캘린더에 표기되는 배정 메타정보를 조회합니다.")
+    @Operation(summary = "캐디 캘린더 배정 정보 조회", description = "캐디가 캘린더에 표기되는 배정 메타정보를 조회합니다." +
+            "\n배정된 일정의 부와 시간을 일 별로 보여줌")
     @GetMapping("/calendar/caddy/{caddyId}/{year}/{month}")
     public ResponseEntity<Map<LocalDate, List<AssignmentResponse.CaddyAssignmentInfo>>> getCaddyAssignments(
             @PathVariable Long caddyId,

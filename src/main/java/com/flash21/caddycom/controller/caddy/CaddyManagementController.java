@@ -4,6 +4,7 @@ package com.flash21.caddycom.controller.caddy;
 import com.flash21.caddycom.dto.Message;
 import com.flash21.caddycom.dto.caddy.HouseCaddyRequest;
 import com.flash21.caddycom.dto.caddy.HouseCaddyResponse;
+import com.flash21.caddycom.service.caddy.HouseCaddyHolidayService;
 import com.flash21.caddycom.service.caddy.HouseCaddyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,6 +25,7 @@ import java.util.Map;
 @RequestMapping("/api/house-caddy")
 public class CaddyManagementController {
     private final HouseCaddyService houseCaddyService;
+    private final HouseCaddyHolidayService houseCaddyHolidayService;
 
     @Operation(summary = "조 전체조회", description = "골프장에 속해있는 하우스 캐디의 모든 조를 조회합니다.")
     @GetMapping("/team/{golfFieldId}")
@@ -74,7 +76,7 @@ public class CaddyManagementController {
     @Operation(summary = "캐디 휴무일 전체 조회", description = "골프장에 속해있는 모든 하우스 캐디의 휴무일을 조회합니다.")
     @GetMapping("/holiday/{golfFieldId}")
     public ResponseEntity<List<HouseCaddyResponse.TeamHoliday>> getAllHolidayInfo(@PathVariable("golfFieldId") Long golfFieldId) {
-        List<HouseCaddyResponse.TeamHoliday> allHoliday = houseCaddyService.getAllHoliday(golfFieldId);
+        List<HouseCaddyResponse.TeamHoliday> allHoliday = houseCaddyHolidayService.getAllHoliday(golfFieldId);
 
         return ResponseEntity.ok(allHoliday);
     }
@@ -82,7 +84,7 @@ public class CaddyManagementController {
     @Operation(summary = "캐디 휴무일 조별 조회", description = "특정 조의 전체 인원의 휴무일을 조회합니다.")
     @GetMapping("/holiday/{golfFieldId}/team")
     public ResponseEntity<HouseCaddyResponse.TeamHoliday> getTeamHolidayInfo(@PathVariable("golfFieldId") Long golfFieldId, String name) {
-        HouseCaddyResponse.TeamHoliday holiday = houseCaddyService.getTeamHoliday(golfFieldId, name);
+        HouseCaddyResponse.TeamHoliday holiday = houseCaddyHolidayService.getTeamHoliday(golfFieldId, name);
 
         return ResponseEntity.ok(holiday);
     }
@@ -90,14 +92,14 @@ public class CaddyManagementController {
     @Operation(summary = "캐디 휴무일 일괄 변경", description = "하우스 캐디의 휴무일을 일괄적으로 변경합니다.")
     @PostMapping("/holiday")
     public ResponseEntity<Void> updateHolidayAll(@Valid @RequestBody List<HouseCaddyRequest.CreateHoliday> request) {
-        houseCaddyService.updateHolidayAll(request);
+        houseCaddyHolidayService.updateHolidayAll(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Operation(summary = "하우스캐디 휴무일 승인", description = "관리자가 하우스캐디의 휴무일을 승인합니다.")
     @PostMapping("/holiday/{caddyId}")
     public ResponseEntity<Void> updateHouseCaddyHoliday(@PathVariable Long caddyId) {
-        houseCaddyService.updateHouseCaddyHoliday(caddyId);
+        houseCaddyHolidayService.updateHouseCaddyHoliday(caddyId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

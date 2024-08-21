@@ -157,8 +157,10 @@ public class ReservationSheetService {
         List<ReservationSheet> reservationSheetList = reservationSheetRepository.findAllByGolfFieldId(golfFieldId);
         Map<Long, String> courseMap = courseRepository.findAllByGolfFieldId(golfFieldId)
                 .stream().collect(Collectors.toMap(Course::getId, Course::getName));
+
         for (ReservationSheet rs : reservationSheetList) {
             int part = 1;
+
             List<ReservationSheetResponse.InfoByPart> detailDtoList = new ArrayList<>();
             while (true) {
                 Optional<Schedule> schedule = scheduleRepository.findFirstByReservationSheetIdAndPart(rs.getId(), part++);
@@ -166,15 +168,11 @@ public class ReservationSheetService {
                     break;
                 detailDtoList.add(ReservationSheetResponse.InfoByPart.from(schedule.get()));
             }
-            dtoList.add(ReservationSheetResponse.Get.builder()
-                    .id(rs.getId())
-                    .courseList(rs.getCourseIdList().stream().map(current ->
-                            ReservationSheetResponse.CourseInfo.builder()
-                                    .id(current)
-                                    .name(courseMap.get(current)).build()).toList())
-                    .startDate(rs.getStartDate())
-                    .endDate(rs.getEndDate())
-                    .timeSlot(detailDtoList).build());
+
+            dtoList.add(ReservationSheetResponse.Get.from(rs,
+                    rs.getCourseIdList().stream().map(current ->
+                            ReservationSheetResponse.CourseInfo.from(current, courseMap.get(current))).toList(),
+                    detailDtoList));
         }
         return dtoList.stream().sorted(Comparator.comparing(ReservationSheetResponse.Get::getStartDate)).toList();
     }

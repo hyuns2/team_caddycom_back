@@ -1,7 +1,7 @@
 package com.flash21.caddycom.controller.notification;
 
-import com.flash21.caddycom.dto.Message;
 import com.flash21.caddycom.service.notification.NotificationService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +10,16 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+
+/**
+ * 알림 기능은 미완성기능으로 구현이 필요합니다.
+ * 아래 API는 SSE를 이용한 알림기능의 테스트를 위한 API입니다.
+ */
 @Tag(name = "7. Notification", description = "알림 기능 API")
 @RestController
 @RequestMapping("api/notification")
 @RequiredArgsConstructor
+@Hidden
 public class NotificationController {
     private final NotificationService notificationService;
 

@@ -23,7 +23,8 @@ public class AssignmentCaddyController {
 
 
     @GetMapping("{golfFieldId}/{date}")
-    @Operation(summary = "배정 결과 조회 API", description = "캐디 배정 후 결과를 페이징 조회한다.")
+    @Operation(summary = "배정 결과 조회 API", description = "캐디 배정 후 결과를 페이징 조회한다." +
+            "\n\ncourseId는 제외하거나 0을 넣으면 전체코스가 조회되고, status는 제외하거나 아무것도 넣지 않으면 전체 Status가 조회된다.")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PagingResponse<AssignmentResponse.Info>> getAssignments(
             @PathVariable Long golfFieldId,
@@ -36,7 +37,8 @@ public class AssignmentCaddyController {
 
 
     @GetMapping("switch/{golfFieldId}/{date}")
-    @Operation(summary = "배정 변경 가능한 캐디 목록 조회 API", description = "변경 가능한 캐디의 목록을 페이징 조회한다.")
+    @Operation(summary = "배정 변경 가능한 캐디 목록 조회 API", description = "변경 가능한 캐디의 목록을 페이징 조회한다." +
+            "\n\ncourseId와 part는 제외하거나 0을 넣으면 전체가 조회된다.")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PagingResponse<AssignmentResponse.Info>> getSwitchingCaddy(
             @PathVariable Long golfFieldId,

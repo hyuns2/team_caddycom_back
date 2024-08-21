@@ -175,10 +175,7 @@ public class ReservationSheetService {
                 Optional<Schedule> schedule = scheduleRepository.findFirstByReservationSheetIdAndPart(rs.getId(), part++);
                 if (schedule.isEmpty())
                     break;
-                detailDtoList.add(ReservationSheetResponse.InfoByPart.builder()
-                        .startTime(schedule.get().getStartTime())
-                        .endTime(schedule.get().getEndTime())
-                        .teeOff(schedule.get().getTeeOff()).build());
+                detailDtoList.add(ReservationSheetResponse.InfoByPart.from(schedule.get()));
             }
             dtoList.add(ReservationSheetResponse.Get.builder()
                     .id(rs.getId())
@@ -256,21 +253,19 @@ public class ReservationSheetService {
         LocalDate targetDate = LocalDate.of(year, month, 1);
         List<MetaDataReport> reports = scheduleRepository.countAllMetaDataByDate(targetDate, targetDate.plusMonths(1).minusDays(1), golfFieldId);
 
-        List<ReservationSheetResponse.MetaData> responseDtoList = new ArrayList<>();
-        for (MetaDataReport report : reports) {
-            int totalCntResult = report.getTotalCntSum();
-            int blockedCntResult = report.getBlockedCntSum();
-            int availableCntResult = totalCntResult - blockedCntResult;
+//        List<ReservationSheetResponse.MetaData> responseDtoList = new ArrayList<>();
+//        for (MetaDataReport report : reports) {
+//            responseDtoList.add(ReservationSheetResponse.MetaData.from(report));
+//        }
+//        return responseDtoList.stream().sorted(new MetaDataResponseComparator()).toList();
 
-            responseDtoList.add(ReservationSheetResponse.MetaData.builder().
-                    targetDate(report.getReservationAt()).
-                    dateStatus(report.getDateStatus()).
-                    totalCntSum(totalCntResult).
-                    blockedCntSum(blockedCntResult).
-                    availableCntSum(report.getDateStatus() != DateStatus.NOTHING ? availableCntResult : 0).build());
-        }
 
-        return responseDtoList.stream().sorted(new MetaDataResponseComparator()).toList();
+        List<ReservationSheetResponse.MetaData> responseDtoList = reports.stream()
+                .map(ReservationSheetResponse.MetaData::from)
+                .sorted(Comparator.comparing(ReservationSheetResponse.MetaData::getTargetDate))
+                .toList();
+
+        return responseDtoList;
     }
 
     public Map<LocalDate, List<AssignmentResponse.CaddyAssignmentInfo>> getAssignmentResultSheet(Long caddyId, int year, int month) {

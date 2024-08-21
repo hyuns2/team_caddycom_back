@@ -8,7 +8,6 @@ import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.exception.cException.CReservationSheetNotFoundException;
-import com.flash21.caddycom.repository.assignment.AssignmentJdbcRepository;
 import com.flash21.caddycom.repository.assignment.AssignmentRepository;
 import com.flash21.caddycom.repository.schedule.*;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +30,6 @@ public class AssignmentService {
     final ReservationSheetService rsService;
     final ScheduleRepository scheduleRepository;
     final AssignmentRepository assignmentRepository;
-    final AssignmentJdbcRepository assignmentJdbcRepository;
 
     /**
      * 배정정보 조회 및 생성: 배정정보가 존재하는 경우에는 반환하고, 존재하지 않는 경우에는 생성하여 반환합니다.
@@ -96,10 +94,7 @@ public class AssignmentService {
         for (Assignment assignment : assignmentList) {
             String startTime = assignment.getStartTime().toString();
             String courseName = assignment.getSchedule().getCourse().getName();
-            AssignmentResponse.Assigned dto = AssignmentResponse.Assigned.builder()
-                    .id(assignment.getId())
-                    .status(assignment.getStatus())
-                    .build();
+            AssignmentResponse.Assigned dto = AssignmentResponse.Assigned.from(assignment);
 
             if (result.containsKey(startTime))
                 result.get(startTime).put(courseName, dto);
@@ -117,7 +112,7 @@ public class AssignmentService {
      * @param schedule 스케쥴 객체
      */
     private void createAssignments(Schedule schedule) {
-        assignmentJdbcRepository.saveAll(schedule.getId(), rsService.getStartTimeList(
+        assignmentRepository.bulkInsert(schedule.getId(), rsService.getStartTimeList(
                 schedule.getStartTime(), schedule.getEndTime(), schedule.getTeeOff()));
 
         schedule.changeDateStatus(DateStatus.SETTING);

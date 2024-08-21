@@ -41,7 +41,6 @@ public class ReservationSheetService {
      */
     @Transactional
     public void createReservationSheet(ReservationSheetRequest.CreateOrUpdate requestDto) {
-
         GolfField golfField = golfFieldRepository.findById(requestDto.getGolfFieldId())
                 .orElseThrow(CGolfFieldNotFoundException::new);
 
@@ -101,8 +100,7 @@ public class ReservationSheetService {
 
         for (Course course : courseList) {
             for (LocalDate oneDay : localDateList) {
-
-                Schedule newSchedule = Schedule.builder()
+                scheduleList.add(Schedule.builder()
                         .golfField(golfField)
                         .reservationSheet(reservationSheet)
                         .course(course)
@@ -115,9 +113,7 @@ public class ReservationSheetService {
                         .totalCnt(totalCnt)
                         .notAssignedCnt(0)
                         .blockedCnt(0)
-                        .build();
-
-                scheduleList.add(newSchedule);
+                        .build());
             }
         }
     }
@@ -131,6 +127,7 @@ public class ReservationSheetService {
 
     /**
      * 주어진 조건 사이의 시간을 모두 찾아, 리스트로 반환합니다.
+     * - AssignmentService에도 활용해서 public!
      */
     public List<LocalTime> getStartTimeList(LocalTime startTime, LocalTime endTime, String teeOff) {
         LocalTime currentStartTime = startTime;

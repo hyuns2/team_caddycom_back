@@ -35,6 +35,10 @@ public class AssignmentService {
      * 배정정보 조회 및 생성: 배정정보가 존재하는 경우에는 반환하고, 존재하지 않는 경우에는 생성하여 반환합니다.
      *
      * @return 코스리스트, 시간리스트, 부별 id-status 형태의 map 반환
+     *         ex) { 코스: [A, B],
+     *             시간: [~~~],
+     *             A: [ {id&상태}, null, ~~ ],
+     *             B: [~~~] }
      */
     @Transactional
     public Map<String, List<Object>> getAssignments(Long golfFieldId, LocalDate targetDate, int page) {
@@ -111,8 +115,8 @@ public class AssignmentService {
     /**
      * 배정정보 조회 내부함수4: 요구되는 response 형식대로 생성 및 반환합니다.
      *
-     * @param dtoMap         코스, dto 구조의 map
-     * @return 요구되는 api response
+     * @param dtoMap 코스, dto 구조의 map
+     * @return 최종으로 반환해야 할 response
      */
     private Map<String, List<Object>> makeResponse(List<String> courseNameList, Map<String, Map<String, AssignmentResponse.Assigned>> dtoMap) {
         Map<String, List<Object>> response = new WeakHashMap<>();

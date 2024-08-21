@@ -25,11 +25,17 @@ public class AssignmentController {
 
     //TODO: 배정정보를 생성하는 책임도 담당하기 때문에 Post 메서드로 변경 필요
     @Operation(summary = "배정정보 조회", description = """
-                    골프장 관리자가 배정정보를 조회합니다.
-                    - 해당 날짜에 이미 배정정보가 존재하는 경우, 그 정보를 반환합니다.
-                    - 정보가 존재하지 않는 경우, 해당 날짜의 모든 배정정보를 생성한 후 반환합니다.
-                    - 페이지는 0번부터 시작하고, 한 페이지당 10개 타임의 코스별 배정정보를 반환합니다.
-                """)
+                골프장 관리자가 배정정보를 조회합니다.
+                - 해당 날짜에 이미 배정정보가 존재하는 경우, 그 정보를 반환합니다.
+                - 정보가 존재하지 않는 경우, 해당 날짜의 모든 배정정보를 생성한 후 반환합니다.
+                - 페이지는 0번부터 시작하고, 한 페이지당 10개 타임의 코스별 배정정보를 반환합니다.
+                반환형태 ex) { 코스: [A, B],
+                           시간: [~~~],
+                           A: [ {id&상태}, null, ~~ ],
+                           B: [~~~] }
+                - 인덱스 기준으로 하나의 타임에 해당합니다.
+                - 어떤 코스가 어느 시간에는 배정정보를 갖고있지 않으면, null이 들어갑니다.
+            """)
     @GetMapping("/{golfFieldId}/{targetDate}/{page}")
     public ResponseEntity<Map<String, List<Object>>> getAssignments(@PathVariable Long golfFieldId,
                                                                     @PathVariable LocalDate targetDate,

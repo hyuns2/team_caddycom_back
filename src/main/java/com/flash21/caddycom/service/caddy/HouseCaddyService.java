@@ -96,7 +96,9 @@ public class HouseCaddyService {
                         caddy.setTeamRole(TeamRole.MEMBER);
                     });
         }
-        houseCaddy.updateHouseCaddyByManager(dto);
+        houseCaddy.updateHouseCaddyByManager(dto.getTeam(), dto.getTeamRole(), dto.getHoliday(),
+                dto.getOffPart(), dto.getGender(), dto.getBirth(), dto.getAddress(),
+                dto.getAddressDetail(), dto.getCareer());
     }
 
     @Transactional(readOnly = true)

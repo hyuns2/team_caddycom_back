@@ -36,8 +36,8 @@ public class ReservationSheetService {
 
     /**
      * 예약시트 생성: 예약시트를 생성합니다.
-     * 1. 예약시트를 생성합니다.
-     * 2. 예약시트의 기간만큼 일별로 코스마다 스케줄을 생성합니다.
+     * 1. 예약시트부터 생성
+     * 2. 예약시트의 기간만큼 일별로 코스마다 스케줄을 생성
      */
     @Transactional
     public void createReservationSheet(ReservationSheetRequest.CreateOrUpdate requestDto) {

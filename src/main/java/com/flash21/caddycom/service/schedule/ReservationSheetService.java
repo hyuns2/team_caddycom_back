@@ -31,7 +31,6 @@ public class ReservationSheetService {
     private final ReservationSheetRepository reservationSheetRepository;
     private final ScheduleRepository scheduleRepository;
     private final CourseRepository courseRepository;
-    private final ScheduleJdbcRepository scheduleJdbcRepository;
     private final AssignmentRepository assignmentRepository;
     private final CaddyRepository caddyRepository;
 
@@ -57,7 +56,7 @@ public class ReservationSheetService {
         ReservationSheet reservationSheet = reservationSheetRepository.save(requestDto.toEntity(golfField));
         List<Schedule> scheduleList = createSchedules(golfField, courseList, reservationSheet, requestDto);
 
-        scheduleJdbcRepository.saveAll(scheduleList);
+        scheduleRepository.saveAll(scheduleList);
     }
 
     /**

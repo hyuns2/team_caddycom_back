@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ScheduleRepository extends JpaRepository<Schedule, Long>, ScheduleQueryFactory {
+public interface ScheduleRepository extends JpaRepository<Schedule, Long>, ScheduleQueryFactory, ScheduleJdbcRepository {
     Optional<Schedule> findFirstByGolfFieldIdAndCourseIdAndReservationAtBetween(Long golfFieldId, Long courseId, LocalDate startDate, LocalDate endDate);
 
     @Query("select s.reservationAt as reservationAt, s.dateStatus as dateStatus, sum(s.totalCnt) as totalCntSum, sum(s.blockedCnt) as blockedCntSum from Schedule s"

@@ -24,8 +24,6 @@ public class HouseCaddyHolidayService {
 
     /**
      * 하우스캐디 휴무일 승인: 하우스캐디가 요청한 휴무일로 변경합니다.
-     *
-     * @param caddyId 캐디 Id
      */
     @Transactional
     public void updateHouseCaddyHoliday(Long caddyId) {

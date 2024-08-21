@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class ScheduleJdbcRepositoryImpl {
+public class ScheduleJdbcRepositoryImpl implements ScheduleJdbcRepository{
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional

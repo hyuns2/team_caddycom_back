@@ -135,6 +135,10 @@ public class HouseCaddyService {
         return hc1.getName().compareTo(hc2.getName());
     }
 
+    /**
+     * 팀 이름에서 숫자를 추출한다.
+     * 팀 이름이 없으면 최댓값을 부여
+     */
     private int extractTeamNumber(String team) {
         try {
             if (team == null) return Integer.MAX_VALUE;

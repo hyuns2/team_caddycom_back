@@ -224,7 +224,7 @@ public class ReservationSheetService {
     }
 
     /**
-     * 메타데이터 조회: 캘린더에 표기되는 메타데이터를 반환합니다.
+     * 메타데이터 조회: 골프장 관리자의 캘린더에 표기되는 메타데이터를 반환합니다.
      */
     public List<ReservationSheetResponse.MetaData> getMetaData(Long golfFieldId, int year, int month) {
         LocalDate targetDate = LocalDate.of(year, month, 1);
@@ -236,6 +236,9 @@ public class ReservationSheetService {
                 .toList();
     }
 
+    /**
+     * 캐디의 캘린더에 표시되는 정보 조회: 한달 간 해당 캐디에 배정된 정보를 일별로 반환한다.
+     */
     public Map<LocalDate, List<AssignmentResponse.CaddyAssignmentInfo>> getAssignmentResultSheet(Long caddyId, int year, int month) {
 
         caddyRepository.findById(caddyId)

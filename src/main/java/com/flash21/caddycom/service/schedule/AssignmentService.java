@@ -136,6 +136,9 @@ public class AssignmentService {
         return response;
     }
 
+    /**
+     * 해당 배정을 BLOCK 상태로 만들고, 블락된 사유를 저장한다.
+     */
     @Transactional
     public void setBlock(Long assignmentsId, AssignmentRequest.Block blockRequest) {
         Assignment findAssignment = assignmentRepository.findById(assignmentsId)
@@ -145,6 +148,10 @@ public class AssignmentService {
 
     }
 
+    /**
+     * 해당 배정을 CANCEL 상태로 만든다.
+     * (캐디의 취소요청에 대한 승인이거나 골프장 관리자가 직접 취소한 상황일 수 있다.)
+     */
     @Transactional
     public void cancelBlock(Long assignmentsId) {
         Assignment findAssignment = assignmentRepository.findById(assignmentsId)

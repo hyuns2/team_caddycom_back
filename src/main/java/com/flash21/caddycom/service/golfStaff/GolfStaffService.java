@@ -20,6 +20,9 @@ public class GolfStaffService {
     private final GolfStaffRepository golfStaffRepository;
     private final GolfFieldRepository golfFieldRepository;
 
+    /**
+     * 골프장에 속한 직원들을 조회
+     */
     public List<GolfStaffResponse.Info> getGolfStaff(Long id) {
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("골프장이 존재하지 않습니다."));
@@ -30,6 +33,9 @@ public class GolfStaffService {
                 .toList();
     }
 
+    /**
+     * 골프장 직원 List로 생성
+     */
     @Transactional
     public void createGolfStaff(Long id, List<GolfStaffCommand.Create> requestList) {
         GolfField golfField = golfFieldRepository.findById(id)

@@ -26,7 +26,7 @@ public class DayListConverter implements AttributeConverter<List<Days>, String> 
             return null;
 
         return Arrays.stream(s.split(SPLIT_CHAR))
-                .map(Days::fromNumber)
+                .map(Days::fromNumberString)
                 .toList();
     }
 }

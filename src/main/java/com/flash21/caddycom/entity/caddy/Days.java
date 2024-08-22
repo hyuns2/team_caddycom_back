@@ -28,10 +28,16 @@ public enum Days {
         return String.valueOf(number);
     }
 
-
-    // TODO: 비지니스 레이어로 이동 필요
-    public static Days fromNumber(String number) {
+    public static Days fromNumberString(String number) {
         Days day = valueToDayMap.get(Integer.parseInt(number));
+        if(day == null) {
+            throw new IllegalArgumentException("유효하지 않은 요일입니다: " + number);
+        }
+        return day;
+    }
+
+    public static Days fromNumber(int number) {
+        Days day = valueToDayMap.get(number);
         if(day == null) {
             throw new IllegalArgumentException("유효하지 않은 요일입니다: " + number);
         }

@@ -53,4 +53,11 @@ public class FreeCaddyController {
     ) {
         return ResponseEntity.ok().body(freeCaddyService.getMatchedGolfFieldSchedule(golfFieldId, year, month));
     }
+
+    @PatchMapping("/assignment")
+    @Operation(summary = "프리캐디 배정 받기", description = "프리캐디는 미배정 목록에서 가능한 시간을 선택해 배정을 받는다.")
+    public ResponseEntity<Message> assignFreeCaddy(@RequestParam Long caddyId, @RequestParam Long assignmentId) {
+        freeCaddyService.assignFreeCaddy(caddyId, assignmentId);
+        return ResponseEntity.ok().body(new Message("프리캐디 배정 완료"));
+    }
 }

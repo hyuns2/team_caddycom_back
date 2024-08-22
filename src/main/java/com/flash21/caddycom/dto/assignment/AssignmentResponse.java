@@ -92,7 +92,7 @@ public class AssignmentResponse {
                     .assignmentId(assignment.getId())
                     .golfFieldName(golfField.getName())
                     .assignmentDate(reservationAt)
-                    .days(getDayOfWeek(reservationAt))
+                    .days(Days.fromNumber(reservationAt.getDayOfWeek().getValue()))
                     .courseName(course.getName())
                     .part(schedule.getPart())
                     .totalHole(course.getTotalHoles())
@@ -164,24 +164,6 @@ public class AssignmentResponse {
         }
     }
 
-    private static Days getDayOfWeek(LocalDate date) {
-        int dayOfWeek = getDayofWeekFromRequestDate(date);
-        return Days.fromNumber(String.valueOf(dayOfWeek));
-    }
-
-    private static int getDayofWeekFromRequestDate(LocalDate date) {
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-        return switch (dayOfWeek) {
-            case MONDAY -> 1;
-            case TUESDAY -> 2;
-            case WEDNESDAY -> 3;
-            case THURSDAY -> 4;
-            case FRIDAY -> 5;
-            case SATURDAY -> 6;
-            case SUNDAY -> 7;
-        };
-    }
-
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -189,6 +171,7 @@ public class AssignmentResponse {
         private String caddyName;
         private String reason;
 
+        //TODO: 서비스 레이어로 이동 필요
         public Block(Assignment assignment) {
             this.reason = assignment.getReason() != null ? assignment.getReason() : "사용자의 요청으로 블락된 상태입니다.";
             this.caddyName = assignment.getCaddyName() != null ? assignment.getCaddyName() : "블락 상태에서 캐디가 배정되지 않았습니다.";
@@ -200,11 +183,17 @@ public class AssignmentResponse {
     @AllArgsConstructor
     @Builder
     public static class Assigned {
-        @NotNull(message = "id는 필수값입니다.")
         @Schema(description = "배정정보 id")
         private Long id;
 
         @Schema(description = "상태")
         private AssignmentStatus status;
+
+        public static Assigned from(Assignment assignment) {
+            return Assigned.builder()
+                    .id(assignment.getId())
+                    .status(assignment.getStatus())
+                    .build();
+        }
     }
 }

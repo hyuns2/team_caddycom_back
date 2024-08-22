@@ -1,6 +1,7 @@
 package com.flash21.caddycom.controller.schedule;
 
-import com.flash21.caddycom.dto.schedule.ReservationSheetDto;
+import com.flash21.caddycom.dto.schedule.ReservationSheetRequest;
+import com.flash21.caddycom.dto.schedule.ReservationSheetResponse;
 import com.flash21.caddycom.service.schedule.ReservationSheetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +22,7 @@ public class ReservationSheetController {
 
     @Operation(summary = "예약시트 등록", description = "골프장 관리자가 예약시트를 등록합니다.")
     @PostMapping
-    public ResponseEntity<Void> createReservationSheet(@Valid @RequestBody ReservationSheetDto.CreateOrUpdateRequest dto) {
+    public ResponseEntity<Void> createReservationSheet(@Valid @RequestBody ReservationSheetRequest.CreateOrUpdate dto) {
         rsService.createReservationSheet(dto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -29,15 +30,15 @@ public class ReservationSheetController {
 
     @Operation(summary = "예약시트 전체조회", description = "골프장 관리자가 전체 예약시트를 조회합니다.")
     @GetMapping("/{golfFieldId}")
-    public ResponseEntity<List<ReservationSheetDto.GetResponse>> getReservationSheet(@PathVariable Long golfFieldId) {
-        List<ReservationSheetDto.GetResponse> result = rsService.getReservationSheet(golfFieldId);
+    public ResponseEntity<List<ReservationSheetResponse.Get>> getReservationSheet(@PathVariable Long golfFieldId) {
+        List<ReservationSheetResponse.Get> result = rsService.getReservationSheet(golfFieldId);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Operation(summary = "예약시트 수정", description = "골프장 관리자가 특정 예약시트를 수정합니다.")
     @PatchMapping("/{reservationId}")
-    public ResponseEntity<Void> updateReservationSheet(@PathVariable Long reservationId, @Valid @RequestBody ReservationSheetDto.CreateOrUpdateRequest dto) {
+    public ResponseEntity<Void> updateReservationSheet(@PathVariable Long reservationId, @Valid @RequestBody ReservationSheetRequest.CreateOrUpdate dto) {
         rsService.updateReservationSheet(reservationId, dto);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

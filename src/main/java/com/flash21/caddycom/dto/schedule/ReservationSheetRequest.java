@@ -2,22 +2,19 @@ package com.flash21.caddycom.dto.schedule;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.flash21.caddycom.entity.golfField.GolfField;
-import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
-public class ReservationSheetDto {
+public class ReservationSheetRequest {
 
     @Data
-    public static class CreateOrUpdateRequest {
+    public static class CreateOrUpdate {
         @Schema(description = "골프장 Id")
         @NotNull(message = "golfFieldId는 필수값입니다.")
         private Long golfFieldId;
@@ -58,47 +55,4 @@ public class ReservationSheetDto {
         }
     }
 
-    @Data
-    @Builder
-    public static class GetResponse {
-        private Long id;
-        private List<CourseInfo> courseList;
-        private LocalDate startDate;
-        private LocalDate endDate;
-        private List<InfoByPart> timeSlot;
-    }
-
-    @Data
-    @Builder
-    public static class CourseInfo {
-        private Long id;
-        private String name;
-    }
-
-    @Data
-    @Builder
-    public static class InfoByPart {
-        private LocalTime startTime;
-        private LocalTime endTime;
-        private String teeOff;
-    }
-
-    @Data
-    @Builder
-    public static class MetaDataResponse {
-        @Schema(description = "결과 날짜 (yyyy-mm-dd)")
-        private LocalDate targetDate;
-
-        @Schema(description = "일별 배정상태")
-        private DateStatus dateStatus;
-
-        @Schema(description = "총 개수")
-        private int totalCntSum;
-
-        @Schema(description = "블락된 개수")
-        private int blockedCntSum;
-
-        @Schema(description = "배정가능 개수")
-        private int availableCntSum;
-    }
 }

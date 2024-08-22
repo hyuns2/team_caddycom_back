@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface AssignmentRepository extends JpaRepository<Assignment, Long>, AssignmentQueryFactory {
+public interface AssignmentRepository extends JpaRepository<Assignment, Long>, AssignmentQueryFactory, AssignmentJdbcRepository {
     @Query("select distinct a.startTime from Assignment a"
             + " where a.schedule.reservationAt = ?1 order by a.startTime")
     Page<LocalTime> findTimesByReservationAt(LocalDate date, Pageable pageable);

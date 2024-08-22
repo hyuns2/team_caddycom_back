@@ -1,9 +1,10 @@
 package com.flash21.caddycom.service.schedule;
 
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
+import com.flash21.caddycom.dto.schedule.ReservationSheetResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
-import com.flash21.caddycom.dto.schedule.ReservationSheetDto;
+import com.flash21.caddycom.dto.schedule.ReservationSheetRequest;
 import com.flash21.caddycom.entity.schedule.*;
 import com.flash21.caddycom.global.exception.cException.*;
 import com.flash21.caddycom.repository.assignment.AssignmentRepository;
@@ -41,7 +42,7 @@ public class ReservationSheetService {
      * @throws CCourseNotFoundException Course 객체가 존재하지 않을 경우
      */
     @Transactional
-    public void createReservationSheet(ReservationSheetDto.CreateOrUpdateRequest requestDto) {
+    public void createReservationSheet(ReservationSheetRequest.CreateOrUpdate requestDto) {
 
         GolfField golfField = golfFieldRepository.findById(requestDto.getGolfFieldId())
                 .orElseThrow(CGolfFieldNotFoundException::new);
@@ -64,7 +65,7 @@ public class ReservationSheetService {
      *
      * @param dto 예약시트 생성요청 dto
      */
-    private void validToCreateSchedules(ReservationSheetDto.CreateOrUpdateRequest dto) {
+    private void validToCreateSchedules(ReservationSheetRequest.CreateOrUpdate dto) {
         if (dto.getStartDate().isBefore(LocalDate.now()) || dto.getStartDate().isAfter(dto.getEndDate()))
             throw new CInvalidDateOrderException();
 
@@ -78,7 +79,7 @@ public class ReservationSheetService {
                 throw new CBadReservationRequestException();
     }
 
-    private List<Schedule> createSchedules(GolfField golfField, List<Course> courseList, ReservationSheet reservationSheet, ReservationSheetDto.CreateOrUpdateRequest dto) {
+    private List<Schedule> createSchedules(GolfField golfField, List<Course> courseList, ReservationSheet reservationSheet, ReservationSheetRequest.CreateOrUpdate dto) {
 
         List<Schedule> scheduleList = new ArrayList<>();
         List<LocalDate> localDateList = getLocalDateList(dto);
@@ -122,7 +123,7 @@ public class ReservationSheetService {
         }
     }
 
-    private List<LocalDate> getLocalDateList(ReservationSheetDto.CreateOrUpdateRequest dto) {
+    private List<LocalDate> getLocalDateList(ReservationSheetRequest.CreateOrUpdate dto) {
         LocalDate startDate = dto.getStartDate();
         LocalDate endDate = dto.getEndDate();
         return startDate.datesUntil(endDate.plusDays(1)).toList();
@@ -161,28 +162,28 @@ public class ReservationSheetService {
      * @param golfFieldId 골프장 Id
      * @return 예약시트별 dto 리스트
      */
-    public List<ReservationSheetDto.GetResponse> getReservationSheet(Long golfFieldId) {
-        List<ReservationSheetDto.GetResponse> dtoList = new ArrayList<>();
+    public List<ReservationSheetResponse.Get> getReservationSheet(Long golfFieldId) {
+        List<ReservationSheetResponse.Get> dtoList = new ArrayList<>();
 
         List<ReservationSheet> reservationSheetList = reservationSheetRepository.findAllByGolfFieldId(golfFieldId);
         Map<Long, String> courseMap = courseRepository.findAllByGolfFieldId(golfFieldId)
                 .stream().collect(Collectors.toMap(Course::getId, Course::getName));
         for (ReservationSheet rs : reservationSheetList) {
             int part = 1;
-            List<ReservationSheetDto.InfoByPart> detailDtoList = new ArrayList<>();
+            List<ReservationSheetResponse.InfoByPart> detailDtoList = new ArrayList<>();
             while (true) {
                 Optional<Schedule> schedule = scheduleRepository.findFirstByReservationSheetIdAndPart(rs.getId(), part++);
                 if (schedule.isEmpty())
                     break;
-                detailDtoList.add(ReservationSheetDto.InfoByPart.builder()
+                detailDtoList.add(ReservationSheetResponse.InfoByPart.builder()
                         .startTime(schedule.get().getStartTime())
                         .endTime(schedule.get().getEndTime())
                         .teeOff(schedule.get().getTeeOff()).build());
             }
-            dtoList.add(ReservationSheetDto.GetResponse.builder()
+            dtoList.add(ReservationSheetResponse.Get.builder()
                     .id(rs.getId())
                     .courseList(rs.getCourseIdList().stream().map(current ->
-                            ReservationSheetDto.CourseInfo.builder()
+                            ReservationSheetResponse.CourseInfo.builder()
                                     .id(current)
                                     .name(courseMap.get(current)).build()).toList())
                     .startDate(rs.getStartDate())
@@ -201,7 +202,7 @@ public class ReservationSheetService {
      * @param dto                요청한 정보
      */
     @Transactional
-    public void updateReservationSheet(Long reservationSheetId, ReservationSheetDto.CreateOrUpdateRequest dto) {
+    public void updateReservationSheet(Long reservationSheetId, ReservationSheetRequest.CreateOrUpdate dto) {
         List<Schedule> scheduleList = scheduleRepository.findAllByReservationSheetId(reservationSheetId);
         if (assignmentRepository.findFirstByStatusIsInAndScheduleIsIn(
                 Arrays.asList(AssignmentStatus.BLOCKED, AssignmentStatus.CANCEL_REQUESTED, AssignmentStatus.ASSIGNED), scheduleList
@@ -251,17 +252,17 @@ public class ReservationSheetService {
      * @param month       대상 월
      * @return 메타데이터 반환 dto 리스트
      */
-    public List<ReservationSheetDto.MetaDataResponse> getMetaData(Long golfFieldId, int year, int month) {
+    public List<ReservationSheetResponse.MetaData> getMetaData(Long golfFieldId, int year, int month) {
         LocalDate targetDate = LocalDate.of(year, month, 1);
         List<MetaDataReport> reports = scheduleRepository.countAllMetaDataByDate(targetDate, targetDate.plusMonths(1).minusDays(1), golfFieldId);
 
-        List<ReservationSheetDto.MetaDataResponse> responseDtoList = new ArrayList<>();
+        List<ReservationSheetResponse.MetaData> responseDtoList = new ArrayList<>();
         for (MetaDataReport report : reports) {
             int totalCntResult = report.getTotalCntSum();
             int blockedCntResult = report.getBlockedCntSum();
             int availableCntResult = totalCntResult - blockedCntResult;
 
-            responseDtoList.add(ReservationSheetDto.MetaDataResponse.builder().
+            responseDtoList.add(ReservationSheetResponse.MetaData.builder().
                     targetDate(report.getReservationAt()).
                     dateStatus(report.getDateStatus()).
                     totalCntSum(totalCntResult).
@@ -284,8 +285,7 @@ public class ReservationSheetService {
 
         return findAssignments.stream()
                 .map(AssignmentResponse.CaddyAssignmentInfo::new)
-                .sorted(Comparator.comparing(AssignmentResponse.CaddyAssignmentInfo::getDate)
-                        .thenComparing(AssignmentResponse.CaddyAssignmentInfo::getStartTime))
+                .sorted(Comparator.comparing(AssignmentResponse.CaddyAssignmentInfo::getStartTime))
                 .collect(
                         Collectors.groupingBy(
                                 AssignmentResponse.CaddyAssignmentInfo::getDate,
@@ -298,9 +298,9 @@ public class ReservationSheetService {
     /**
      * MetaDataResponse dto를 날짜 순으로 정렬하는 Comparator
      */
-    private static class MetaDataResponseComparator implements Comparator<ReservationSheetDto.MetaDataResponse> {
+    private static class MetaDataResponseComparator implements Comparator<ReservationSheetResponse.MetaData> {
         @Override
-        public int compare(ReservationSheetDto.MetaDataResponse dto1, ReservationSheetDto.MetaDataResponse dto2) {
+        public int compare(ReservationSheetResponse.MetaData dto1, ReservationSheetResponse.MetaData dto2) {
             if (dto1.getTargetDate().isAfter(dto2.getTargetDate()))
                 return 1;
             else if (dto1.getTargetDate().isBefore(dto2.getTargetDate()))
@@ -313,9 +313,9 @@ public class ReservationSheetService {
     /**
      * GetResponse dto를 날짜 순으로 정렬하는 Comparator
      */
-    private static class GetResponseComparator implements Comparator<ReservationSheetDto.GetResponse> {
+    private static class GetResponseComparator implements Comparator<ReservationSheetResponse.Get> {
         @Override
-        public int compare(ReservationSheetDto.GetResponse dto1, ReservationSheetDto.GetResponse dto2) {
+        public int compare(ReservationSheetResponse.Get dto1, ReservationSheetResponse.Get dto2) {
             if (dto1.getStartDate().isAfter(dto2.getStartDate()))
                 return 1;
             else if (dto1.getStartDate().isBefore(dto2.getStartDate()))

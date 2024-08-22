@@ -1,12 +1,15 @@
 package com.flash21.caddycom.controller.golfFieldDetail;
 
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
+import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleResponse;
 import com.flash21.caddycom.service.golfFieldDetail.HoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "2-2. Course Detail", description = "골프장 코스 상세 정보(홀,티) 관련 API")
@@ -32,7 +35,7 @@ public class HoleController {
             홀의 상세 정보를 설정한다. 해당 홀의 티와 멘트 정보도 포함된다.
             - 현재 티와 멘트 정보의 생성/수정은 swagger를 통해 테스트 불가하니 유의
             """)
-    public void createDetailInfo(@Valid @ModelAttribute HoleRequest.CreateDetailInfo request) {
-        holeService.processDetailInfo(request);
+    public ResponseEntity<HoleResponse.HoleInfo> createDetailInfo(@Valid @ModelAttribute HoleRequest.CreateDetailInfo request) {
+        return new ResponseEntity<>(holeService.processDetailInfo(request), HttpStatus.OK);
     }
 }

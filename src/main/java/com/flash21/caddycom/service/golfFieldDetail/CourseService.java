@@ -42,8 +42,9 @@ public class CourseService {
     private final TeeService teeService;
 
     /**
-     * 모든 코스 정보를 반환한다.
+     * 골프장의 모든 코스 정보를 반환한다.
      *
+     * @param golfFieldId 골프장 id
      * @return 코스 정보 DTO 리스트
      */
     @Transactional(readOnly = true)
@@ -61,11 +62,14 @@ public class CourseService {
     }
 
     /**
-     * 코스 정보를 생성한다.
+     * 코스 정보를 생성한다. 이때 홀과 티 정보도 같이 생성한다.
      *
      * @param formation 코스가 포함되는 구성
      * @param requests  코스 생성 요청 DTO
+     * @throws IllegalArgumentException 코스의 이름을 공백으로 생성하려는 경우
      * @return 생성된 코스 id 리스트 <b>(mysql 사용 시 id가 아닌 null 반환됨)</b>
+     * @see HoleService#createHoles(List)
+     * @see TeeService#createTees(List)
      */
     @Transactional
     public List<Long> createCourses(Formation formation, List<CourseRequest.Create> requests) {
@@ -130,9 +134,12 @@ public class CourseService {
     }
 
     /**
-     * 코스에 포함된 멘트, 티, 홀과 코스를 함께 삭제한다.
+     * 코스를 삭제한다. <br>
+     * 코스 삭제 시 Schedule과 Assignment 정보를 함께 삭제한다. 또한 ReservationSheet의 코스 id 리스트에서 해당 코스를 삭제한다. <br>
+     * 미래의 일정 중 블락되었거나 캐디가 배정된 일정이 있을 경우 예외를 던진다.
      *
      * @param ids 삭제할 코스의 id 리스트
+     * @throws IllegalArgumentException 블락되었거나 캐디가 배정된 일정이 있을 경우
      */
     @Transactional
     public void deleteCourses(List<Long> ids) {
@@ -166,7 +173,7 @@ public class CourseService {
 
 
     /**
-     * 구성의 포함된 코스의 모든 정보를 반환한다.
+     * 구성에 포함된 코스의 모든 정보(홀, 티, 멘트 정보 포함)를 반환한다.
      *
      * @param formationId 구성 id
      * @return 코스 상세 정보 리스트

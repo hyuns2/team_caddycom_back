@@ -1,6 +1,5 @@
 package com.flash21.caddycom.service.golfFieldDetail;
 
-import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleResponse;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
@@ -40,8 +39,7 @@ public class HoleService {
      * 홀의 핸디를 수정한다.
      *
      * @param request 홀의 핸디 수정 요청 DTO
-     * @throws NoSuchElementException
-     *          핸디를 수정할 홀이 존재하지 않는 경우
+     * @throws NoSuchElementException 핸디를 수정할 홀이 존재하지 않는 경우
      */
     @Transactional
     public void updateHandicap(HoleRequest.UpdateHandicap request) {
@@ -55,8 +53,7 @@ public class HoleService {
      * 홀의 파(par)를 수정한다.
      *
      * @param request 홀의 파 수정 요청 DTO
-     * @throws NoSuchElementException
-     *          파를 수정할 홀이 존재하지 않는 경우
+     * @throws NoSuchElementException 파를 수정할 홀이 존재하지 않는 경우
      */
     @Transactional
     public void updatePar(HoleRequest.UpdatePar request) {
@@ -86,8 +83,7 @@ public class HoleService {
     }
 
     /**
-     * 홀의 상세 정보(파, 핸디, 티, 멘트)를 설정한다.<br>
-     * request에 따라 홀 정보의 수정 및 티와 멘트의 생성, 수정, 삭제가 이루어질 수 있다.
+     * 홀의 상세 정보(파, 핸디, 이미지)를 설정한다.
      *
      * @param request 홀 상세 정보 설정 DTO
      */
@@ -108,7 +104,8 @@ public class HoleService {
     }
 
     /**
-     * 특정 코스에 포함된 모든 홀을 티, 멘트와 함께 삭제한다.
+     * 특정 코스에 포함된 홀을 티, 멘트와 함께 삭제한다. <br>
+     * 코스 정보의 전체 홀 수가 수정되었을 때 호출된다.
      *
      * @param courses 코스 리스트
      */
@@ -136,6 +133,20 @@ public class HoleService {
         return fileUploader.upload(image,"hole/");
     }
 
+    /**
+     * 홀의 상세 정보 설정 요청을 처리한다. 이미지 업로드 후 홀 상세 정보 설정 메서드를 호출한다 <br>
+     * 또한 티와 멘트의 요청을 해당하는 메서드로 넘긴다. <br>
+     * 요청 처리 후 홀 정보를 반환한다.
+     *
+     * @param request
+     * @return 홀 정보 DTO
+     * @see HoleService#uploadImage(MultipartFile)
+     * @see HoleService#createDetailInfo(HoleRequest.CreateDetailInfo, String)
+     * @see CommentService#processComments(Hole, List)
+     * @see CommentService#deleteComments(List)
+     * @see TeeService#createAndUpdateTees(Long, List)
+     * @see TeeService#deleteTees(List)
+     */
     public HoleResponse.HoleInfo processDetailInfo(HoleRequest.CreateDetailInfo request) {
         String imageUrl = uploadImage(request.getImage());
 

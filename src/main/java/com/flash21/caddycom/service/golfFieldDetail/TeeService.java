@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class TeeService {
     private final TeeRepository teeRepository;
     private final HoleRepository holeRepository;
@@ -31,6 +30,7 @@ public class TeeService {
      *
      * @param courseId 코스 id
      * @param request 설정할 티 정보
+     * @throws NoSuchElementException 코스에 홀이 존재하지 않을 경우
      */
     @Transactional
     public void deleteAndCreateAllTee(Long courseId, TeeRequest.CreateAll request) {
@@ -59,6 +59,7 @@ public class TeeService {
      *
      * @param holeId 티 정보를 설정한 홀의 id
      * @param requestTees 설정할 티 정보
+     * @throws NoSuchElementException 홀이 존재하지 않을 경우
      */
     @Transactional
     public void createAndUpdateTees(Long holeId, List<TeeResponse.Info> requestTees) {

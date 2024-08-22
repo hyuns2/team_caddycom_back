@@ -5,19 +5,11 @@ import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
 import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.formation.FormationResponse;
 import com.flash21.caddycom.entity.golfField.GolfField;
-import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Formation;
-import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
-import com.flash21.caddycom.repository.golfFieldDetail.comment.CommentRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.formation.FormationRepository;
-import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
-import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,16 +30,20 @@ import java.util.stream.Collectors;
 public class FormationService {
     private final FormationRepository formationRepository;
     private final CourseRepository courseRepository;
-    private final HoleRepository holeRepository;
-    private final TeeRepository teeRepository;
-    private final CommentRepository commentRepository;
     private final GolfFieldRepository golfFieldRepository;
 
     private final ObjectProvider<FormationService> formationServiceProvider;
     private final CourseService courseService;
-    private final HoleService holeService;
-    private final TeeService teeService;
 
+    /**
+     * 구성 정보 생성 요청을 처리한다.
+     * request에 따라서 생성/수정 메서드를 호출한다.
+     *
+     * @param request 구성 정보 생성 요청 DTO
+     * @throws NoSuchElementException 골프장이 존재하지 않을 경우
+     * @see FormationService#createFormation(GolfField, FormationRequest.Create)
+     * @see FormationService#updateFormation(FormationRequest.Update)
+     */
     public void processCreate(FormationRequest.Process request) {
         GolfField golfField = golfFieldRepository.findById(request.getGolfFieldId()).orElseThrow(() -> new NoSuchElementException("해당 골프장이 존재하지 않습니다."));
 
@@ -61,7 +57,7 @@ public class FormationService {
     }
 
     /**
-     * 구성 정보를 생성하면서 코스, 홀, 티의 정보를 같이 생성한다.
+     * 구성 정보를 생성하면서 코스 정보를 같이 생성한다.
      *
      * @param golfField 구성을 추가할 골프장의 id. null일 수 없다.
      * @param request   구성 생성 요청 DTO
@@ -79,11 +75,16 @@ public class FormationService {
     }
 
     /**
-     * 구성 정보를 수정한다. 구성에 포함된 코스 정보도 포함된다.
+     * 구성 정보를 수정한다. 구성에 포함된 코스 정보도 포함된다. <br>
+     * request에 포함된 코스의 id에 따라 코스 생성/수정 메서드를 호출한다. <br>
+     * 코스 id가 0인 경우 (기존 구성에 새로운 코스를 추가하는 경우) - 코스 생성 메서드 <br>
+     * 코스 id가 0이 아닌 경우 (기존 코스 정보를 수정하는 경우) - 코스 수정 메서드
      *
      * @param request 구성 정보 수정 요청 DTO
      * @throws NoSuchElementException   수정하려는 구성이 존재하지 않을 경우
      * @throws IllegalArgumentException 구성의 이름을 공백으로 수정하려는 경우
+     * @see CourseService#createCourses(Formation, List)
+     * @see CourseService#updateCourse(CourseRequest.Update)
      */
     @Transactional
     public void updateFormation(FormationRequest.Update request) {
@@ -110,9 +111,12 @@ public class FormationService {
     }
 
     /**
-     * 구성에 포함된 멘트, 티, 홀, 코스와 구성 정보를 함께 삭제한다.
+     * 구성을 삭제한다. 구성에 포함된 코스도 함께 삭제된다.
+     * 단, 삭제되는 코스 중 블락되었거나 캐디가 배정된 미래 일정이 있을 경우 예외를 던진다.
      *
      * @param ids 삭제할 구성의 id 리스트
+     * @throws IllegalArgumentException 삭제되는 코스 중 블락되었거나 캐디가 배정된 일정이 있는 경우
+     * @see CourseService#deleteCourses(List)
      */
     @Transactional
     public void deleteFormations(List<Long> ids) {

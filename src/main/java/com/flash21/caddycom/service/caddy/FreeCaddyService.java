@@ -11,6 +11,7 @@ import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
+import com.flash21.caddycom.repository.assignment.AssignmentRepository;
 import com.flash21.caddycom.repository.caddy.FreeCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.repository.schedule.ScheduleRepository;
@@ -32,7 +33,7 @@ public class FreeCaddyService {
     private final FileUploader fileUploader;
     private final PlatformTransactionManager transactionManager;
     private final ScheduleRepository scheduleRepository;
-
+    private final AssignmentRepository assignmentRepository;
 
     /**
      * 1. 전화번호로 FreeCaddy를 찾는다.
@@ -157,5 +158,17 @@ public class FreeCaddyService {
                 .sorted(Map.Entry.comparingByKey())
                 .map(entry -> ScheduleResponse.NotAssigned.of(entry.getKey(), countMap.get(entry.getKey()), entry.getValue()))
                 .toList();
+    }
+
+    @Transactional
+    public void assignFreeCaddy(Long caddyId, Long assignmentId) {
+        FreeCaddy freeCaddy = freeCaddyRepository.findById(caddyId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 프리캐디입니다."));
+        Assignment assignment = assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정입니다."));
+        if (assignment.getStatus() != AssignmentStatus.ASSIGN_REQUESTED)
+            throw new IllegalArgumentException("프리캐디에 배정을 요청한 상태가 아닙니다.");
+
+        assignment.assignCaddy(freeCaddy);
     }
 }

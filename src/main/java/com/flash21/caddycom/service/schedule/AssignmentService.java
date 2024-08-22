@@ -173,6 +173,8 @@ public class AssignmentService {
     public void requestFreeCaddy(Long assignmentId) {
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
+        if (assignment.getStatus() != AssignmentStatus.ASSIGNED)
+            throw new IllegalArgumentException("이미 배정된 요청입니다.");
 
         assignment.requestFreeCaddy();
         // TODO: 구독 중인 외부캐디에 알림 보내기 추가

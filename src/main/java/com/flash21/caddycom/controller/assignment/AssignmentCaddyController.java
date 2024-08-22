@@ -5,6 +5,7 @@ import com.flash21.caddycom.dto.PagingResponse;
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.service.assignment.AssignmentCaddyService;
+import com.flash21.caddycom.service.assignment.AutoAssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 @RequestMapping("/api/assignments/caddy")
 public class AssignmentCaddyController {
     private final AssignmentCaddyService assignmentCaddyService;
+    private final AutoAssignmentService autoAssignmentService;
 
 
     @GetMapping("{golfFieldId}/{date}")
@@ -85,7 +87,7 @@ public class AssignmentCaddyController {
             @PathVariable("golfFieldId") Long golfFieldId,
             @PathVariable("date") LocalDate date
     ) {
-        assignmentCaddyService.assignCaddyAutomatically(golfFieldId, date);
+        autoAssignmentService.assignCaddyAutomatically(golfFieldId, date);
         return ResponseEntity.noContent().build();
     }
 

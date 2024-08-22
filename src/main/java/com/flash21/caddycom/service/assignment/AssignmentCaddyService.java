@@ -42,11 +42,8 @@ import static com.flash21.caddycom.entity.schedule.AssignmentStatus.*;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AssignmentCaddyService {
-
     private final AssignmentRepository assignmentRepository;
     private final HouseCaddyRepository houseCaddyRepository;
-    private final GolfFieldRepository golfFieldRepository;
-    private final ScheduleRepository scheduleRepository;
     private final CourseRepository courseRepository;
 
     /**
@@ -122,6 +119,10 @@ public class AssignmentCaddyService {
     }
 
 
+    /**
+     * 특정 캐디를 선택하여 배정한다.
+     * 블락 시 특정캐디를 지정하기 위해 사용할 수 있다.
+     */
     @Transactional
     public void assignSelectedCaddy(Long assignmentId, Long caddyId) {
         Assignment assignment = assignmentRepository.findById(assignmentId)
@@ -138,75 +139,7 @@ public class AssignmentCaddyService {
                 .toList();
     }
 
-    /**
-     * 캐디 자동 배정
-     */
-    @Transactional
-    public void assignCaddyAutomatically(Long golfFieldId, LocalDate date) {
-        GolfField golfField = golfFieldRepository.getGolfFieldById(golfFieldId); //골프장 검증
-        List<Schedule> schedules = validateSchedules(golfFieldId, date); //스케줄 검증
-        List<Assignment> assignments = validateAssignments(schedules); //배정 검증
-        List<HouseCaddy> caddies = validateCaddies(golfFieldId); //캐디 검증
 
-        //블락된 캐디 Set
-        Set<Long> blockedCaddyIds = getBlockedHouseCaddies(assignments);
-        //오늘의 요일 변환
-        Days todaysDayOfWeek = Days.fromNumber(date.getDayOfWeek().getValue());
-
-        int caddySize = caddies.size();
-        int currentCaddyIndex = getStartIndex(golfField.getCaddyAssignCursor(), caddySize, caddies);
-
-        for (Assignment assignment : assignments) {
-            AssignmentStatus status = assignment.getStatus();
-            if (status == BLOCKED || status == ASSIGNED) continue;
-            Integer part = assignment.getSchedule().getPart();
-
-            boolean isAssigned = false;
-            while (!isAssigned) {
-                HouseCaddy currentCaddy = caddies.get(currentCaddyIndex);
-
-                if (isCaddyAvailable(part, currentCaddy, todaysDayOfWeek, blockedCaddyIds)) {
-                    assignment.assignCaddy(currentCaddy);
-                    isAssigned = true;
-                }
-                currentCaddyIndex = (currentCaddyIndex + 1) % caddySize;
-            }
-        }
-
-        //다음에 맨 처음으로 배정되어야 할 캐디의 ID를 Cursor로 세팅
-        golfField.changeCaddyAssignCursor(caddies.get(currentCaddyIndex).getId());
-        schedules.forEach(fs -> fs.changeDateStatus(DateStatus.ASSIGNED));
-    }
-
-    @NonNull
-    private List<HouseCaddy> validateCaddies(Long golfFieldId) {
-        List<HouseCaddy> caddies = houseCaddyRepository.findAllByGolfFieldIdSortById(golfFieldId);
-        if (caddies.isEmpty()) {
-            throw new NoSuchElementException("캐디가 존재하지 않습니다.");
-        }
-        return caddies;
-    }
-
-    @NonNull
-    private List<Assignment> validateAssignments(List<Schedule> schedules) {
-        List<Assignment> assignments = getAllAssignmentsSortByTime(schedules);
-        if (assignments.isEmpty()) {
-            throw new NoSuchElementException("배정 정보가 존재하지 않습니다.");
-        }
-        return assignments;
-    }
-
-    @NonNull
-    private List<Schedule> validateSchedules(Long golfFieldId, LocalDate date) {
-        List<Schedule> schedules = scheduleRepository.findAllByDateFetchJoinToAssignmentAndHouseCaddy(golfFieldId, date);
-
-        boolean invalidScheduleExists = schedules.stream()
-                .anyMatch(findSchedule -> findSchedule.getDateStatus() != DateStatus.SETTING);
-        if (schedules.isEmpty() || invalidScheduleExists) {
-            throw new NoSuchElementException("존재하지 않는 스케줄입니다.");
-        }
-        return schedules;
-    }
 
     /**
      * 캐디 업무 시작 시 시작 설정, 보여줄 코스 상세 정보 조회
@@ -249,44 +182,6 @@ public class AssignmentCaddyService {
         findAssignment.finish(endedTime);
     }
 
-    private int getStartIndex(Long cursor, int caddySize, List<HouseCaddy> findCaddies) {
-        if (cursor != null) {
-            for (int i = 0; i < caddySize; i++) {
-                Long caddyId = findCaddies.get(i).getId();
-                if (caddyId.equals(cursor) || caddyId > cursor) {
-                    return i;
-                }
-            }
-        }
-        return 0;
-    }
 
-    private List<Assignment> getAllAssignmentsSortByTime(List<Schedule> findSchedules) {
-        return findSchedules.stream()
-                .flatMap(schedule -> schedule.getAssignments().stream())
-                .filter(assignment -> assignment.getStatus() == NOTHING || assignment.getStatus() == BLOCKED)
-                .sorted(Comparator.comparing(Assignment::getStartTime))
-                .collect(Collectors.toList());
-    }
-
-    private Set<Long> getBlockedHouseCaddies(List<Assignment> findAssignment) {
-        return findAssignment.stream()
-                .filter(assignment -> assignment.getStatus() == BLOCKED && assignment.getCaddy() != null)
-                .map(Assignment::getCaddy)
-                .map(Caddy::getId)
-                .collect(Collectors.toSet());
-    }
-
-
-    /**
-     * 배정 part가 캐디가 일하는 part인지,
-     * 배정 요일이 캐디가 일하는 요일인지,
-     * 이미 배정된(블락시 선택배정) 캐디가 아닌지를 확인한다.
-     */
-    private boolean isCaddyAvailable(Integer part, HouseCaddy caddy, Days today, Set<Long> blockedCaddyIds) {
-        return caddy.getOffPart() == null || !caddy.getOffPart().contains(part)
-                && (caddy.getHoliday() == null || !caddy.getHoliday().contains(today))
-                && !blockedCaddyIds.contains(caddy.getId());
-    }
 
 }

@@ -32,8 +32,14 @@ public class HoleController {
 
     @PostMapping(value="/api/hole/detail", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "홀의 상세 정보 설정 API", description = """
-            홀의 상세 정보를 설정한다. 해당 홀의 티와 멘트 정보도 포함된다.
-            - 현재 티와 멘트 정보의 생성/수정은 swagger를 통해 테스트 불가하니 유의
+            홀의 상세 정보를 설정한다. 해당 홀의 티와 멘트 정보도 포함된다. <br>
+            **홀 이미지 업로드 및 티/멘트 생성/수정은 swagger를 통해 테스트 불가하니 유의**
+            - 이미지 업로드: String to MultipartFile convert error
+            - 티/멘트: String to List convert error
+                - MULTIPART_FORM_DATA_VALUE로 받기 때문에 request를 아래와 같은 방식으로 보내야하나 json 같은 방식으로 보내기 때문으로 추측 중
+                    - teeData[0].id = ?, teeData[0].name = ? teeData[0].distance = ?
+                    - 인덱스 직접 지정 필요
+                    - 이는 commentData도 동일
             """)
     public ResponseEntity<HoleResponse.HoleInfo> createDetailInfo(@Valid @ModelAttribute HoleRequest.CreateDetailInfo request) {
         return new ResponseEntity<>(holeService.processDetailInfo(request), HttpStatus.OK);

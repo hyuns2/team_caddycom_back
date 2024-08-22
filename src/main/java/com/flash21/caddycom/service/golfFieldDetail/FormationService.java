@@ -47,7 +47,7 @@ public class FormationService {
     public void processCreate(FormationRequest.Process request) {
         GolfField golfField = golfFieldRepository.findById(request.getGolfFieldId()).orElseThrow(() -> new NoSuchElementException("해당 골프장이 존재하지 않습니다."));
 
-        final FormationService formationService = formationServiceProvider.getObject();
+        final FormationService formationService = formationServiceProvider.getObject(); // 내부 메서드 호출 시 트랜잭션 적용을 위함
         if (request.getCreate() != null) for (FormationRequest.Create create : request.getCreate())
             formationService.createFormation(golfField, create);
 
@@ -57,7 +57,8 @@ public class FormationService {
     }
 
     /**
-     * 구성 정보를 생성하면서 코스 정보를 같이 생성한다.
+     * 구성 정보를 생성하면서 코스 정보를 같이 생성한다. <br>
+     * 구성없이 코스만 존재할 수 있다.
      *
      * @param golfField 구성을 추가할 골프장의 id. null일 수 없다.
      * @param request   구성 생성 요청 DTO
@@ -66,7 +67,7 @@ public class FormationService {
     public void createFormation(GolfField golfField, FormationRequest.Create request) {
         Formation formation;
         if (request.getName() == null || request.getName().isBlank())
-            formation = new Formation(null, golfField, "NONE", null);
+            formation = new Formation(null, golfField, "NONE", null); // 구성 없이 코스만 존재하는 경우. "NONE"이라는 이름으로 구성 생성
         else formation = new Formation(null, golfField, request.getName(), null);
 
         formationRepository.save(formation);
@@ -76,9 +77,9 @@ public class FormationService {
 
     /**
      * 구성 정보를 수정한다. 구성에 포함된 코스 정보도 포함된다. <br>
-     * request에 포함된 코스의 id에 따라 코스 생성/수정 메서드를 호출한다. <br>
-     * 코스 id가 0인 경우 (기존 구성에 새로운 코스를 추가하는 경우) - 코스 생성 메서드 <br>
-     * 코스 id가 0이 아닌 경우 (기존 코스 정보를 수정하는 경우) - 코스 수정 메서드
+     * request에 포함된 코스의 id에 따라 코스를 생성하거나 수정한다. <br>
+     * 코스 id가 0인 경우 (기존 구성에 새로운 코스를 추가하는 경우) - 코스 생성 <br>
+     * 코스 id가 0이 아닌 경우 (기존 코스 정보를 수정하는 경우) - 코스 수정
      *
      * @param request 구성 정보 수정 요청 DTO
      * @throws NoSuchElementException   수정하려는 구성이 존재하지 않을 경우
@@ -111,7 +112,7 @@ public class FormationService {
     }
 
     /**
-     * 구성을 삭제한다. 구성에 포함된 코스도 함께 삭제된다.
+     * 구성을 삭제한다. 구성에 포함된 코스도 함께 삭제된다. <br>
      * 단, 삭제되는 코스 중 블락되었거나 캐디가 배정된 미래 일정이 있을 경우 예외를 던진다.
      *
      * @param ids 삭제할 구성의 id 리스트

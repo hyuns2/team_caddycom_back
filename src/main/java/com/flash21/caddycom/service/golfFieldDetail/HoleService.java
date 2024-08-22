@@ -78,8 +78,7 @@ public class HoleService {
                 holes.add(hole);
             }
         }
-        List<Long> holeIds = holeRepository.saveAllInBatch(holes);
-        return holeIds;
+        return holeRepository.saveAllInBatch(holes);
     }
 
     /**
@@ -91,10 +90,8 @@ public class HoleService {
     public Hole createDetailInfo(HoleRequest.CreateDetailInfo request, String imageUrl) {
         Hole savedHole = holeRepository.findById(request.getHoleId()).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
-        if(!Objects.equals(request.getPar(), savedHole.getPar()))
-            savedHole.updatePar(request.getPar());
-        if(!Objects.equals(request.getHandicap(), savedHole.getHandicap()))
-            savedHole.updateHandicap(request.getHandicap());
+        savedHole.updatePar(request.getPar());
+        savedHole.updateHandicap(request.getHandicap());
 
         if(request.getImage() != null) { //이미지에 변경사항 존재
             savedHole.updateImage(imageUrl);

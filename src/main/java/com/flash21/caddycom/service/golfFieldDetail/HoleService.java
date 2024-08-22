@@ -1,9 +1,8 @@
 package com.flash21.caddycom.service.golfFieldDetail;
 
-import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentCommand;
 import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentRequest;
-import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleCommand;
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
+import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleResponse;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
@@ -11,7 +10,6 @@ import com.flash21.caddycom.repository.golfFieldDetail.comment.CommentRepository
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -94,7 +92,7 @@ public class HoleService {
      * @param request 홀 상세 정보 설정 DTO
      */
     @Transactional
-    public void createDetailInfo(HoleCommand.CreateDetailInfo request) {
+    public Hole createDetailInfo(HoleRequest.CreateDetailInfo request, String imageUrl) {
         Hole savedHole = holeRepository.findById(request.getHoleId()).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
         if(!Objects.equals(request.getPar(), savedHole.getPar()))
@@ -103,8 +101,10 @@ public class HoleService {
             savedHole.updateHandicap(request.getHandicap());
 
         if(request.getImage() != null) { //이미지에 변경사항 존재
-            savedHole.updateImage(request.getImage());
+            savedHole.updateImage(imageUrl);
         }
+
+        return savedHole;
     }
 
     /**
@@ -136,24 +136,18 @@ public class HoleService {
         return fileUploader.upload(image,"hole/");
     }
 
-    public void processDetailInfo(HoleRequest.CreateDetailInfo request) {
+    public HoleResponse.HoleInfo processDetailInfo(HoleRequest.CreateDetailInfo request) {
         String imageUrl = uploadImage(request.getImage());
 
         final HoleService holeService = holeServiceProvider.getObject();
-        holeService.createDetailInfo(HoleCommand.CreateDetailInfo.from(request, imageUrl));
+        Hole hole = holeService.createDetailInfo(request, imageUrl);
 
-        List<CommentCommand.Create> newCommentData = new ArrayList<>();
-        if(request.getCommentData() != null) {
-            for (CommentRequest.Create create : request.getCommentData())
-                newCommentData.add(commentService.toServiceDto(create));
-            commentService.createAndUpdateComments(request.getHoleId(), newCommentData);
-        }
+        commentService.processComments(hole, request.getCommentData());
 
-        if(request.getTeeData() != null)
-            teeService.createAndUpdateTees(request.getHoleId(), request.getTeeData());
-        if(!request.getDeleteTeeIds().isEmpty())
-            teeService.deleteTees(request.getDeleteTeeIds());
-        if(!request.getDeleteCommentIds().isEmpty())
-            commentService.deleteComments(request.getDeleteCommentIds());
+        teeService.createAndUpdateTees(request.getHoleId(), request.getTeeData());
+        teeService.deleteTees(request.getDeleteTeeIds());
+        commentService.deleteComments(request.getDeleteCommentIds());
+
+        return HoleResponse.HoleInfo.from(hole);
     }
 }

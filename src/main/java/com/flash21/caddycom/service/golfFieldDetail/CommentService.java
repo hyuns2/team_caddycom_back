@@ -27,9 +27,19 @@ import java.util.NoSuchElementException;
 public class CommentService {
     private final FileUploader fileUploader;
     private final CommentRepository commentRepository;
-    private final HoleRepository holeRepository;
-    private final ObjectProvider<CommentService> commentServiceProvider;
+    private final ObjectProvider<CommentService> commentServiceProvider; // 내부 메서드 호출 시 트랜잭션 적용되지 않는 문제 때문에 사용
 
+    /**
+     * 멘트 생성 요청 및 이미지 업로드를 처리한다. <br>
+     * 이미지 업로드 후 <br>
+     * request의 id가 0이면 생성, 0이 아니면 수정 메서드를 호출한다.
+     *
+     * @param hole 홀 엔티티
+     * @param request 멘트 생성 요청 DTO 리스트
+     * @see CommentService#uploadImage(MultipartFile) 
+     * @see CommentService#createComment(Hole, CommentRequest.Create, String)
+     * @see CommentService#updateComment(CommentRequest.Create, String) 
+     */
     public void processComments(Hole hole, List<CommentRequest.Create> request) {
         if(request == null || request.isEmpty()) return;
 
@@ -44,11 +54,24 @@ public class CommentService {
         }
     }
 
+    /**
+     * 멘트 정보를 생성한다.
+     *
+     * @param hole 홀 엔티티
+     * @param request 멘트 생성 DTO
+     * @param imageUrl 저장된 이미지 url
+     */
     @Transactional
     public void createComment(Hole hole, CommentRequest.Create request, String imageUrl) {
         commentRepository.save(new Comment(null, request.getTitle(), request.getContent(), imageUrl, hole));
     }
 
+    /**
+     * 멘트 정보를 수정한다.
+     *
+     * @param request 멘트 생성 DTO
+     * @param imageUrl 저장된 이미지 url
+     */
     @Transactional
     public void updateComment(CommentRequest.Create request, String imageUrl) {
         Comment comment = commentRepository.findById(request.getId())

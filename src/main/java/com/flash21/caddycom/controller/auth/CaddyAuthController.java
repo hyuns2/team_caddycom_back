@@ -23,7 +23,9 @@ public class CaddyAuthController {
     private final CaddyAuthService caddyAuthService;
 
     @Operation(summary="캐디 첫번째 로그인 API",
-            description="캐디의 최초 로그인/회원가입 시 사용 \n 골프장 등록 후 캐디 등록 (즉, waiting 상태가 없다.) ")
+            description="캐디의 최초 로그인/회원가입 시 사용" +
+                    "\n\n 골프장 등록 후 캐디 등록 (즉, waiting 상태가 없다.)" +
+                    "\n\n 하우스 캐디는 사장님이 웹을 통해 미리 등록해야하며, 최조 접속시 DB에 저장된 정보가 없으면 모두 프리캐디로 간주함.")
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in/first")
     public ResponseEntity<SigninResponse.CaddyMain> firstSignin(@Valid @RequestBody SigninRequest.First request){

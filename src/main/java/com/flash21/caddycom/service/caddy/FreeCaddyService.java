@@ -112,6 +112,9 @@ public class FreeCaddyService {
         return FreeCaddyResponse.Info.from(freeCaddy);
     }
 
+    /**
+     * 프리캐디의 지정골프장 목록 조회
+     */
 
     @Transactional(readOnly = true)
     public List<GolfFieldResponse.WithFreeCaddy> getMatchedGolfField(Long caddyId) {

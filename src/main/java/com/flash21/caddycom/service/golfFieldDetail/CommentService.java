@@ -1,6 +1,5 @@
 package com.flash21.caddycom.service.golfFieldDetail;
 
-import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentCommand;
 import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentRequest;
 import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentResponse;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
@@ -8,6 +7,7 @@ import com.flash21.caddycom.entity.golfFieldDetail.Comment;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.comment.CommentRepository;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,38 +27,58 @@ import java.util.NoSuchElementException;
 public class CommentService {
     private final FileUploader fileUploader;
     private final CommentRepository commentRepository;
-    private final HoleRepository holeRepository;
+    private final ObjectProvider<CommentService> commentServiceProvider; // 내부 메서드 호출 시 트랜잭션 적용되지 않는 문제 때문에 사용
 
     /**
-     * 멘트 정보를 생성하거나 수정한다.
+     * 멘트 생성 요청 및 이미지 업로드를 처리한다. <br>
+     * 이미지 업로드 후 <br>
+     * request의 id가 0이면 생성, 0이 아니면 수정 메서드를 호출한다.
      *
-     * @param holeId       멘트가 포함되는 홀의 id
-     * @param commentInfos 설정한 멘트 정보 DTO
-     * @throws NoSuchElementException 멘트 정보를 설정할 홀이 존재하지 않는 경우
+     * @param hole 홀 엔티티
+     * @param request 멘트 생성 요청 DTO 리스트
+     * @see CommentService#uploadImage(MultipartFile) 
+     * @see CommentService#createComment(Hole, CommentRequest.Create, String)
+     * @see CommentService#updateComment(CommentRequest.Create, String) 
      */
-    @Transactional
-    public void createAndUpdateComments(Long holeId, List<CommentCommand.Create> commentInfos) {
-        Hole hole = holeRepository.findById(holeId).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
+    public void processComments(Hole hole, List<CommentRequest.Create> request) {
+        if(request == null || request.isEmpty()) return;
 
-        List<Comment> savedComments = hole.getComments();
-        List<Comment> newComments = new ArrayList<>();
-        for (CommentCommand.Create request : commentInfos) {
-            if (request.getId() == 0) {
-                newComments.add(new Comment(null, request.getTitle(), request.getContent(), request.getImage(), hole));
-                break;
-            }
-
-            for (Comment comment : savedComments) {
-                if (request.getId().equals(comment.getId())) {
-                    comment.update(request.getTitle(), request.getContent(), request.getImage());
-                    break;
-                }
+        final CommentService commentService = commentServiceProvider.getObject();
+        for(CommentRequest.Create create : request) {
+            String imageUrl = uploadImage(create.getImage());
+            if(create.getId() == 0) {
+                commentService.createComment(hole, create, imageUrl);
+            } else {
+                commentService.updateComment(create, imageUrl);
             }
         }
-
-        savedComments.addAll(newComments);
     }
 
+    /**
+     * 멘트 정보를 생성한다.
+     *
+     * @param hole 홀 엔티티
+     * @param request 멘트 생성 DTO
+     * @param imageUrl 저장된 이미지 url
+     */
+    @Transactional
+    public void createComment(Hole hole, CommentRequest.Create request, String imageUrl) {
+        commentRepository.save(new Comment(null, request.getTitle(), request.getContent(), imageUrl, hole));
+    }
+
+    /**
+     * 멘트 정보를 수정한다.
+     *
+     * @param request 멘트 생성 DTO
+     * @param imageUrl 저장된 이미지 url
+     */
+    @Transactional
+    public void updateComment(CommentRequest.Create request, String imageUrl) {
+        Comment comment = commentRepository.findById(request.getId())
+                .orElseThrow(() -> new NoSuchElementException("해당 멘트가 존재하지 않습니다."));
+        if(request.getImage() == null) imageUrl = comment.getImageUrl();
+        comment.update(request.getTitle(), request.getContent(), imageUrl);
+    }
     /**
      * 멘트를 삭제한다.
      *
@@ -66,6 +86,7 @@ public class CommentService {
      */
     @Transactional
     public void deleteComments(List<Long> commentIds) {
+        if(commentIds == null || commentIds.isEmpty()) return;
         commentRepository.deleteAllByIdInBatch(commentIds);
     }
 
@@ -92,10 +113,5 @@ public class CommentService {
      */
     private String uploadImage(MultipartFile image) {
         return fileUploader.upload(image, "hole-detail/");
-    }
-
-    public CommentCommand.Create toServiceDto(CommentRequest.Create request) {
-        String imageUrl = uploadImage(request.getImage());
-        return CommentCommand.Create.from(request, imageUrl);
     }
 }

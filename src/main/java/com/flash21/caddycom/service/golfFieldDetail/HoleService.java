@@ -1,9 +1,7 @@
 package com.flash21.caddycom.service.golfFieldDetail;
 
-import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentCommand;
-import com.flash21.caddycom.dto.golfFieldDetail.comment.CommentRequest;
-import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleCommand;
 import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleRequest;
+import com.flash21.caddycom.dto.golfFieldDetail.hole.HoleResponse;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.golfFieldDetail.Hole;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
@@ -11,7 +9,6 @@ import com.flash21.caddycom.repository.golfFieldDetail.comment.CommentRepository
 import com.flash21.caddycom.repository.golfFieldDetail.hole.HoleRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.tee.TeeRepository;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,8 +39,7 @@ public class HoleService {
      * 홀의 핸디를 수정한다.
      *
      * @param request 홀의 핸디 수정 요청 DTO
-     * @throws NoSuchElementException
-     *          핸디를 수정할 홀이 존재하지 않는 경우
+     * @throws NoSuchElementException 핸디를 수정할 홀이 존재하지 않는 경우
      */
     @Transactional
     public void updateHandicap(HoleRequest.UpdateHandicap request) {
@@ -57,8 +53,7 @@ public class HoleService {
      * 홀의 파(par)를 수정한다.
      *
      * @param request 홀의 파 수정 요청 DTO
-     * @throws NoSuchElementException
-     *          파를 수정할 홀이 존재하지 않는 경우
+     * @throws NoSuchElementException 파를 수정할 홀이 존재하지 않는 경우
      */
     @Transactional
     public void updatePar(HoleRequest.UpdatePar request) {
@@ -83,32 +78,31 @@ public class HoleService {
                 holes.add(hole);
             }
         }
-        List<Long> holeIds = holeRepository.saveAllInBatch(holes);
-        return holeIds;
+        return holeRepository.saveAllInBatch(holes);
     }
 
     /**
-     * 홀의 상세 정보(파, 핸디, 티, 멘트)를 설정한다.<br>
-     * request에 따라 홀 정보의 수정 및 티와 멘트의 생성, 수정, 삭제가 이루어질 수 있다.
+     * 홀의 상세 정보(파, 핸디, 이미지)를 설정한다.
      *
      * @param request 홀 상세 정보 설정 DTO
      */
     @Transactional
-    public void createDetailInfo(HoleCommand.CreateDetailInfo request) {
+    public Hole createDetailInfo(HoleRequest.CreateDetailInfo request, String imageUrl) {
         Hole savedHole = holeRepository.findById(request.getHoleId()).orElseThrow(() -> new NoSuchElementException("해당 홀은 존재하지 않습니다."));
 
-        if(!Objects.equals(request.getPar(), savedHole.getPar()))
-            savedHole.updatePar(request.getPar());
-        if(!Objects.equals(request.getHandicap(), savedHole.getHandicap()))
-            savedHole.updateHandicap(request.getHandicap());
+        savedHole.updatePar(request.getPar());
+        savedHole.updateHandicap(request.getHandicap());
 
         if(request.getImage() != null) { //이미지에 변경사항 존재
-            savedHole.updateImage(request.getImage());
+            savedHole.updateImage(imageUrl);
         }
+
+        return savedHole;
     }
 
     /**
-     * 특정 코스에 포함된 모든 홀을 티, 멘트와 함께 삭제한다.
+     * 특정 코스에 포함된 홀을 티, 멘트와 함께 삭제한다. <br>
+     * 코스 정보의 전체 홀 수가 수정되었을 때 호출된다.
      *
      * @param courses 코스 리스트
      */
@@ -136,24 +130,32 @@ public class HoleService {
         return fileUploader.upload(image,"hole/");
     }
 
-    public void processDetailInfo(HoleRequest.CreateDetailInfo request) {
+    /**
+     * 홀의 상세 정보 설정 요청을 처리한다. 이미지 업로드 후 홀 상세 정보 설정 메서드를 호출한다 <br>
+     * 또한 티와 멘트의 요청을 해당하는 메서드로 넘긴다. <br>
+     * 요청 처리 후 홀 정보를 반환한다.
+     *
+     * @param request
+     * @return 홀 정보 DTO
+     * @see HoleService#uploadImage(MultipartFile)
+     * @see HoleService#createDetailInfo(HoleRequest.CreateDetailInfo, String)
+     * @see CommentService#processComments(Hole, List)
+     * @see CommentService#deleteComments(List)
+     * @see TeeService#createAndUpdateTees(Long, List)
+     * @see TeeService#deleteTees(List)
+     */
+    public HoleResponse.HoleInfo processDetailInfo(HoleRequest.CreateDetailInfo request) {
         String imageUrl = uploadImage(request.getImage());
 
         final HoleService holeService = holeServiceProvider.getObject();
-        holeService.createDetailInfo(HoleCommand.CreateDetailInfo.from(request, imageUrl));
+        Hole hole = holeService.createDetailInfo(request, imageUrl);
 
-        List<CommentCommand.Create> newCommentData = new ArrayList<>();
-        if(request.getCommentData() != null) {
-            for (CommentRequest.Create create : request.getCommentData())
-                newCommentData.add(commentService.toServiceDto(create));
-            commentService.createAndUpdateComments(request.getHoleId(), newCommentData);
-        }
+        commentService.processComments(hole, request.getCommentData());
 
-        if(request.getTeeData() != null)
-            teeService.createAndUpdateTees(request.getHoleId(), request.getTeeData());
-        if(!request.getDeleteTeeIds().isEmpty())
-            teeService.deleteTees(request.getDeleteTeeIds());
-        if(!request.getDeleteCommentIds().isEmpty())
-            commentService.deleteComments(request.getDeleteCommentIds());
+        teeService.createAndUpdateTees(request.getHoleId(), request.getTeeData());
+        teeService.deleteTees(request.getDeleteTeeIds());
+        commentService.deleteComments(request.getDeleteCommentIds());
+
+        return HoleResponse.HoleInfo.from(hole);
     }
 }

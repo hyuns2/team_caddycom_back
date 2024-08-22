@@ -5,6 +5,7 @@ import com.flash21.caddycom.dto.PagingResponse;
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.service.assignment.AssignmentCaddyService;
+import com.flash21.caddycom.service.assignment.AutoAssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,12 @@ import java.time.LocalDate;
 @RequestMapping("/api/assignments/caddy")
 public class AssignmentCaddyController {
     private final AssignmentCaddyService assignmentCaddyService;
+    private final AutoAssignmentService autoAssignmentService;
 
 
     @GetMapping("{golfFieldId}/{date}")
-    @Operation(summary = "배정 결과 조회 API", description = "캐디 배정 후 결과를 페이징 조회한다.")
+    @Operation(summary = "배정 결과 조회 API", description = "캐디 배정 후 결과를 페이징 조회한다." +
+            "\n\ncourseId는 제외하거나 0을 넣으면 전체코스가 조회되고, status는 제외하거나 아무것도 넣지 않으면 전체 Status가 조회된다.")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PagingResponse<AssignmentResponse.Info>> getAssignments(
             @PathVariable Long golfFieldId,
@@ -36,7 +39,8 @@ public class AssignmentCaddyController {
 
 
     @GetMapping("switch/{golfFieldId}/{date}")
-    @Operation(summary = "배정 변경 가능한 캐디 목록 조회 API", description = "변경 가능한 캐디의 목록을 페이징 조회한다.")
+    @Operation(summary = "배정 변경 가능한 캐디 목록 조회 API", description = "변경 가능한 캐디의 목록을 페이징 조회한다." +
+            "\n\ncourseId와 part는 제외하거나 0을 넣으면 전체가 조회된다.")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PagingResponse<AssignmentResponse.Info>> getSwitchingCaddy(
             @PathVariable Long golfFieldId,
@@ -76,12 +80,14 @@ public class AssignmentCaddyController {
     }
 
     @PostMapping("{golfFieldId}/{date}")
-    @Operation(summary = "캐디 자동 배정", description = "해당 날짜의 스케줄들에 캐디를 배정한다")
+    @Operation(summary = "캐디 자동 배정", description = "해당 날짜의 스케줄들에 캐디를 배정한다" +
+            "\n\n골프장에 소속된 하우스 캐디들을 조회하고, 휴일과 오프 파트를 체크하며 배정한다." +
+            "\n\n마지막으로 배정된 캐디의 다음 사람을 골프장 필드에 ID로 기입, 다음 자동 배정에 그 캐디부터 자동 배정을 시작하도록 함")
     public ResponseEntity<Void> assignCaddyToSchedule(
             @PathVariable("golfFieldId") Long golfFieldId,
             @PathVariable("date") LocalDate date
     ) {
-        assignmentCaddyService.assignCaddyAutomatically(golfFieldId, date);
+        autoAssignmentService.assignCaddyAutomatically(golfFieldId, date);
         return ResponseEntity.noContent().build();
     }
 

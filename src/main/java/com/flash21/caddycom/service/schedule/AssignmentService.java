@@ -34,11 +34,11 @@ public class AssignmentService {
     /**
      * 배정정보 조회 및 생성: 배정정보가 존재하는 경우에는 반환하고, 존재하지 않는 경우에는 생성하여 반환합니다.
      *
-     * @param golfFieldId 골프장 Id
-     * @param targetDate  대상 날짜
-     * @param page        페이지 번호 (데이터 10개)
      * @return 코스리스트, 시간리스트, 부별 id-status 형태의 map 반환
-     * @throws CReservationSheetNotFoundException ReservationSheet 객체가 존재하지 않을 경우
+     *         ex) { 코스: [A, B],
+     *             시간: [~~~],
+     *             A: [ {id&상태}, null, ~~ ],
+     *             B: [~~~] }
      */
     @Transactional
     public Map<String, List<Object>> getAssignments(Long golfFieldId, LocalDate targetDate, int page) {
@@ -58,8 +58,6 @@ public class AssignmentService {
     /**
      * 배정정보 조회 내부함수1: 코스와 날짜에 따른 배정정보를 조회하여 반환합니다.
      *
-     * @param date 대상 날짜
-     * @param page page 페이지 번호 (데이터 10개)
      * @return 시간, 코스별 dto 형태의 map 반환
      */
     private Map<String, Map<String, AssignmentResponse.Assigned>> findAndGetAssignmentsByTime(List<String> courseNameList, LocalDate date, int page) {
@@ -81,8 +79,6 @@ public class AssignmentService {
      * 배정정보 조회 내부함수2: 한 페이지만큼의 시간을 추출하고, 이 예약시간을 가지는 코스 정보를 조회하여 반환합니다.
      *
      * @param result 예약시간과 예약시간을 가지는 코스 정보 형태의 map
-     * @param date   대상 날짜
-     * @param page   page 페이지 번호 (데이터 10개)
      */
     private void getResultFromRepo(Map<String, Map<String, AssignmentResponse.Assigned>> result, LocalDate date, int page) {
         int pageSize = 10;
@@ -108,8 +104,6 @@ public class AssignmentService {
 
     /**
      * 배정정보 조회 내부함수3: 배정정보를 생성합니다.
-     *
-     * @param schedule 스케쥴 객체
      */
     private void createAssignments(Schedule schedule) {
         assignmentRepository.bulkInsert(schedule.getId(), rsService.getStartTimeList(
@@ -121,9 +115,8 @@ public class AssignmentService {
     /**
      * 배정정보 조회 내부함수4: 요구되는 response 형식대로 생성 및 반환합니다.
      *
-     * @param courseNameList 전체 코스이름 리스트
-     * @param dtoMap         코스, dto 구조의 map
-     * @return 요구되는 api response
+     * @param dtoMap 코스, dto 구조의 map
+     * @return 최종으로 반환해야 할 response
      */
     private Map<String, List<Object>> makeResponse(List<String> courseNameList, Map<String, Map<String, AssignmentResponse.Assigned>> dtoMap) {
         Map<String, List<Object>> response = new WeakHashMap<>();
@@ -143,6 +136,9 @@ public class AssignmentService {
         return response;
     }
 
+    /**
+     * 해당 배정을 BLOCK 상태로 만들고, 블락된 사유를 저장한다.
+     */
     @Transactional
     public void setBlock(Long assignmentsId, AssignmentRequest.Block blockRequest) {
         Assignment findAssignment = assignmentRepository.findById(assignmentsId)
@@ -152,6 +148,10 @@ public class AssignmentService {
 
     }
 
+    /**
+     * 해당 배정을 CANCEL 상태로 만든다.
+     * (캐디의 취소요청에 대한 승인이거나 골프장 관리자가 직접 취소한 상황일 수 있다.)
+     */
     @Transactional
     public void cancelBlock(Long assignmentsId) {
         Assignment findAssignment = assignmentRepository.findById(assignmentsId)
@@ -173,6 +173,9 @@ public class AssignmentService {
     }
 
 
+    /**
+     * 프리캐디에 배정 요청: 배정상태가 ASSIGN_REQUESTED로 변경되어 프리캐디측에서 조회할 수 있게 된다.
+     */
     @Transactional
     public void requestFreeCaddy(Long assignmentId) {
         Assignment assignment = assignmentRepository.findById(assignmentId)

@@ -6,14 +6,19 @@ import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class ReservationSheetRequest {
 
-    @Data
+    @AllArgsConstructor
+    @Builder
+    @Getter
     public static class CreateOrUpdate {
         @Schema(description = "골프장 Id")
         @NotNull(message = "golfFieldId는 필수값입니다.")

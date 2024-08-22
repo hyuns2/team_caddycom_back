@@ -27,7 +27,8 @@ public class AuthController {
         return ResponseEntity.ok().body(webAuthService.login(request));
     }
 
-    @Operation(summary="골프장 사장/직원 첫번째 로그인 API", description="골프장 사장/직원의 최초 로그인/회원가입 시 사용")
+    @Operation(summary="골프장 사장/직원 첫번째 로그인 API", description="골프장 사장/직원의 최초 로그인/회원가입 시 사용" +
+            "\n\n 직원은 사장님이 웹을 통해 미리 등록해야 로그인이 가능하며, 최조 접속시 DB에 저장된 정보가 없으면 모두 사장님으로 간주함.")
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in/first")
     public ResponseEntity<SigninResponse.Main> firstSignin(@Valid @RequestBody SigninRequest.First request){

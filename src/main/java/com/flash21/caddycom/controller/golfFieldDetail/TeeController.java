@@ -18,7 +18,10 @@ public class TeeController {
     private final TeeService teeService;
 
     @PostMapping("/api/course/{courseId}/tees")
-    @Operation(summary = "홀 전체 티 설정")
+    @Operation(summary = "홀 전체 티 설정", description = """
+            해당하는 코스에 존재하는 모든 홀의 티를 일괄적으로 설정한다.
+            - 기존의 티를 모두 삭제한 후 새로 생성하는 방식으로 동작
+            """)
     public void deleteAndCreateAllTees(@PathVariable Long courseId, @Valid @RequestBody TeeRequest.CreateAll request) {
         teeService.deleteAndCreateAllTee(courseId, request);
     }

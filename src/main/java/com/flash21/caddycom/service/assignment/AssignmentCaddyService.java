@@ -50,7 +50,7 @@ public class AssignmentCaddyService {
     private final CourseRepository courseRepository;
 
     /**
-     * 골프장 id와 date로 assignment를 모두 조회한다.
+     * 골프장 id와 date로 assignment를 페이징 조회한다.
      */
     public PagingResponse<AssignmentResponse.Info> getAssignments(Long golfFieldId, LocalDate date, Long courseId, AssignmentStatus status, int page) {
         Pageable pageable = PageRequest.of(page, 30);
@@ -59,6 +59,9 @@ public class AssignmentCaddyService {
         return PagingResponse.from(assignmentPage, AssignmentResponse.Info::from);
     }
 
+    /**
+     * 변경할 하우스 캐디의 목록을 페이징 조회한다.
+     */
     public PagingResponse<AssignmentResponse.Info> getSwitchingCaddy(Long golfFieldId, LocalDate date, Long id, Long courseId, Integer part, int page) {
         Pageable pageable = PageRequest.of(page, 30);
         Page<Assignment> assignmentPage =
@@ -66,7 +69,9 @@ public class AssignmentCaddyService {
         return PagingResponse.from(assignmentPage, AssignmentResponse.Info::fromSwitchable);
     }
 
-
+    /**
+     * 배정 상세 조회
+     */
     public AssignmentResponse.Detail getAssignmentDetail(Long assignmentId) {
         Assignment assignment = assignmentRepository.findByIdWithFetchJoin(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 배정 정보가 없습니다."));
@@ -78,6 +83,9 @@ public class AssignmentCaddyService {
     }
 
 
+    /**
+     * 배정 취소(또는 취소요청을 승인)
+     */
     @Transactional
     public void cancelAssignment(Long assignmentId, String reason) {
         Assignment assignment = assignmentRepository.findById(assignmentId)
@@ -85,7 +93,9 @@ public class AssignmentCaddyService {
         assignment.cancel(reason);
     }
 
-
+    /**
+     * 하우스캐디의 배정 취소 요청
+     */
     @Transactional
     public void requestCancelAssignment(Long assignmentId, AssignmentRequest.Cancel request) {
         Assignment assignment = assignmentRepository.findById(assignmentId)
@@ -93,7 +103,9 @@ public class AssignmentCaddyService {
         assignment.requestCancel(request.getReason());
     }
 
-
+    /**
+     * 두 캐디간 배정 변경
+     */
     @Transactional
     public void switchAssignment(Long from, Long to) {
         List<Assignment> assignments = assignmentRepository.findByIds(List.of(from, to));

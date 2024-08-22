@@ -24,12 +24,6 @@ import java.util.stream.Collectors;
 
 /**
  * 골프장 정보와 관련된 CRUD
- *
- * @author kwonssshyeon
- * @see FileUploader : 파일 업로드를 위한 class
- * @see GolfFieldRepository : 골프장 조회, 저장을 위한 repository
- * @see FacilityService : 골프장 시설 정보를 위한 class
- * @see PasswordEncoder : 비밀번호 암호화를 위한 class
  */
 @Service
 @RequiredArgsConstructor
@@ -42,8 +36,6 @@ public class GolfFieldService {
 
     /**
      * 골프장을 생성
-     *
-     * @param request 골프장 생성 요청 DTO
      */
     public void createGolfField(String phoneNumber, GolfFieldRequest.Create request) {
         List<String> fileUrls = uploadFiles(List.of(request.getImage(),
@@ -69,8 +61,6 @@ public class GolfFieldService {
 
     /**
      * 골프장 전체 조회
-     *
-     * @return 골프장 전체 조회 응답 DTO 리스트
      */
     @Transactional(readOnly = true)
     public List<GolfFieldResponse.Overview> getAll() {
@@ -81,9 +71,6 @@ public class GolfFieldService {
 
     /**
      * 골프장 수정
-     *
-     * @param id      수정할 골프장 id, null이 들어갈 수 없다.
-     * @param request 수정할 골프장 정보 DTO
      */
     @Transactional
     public void updateGolfField(Long id, GolfFieldRequest.Update request) {
@@ -102,9 +89,6 @@ public class GolfFieldService {
 
     /**
      * 골프장 삭제
-     *
-     * @param id 삭제할 골프장 id, null이 들어갈 수 없다.
-     * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
     @Transactional
     public void deleteGolfField(Long id) {
@@ -115,10 +99,6 @@ public class GolfFieldService {
 
     /**
      * 골프장 상세정보 입력
-     *
-     * @param id      추가정보를 입력할 골프장 id, null이 들어갈 수 없다.
-     * @param request 추가정보 입력 요청 DTO
-     * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
     @Transactional
     public void createDetailInfo(Long id, GolfFieldRequest.AdditionalInfo request) {
@@ -133,10 +113,6 @@ public class GolfFieldService {
 
     /**
      * 골프장 상세 조회
-     *
-     * @param id 상세정보를 조회할 골프장 id, null이 들어갈 수 없다.
-     * @return GolfFieldResponse.Info 골프장 상세 조회 응답 DTO
-     * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
     @Transactional(readOnly = true)
     public GolfFieldResponse.Info getDetailInfo(Long id) {
@@ -147,10 +123,6 @@ public class GolfFieldService {
 
     /**
      * 골프장 오는길 정보 입력
-     *
-     * @param id      추가정보를 입력할 골프장 id, null이 들어갈 수 없다.
-     * @param request 오는길 정보 입력 요청 DTO
-     * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
     @Transactional
     public void createDirectionInfo(Long id, GolfFieldRequest.DirectionsInfo request) {
@@ -160,10 +132,6 @@ public class GolfFieldService {
 
     /**
      * 골프장 오는길 정보 조회
-     *
-     * @param id 오는길 정보를 조회할 골프장 id, null이 들어갈 수 없다.
-     * @return GolfFieldResponse.DirectionInfo 골프장 오는길 정보 조회 응답 DTO
-     * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
     @Transactional(readOnly = true)
     public GolfFieldResponse.DirectionInfo getDirectionInfo(Long id) {
@@ -174,10 +142,6 @@ public class GolfFieldService {
 
     /**
      * 골프장 시설 정보 입력
-     *
-     * @param id      추가정보를 입력할 골프장 id, null이 들어갈 수 없다.
-     * @param request 시설 정보 입력 요청 DTO
-     * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
     public void createFacility(Long id, FacilityRequest.Create request) {
         GolfField golfField = golfFieldRepository.getGolfFieldById(id);
@@ -193,9 +157,6 @@ public class GolfFieldService {
 
     /***
      * 골프장 시설 정보 수정
-     * @param id 추가정보를 입력할 골프장 id, null이 들어갈 수 없다.
-     * @param request 시설 정보 입력 요청 DTO
-     * @throws NoSuchElementException 해당 골프장이 존재하지 않는 경우
      */
     public void updateFacility(Long id, FacilityRequest.Update request) {
         golfFieldRepository.getGolfFieldById(id);
@@ -215,9 +176,6 @@ public class GolfFieldService {
     /**
      * 외부 저장소에 파일 업로드
      * 트랜젝션 시작 전 수행된다.
-     *
-     * @param files 업로드할 파일 리스트
-     * @return 업로드된 파일 url 리스트
      */
     private List<String> uploadFiles(List<MultipartFile> files) {
         return files.stream()

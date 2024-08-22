@@ -147,9 +147,6 @@ public class HouseCaddyService {
 
     /**
      * 하우스캐디 단일 정보조회: 하우스캐디의 정보를 조회합니다
-     *
-     * @param caddyId 캐디 Id
-     * @return 하우스캐디 정보 dto
      */
     @Transactional(readOnly = true)
     public HouseCaddyResponse.Detail getHouseCaddy(Long caddyId) {
@@ -161,9 +158,6 @@ public class HouseCaddyService {
 
     /**
      * 하우스캐디 정보 변경: 하우스캐디가 자신의 정보를 변경합니다.
-     *
-     * @param caddyId 캐디 Id
-     * @param dto     변경할 정보 dto
      */
     @Transactional
     public void updateHouseCaddy(Long caddyId, HouseCaddyRequest.UpdateByCaddy dto) {
@@ -185,7 +179,9 @@ public class HouseCaddyService {
 
     }
 
-
+    /**
+     * 엑셀 파일을 읽어 하우스 캐디 일괄 저장
+     */
     public void uploadCaddy(Long id, MultipartFile file) {
         GolfField golfField = golfFieldRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 골프장은 존재하지 않습니다."));

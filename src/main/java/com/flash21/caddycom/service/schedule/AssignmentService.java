@@ -166,6 +166,9 @@ public class AssignmentService {
     }
 
 
+    /**
+     * 프리캐디에 배정 요청: 배정상태가 ASSIGN_REQUESTED로 변경되어 프리캐디측에서 조회할 수 있게 된다.
+     */
     @Transactional
     public void requestFreeCaddy(Long assignmentId) {
         Assignment assignment = assignmentRepository.findById(assignmentId)

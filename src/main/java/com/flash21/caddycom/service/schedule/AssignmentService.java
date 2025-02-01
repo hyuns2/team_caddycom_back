@@ -7,7 +7,6 @@ import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
-import com.flash21.caddycom.global.exception.cException.CReservationSheetNotFoundException;
 import com.flash21.caddycom.repository.assignment.AssignmentRepository;
 import com.flash21.caddycom.repository.schedule.*;
 import lombok.RequiredArgsConstructor;

@@ -6,7 +6,8 @@ import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.dto.schedule.ReservationSheetRequest;
 import com.flash21.caddycom.entity.schedule.*;
-import com.flash21.caddycom.global.exception.cException.*;
+import com.flash21.caddycom.global.exception.CustomException;
+import com.flash21.caddycom.global.exception.ErrorCode;
 import com.flash21.caddycom.repository.assignment.AssignmentRepository;
 import com.flash21.caddycom.repository.caddy.CaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
@@ -42,11 +43,11 @@ public class ReservationSheetService {
     @Transactional
     public void createReservationSheet(ReservationSheetRequest.CreateOrUpdate requestDto) {
         GolfField golfField = golfFieldRepository.findById(requestDto.getGolfFieldId())
-                .orElseThrow(CGolfFieldNotFoundException::new);
+                .orElseThrow(() -> new CustomException(ErrorCode.GOLF_FIELD_NOT_FOUND));
 
         List<Course> courseList = courseRepository.findAllById(requestDto.getCourseList());
         if (courseList.isEmpty()) {
-            throw new CCourseNotFoundException();
+            throw new CustomException(ErrorCode.COURSE_NOT_FOUND);
         }
 
         validToCreateSchedules(requestDto);
@@ -62,16 +63,16 @@ public class ReservationSheetService {
      */
     private void validToCreateSchedules(ReservationSheetRequest.CreateOrUpdate dto) {
         if (dto.getStartDate().isBefore(LocalDate.now()) || dto.getStartDate().isAfter(dto.getEndDate()))
-            throw new CInvalidDateOrderException();
+            throw new CustomException(ErrorCode.INVALID_DATE_ORDER);
 
         if (dto.getTeeOffList().size() != dto.getStartTimeList().size() ||
                 dto.getStartTimeList().size() != dto.getEndTimeList().size())
-            throw new CInvalidPartInfoException();
+            throw new CustomException(ErrorCode.INVALID_PART_INFO);
 
         for (Long courseId : dto.getCourseList())
             if (scheduleRepository.findFirstByGolfFieldIdAndCourseIdAndReservationAtBetween(dto.getGolfFieldId(), courseId, dto.getStartDate(), dto.getEndDate())
                     .isPresent())
-                throw new CBadReservationRequestException();
+                throw new CustomException(ErrorCode.BAD_RESERVATION_REQUEST);
     }
 
     /**
@@ -188,7 +189,7 @@ public class ReservationSheetService {
         if (assignmentRepository.findFirstByStatusIsInAndScheduleIsIn(
                 Arrays.asList(AssignmentStatus.BLOCKED, AssignmentStatus.CANCEL_REQUESTED, AssignmentStatus.ASSIGNED), scheduleList
         ).isPresent())
-            throw new CInvalidModifyingRequestException();
+            throw new CustomException(ErrorCode.INVALID_MODIFYING_REQUEST);
 
         deleteReservationSheet(reservationSheetId);
         createReservationSheet(dto);

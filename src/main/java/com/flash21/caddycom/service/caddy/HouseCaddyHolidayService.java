@@ -4,8 +4,8 @@ import com.flash21.caddycom.dto.caddy.HouseCaddyRequest;
 import com.flash21.caddycom.dto.caddy.HouseCaddyResponse;
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
-import com.flash21.caddycom.global.exception.cException.CCaddyNotFoundException;
-import com.flash21.caddycom.global.exception.cException.CInvalidCaddyRequestException;
+import com.flash21.caddycom.global.exception.CustomException;
+import com.flash21.caddycom.global.exception.ErrorCode;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,10 +28,10 @@ public class HouseCaddyHolidayService {
     @Transactional
     public void updateHouseCaddyHoliday(Long caddyId) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
-                .orElseThrow(CCaddyNotFoundException::new);
+                .orElseThrow(() -> new CustomException(ErrorCode.CADDY_NOT_FOUND));
 
         if (houseCaddy.getChangedHoliday() == null)
-            throw new CInvalidCaddyRequestException();
+            throw new CustomException(ErrorCode.INVALID_CADDY_REQUEST);
 
         houseCaddy.updateHoliday();
     }

@@ -13,13 +13,6 @@ public class ExceptionDto {
     private int code;
     private String message;
 
-    public static ExceptionDto fail(HttpStatus status, ErrorCode errorCode){
-        return ExceptionDto.builder()
-                .httpStatus(status)
-                .code(errorCode.getCode())
-                .message(errorCode.getMessage())
-                .build();
-    }
     public static ExceptionDto fail(HttpStatus status, String message){
         return ExceptionDto.builder()
                 .httpStatus(status)

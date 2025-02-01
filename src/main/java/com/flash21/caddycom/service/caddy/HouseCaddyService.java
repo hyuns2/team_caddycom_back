@@ -8,8 +8,8 @@ import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.global.common.fileReader.EntityConverter;
 import com.flash21.caddycom.global.common.fileReader.ExcelReader;
 import com.flash21.caddycom.global.common.fileUploader.FileUploader;
-import com.flash21.caddycom.global.exception.cException.CCaddyNotFoundException;
-import com.flash21.caddycom.global.exception.cException.CTeamNameNotFoundException;
+import com.flash21.caddycom.global.exception.CustomException;
+import com.flash21.caddycom.global.exception.ErrorCode;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
 import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +74,7 @@ public class HouseCaddyService {
         String team = teamName.equals("조 없음") ? null : teamName;
         List<HouseCaddy> houseCaddyList = houseCaddyRepository.findAllByGolfFieldIdAndTeam(golfFieldId, team);
         if (houseCaddyList.isEmpty())
-            throw new CTeamNameNotFoundException();
+            throw new CustomException(ErrorCode.TEAM_NAME_NOT_FOUND);
 
         return houseCaddyList.stream()
                 .map(houseCaddy -> HouseCaddyResponse.Detail.from(houseCaddy,null))
@@ -88,7 +88,7 @@ public class HouseCaddyService {
     @Transactional
     public void updateHouseCaddyByManager(Long golfFieldId, Long caddyId, HouseCaddyRequest.UpdateByManager dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
-                .orElseThrow(CCaddyNotFoundException::new);
+                .orElseThrow(() -> new CustomException(ErrorCode.CADDY_NOT_FOUND));
 
         if (dto.getTeamRole() != null && dto.getTeamRole().equals(TeamRole.LEADER)) {
             houseCaddyRepository.findByGolfFieldIdAndTeamAndTeamRole(golfFieldId, houseCaddy.getTeam(), TeamRole.LEADER)
@@ -155,7 +155,7 @@ public class HouseCaddyService {
     @Transactional(readOnly = true)
     public HouseCaddyResponse.Detail getHouseCaddy(Long caddyId) {
         HouseCaddy hc = houseCaddyRepository.findById(caddyId)
-                .orElseThrow(CCaddyNotFoundException::new);
+                .orElseThrow(() -> new CustomException(ErrorCode.COURSE_NOT_FOUND));
 
         return HouseCaddyResponse.Detail.from(hc, hc.getGolfField().getName());
     }
@@ -166,7 +166,7 @@ public class HouseCaddyService {
     @Transactional
     public void updateHouseCaddy(Long caddyId, HouseCaddyRequest.UpdateByCaddy dto) {
         HouseCaddy houseCaddy = houseCaddyRepository.findById(caddyId)
-                .orElseThrow(CCaddyNotFoundException::new);
+                .orElseThrow(() -> new CustomException(ErrorCode.COURSE_NOT_FOUND));
 
         String profileUrl = fileUploader.upload(dto.getProfile(), "caddy/");
 

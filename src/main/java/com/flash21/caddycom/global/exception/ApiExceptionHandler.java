@@ -1,6 +1,5 @@
 package com.flash21.caddycom.global.exception;
 
-import com.flash21.caddycom.global.exception.cException.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -113,102 +112,10 @@ public class ApiExceptionHandler {
                 .body(ExceptionDto.fail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
 
-
-
-
-    @ExceptionHandler(CInvalidPartInfoException.class)
-    protected ResponseEntity<ExceptionDto> handle(CInvalidPartInfoException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        e.printStackTrace();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(ExceptionDto.fail(errorCode));
-    }
-
-    @ExceptionHandler(CInvalidDateOrderException.class)
-    protected ResponseEntity<ExceptionDto> handle(CInvalidDateOrderException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        e.printStackTrace();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(ExceptionDto.fail(errorCode));
-    }
-
-    @ExceptionHandler(CInvalidTimeOrderException.class)
-    protected ResponseEntity<ExceptionDto> handle(CInvalidTimeOrderException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        e.printStackTrace();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(ExceptionDto.fail(errorCode));
-    }
-
-    @ExceptionHandler(CCourseNotFoundException.class)
-    protected ResponseEntity<ExceptionDto> handle(CCourseNotFoundException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        e.printStackTrace();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(ExceptionDto.fail(errorCode));
-    }
-
-    @ExceptionHandler(CReservationSheetNotFoundException.class)
-    protected ResponseEntity<ExceptionDto> handle(CReservationSheetNotFoundException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        e.printStackTrace();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(ExceptionDto.fail(errorCode));
-    }
-
-    @ExceptionHandler(CScheduleNotFoundException.class)
-    protected ResponseEntity<ExceptionDto> handle(CScheduleNotFoundException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        e.printStackTrace();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(ExceptionDto.fail(errorCode));
-    }
-
-    @ExceptionHandler(CGolfFieldNotFoundException.class)
-    protected ResponseEntity<ExceptionDto> handle(CGolfFieldNotFoundException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        e.printStackTrace();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(ExceptionDto.fail(errorCode));
-    }
-
-    @ExceptionHandler(CBadReservationRequestException.class)
-    protected ResponseEntity<ExceptionDto> handle(CBadReservationRequestException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        e.printStackTrace();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(ExceptionDto.fail(errorCode));
-    }
-
-    @ExceptionHandler(CTeamNameNotFoundException.class)
-    protected ResponseEntity<ExceptionDto> handle(CTeamNameNotFoundException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        e.printStackTrace();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(ExceptionDto.fail(errorCode));
-    }
-
-    @ExceptionHandler(CCaddyNotFoundException.class)
-    protected ResponseEntity<ExceptionDto> handle(CCaddyNotFoundException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        e.printStackTrace();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(ExceptionDto.fail(errorCode));
-    }
-
-    @ExceptionHandler(CInvalidCaddyRequestException.class)
-    protected ResponseEntity<ExceptionDto> handle(CInvalidCaddyRequestException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        e.printStackTrace();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(ExceptionDto.fail(errorCode));
-    }
-
-    @ExceptionHandler(CInvalidModifyingRequestException.class)
-    protected ResponseEntity<ExceptionDto> handle(CInvalidModifyingRequestException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        e.printStackTrace();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(ExceptionDto.fail(errorCode));
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDto> customExceptionHandler(CustomException e) {
+        log.error(e.getErrorCode().getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionDto.fail(e.getErrorCode()));
     }
 }

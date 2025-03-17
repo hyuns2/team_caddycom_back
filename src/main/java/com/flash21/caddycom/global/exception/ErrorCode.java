@@ -18,14 +18,13 @@ public enum ErrorCode {
     // CourseService
     COURSE_NOT_FOUND(700, "해당하는 코스를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
 
-    // ReservationSheetService
+    // Schedule
     BAD_RESERVATION_REQUEST(805, "일부 코스와 날짜에 대한 예약이 이미 존재합니다.", HttpStatus.BAD_REQUEST),
     INVALID_PART_INFO(810, "부(파트)에 대한 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
     INVALID_DATE_ORDER(820, "날짜의 순서가 맞지 않습니다.", HttpStatus.BAD_REQUEST),
     INVALID_TIME_ORDER(830, "시간의 순서가 맞지 않습니다.", HttpStatus.BAD_REQUEST),
-
-    // AssignmentService
     RESERVATION_SHEET_NOT_FOUND(840, "해당하는 예약 시트를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
+    NOT_MATCHED_GOLF_FIELD(845, "해당하는 예약 시트는 요청된 골프장의 예약 시트가 아닙니다.", HttpStatus.BAD_REQUEST),
     SCHEDULE_NOT_FOUND(850, "해당하는 예약 시트의 스케줄을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
     INVALID_MODIFYING_REQUEST(860, "블락 또는 배정된 시간이 존재하여 수정할 수 없습니다.", HttpStatus.BAD_REQUEST),
 

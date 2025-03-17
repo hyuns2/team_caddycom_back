@@ -5,5 +5,5 @@ import com.flash21.caddycom.entity.schedule.Schedule;
 import java.util.List;
 
 public interface ScheduleJdbcRepository {
-    void saveAll(List<Schedule> scheduleList);
+    void bulkInsert(List<Schedule> scheduleList);
 }

@@ -128,7 +128,7 @@ public class AssignmentQueryFactoryImpl implements AssignmentQueryFactory {
     }
 
 
-    private BooleanExpression eqStatus(AssignmentStatus status) {
-        return status == null ? null : assignment.status.eq(status);
+    private BooleanExpression eqStatus(AssignmentStatus assignmentStatus) {
+        return assignmentStatus == null ? null : assignment.assignmentStatus.eq(assignmentStatus);
     }
 }

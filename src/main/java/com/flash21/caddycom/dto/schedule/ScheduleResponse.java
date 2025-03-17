@@ -1,58 +1,92 @@
 package com.flash21.caddycom.dto.schedule;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.flash21.caddycom.entity.schedule.Assignment;
+import com.flash21.caddycom.entity.schedule.AssignmentStatus;
+import com.flash21.caddycom.entity.schedule.DateStatus;
+import com.flash21.caddycom.repository.schedule.MetaDataReport;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Comparator;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
 
-//TODO: AssignmentResponse 로 이동 .??
 public class ScheduleResponse {
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    @Builder
-    public static class NotAssigned {
-        private LocalDate date;
-        private Integer count;
-        private List<NotAssignedItem> notAssignedItems;
+    private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        public static NotAssigned of(LocalDate date, Integer count, List<Assignment> assignments) {
-            return NotAssigned.builder()
-                    .date(date)
-                    .count(count)
-                    .notAssignedItems(assignments.stream()
-                            .sorted(Comparator.comparing(Assignment::getStartTime))
-                            .map(NotAssignedItem::from)
-                            .toList())
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class MetaData {
+        @Schema(description = "결과 날짜 (yyyy-mm-dd)")
+        private LocalDate targetDate;
+
+        @Schema(description = "일별 배정상태")
+        private DateStatus dateStatus;
+
+        @Schema(description = "총 개수")
+        private int totalCntSum;
+
+        @Schema(description = "블락된 개수")
+        private int blockedCntSum;
+
+        @Schema(description = "배정가능 개수")
+        private int availableCntSum;
+
+        public static MetaData from(MetaDataReport report){
+            return MetaData.builder()
+                    .targetDate(report.getReservationAt())
+                    .dateStatus(report.getDateStatus())
+                    .totalCntSum(report.getTotalCntSum())
+                    .blockedCntSum(report.getBlockedCntSum())
+                    .availableCntSum(report.getDateStatus() != DateStatus.NOTHING ? report.getTotalCntSum() - report.getBlockedCntSum() : 0)
                     .build();
         }
+    }
 
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class AssignmentInfo {
+        @Schema(description = "배정정보 id")
+        private Long id;
+
+        @Schema(description = "상태")
+        private AssignmentStatus status;
+
+        public static AssignmentInfo from(Assignment assignment) {
+            if (assignment == null)
+                return null;
+
+            return AssignmentInfo.builder()
+                    .id(assignment.getId())
+                    .status(assignment.getAssignmentStatus())
+                    .build();
+        }
     }
 
     @AllArgsConstructor
-    @Getter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Builder
-    public static class NotAssignedItem {
-        private Long assignmentId;
-        private LocalTime startTime;
-        private String courseName;
-        private Integer totalHoles;
-        private Integer part;
+    @Getter
+    public static class CaddyAssignmentInfo {
 
-        public static NotAssignedItem from(Assignment assignment){
-            return NotAssignedItem.builder()
-                    .assignmentId(assignment.getId())
-                    .startTime(assignment.getStartTime())
-                    .courseName(assignment.getSchedule().getCourse().getName())
-                    .totalHoles(assignment.getSchedule().getCourse().getTotalHoles())
-                    .part(assignment.getSchedule().getPart())
-                    .build();
+        private Long assignmentId;
+        private Integer part;
+        private String startTime;
+        private String golfFieldName;
+        @JsonIgnore
+        private LocalDate date;
+
+        public CaddyAssignmentInfo(Assignment assignment) {
+            this.assignmentId = assignment.getId();
+            this.part = assignment.getSchedule().getPart();
+            this.date = assignment.getSchedule().getReservationAt();
+            this.golfFieldName = assignment.getSchedule().getGolfField().getName();
+            this.startTime = assignment.getStartTime().format(timeFormatter);
         }
     }
 }

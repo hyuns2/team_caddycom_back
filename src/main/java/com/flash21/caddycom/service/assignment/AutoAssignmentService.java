@@ -60,7 +60,7 @@ public class AutoAssignmentService {
         int currentCaddyIndex = getStartIndex(golfField.getCaddyAssignCursor(), caddySize, caddies);
 
         for (Assignment assignment : assignments) {
-            AssignmentStatus status = assignment.getStatus();
+            AssignmentStatus status = assignment.getAssignmentStatus();
             if (status == BLOCKED || status == ASSIGNED) continue; // 이미 배정되거나 블락된 assignment 는 건너뛴다.
             Integer part = assignment.getSchedule().getPart();
 
@@ -79,7 +79,7 @@ public class AutoAssignmentService {
         //다음에 맨 처음으로 배정되어야 할 캐디의 ID를 Cursor로 세팅
         golfField.changeCaddyAssignCursor(caddies.get(currentCaddyIndex).getId());
         //배정 완료된 스케줄 상태 ASSIGNED 로 변경
-        schedules.forEach(fs -> fs.changeDateStatus(DateStatus.ASSIGNED));
+        schedules.forEach(fs -> fs.updateDateStatus(DateStatus.ASSIGNED));
     }
 
     @NonNull
@@ -99,7 +99,7 @@ public class AutoAssignmentService {
     private List<Assignment> validateAssignments(List<Schedule> schedules) {
         List<Assignment> assignments = schedules.stream()
                 .flatMap(schedule -> schedule.getAssignments().stream())
-                .filter(assignment -> assignment.getStatus() == NOTHING || assignment.getStatus() == BLOCKED)
+                .filter(assignment -> assignment.getAssignmentStatus() == NOTHING || assignment.getAssignmentStatus() == BLOCKED)
                 .sorted(Comparator.comparing(Assignment::getStartTime))
                 .collect(Collectors.toList());
         if (assignments.isEmpty()) {
@@ -147,7 +147,7 @@ public class AutoAssignmentService {
      */
     private Set<Long> getBlockedHouseCaddies(List<Assignment> findAssignment) {
         return findAssignment.stream()
-                .filter(assignment -> assignment.getStatus() == BLOCKED && assignment.getCaddy() != null)
+                .filter(assignment -> assignment.getAssignmentStatus() == BLOCKED && assignment.getCaddy() != null)
                 .map(Assignment::getCaddy)
                 .map(Caddy::getId)
                 .collect(Collectors.toSet());

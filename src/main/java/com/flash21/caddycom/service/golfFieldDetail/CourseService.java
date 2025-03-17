@@ -151,7 +151,7 @@ public class CourseService {
         if(!deleteSchedule.isEmpty()) {
             //2. Assignment 삭제
             //2-1. Assignment 검사 - 블락되었거나, 캐디가 배정된 일정이 있는지
-            if (!assignmentRepository.findByStatusAndSchedule(deleteSchedule, AssignmentStatus.ASSIGNED, AssignmentStatus.BLOCKED, PageRequest.of(0, 1)).isEmpty()) {
+            if (!assignmentRepository.findByAssignmentStatusAndSchedule(deleteSchedule, AssignmentStatus.ASSIGNED, AssignmentStatus.BLOCKED, PageRequest.of(0, 1)).isEmpty()) {
                 throw new IllegalArgumentException("블락되었거나 캐디가 배정된 일정이 있는 코스는 삭제할 수 없습니다.");
             }
             //2-2. Assignment 삭제

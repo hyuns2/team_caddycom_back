@@ -1,6 +1,5 @@
 package com.flash21.caddycom.dto.assignment;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.TeamRole;
@@ -9,11 +8,8 @@ import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.entity.schedule.Schedule;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -45,7 +41,7 @@ public class AssignmentResponse {
                     .caddyId(caddyId)
                     .courseName(assignment.getSchedule().getCourse().getName())
                     .part(assignment.getSchedule().getPart())
-                    .status(assignment.getStatus())
+                    .status(assignment.getAssignmentStatus())
                     .reason(assignment.getReason())
                     .build();
         }
@@ -142,28 +138,6 @@ public class AssignmentResponse {
         }
     }
 
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Builder
-    @Getter
-    public static class CaddyAssignmentInfo {
-
-        private Long assignmentId;
-        private Integer part;
-        private String startTime;
-        private String golfFieldName;
-        @JsonIgnore
-        private LocalDate date;
-
-        public CaddyAssignmentInfo(Assignment assignment) {
-            this.assignmentId = assignment.getId();
-            this.part = assignment.getSchedule().getPart();
-            this.date = assignment.getSchedule().getReservationAt();
-            this.golfFieldName = assignment.getSchedule().getGolfField().getName();
-            this.startTime = assignment.getStartTime().format(timeFormatter);
-        }
-    }
-
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -177,23 +151,5 @@ public class AssignmentResponse {
             this.caddyName = assignment.getCaddyName() != null ? assignment.getCaddyName() : "블락 상태에서 캐디가 배정되지 않았습니다.";
         }
 
-    }
-
-    @Getter
-    @AllArgsConstructor
-    @Builder
-    public static class Assigned {
-        @Schema(description = "배정정보 id")
-        private Long id;
-
-        @Schema(description = "상태")
-        private AssignmentStatus status;
-
-        public static Assigned from(Assignment assignment) {
-            return Assigned.builder()
-                    .id(assignment.getId())
-                    .status(assignment.getStatus())
-                    .build();
-        }
     }
 }

@@ -1,9 +1,6 @@
 package com.flash21.caddycom.dto.schedule;
 
-import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.ReservationSheet;
-import com.flash21.caddycom.entity.schedule.Schedule;
-import com.flash21.caddycom.repository.schedule.MetaDataReport;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,87 +9,43 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 public class ReservationSheetResponse {
-    @Builder
-    @AllArgsConstructor
     @Getter
+    @AllArgsConstructor
+    @Builder
     public static class Get {
+        @Schema(description = "예약시트 id")
         private Long id;
-        private List<CourseInfo> courseList;
+
+        @Schema(description = "코스id-코스이름 형식의 맵")
+        private Map<Long, String> courses;
+
+        @Schema(description = "시작날짜 (yyyy-mm-dd)")
         private LocalDate startDate;
+
+        @Schema(description = "종료날짜 (yyyy-mm-dd)")
         private LocalDate endDate;
-        private List<InfoByPart> timeSlot;
 
-        public static Get from(ReservationSheet rs, List<CourseInfo> courseList, List<InfoByPart> timeSlot) {
+        @Schema(description = "시작시간 (hh:mm) 리스트")
+        private List<LocalTime> startTimes;
+
+        @Schema(description = "종료시간 (hh:mm) 리스트")
+        private List<LocalTime> endTimes;
+
+        @Schema(description = "티오프 리스트")
+        private List<String> teeOffs;
+
+        public static Get from(ReservationSheet reservationSheet, Map<Long, String> courseMap) {
             return Get.builder()
-                    .id(rs.getId())
-                    .courseList(courseList)
-                    .startDate(rs.getStartDate())
-                    .endDate(rs.getEndDate())
-                    .timeSlot(timeSlot).build();
-        }
-    }
-
-    @Builder
-    @AllArgsConstructor
-    @Getter
-    public static class MetaData {
-        @Schema(description = "결과 날짜 (yyyy-mm-dd)")
-        private LocalDate targetDate;
-
-        @Schema(description = "일별 배정상태")
-        private DateStatus dateStatus;
-
-        @Schema(description = "총 개수")
-        private int totalCntSum;
-
-        @Schema(description = "블락된 개수")
-        private int blockedCntSum;
-
-        @Schema(description = "배정가능 개수")
-        private int availableCntSum;
-
-        public static MetaData from(MetaDataReport report){
-            int availableCntResult = report.getTotalCntSum() - report.getBlockedCntSum();
-            return MetaData.builder()
-                    .targetDate(report.getReservationAt())
-                    .dateStatus(report.getDateStatus())
-                    .totalCntSum(report.getTotalCntSum())
-                    .blockedCntSum(report.getBlockedCntSum())
-                    .availableCntSum(report.getDateStatus() != DateStatus.NOTHING ? availableCntResult : 0)
-                    .build();
-        }
-    }
-
-    @Builder
-    @AllArgsConstructor
-    @Getter
-    public static class CourseInfo {
-        private Long id;
-        private String name;
-
-        public static CourseInfo from(Long id, String name) {
-            return CourseInfo.builder()
-                    .id(id)
-                    .name(name).build();
-        }
-    }
-
-    @Builder
-    @AllArgsConstructor
-    @Getter
-    public static class InfoByPart {
-        private LocalTime startTime;
-        private LocalTime endTime;
-        private String teeOff;
-
-        public static InfoByPart from(Schedule schedule) {
-            return InfoByPart.builder()
-                    .startTime(schedule.getStartTime())
-                    .endTime(schedule.getEndTime())
-                    .teeOff(schedule.getTeeOff())
-                    .build();
+                    .id(reservationSheet.getId())
+                    .courses(courseMap)
+                    .startDate(reservationSheet.getStartDate())
+                    .endDate(reservationSheet.getEndDate())
+                    .startTimes(reservationSheet.getStartTimes())
+                    .endTimes(reservationSheet.getEndTimes())
+                    .teeOffs(reservationSheet.getTeeOffs()).build();
         }
     }
 }

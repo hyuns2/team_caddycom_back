@@ -3,7 +3,6 @@ package com.flash21.caddycom.service.caddy;
 import com.flash21.caddycom.dto.caddy.FreeCaddyCommand;
 import com.flash21.caddycom.dto.caddy.FreeCaddyResponse;
 import com.flash21.caddycom.dto.golfField.GolfFieldResponse;
-import com.flash21.caddycom.dto.schedule.ScheduleResponse;
 import com.flash21.caddycom.entity.caddy.FreeCaddy;
 import com.flash21.caddycom.entity.caddy.MatchedFreeCaddy;
 import com.flash21.caddycom.entity.golfField.GolfField;
@@ -137,7 +136,7 @@ public class FreeCaddyService {
      */
 
     @Transactional(readOnly = true)
-    public List<ScheduleResponse.NotAssigned> getMatchedGolfFieldSchedule(Long golfFieldId, Integer year, Integer month) {
+    public List<FreeCaddyResponse.NotAssigned> getMatchedGolfFieldSchedule(Long golfFieldId, Integer year, Integer month) {
         List<Schedule> scheduleList = scheduleRepository.findAllByGolfFieldAndDate(golfFieldId, year, month);
 
         Map<LocalDate, List<Assignment>> assignmentMap = new HashMap<>();
@@ -147,7 +146,7 @@ public class FreeCaddyService {
             assignmentMap.putIfAbsent(date, new ArrayList<>());
 
             List<Assignment> requestedAssignments = schedule.getAssignments().stream()
-                    .filter(assignment -> assignment.getStatus() == AssignmentStatus.ASSIGN_REQUESTED)
+                    .filter(assignment -> assignment.getAssignmentStatus() == AssignmentStatus.ASSIGN_REQUESTED)
                     .toList();
             assignmentMap.get(date).addAll(requestedAssignments);
 
@@ -156,7 +155,7 @@ public class FreeCaddyService {
 
         return assignmentMap.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
-                .map(entry -> ScheduleResponse.NotAssigned.of(entry.getKey(), countMap.get(entry.getKey()), entry.getValue()))
+                .map(entry -> FreeCaddyResponse.NotAssigned.of(entry.getKey(), countMap.get(entry.getKey()), entry.getValue()))
                 .toList();
     }
 
@@ -166,7 +165,7 @@ public class FreeCaddyService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 프리캐디입니다."));
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정입니다."));
-        if (assignment.getStatus() != AssignmentStatus.ASSIGN_REQUESTED)
+        if (assignment.getAssignmentStatus() != AssignmentStatus.ASSIGN_REQUESTED)
             throw new IllegalArgumentException("프리캐디에 배정을 요청한 상태가 아닙니다.");
 
         assignment.assignCaddy(freeCaddy);

@@ -3,10 +3,7 @@ package com.flash21.caddycom.entity.schedule;
 import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,7 +12,7 @@ import java.util.List;
 
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
 public class Schedule {
@@ -24,15 +21,15 @@ public class Schedule {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private GolfField golfField;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private ReservationSheet reservationSheet;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private Course course;
 
     @Column(nullable = false)
@@ -65,7 +62,26 @@ public class Schedule {
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Assignment> assignments;
 
-    public void changeDateStatus(DateStatus dateStatus) {
+    public static Schedule of(GolfField golfField, ReservationSheet reservationSheet, Course course,
+                              LocalDate reservationAt, LocalTime startTime, LocalTime endTime,
+                              String teeOff, int part, int totalCnt) {
+        return Schedule.builder()
+                .golfField(golfField)
+                .reservationSheet(reservationSheet)
+                .course(course)
+                .reservationAt(reservationAt)
+                .startTime(startTime)
+                .endTime(endTime)
+                .teeOff(teeOff)
+                .part(part)
+                .dateStatus(DateStatus.NOTHING)
+                .totalCnt(totalCnt)
+                .notAssignedCnt(0)
+                .blockedCnt(0)
+                .build();
+    }
+
+    public void updateDateStatus(DateStatus dateStatus) {
         this.dateStatus = dateStatus;
     }
 

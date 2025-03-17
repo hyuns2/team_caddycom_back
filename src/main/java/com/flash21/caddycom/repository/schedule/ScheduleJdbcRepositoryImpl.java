@@ -2,9 +2,7 @@ package com.flash21.caddycom.repository.schedule;
 
 import com.flash21.caddycom.entity.schedule.Schedule;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,39 +15,25 @@ public class ScheduleJdbcRepositoryImpl implements ScheduleJdbcRepository{
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
-    public void saveAll(List<Schedule> scheduleList) {
+    public void bulkInsert(List<Schedule> schedules) {
         String sql = "INSERT INTO schedule"
                 + " (golf_field_id, course_id, reservation_at, start_time, end_time, tee_off, part, date_status, total_cnt, blocked_cnt, not_assigned_cnt, reservation_sheet_id)"
                 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        jdbcTemplate.batchUpdate(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
-                return ps;
-            }
-        }, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Schedule target = scheduleList.get(i);
-                ps.setLong(1, target.getGolfField().getId());
-                ps.setLong(2, target.getCourse().getId());
-                ps.setDate(3, Date.valueOf(target.getReservationAt()));
-                ps.setTime(4, Time.valueOf(target.getStartTime()));
-                ps.setTime(5, Time.valueOf(target.getEndTime()));
-                ps.setString(6, target.getTeeOff());
-                ps.setInt(7, target.getPart());
-                ps.setInt(8, target.getDateStatus().getNumber());
-                ps.setInt(9, target.getTotalCnt());
-                ps.setInt(10, target.getBlockedCnt());
-                ps.setInt(11, target.getNotAssignedCnt());
-                ps.setLong(12, target.getReservationSheet().getId());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return scheduleList.size();
-            }
-        }, null);
+        jdbcTemplate.batchUpdate(sql, schedules, schedules.size(),
+                (ps, schedule) -> {
+                    ps.setLong(1, schedule.getGolfField().getId());
+                    ps.setLong(2, schedule.getCourse().getId());
+                    ps.setDate(3, Date.valueOf(schedule.getReservationAt()));
+                    ps.setTime(4, Time.valueOf(schedule.getStartTime()));
+                    ps.setTime(5, Time.valueOf(schedule.getEndTime()));
+                    ps.setString(6, schedule.getTeeOff());
+                    ps.setInt(7, schedule.getPart());
+                    ps.setInt(8, schedule.getDateStatus().getNumber());
+                    ps.setInt(9, schedule.getTotalCnt());
+                    ps.setInt(10, schedule.getBlockedCnt());
+                    ps.setInt(11, schedule.getNotAssignedCnt());
+                    ps.setLong(12, schedule.getReservationSheet().getId());
+                });
     }
 }

@@ -18,7 +18,7 @@ import java.util.List;
 @Tag(name = "4-1. Reservation Sheet", description = "예약시트 API")
 @RequestMapping("/api/reservation-sheet")
 public class ReservationSheetController {
-    final ReservationSheetService rsService;
+    final ReservationSheetService reservationSheetService;
 
     @Operation(summary = "예약시트 등록", description = """
                     골프장 관리자가 예약시트를 등록합니다.
@@ -31,7 +31,7 @@ public class ReservationSheetController {
                 """)
     @PostMapping
     public ResponseEntity<Void> createReservationSheet(@Valid @RequestBody ReservationSheetRequest.CreateOrUpdate dto) {
-        rsService.createReservationSheet(dto);
+        reservationSheetService.createReservationSheet(dto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -39,33 +39,28 @@ public class ReservationSheetController {
     @Operation(summary = "예약시트 전체조회", description = "골프장 관리자가 전체 예약시트를 조회합니다.")
     @GetMapping("/{golfFieldId}")
     public ResponseEntity<List<ReservationSheetResponse.Get>> getReservationSheet(@PathVariable Long golfFieldId) {
-        List<ReservationSheetResponse.Get> result = rsService.getReservationSheet(golfFieldId);
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(reservationSheetService.getReservationSheet(golfFieldId), HttpStatus.OK);
     }
 
     @Operation(summary = "예약시트 수정", description = """
                     골프장 관리자가 특정 예약시트를 수정합니다.
                     - 수정하려는 예약시트에 블락, 배정, 취소요청 상태의 타임이 하나라도 있으면, 수정이 불가합니다.
                     - 위 상태의 타임을 모두 취소 상태로 변경하면, 수정이 가능해집니다.
-                    - 현재시간 기준 이전의 스케줄과 배정정보 데이터는 히스토리로 보관하고, 이후만 수정됩니다.
-                    - 현재시간 기준 이후의 캐디가 배정된 상태인 배정정보도 캐디에게 알리기 위해 히스토리로 보관합니다.
                 """)
-    @PatchMapping("/{reservationId}")
+    @PutMapping("/{reservationId}")
     public ResponseEntity<Void> updateReservationSheet(@PathVariable Long reservationId, @Valid @RequestBody ReservationSheetRequest.CreateOrUpdate dto) {
-        rsService.updateReservationSheet(reservationId, dto);
+        reservationSheetService.updateReservationSheet(reservationId, dto);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "예약시트 삭제", description = """
                     골프장 관리자가 특정 예약시트를 삭제합니다.
-                    - 현재시간 기준 이전의 스케줄과 배정정보 데이터는 히스토리로 보관하고, 이후만 삭제됩니다.
-                    - 현재시간 기준 이후의 캐디가 배정된 상태인 배정정보도 캐디에게 알리기 위해 히스토리로 보관합니다.
+                    - 캐디가 배정된 상태인 배정정보는 캐디의 확인을 위해 보관합니다.
                 """)
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<Void> deleteReservationSheet(@PathVariable Long reservationId) {
-        rsService.deleteReservationSheet(reservationId);
+        reservationSheetService.deleteReservationSheet(reservationId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

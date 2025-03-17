@@ -2,18 +2,15 @@ package com.flash21.caddycom.entity.schedule;
 
 import com.flash21.caddycom.entity.caddy.Caddy;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalTime;
 
 @Entity
-@Builder
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class Assignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +24,7 @@ public class Assignment {
     private LocalTime startTime;
 
     @Column(nullable = false)
-    private AssignmentStatus status;
+    private AssignmentStatus assignmentStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
@@ -41,31 +38,39 @@ public class Assignment {
 
     private LocalTime endedTime;
 
+    public static Assignment of(Schedule schedule, LocalTime startTime) {
+        return Assignment.builder()
+                .schedule(schedule)
+                .startTime(startTime)
+                .assignmentStatus(AssignmentStatus.NOTHING)
+                .build();
+    }
+
     public void cancel(String reason) {
         if (reason != null && !reason.isEmpty())
             this.reason = reason;
-        this.status = AssignmentStatus.CANCELED;
+        this.assignmentStatus = AssignmentStatus.CANCELED;
     }
 
     public void requestCancel(String reason) {
         if (reason != null && !reason.isEmpty())
             this.reason = reason;
-        this.status = AssignmentStatus.CANCEL_REQUESTED;
+        this.assignmentStatus = AssignmentStatus.CANCEL_REQUESTED;
     }
 
     public void blockAssignment(String reason) {
-        if (this.status != AssignmentStatus.BLOCKED) {
-            this.status = AssignmentStatus.BLOCKED;
+        if (this.assignmentStatus != AssignmentStatus.BLOCKED) {
+            this.assignmentStatus = AssignmentStatus.BLOCKED;
             this.reason = reason;
             this.schedule.addBlockCount();
-        } else if (this.status == AssignmentStatus.BLOCKED) {
+        } else if (this.assignmentStatus == AssignmentStatus.BLOCKED) {
             this.reason = reason;
         }
     }
 
     public void cancelBlock() {
-        if (this.status == AssignmentStatus.BLOCKED) {
-            this.status = AssignmentStatus.NOTHING;
+        if (this.assignmentStatus == AssignmentStatus.BLOCKED) {
+            this.assignmentStatus = AssignmentStatus.NOTHING;
             this.reason = null;
             this.caddyName = null;
             this.caddy = null;
@@ -77,17 +82,13 @@ public class Assignment {
         this.caddyName = caddy.getName();
         this.caddy = caddy;
         caddy.getAssignmentList().add(this);
-        if (this.status == AssignmentStatus.BLOCKED) return;
-        this.status = AssignmentStatus.ASSIGNED;
+        if (this.assignmentStatus == AssignmentStatus.BLOCKED) return;
+        this.assignmentStatus = AssignmentStatus.ASSIGNED;
         this.schedule.subNotAssignedCount();
     }
 
-    public void updateByDeletedSchedule() {
-        this.schedule = null;
-    }
-
     public void requestFreeCaddy() {
-        this.status = AssignmentStatus.ASSIGN_REQUESTED;
+        this.assignmentStatus = AssignmentStatus.ASSIGN_REQUESTED;
         this.schedule.addNotAssignedCount();
     }
 

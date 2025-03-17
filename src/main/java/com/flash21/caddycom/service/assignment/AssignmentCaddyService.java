@@ -5,20 +5,13 @@ import com.flash21.caddycom.dto.assignment.AssignmentRequest;
 import com.flash21.caddycom.dto.assignment.AssignmentResponse;
 import com.flash21.caddycom.dto.golfFieldDetail.course.CourseResponse;
 import com.flash21.caddycom.entity.caddy.Caddy;
-import com.flash21.caddycom.entity.caddy.Days;
 import com.flash21.caddycom.entity.caddy.HouseCaddy;
-import com.flash21.caddycom.entity.golfField.GolfField;
 import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.schedule.Assignment;
 import com.flash21.caddycom.entity.schedule.AssignmentStatus;
-import com.flash21.caddycom.entity.schedule.DateStatus;
-import com.flash21.caddycom.entity.schedule.Schedule;
 import com.flash21.caddycom.repository.caddy.HouseCaddyRepository;
-import com.flash21.caddycom.repository.golfField.GolfFieldRepository;
 import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.assignment.AssignmentRepository;
-import com.flash21.caddycom.repository.schedule.ScheduleRepository;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,11 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.flash21.caddycom.entity.schedule.AssignmentStatus.*;
 
@@ -73,7 +63,7 @@ public class AssignmentCaddyService {
         Assignment assignment = assignmentRepository.findByIdWithFetchJoin(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 배정 정보가 없습니다."));
 
-        if (assignment.getStatus() != CANCELED && assignment.getStatus() != ASSIGNED) {
+        if (assignment.getAssignmentStatus() != CANCELED && assignment.getAssignmentStatus() != ASSIGNED) {
             throw new IllegalArgumentException("배정되거나 취소된 상태에서만 조회 가능합니다.");
         }
         return AssignmentResponse.Detail.from(assignment);
@@ -109,7 +99,7 @@ public class AssignmentCaddyService {
         if (assignments.size() != 2)
             throw new IllegalArgumentException("해당 배정 정보가 없습니다.");
 
-        if (assignments.stream().anyMatch(assignment -> assignment.getStatus() != ASSIGNED))
+        if (assignments.stream().anyMatch(assignment -> assignment.getAssignmentStatus() != ASSIGNED))
             throw new IllegalArgumentException("이미 취소되거나 블락된 배정입니다. 변경이 불가능합니다.");
         // swap
         Caddy fromCaddy = assignments.get(0).getCaddy();
@@ -154,8 +144,8 @@ public class AssignmentCaddyService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 코스입니다."));
 
         if (assignment.getEndedTime() != null &&
-                assignment.getStatus() != ASSIGNED &&
-                assignment.getStatus() != BLOCKED) {
+                assignment.getAssignmentStatus() != ASSIGNED &&
+                assignment.getAssignmentStatus() != BLOCKED) {
             throw new IllegalStateException("업무가 끝난 상태이거나 배정되지 않은 상태입니다.");
         }
 
@@ -174,8 +164,8 @@ public class AssignmentCaddyService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 배정 정보입니다."));
 
         if (findAssignment.getStartedTime() == null &&
-                findAssignment.getStatus() != ASSIGNED &&
-                findAssignment.getStatus() != BLOCKED) {
+                findAssignment.getAssignmentStatus() != ASSIGNED &&
+                findAssignment.getAssignmentStatus() != BLOCKED) {
             throw new IllegalStateException("업무가 시작하지 않은 상태이거나 배정되지 않은 상태입니다.");
         }
 

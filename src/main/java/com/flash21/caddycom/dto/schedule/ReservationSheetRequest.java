@@ -6,27 +6,25 @@ import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class ReservationSheetRequest {
 
+    @Getter
     @AllArgsConstructor
     @Builder
-    @Getter
     public static class CreateOrUpdate {
         @Schema(description = "골프장 Id")
         @NotNull(message = "golfFieldId는 필수값입니다.")
         private Long golfFieldId;
 
-        @Schema(description = "코스 리스트")
-        @NotEmpty(message = "courseList는 필수값입니다.")
-        private List<Long> courseList;
+        @Schema(description = "코스 Id 리스트")
+        @NotEmpty(message = "courseIds는 필수값입니다.")
+        private List<Long> courseIds;
 
         @Schema(description = "시작날짜 (yyyy-mm-dd)")
         @NotNull(message = "startDate는 필수값입니다.")
@@ -39,23 +37,40 @@ public class ReservationSheetRequest {
         private LocalDate endDate;
 
         @Schema(description = "시작시간 (hh:mm) 리스트")
-        @NotEmpty(message = "startTimeList는 필수값입니다.")
-        private List<String> startTimeList;
+        @NotEmpty(message = "startTimes는 필수값입니다.")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        private List<LocalTime> startTimes;
 
         @Schema(description = "종료시간 (hh:mm) 리스트")
-        @NotEmpty(message = "endTimeList는 필수값입니다.")
-        private List<String> endTimeList;
+        @NotEmpty(message = "endTimes는 필수값입니다.")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        private List<LocalTime> endTimes;
 
         @Schema(description = "티오프 리스트")
-        @NotEmpty(message = "teeOffList는 필수값입니다.")
-        private List<String> teeOffList;
+        @NotEmpty(message = "teeOffs는 필수값입니다.")
+        private List<String> teeOffs;
+
+        public static CreateOrUpdate of(Long golfFieldId, List<Long> courseIdList, LocalDate startDate, LocalDate endDate,
+                                 List<LocalTime> startTimes, List<LocalTime> endTimes, List<String> teeOffs) {
+            return CreateOrUpdate.builder()
+                    .golfFieldId(golfFieldId)
+                    .courseIds(courseIdList)
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .startTimes(startTimes)
+                    .endTimes(endTimes)
+                    .teeOffs(teeOffs).build();
+        }
 
         public ReservationSheet toEntity(GolfField golfField) {
             return ReservationSheet.builder()
                     .golfField(golfField)
+                    .courseIds(courseIds)
                     .startDate(startDate)
                     .endDate(endDate)
-                    .courseIdList(courseList)
+                    .startTimes(startTimes)
+                    .endTimes(endTimes)
+                    .teeOffs(teeOffs)
                     .build();
         }
     }

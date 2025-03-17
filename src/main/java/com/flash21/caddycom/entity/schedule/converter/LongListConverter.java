@@ -6,15 +6,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class IdListConverter implements AttributeConverter<List<Long>, String> {
-
+public class LongListConverter implements AttributeConverter<List<Long>, String> {
     private static final String SPLIT_CHAR = ",";
+
     @Override
-    public String convertToDatabaseColumn(List<Long> idList) {
-        if (idList == null || idList.isEmpty())
+    public String convertToDatabaseColumn(List<Long> longList) {
+        if (longList == null || longList.isEmpty())
             return null;
 
-        return idList.stream()
+        return longList.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(SPLIT_CHAR));
     }

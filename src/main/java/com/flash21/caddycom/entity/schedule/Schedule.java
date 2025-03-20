@@ -11,10 +11,13 @@ import java.util.List;
 
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+@Table(name = "schedule", indexes = {
+        @Index(name = "idx_schedule_reservationAt_golfFieldId", columnList = "reservation_at, golf_field_id")
+})
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -11,6 +11,7 @@ import java.time.LocalTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Table(name = "assignment")
 public class Assignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

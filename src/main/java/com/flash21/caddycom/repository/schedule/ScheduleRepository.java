@@ -5,6 +5,7 @@ import com.flash21.caddycom.entity.golfFieldDetail.Course;
 import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import com.flash21.caddycom.entity.schedule.Schedule;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,12 +24,12 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Sched
             + " group by s.reservationAt, s.dateStatus order by s.reservationAt")
     List<MetaDataReport> findAllMetaDataByMonth(LocalDate startDate, LocalDate endDate, Long golfFieldId);
 
-    @Query("select s from Schedule s left join fetch s.course left join fetch s.assignments"
-            + " where s.reservationAt = :date and s.golfField.id = :golfFieldId")
+    @EntityGraph(attributePaths = { "course", "assignments" })
+    @Query("select s from Schedule s where s.reservationAt = :date and s.golfField.id = :golfFieldId")
     List<Schedule> findAllWithEntitiesByReservationAtAndGolfFieldId(LocalDate date, Long golfFieldId);
 
-    @Query("select s from Schedule s left join fetch s.course left join fetch s.assignments"
-            + " where s in :schedules")
+    @EntityGraph(attributePaths = { "course", "assignments" })
+    @Query("select s from Schedule s where s in :schedules")
     List<Schedule> findAllWithEntitiesBySchedules(List<Schedule> schedules);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
@@ -36,6 +37,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Sched
     int updateDateStatusBySchedules(DateStatus dateStatus, List<Schedule> schedules);
 
     List<Schedule> findAllByReservationSheetId(Long reservationSheetId);
+
     @Modifying(clearAutomatically = true)
     @Query("delete from Schedule s where s.reservationSheet = :reservationSheet")
     int deleteAllByReservationSheet(ReservationSheet reservationSheet);

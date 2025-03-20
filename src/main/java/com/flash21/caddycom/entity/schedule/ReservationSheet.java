@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Table(name = "reservation_sheet")
 public class ReservationSheet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,8 +26,8 @@ public class ReservationSheet {
     @JoinColumn(nullable = false)
     private GolfField golfField;
 
-    @Column(nullable = false)
     @Convert(converter = LongListConverter.class)
+    @Column(nullable = false)
     private List<Long> courseIds;
 
     @Column(nullable = false)
@@ -35,16 +36,16 @@ public class ReservationSheet {
     @Column(nullable = false)
     private LocalDate endDate;
 
-    @Column(nullable = false)
     @Convert(converter = LocalTimeListConverter.class)
+    @Column(nullable = false)
     private List<LocalTime> startTimes;
 
-    @Column(nullable = false)
     @Convert(converter = LocalTimeListConverter.class)
+    @Column(nullable = false)
     private List<LocalTime> endTimes;
 
-    @Column(nullable = false)
     @Convert(converter = StringListConverter.class)
+    @Column(nullable = false)
     private List<String> teeOffs;
 
     @OneToMany(mappedBy = "reservationSheet", cascade = CascadeType.ALL, orphanRemoval = true)

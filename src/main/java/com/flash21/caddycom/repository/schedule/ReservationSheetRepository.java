@@ -17,7 +17,8 @@ public interface ReservationSheetRepository extends JpaRepository<ReservationShe
     @EntityGraph(attributePaths = { "golfField", "schedules" })
     Optional<ReservationSheet> findWithEntitiesById(Long id);
 
-    @Query("select rs from ReservationSheet rs left join fetch Schedule s where rs.id = :id")
+    @EntityGraph(attributePaths = "schedules")
+    @Query("select rs from ReservationSheet rs where rs.id = :id")
     Optional<ReservationSheet> findWithSchedulesById(Long id);
 
     @Query("select rs from ReservationSheet rs where rs.startDate > :date")

@@ -15,7 +15,6 @@ import java.util.List;
 public class ReservationSheetRequest {
 
     @Getter
-    @AllArgsConstructor
     @Builder
     public static class CreateOrUpdate {
         @Schema(description = "골프장 Id")

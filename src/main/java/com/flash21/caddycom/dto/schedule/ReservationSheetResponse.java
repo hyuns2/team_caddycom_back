@@ -2,7 +2,6 @@ package com.flash21.caddycom.dto.schedule;
 
 import com.flash21.caddycom.entity.schedule.ReservationSheet;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,7 +12,6 @@ import java.util.Map;
 
 public class ReservationSheetResponse {
     @Getter
-    @AllArgsConstructor
     @Builder
     public static class Get {
         @Schema(description = "예약시트 id")

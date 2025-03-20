@@ -7,7 +7,6 @@ import com.flash21.caddycom.entity.schedule.AssignmentStatus;
 import com.flash21.caddycom.entity.schedule.DateStatus;
 import com.flash21.caddycom.repository.schedule.MetaDataReport;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,9 +16,8 @@ import java.time.format.DateTimeFormatter;
 public class ScheduleResponse {
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    @Builder
-    @AllArgsConstructor
     @Getter
+    @Builder
     public static class MetaData {
         @Schema(description = "결과 날짜 (yyyy-mm-dd)")
         private LocalDate targetDate;
@@ -48,7 +46,6 @@ public class ScheduleResponse {
     }
 
     @Getter
-    @AllArgsConstructor
     @Builder
     public static class AssignmentInfo {
         @Schema(description = "배정정보 id")
@@ -68,10 +65,8 @@ public class ScheduleResponse {
         }
     }
 
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Builder
     @Getter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class CaddyAssignmentInfo {
 
         private Long assignmentId;
@@ -81,6 +76,7 @@ public class ScheduleResponse {
         @JsonIgnore
         private LocalDate date;
 
+        @Builder
         public CaddyAssignmentInfo(Assignment assignment) {
             this.assignmentId = assignment.getId();
             this.part = assignment.getSchedule().getPart();

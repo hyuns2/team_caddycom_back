@@ -9,6 +9,7 @@ import com.flash21.caddycom.repository.golfFieldDetail.course.CourseRepository;
 import com.flash21.caddycom.repository.schedule.ReservationSheetRepository;
 import com.flash21.caddycom.repository.schedule.ScheduleRepository;
 import com.flash21.caddycom.service.schedule.ReservationSheetService;
+import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,8 @@ public class ReservationSheetServiceTest {
     ScheduleRepository scheduleRepository;
     @Autowired
     CourseRepository courseRepository;
+    @Autowired
+    EntityManager entityManager;
 
     @Test
     @DisplayName("예약시트를 성공적으로 생성합니다.")
@@ -145,5 +148,59 @@ public class ReservationSheetServiceTest {
                 .map(dto -> dto.getCourses().values().stream().toList())
                 .flatMap(List::stream)
                 .sorted().toList()).isEqualTo(courseNames);
+    }
+
+    @Test
+    @DisplayName("예약시트를 성공적으로 수정합니다.")
+    void updateReservationSheet_success() {
+        // given
+        Long reservationSheetId = reservationSheetService.createReservationSheet(ReservationSheetRequest.CreateOrUpdate.of(
+                1L, List.of(1L, 2L),
+                LocalDate.now(), LocalDate.now().plusDays(6),
+                List.of(LocalTime.parse("08:00"), LocalTime.parse("13:00"), LocalTime.parse("18:00")),
+                List.of(LocalTime.parse("12:00"), LocalTime.parse("17:00"), LocalTime.parse("22:00")),
+                List.of("5", "5~6", "6")
+        ));
+        entityManager.flush();
+        entityManager.clear();
+
+        // when
+        log.info("start");
+        reservationSheetService.updateReservationSheet(reservationSheetId, ReservationSheetRequest.CreateOrUpdate.of(
+                1L, List.of(1L, 2L, 3L),
+                LocalDate.now(), LocalDate.now().plusDays(6),
+                List.of(LocalTime.parse("08:00"), LocalTime.parse("13:00"), LocalTime.parse("18:00")),
+                List.of(LocalTime.parse("12:00"), LocalTime.parse("17:00"), LocalTime.parse("22:00")),
+                List.of("5", "5~6", "6")
+        ));
+
+        entityManager.flush();
+        entityManager.clear();
+        log.info("end");
+
+        // then
+        Assertions.assertThat(reservationSheetRepository.findById(reservationSheetId).get()
+                .getCourseIds().size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("예약시트를 성공적으로 삭제합니다.")
+    void deleteReservationSheets_success() {
+        // given
+        Long reservationSheetId = reservationSheetService.createReservationSheet(ReservationSheetRequest.CreateOrUpdate.of(
+                1L, List.of(1L, 2L),
+                LocalDate.now(), LocalDate.now().plusDays(6),
+                List.of(LocalTime.parse("08:00"), LocalTime.parse("13:00"), LocalTime.parse("18:00")),
+                List.of(LocalTime.parse("12:00"), LocalTime.parse("17:00"), LocalTime.parse("22:00")),
+                List.of("5", "5~6", "6")
+        ));
+
+        // when
+        log.info("start");
+        reservationSheetService.deleteReservationSheet(reservationSheetId);
+        log.info("end");
+
+        // then
+        Assertions.assertThat(reservationSheetRepository.findById(reservationSheetId)).isEmpty();
     }
 }

@@ -62,7 +62,7 @@ public class Schedule {
     @Column(nullable = false)
     private Integer notAssignedCnt;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.PERSIST)
     public List<Assignment> assignments;
 
     public static Schedule of(GolfField golfField, ReservationSheet reservationSheet, Course course,

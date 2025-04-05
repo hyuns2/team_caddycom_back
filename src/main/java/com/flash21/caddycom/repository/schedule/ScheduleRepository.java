@@ -32,15 +32,15 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Sched
     @Query("select s from Schedule s where s in :schedules")
     List<Schedule> findAllWithEntitiesBySchedules(List<Schedule> schedules);
 
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Modifying(clearAutomatically = true)
     @Query("update Schedule s set s.dateStatus = :dateStatus where s in :schedules")
-    int updateDateStatusBySchedules(DateStatus dateStatus, List<Schedule> schedules);
+    void updateDateStatusBySchedules(DateStatus dateStatus, List<Schedule> schedules);
 
     List<Schedule> findAllByReservationSheetId(Long reservationSheetId);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query("delete from Schedule s where s.reservationSheet = :reservationSheet")
-    int deleteAllByReservationSheet(ReservationSheet reservationSheet);
+    void deleteAllByReservationSheet(ReservationSheet reservationSheet);
 
     @Query("select s from Schedule s where s.reservationAt > :date and s.course.id in :courseIds")
     List<Schedule> findAllByCourseIdsAfterDate(Iterable<Long> courseIds, LocalDate date);

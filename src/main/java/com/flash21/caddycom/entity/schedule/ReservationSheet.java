@@ -48,7 +48,7 @@ public class ReservationSheet {
     @Column(nullable = false)
     private List<String> teeOffs;
 
-    @OneToMany(mappedBy = "reservationSheet", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "reservationSheet", cascade = CascadeType.PERSIST)
     private List<Schedule> schedules;
 
     public void updateAll(GolfField golfField, List<Long> courseIds, LocalDate startDate, LocalDate endDate,

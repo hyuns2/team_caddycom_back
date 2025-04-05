@@ -35,9 +35,9 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long>, A
 
     @Modifying(clearAutomatically = true)
     @Query("update Assignment a set a.schedule = null where a in :assignments")
-    int updateScheduleToNullByAssignments(List<Assignment> assignments);
+    void updateScheduleToNullByAssignments(List<Assignment> assignments);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query("delete from Assignment a where a.schedule in :schedules")
     void deleteAllBySchedules(Iterable<Schedule> schedules);
 }

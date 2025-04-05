@@ -46,7 +46,6 @@ public class ReservationSheetService {
         validToCreateOrUpdateReservationSheet(dto, golfField, courses);
 
         ReservationSheet reservationSheet = reservationSheetRepository.save(dto.toEntity(golfField));
-
         scheduleService.createSchedules(reservationSheet, courses,
                 dto.getStartTimes(), dto.getEndTimes(), dto.getTeeOffs());
 
@@ -96,10 +95,11 @@ public class ReservationSheetService {
     public void updateReservationSheet(Long reservationSheetId, ReservationSheetRequest.CreateOrUpdate dto) {
         ReservationSheet reservationSheet = reservationSheetRepository.findWithEntitiesById(reservationSheetId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_SHEET_NOT_FOUND));
-
         validateToUpdateReservationSheet(dto, reservationSheet);
+
         assignmentRepository.deleteAllBySchedules(reservationSheet.getSchedules());
         scheduleRepository.deleteAllByReservationSheet(reservationSheet);
+        reservationSheet.getSchedules().clear();
 
         List<Course> courses = courseRepository.findAllById(dto.getCourseIds());
         validToCreateOrUpdateReservationSheet(dto, reservationSheet.getGolfField(), courses);
@@ -137,8 +137,10 @@ public class ReservationSheetService {
                         Arrays.asList(AssignmentStatus.ASSIGNED, AssignmentStatus.CANCEL_REQUESTED, AssignmentStatus.ASSIGN_REQUESTED))
         );
 
+        reservationSheet = reservationSheetRepository.findWithSchedulesById(reservationSheetId)
+                .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_SHEET_NOT_FOUND));
         assignmentRepository.deleteAllBySchedules(reservationSheet.getSchedules());
         scheduleRepository.deleteAllByReservationSheet(reservationSheet);
-        reservationSheetRepository.delete(reservationSheet);
+        reservationSheetRepository.deleteReservationSheetById(reservationSheet.getId());
     }
 }
